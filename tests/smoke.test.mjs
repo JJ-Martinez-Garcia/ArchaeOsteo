@@ -110,6 +110,8 @@ assert.match(main, /state\.tableMode/);
 assert.match(main, /tableTransforms/);
 assert.match(main, /table-rotation/);
 assert.match(main, /table-z/);
+assert.match(main, /table-scale/);
+assert.match(main, /baseScale/);
 assert.match(main, /syncTableControls/);
 assert.match(main, /skeleton-complete/);
 assert.match(main, /skeletonFilter/);
