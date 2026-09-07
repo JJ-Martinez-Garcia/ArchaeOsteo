@@ -11,7 +11,7 @@ import './extended.css';
 import { listProjects, loadProject, PROJECT_SCHEMA_VERSION, saveProject } from './data/store.js';
 import { profileCatalog } from './anatomy/catalog.js';
 import { extendedBones } from './anatomy/extended-bones.js';
-import { loadModelManifest, loadModelSourceRegistry } from './anatomy/loader.js';
+import { loadBoneModel, loadModelManifest, loadModelSourceRegistry } from './anatomy/loader.js';
 import { downloadModelPackage, formatPackageSize, getModelPackageCacheStatus, modelPackageSummary, removeModelPackage } from './anatomy/package.js';
 import { initExtendedFeatures } from './ui/extended.js';
 
@@ -43,6 +43,8 @@ setTimeout(() => { const preview=document.querySelector('#report-preview'); if(p
 setTimeout(() => { document.querySelector('.top-actions').insertAdjacentHTML('afterbegin','<button id="install-app" class="pwa-action" hidden>Instalar PWA</button><span id="update-actions" class="pwa-update-actions" hidden><span class="pwa-update-label">Nueva versión disponible</span><button id="update-app" class="pwa-action">Actualizar ahora</button><button id="dismiss-update" class="pwa-action secondary-action">Más tarde</button></span>'); }, 0);
 const regionColors = { 'Cráneo': 0xd7a86e, 'Columna': 0xb88659, 'Tórax': 0x8eabc0, 'Cintura escapular': 0x6f9f9b, 'Extremidad superior': 0x6585aa, 'Extremidad inferior': 0x836b9c, 'Manos': 0x7196b5, 'Pies': 0x8c779e };
 let scene, camera, renderer, controls, raycaster, pointer, group;
+const loadedModelObjects = new Map();
+let modelLoadGeneration = 0;
 const orbit = { theta: 0, phi: Math.PI / 2, radius: 15, target: null };
 let dragState = null;
 const activePointers = new Map();
@@ -56,6 +58,38 @@ document.querySelector('#app').innerHTML = `
 
 document.querySelector('#dental-panel .paint-title').insertAdjacentHTML('afterend','<label class="dentition-control">Tipo de dentición<select id="dentition-type"><option value="permanent">Permanente · 32 dientes</option><option value="deciduous">Decidua · 20 dientes</option></select></label>');
 document.querySelector('.top-actions').insertAdjacentHTML('afterbegin','<label class="project-control">Proyecto <select id="project-selector"></select></label><button id="new-project" class="secondary-action">Nuevo proyecto</button>');
+function createFallbackMesh(bone) {
+  const mat = new THREE.MeshStandardMaterial({ color: regionColors[bone.region] || 0xc4ad8b, roughness: .72 }); let geo;
+  if (bone.shape === 'sphere') geo = new THREE.SphereGeometry(1, 24, 16); else if (bone.shape === 'ring') geo = new THREE.TorusGeometry(.25, .07, 8, 20); else geo = new THREE.BoxGeometry(1, 1, 1);
+  const mesh = new THREE.Mesh(geo, mat); mesh.name = bone.id; mesh.userData = { ...bone, boneId: bone.id, modelSource: 'fallback' }; mesh.position.set(...bone.p); mesh.scale.set(...bone.size); if (bone.shape === 'bone') mesh.rotation.z = bone.id.includes('humerus') ? (bone.side === 'Izquierda' ? -.08 : .08) : 0; return mesh;
+}
+function disposeObject(object) { object.traverse?.(node => { node.geometry?.dispose?.(); const materials = Array.isArray(node.material) ? node.material : [node.material]; materials.filter(Boolean).forEach(material => material.dispose?.()); }); }
+function restoreFallbackModels() { if (!group) return; for (const [id, object] of loadedModelObjects) { const bone = bones.find(item => item.id === id); group.remove(object); disposeObject(object); if (bone) group.add(createFallbackMesh(bone)); } loadedModelObjects.clear(); }
+async function loadAvailableProfileModels() {
+  if (!group || !THREE || !modelManifest) return;
+  const generation = ++modelLoadGeneration;
+  restoreFallbackModels();
+  const profile = modelManifest.profiles?.[state.profile];
+  if (!profile || !['ready', 'partial'].includes(profile.asset_status)) { selectBone(state.selected); return; }
+  for (const bone of bones) {
+    try {
+      const gltf = await loadBoneModel(THREE, state.profile, bone.id);
+      if (generation !== modelLoadGeneration) return;
+      const root = gltf.scene;
+      root.name = bone.id;
+      root.position.set(...bone.p);
+      root.userData = { ...bone, boneId: bone.id, modelSource: 'glb' };
+      root.traverse(node => { node.userData = { ...node.userData, boneId: bone.id }; });
+      const fallback = group.getObjectByName(bone.id);
+      if (fallback) { group.remove(fallback); disposeObject(fallback); }
+      group.add(root);
+      loadedModelObjects.set(bone.id, root);
+    } catch {
+      // Assets partial or temporarily unavailable keep their independent fallback marker.
+    }
+  }
+  selectBone(state.selected);
+}
 async function init3D() {
   THREE = await import('three');
   const host = document.querySelector('#viewer'); scene = new THREE.Scene(); scene.background = new THREE.Color(0xf0f4f7);
@@ -63,10 +97,7 @@ async function init3D() {
   renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(host.clientWidth, host.clientHeight); renderer.domElement.tabIndex = 0; renderer.domElement.setAttribute('aria-label', 'Visor 3D del esqueleto. Usa las flechas para girar, más y menos para zoom, y R para restablecer.'); host.appendChild(renderer.domElement);
   scene.add(new THREE.HemisphereLight(0xffffff, 0x8da2b5, 2.2)); const key = new THREE.DirectionalLight(0xffffff, 2); key.position.set(4, 8, 8); scene.add(key);
   group = new THREE.Group(); scene.add(group); raycaster = new THREE.Raycaster(); pointer = new THREE.Vector2();
-  bones.forEach(bone => { const mat = new THREE.MeshStandardMaterial({ color: regionColors[bone.region] || 0xc4ad8b, roughness: .72 }); let geo;
-    if (bone.shape === 'sphere') geo = new THREE.SphereGeometry(1, 24, 16); else if (bone.shape === 'ring') geo = new THREE.TorusGeometry(.25, .07, 8, 20); else geo = new THREE.BoxGeometry(1, 1, 1);
-    const mesh = new THREE.Mesh(geo, mat); mesh.name = bone.id; mesh.userData = bone; mesh.position.set(...bone.p); mesh.scale.set(...bone.size); if (bone.shape === 'bone') mesh.rotation.z = bone.id.includes('humerus') ? (bone.side === 'Izquierda' ? -.08 : .08) : 0; group.add(mesh);
-  });
+  bones.forEach(bone => group.add(createFallbackMesh(bone)));
   renderer.domElement.addEventListener('pointerdown', onPointerDown); renderer.domElement.addEventListener('pointermove', onPointerMove); renderer.domElement.addEventListener('pointerup', onPointerUp); renderer.domElement.addEventListener('pointercancel', onPointerUp); renderer.domElement.addEventListener('wheel', onWheel, { passive: false }); renderer.domElement.addEventListener('keydown', onViewerKeyDown); renderer.domElement.addEventListener('contextmenu', event => event.preventDefault()); window.addEventListener('resize', resize); animate(); selectBone(state.selected);
 }
 function matchesFilters(bone) { const status=state.status[bone.id]||'not_recorded'; const hasTaphonomy=(state.taphonomy[bone.id]||[]).length>0; const hasPathology=(state.pathology[bone.id]||[]).length>0; const filter=state.filters; return (filter.status==='all'||status===filter.status) && (filter.region==='all'||bone.region===filter.region) && (filter.side==='all'||bone.side===filter.side) && (filter.taphonomy==='all'||(filter.taphonomy==='with'?hasTaphonomy:!hasTaphonomy)) && (filter.pathology==='all'||(filter.pathology==='with'?hasPathology:!hasPathology)); }
@@ -79,8 +110,9 @@ function onPointerMove(e) { if (activePointers.has(e.pointerId)) activePointers.
 function onPointerUp(e) { const wasSinglePointer = activePointers.size === 1; activePointers.delete(e.pointerId); if (activePointers.size < 2) pinchDistance = null; if (wasSinglePointer && dragState && !dragState.moved && dragState.button === 0) selectFromPointer(e); renderer.domElement.releasePointerCapture?.(e.pointerId); dragState = null; }
 function onWheel(e) { e.preventDefault(); orbit.radius = Math.max(4, Math.min(40, orbit.radius * Math.exp(e.deltaY * 0.001))); updateCamera(); }
 function onViewerKeyDown(e) { const step = 0.12; if (e.key === 'ArrowLeft') orbit.theta += step; else if (e.key === 'ArrowRight') orbit.theta -= step; else if (e.key === 'ArrowUp') orbit.phi = Math.max(0.12, orbit.phi - step); else if (e.key === 'ArrowDown') orbit.phi = Math.min(Math.PI - 0.12, orbit.phi + step); else if (e.key === '+' || e.key === '=') orbit.radius = Math.max(4, orbit.radius - 1); else if (e.key === '-' || e.key === '_') orbit.radius = Math.min(40, orbit.radius + 1); else if (e.key.toLowerCase() === 'r') { orbit.theta = 0; orbit.phi = Math.PI / 2; orbit.radius = 15; orbit.target.set(0, 0, 0); } else return; e.preventDefault(); updateCamera(); }
-function selectFromPointer(e) { const r = renderer.domElement.getBoundingClientRect(); pointer.x = ((e.clientX-r.left)/r.width)*2-1; pointer.y = -((e.clientY-r.top)/r.height)*2+1; raycaster.setFromCamera(pointer,camera); const hit = raycaster.intersectObjects(group.children)[0]; if(hit) { if(state.inventoryMode) paintBone(hit.object.name); else selectBone(hit.object.name); } }
-function selectBone(id) { state.selected=id; const b=bones.find(x=>x.id===id); if(!b)return; group.children.forEach(m=>m.material.emissive?.setHex(m.name===id?0x49371f:0x000000)); const profile=profileCatalog(state.profile); document.querySelector('#details').innerHTML=`<div class="selected-label">SELECCIONADO</div><h2>${b.es}</h2><p class="latin">${b.la}</p><dl><dt>ID</dt><dd>${b.id}</dd><dt>Región</dt><dd>${b.region}</dd><dt>Lateralidad</dt><dd>${b.side}</dd><dt>Estado</dt><dd>${statusLabel(state.status[b.id])}</dd><dt>Conservación</dt><dd>${preservationLabel(state.preservation[b.id])}</dd><dt>Porcentaje</dt><dd>${state.completeness[b.id] ?? 100}%</dd><dt>Perfil</dt><dd>${profile.label}</dd><dt>Modelo</dt><dd>${profile.status==='placeholder'?'Marcador geométrico':'GLB documentado'}</dd></dl><div class="info-box">Información anatómica detallada disponible cuando se incorpore una fuente documentada para este elemento.</div>`; renderList(); }
+function objectBoneId(object) { let current=object; while (current && current !== group) { if (current.userData?.boneId) return current.userData.boneId; current=current.parent; } return object?.name; }
+function selectFromPointer(e) { const r = renderer.domElement.getBoundingClientRect(); pointer.x = ((e.clientX-r.left)/r.width)*2-1; pointer.y = -((e.clientY-r.top)/r.height)*2+1; raycaster.setFromCamera(pointer,camera); const hit = raycaster.intersectObjects(group.children, true)[0]; if(hit) { const id=objectBoneId(hit.object); if(state.inventoryMode) paintBone(id); else selectBone(id); } }
+function selectBone(id) { state.selected=id; const b=bones.find(x=>x.id===id); if(!b)return; group.traverse(object => { const selected=objectBoneId(object)===id; const materials=Array.isArray(object.material)?object.material:[object.material]; materials.filter(Boolean).forEach(material=>material.emissive?.setHex(selected?0x49371f:0x000000)); }); const profile=profileCatalog(state.profile); const modelLabel=loadedModelObjects.has(b.id)?'GLB cargado':profile.status==='placeholder'?'Marcador geométrico':'GLB documentado'; document.querySelector('#details').innerHTML=`<div class="selected-label">SELECCIONADO</div><h2>${b.es}</h2><p class="latin">${b.la}</p><dl><dt>ID</dt><dd>${b.id}</dd><dt>Región</dt><dd>${b.region}</dd><dt>Lateralidad</dt><dd>${b.side}</dd><dt>Estado</dt><dd>${statusLabel(state.status[b.id])}</dd><dt>Conservación</dt><dd>${preservationLabel(state.preservation[b.id])}</dd><dt>Porcentaje</dt><dd>${state.completeness[b.id] ?? 100}%</dd><dt>Perfil</dt><dd>${profile.label}</dd><dt>Modelo</dt><dd>${modelLabel}</dd></dl><div class="info-box">Información anatómica detallada disponible cuando se incorpore una fuente documentada para este elemento.</div>`; renderList(); }
 const statusNames = { present:'Presente', absent:'Ausente', fragmentary:'Fragmentario', indeterminate:'Indeterminado', not_observable:'No observable', not_recorded:'No registrado' };
 function statusLabel(value) { return statusNames[value || 'not_recorded']; }
 function paintBone(id) { if(state.locked[id]) { document.querySelector('#toast').textContent='Registro bloqueado'; return; } state.history.push(snapshotInventory()); state.future=[]; state.status[id] = state.activeStatus; state.preservation[id] = document.querySelector('#preservation').value; state.completeness[id] = +document.querySelector('#completeness').value; selectBone(id); updateInventory(); document.querySelector('#toast').textContent = `${bones.find(b=>b.id===id).es} → ${statusLabel(state.activeStatus)}`; }
@@ -160,6 +192,7 @@ async function initProjectManager() {
   };
 }
 initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile });
+document.querySelector('#profile').addEventListener('change', () => loadAvailableProfileModels());
 applyPwaLaunchView();
 setTimeout(() => initProjectManager().catch(() => {}), 0);
 setTimeout(() => runPwaDiagnostics().catch(() => {}), 400);
@@ -167,3 +200,4 @@ setTimeout(async () => { const activeId = localStorage.getItem('osteo3d-active-p
 window.addEventListener('online', updateConnectionStatus); window.addEventListener('offline', updateConnectionStatus); updateConnectionStatus(); setInterval(() => { if (document.visibilityState === 'visible') saveLocal({ notify: false }).catch(() => {}); }, 30000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveLocal({ notify: false }).catch(() => {}); });
 state.activeStatus='present'; state.inventoryMode=false; state.pendingOnly=false; renderDental(); updateDentalCount(); renderList(); init3D(); registerPwa().catch(()=>{}); loadProject('default').then(saved=>{ if(saved?.profile){ state.profile=saved.profile; document.querySelector('#profile').value=saved.profile; } if(saved?.status) state.status=saved.status; if(saved?.preservation) state.preservation=saved.preservation; if(saved?.completeness) state.completeness=saved.completeness; if(saved?.fragments) state.fragments=saved.fragments; if(saved?.portions) state.portions=saved.portions; if(saved?.individuals) state.individuals=saved.individuals; if(saved?.taphonomy) state.taphonomy=saved.taphonomy; if(saved?.pathology) state.pathology=saved.pathology; if(saved?.notes) state.notes=saved.notes; if(saved?.locked) state.locked=saved.locked; if(saved?.dental) state.dental=saved.dental; if(saved?.deciduousDental) state.deciduousDental=saved.deciduousDental; if(saved?.dentitionType) { state.dentitionType=saved.dentitionType; document.querySelector('#dentition-type').value=saved.dentitionType; } if(saved?.measurements) state.measurements=saved.measurements; if(saved?.landmarks) state.landmarks=saved.landmarks; if(saved?.photos) state.photos=saved.photos; if(saved?.language){ state.language=saved.language; document.querySelector('#language').value=saved.language; document.documentElement.lang=saved.language; } if(saved?.filters){ state.filters={...state.filters,...saved.filters}; ['status','region','side','taphonomy','pathology'].forEach(key=>{ const element=document.querySelector('#filter-'+key); if(element) element.value=state.filters[key]; }); } if(saved?.report) state.report=saved.report; renderDental(); updateDentalCount(); selectBone(state.selected); updateInventory(); renderStats(); }).catch(()=>{});
 verifyModelPackages();
+setTimeout(() => { if (modelManifest) loadAvailableProfileModels(); }, 800);
