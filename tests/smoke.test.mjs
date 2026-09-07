@@ -55,6 +55,8 @@ assert.match(store, /projects\.length \? projects :/);
 assert.match(styles, /:root\{/);
 assert.match(styles, /\.layout\{/);
 assert.match(styles, /canvas\{touch-action:none\}/);
+assert.match(await text('src/pwa.css'), /safe-area-inset-top/);
+assert.match(await text('src/pwa.css'), /safe-area-inset-bottom/);
 assert.match(store, /listProjects/);
 assert.match(store, /projectName/);
 for (const marker of ['inventory', 'dental', 'metrics', 'stats', 'report', 'scientificRecord', 'changes']) assert.match(translations, new RegExp(`${marker}:`));
