@@ -36,6 +36,7 @@ export function normalizeProject(project) {
     locked: project.locked || {},
     hidden: project.hidden || {},
     opacity: project.opacity || {},
+    wireframe: Boolean(project.wireframe),
     changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],
     dental: project.dental || {},
     deciduousDental: project.deciduousDental || {},
