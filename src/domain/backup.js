@@ -20,6 +20,7 @@ export function createBackup(state) {
       hidden: state.hidden,
       opacity: state.opacity,
       wireframe: state.wireframe,
+      tableTransforms: state.tableTransforms,
       changeLog: state.changeLog,
       dental: state.dental,
       deciduousDental: state.deciduousDental,
