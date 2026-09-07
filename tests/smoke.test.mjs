@@ -241,9 +241,15 @@ assert.ok(!portionOptionsForBone({ type: 'rib' }).some(([key]) => key === 'epiph
 assert.equal(parseCsv('Bone_ID,Presence\nleft_femur,present')[0].Bone_ID, 'left_femur');
 const imported = applyInventoryRows({}, [{ Bone_ID: 'left_femur', Presence: 'present', Individual_ID: 'IND-B', Portion: 'shaft_mid', Taphonomy: 'raíces; erosión', Pathology: 'fractura' }], testBones);
 assert.equal(imported.status.left_femur, 'present');
+assert.equal(imported.rejectedRows, 0);
 assert.equal(imported.individuals.left_femur, 'IND-B');
 assert.equal(imported.portions.left_femur, 'shaft_mid');
 assert.deepEqual(imported.taphonomy.left_femur, ['raíces', 'erosión']);
+const sanitized = applyInventoryRows({}, [{ Bone_ID: ' right_femur ', Presence: 'unexpected', Percentage: 'nan', Fragments: '-2.8', Preservation: 'unexpected' }, { Bone_ID: 'unknown', Presence: 'present' }], testBones);
+assert.equal(sanitized.status.right_femur, 'not_recorded');
+assert.equal(sanitized.completeness.right_femur, 100);
+assert.equal(sanitized.fragments.right_femur, 0);
+assert.equal(sanitized.rejectedRows, 1);
 assert.throws(() => validateBackup({ format: 'wrong' }));
 const backup = createBackup({ profile: 'infant', status: {}, preservation: {}, completeness: {}, fragments: {}, portions: {}, individuals: {}, taphonomy: {}, pathology: {}, notes: {}, locked: {}, dental: {}, deciduousDental: { '51': 'present' }, dentitionType: 'deciduous', measurements: {}, landmarks: {}, photos: {}, report: {} });
 assert.equal(validateBackup(backup).deciduousDental['51'], 'present');

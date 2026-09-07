@@ -64,7 +64,7 @@ export function parseCsv(text) {
 
 export function applyInventoryRows(project, rows, bones) {
   const known = new Set(bones.map(bone => bone.id));
-  const accepted = rows.filter(row => known.has(row.Bone_ID));
+  const accepted = rows.filter(row => known.has(String(row.Bone_ID || '').trim()));
   const status = { ...(project.status || {}) };
   const preservation = { ...(project.preservation || {}) };
   const completeness = { ...(project.completeness || {}) };
@@ -74,16 +74,21 @@ export function applyInventoryRows(project, rows, bones) {
   const taphonomy = { ...(project.taphonomy || {}) };
   const pathology = { ...(project.pathology || {}) };
   accepted.forEach(row => {
-    status[row.Bone_ID] = row.Presence || row.Status || 'not_recorded';
-    preservation[row.Bone_ID] = row.Preservation || 'not_evaluated';
-    completeness[row.Bone_ID] = Math.max(0, Math.min(100, Number(row.Percentage || row.Completeness || 100)));
-    fragments[row.Bone_ID] = Math.max(0, Number(row.Fragments || 0));
-    if (row.Portion) portions[row.Bone_ID] = row.Portion;
-    if (row.Individual_ID || row.Individual) individuals[row.Bone_ID] = row.Individual_ID || row.Individual;
-    if (row.Taphonomy) taphonomy[row.Bone_ID] = String(row.Taphonomy).split(';').map(value => value.trim()).filter(Boolean);
-    if (row.Pathology) pathology[row.Bone_ID] = String(row.Pathology).split(';').map(value => value.trim()).filter(Boolean);
+    const boneId = String(row.Bone_ID).trim();
+    const importedStatus = row.Presence || row.Status || 'not_recorded';
+    const importedPreservation = row.Preservation || 'not_evaluated';
+    const importedCompleteness = Number(row.Percentage ?? row.Completeness ?? 100);
+    const importedFragments = Number(row.Fragments ?? 0);
+    status[boneId] = ['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded'].includes(importedStatus) ? importedStatus : 'not_recorded';
+    preservation[boneId] = ['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor'].includes(importedPreservation) ? importedPreservation : 'not_evaluated';
+    completeness[boneId] = Number.isFinite(importedCompleteness) ? Math.max(0, Math.min(100, importedCompleteness)) : 100;
+    fragments[boneId] = Number.isFinite(importedFragments) ? Math.max(0, Math.floor(importedFragments)) : 0;
+    if (row.Portion) portions[boneId] = String(row.Portion).trim();
+    if (row.Individual_ID || row.Individual) individuals[boneId] = String(row.Individual_ID || row.Individual).trim();
+    if (row.Taphonomy) taphonomy[boneId] = String(row.Taphonomy).split(';').map(value => value.trim()).filter(Boolean);
+    if (row.Pathology) pathology[boneId] = String(row.Pathology).split(';').map(value => value.trim()).filter(Boolean);
   });
-  return { ...project, status, preservation, completeness, fragments, portions, individuals, taphonomy, pathology, importedRows: accepted.length };
+  return { ...project, status, preservation, completeness, fragments, portions, individuals, taphonomy, pathology, importedRows: accepted.length, rejectedRows: rows.length - accepted.length };
 }
 
 export function downloadJson(filename, value) {

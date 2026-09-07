@@ -136,7 +136,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       if (!window.confirm('La importación reemplazará los datos del proyecto actual. ¿Continuar?')) return;
       Object.assign(state, imported);
       renderList(); renderStats?.(); selectBone(state.selected); await saveLocal();
-      document.querySelector('#toast').textContent = `Importación completada · ${imported.importedRows ?? 'copia completa'}`;
+      document.querySelector('#toast').textContent = imported.importedRows == null ? 'Importación completada · copia completa' : `Importación completada · ${imported.importedRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} ignorados` : ''}`;
     } catch (error) { document.querySelector('#toast').textContent = `Importación rechazada: ${error.message}`; }
     event.target.value = '';
   };
