@@ -38,12 +38,13 @@ Esta primera fase implementa un MVP ejecutable con:
 - indicador de conectividad para distinguir trabajo sincronizado de trabajo local offline;
 - precarga offline del HTML, manifest y chunks JS/CSS del build publicado;
 - catálogo de perfiles y loader preparado para assets GLB independientes;
+- importación de GLB locales por perfil, con validación de cabecera `glTF`, correspondencia con `Bone_ID` y caché offline;
 - validador de manifiestos GLB que exige perfiles, rutas, estado de cobertura y licencia antes de incorporar assets;
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
 - interfaz responsive para escritorio y móvil.
 
-Los elementos 3D actuales son marcadores geométricos de desarrollo, ahora organizados como piezas independientes para facilitar el inventario completo. No representan modelos anatómicos aptos para medición o diagnóstico. Los modelos reales deberán incorporarse como GLB documentados en `SOURCES.md` y separados por perfil.
+Los elementos 3D actuales son marcadores geométricos de desarrollo, ahora organizados como piezas independientes para facilitar el inventario completo. No representan modelos anatómicos aptos para medición o diagnóstico. Los modelos reales deberán incorporarse como GLB documentados en `SOURCES.md` y separados por perfil. Mientras los assets públicos siguen pendientes, el investigador puede importar archivos propios desde “Importar GLB locales”; cada archivo debe llamarse exactamente como su `Bone_ID` (por ejemplo, `left_femur.glb`). Esos modelos quedan en la caché del navegador y no se publican en el repositorio.
 
 ## Arquitectura prevista
 

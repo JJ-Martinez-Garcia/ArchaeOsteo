@@ -6,6 +6,7 @@
 - Añadido historial auditable para acciones masivas y deshacer/rehacer del inventario.
 - Ampliadas las etiquetas de interfaz en español e inglés.
 - Persistido el registro de cambios en IndexedDB, fallback local, copias y exportación JSON.
+- Documentada la importación local de modelos GLB por `Bone_ID` y su uso offline.
 
 ## 0.7.0
 
