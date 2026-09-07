@@ -44,7 +44,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
 - interfaz responsive para escritorio y móvil.
 
-Los elementos 3D actuales son marcadores geométricos de desarrollo, ahora organizados como piezas independientes para facilitar el inventario completo. No representan modelos anatómicos aptos para medición o diagnóstico. Los modelos reales deberán incorporarse como GLB documentados en `SOURCES.md` y separados por perfil. Mientras los assets públicos siguen pendientes, el investigador puede importar archivos propios desde “Importar GLB locales”; cada archivo debe llamarse exactamente como su `Bone_ID` (por ejemplo, `left_femur.glb`). Esos modelos quedan en la caché del navegador y no se publican en el repositorio.
+Los elementos 3D actuales son marcadores geométricos de desarrollo, ahora organizados como piezas independientes para facilitar el inventario completo. No representan modelos anatómicos aptos para medición o diagnóstico. Los modelos reales deberán incorporarse como GLB documentados en `SOURCES.md` y separados por perfil. Mientras los assets públicos siguen pendientes, el investigador puede importar paquetes GLB por `Bone_ID` o asociar temporalmente un modelo propio GLB, GLTF, OBJ o STL al hueso seleccionado. Estos modelos quedan en la sesión del navegador y no se publican en el repositorio.
 
 ## Arquitectura prevista
 

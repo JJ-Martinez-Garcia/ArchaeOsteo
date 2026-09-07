@@ -199,6 +199,10 @@ assert.match(main, /pointerDistance/);
 
 assert.equal(await exists('src/anatomy/catalog.js'), true);
 assert.equal(await exists('src/anatomy/loader.js'), true);
+assert.equal(await exists('src/anatomy/custom-loader.js'), true);
+assert.match(await text('src/anatomy/custom-loader.js'), /OBJLoader/);
+assert.match(await text('src/anatomy/custom-loader.js'), /STLLoader/);
+assert.match(main, /Importar modelo propio/);
 assert.equal(await exists('src/anatomy/extended-bones.js'), true);
 const { extendedBones } = await import('../src/anatomy/extended-bones.js');
 assert.ok(extendedBones.length > 100, 'expanded catalog should contain independent placeholders');
