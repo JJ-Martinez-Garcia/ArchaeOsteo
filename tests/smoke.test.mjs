@@ -58,6 +58,7 @@ assert.match(store, /projectName/);
 for (const marker of ['inventory', 'dental', 'metrics', 'stats', 'report', 'scientificRecord', 'changes']) assert.match(translations, new RegExp(`${marker}:`));
 assert.match(main, /setInterval\(\(\) =>/);
 assert.match(main, /connection-status/);
+assert.match(main, /id="toast" role="status" aria-live="polite"/);
 assert.match(main, /filter-taphonomy/);
 assert.match(main, /filter-pathology/);
 assert.match(main, /deciduousTeeth/);
