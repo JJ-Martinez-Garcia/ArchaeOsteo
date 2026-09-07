@@ -22,6 +22,8 @@ assert.match(sw, /no-store/);
 assert.match(sw, /assetPathsFromHtml/);
 assert.match(sw, /assets/);
 assert.match(sw, /osteo3d-shell-v5/);
+assert.match(sw, /startsWith\('osteo3d-shell-'\)/);
+assert.match(sw, /caches\.delete/);
 
 const main = await text('src/main.js');
 const store = await text('src/data/store.js');
