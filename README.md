@@ -11,6 +11,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - selección por clic, árbol y búsqueda en español/inglés/latín/ID;
 - ficha básica, aislamiento, centrado, vistas y control de explosión;
 - selector de perfiles preparado para adulto masculino, adulto femenino, infante y neonato;
+- mesa osteológica reversible para revisar los elementos en una disposición plana sin alterar el inventario;
 - persistencia local básica y service worker de shell;
 - pestaña “Pintar inventario” con estados, pendientes y contador de revisión;
 - tabla editable sincronizada, bloqueo de registros y aplicación por región;
@@ -26,8 +27,9 @@ Esta primera fase implementa un MVP ejecutable con:
 - fotografías locales asociadas al elemento seleccionado y almacenadas offline;
 - registro científico de fragmentos, porciones, tafonomía, patología y notas;
 - copias de seguridad JSON e importación validada de JSON, CSV y XLSX;
+- historial auditable de cambios de presencia, acciones masivas y deshacer/rehacer, persistido con el proyecto;
 - análisis transparente de NISP, MNE y MNI con desglose de método;
-- comparación de perfiles, quiz de identificación y selector inicial español/inglés;
+- comparación de perfiles, quiz de identificación y selector español/inglés para navegación y acciones principales;
 - Three.js cargado de forma diferida para reducir el bundle inicial;
 - instalación y actualización de la PWA controladas por el usuario;
 - persistencia IndexedDB versionada (esquema 2) con normalización y respaldo automático a `localStorage`;

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.0
+
+- Añadida mesa osteológica reversible en el visor 3D.
+- Añadido historial auditable para acciones masivas y deshacer/rehacer del inventario.
+- Ampliadas las etiquetas de interfaz en español e inglés.
+- Persistido el registro de cambios en IndexedDB, fallback local, copias y exportación JSON.
+
 ## 0.7.0
 
 - Registro científico de individuo por elemento y exportaciones con el identificador conservado.
