@@ -2,6 +2,7 @@ const DB_NAME = 'osteo3d';
 export const PROJECT_SCHEMA_VERSION = 2;
 const DB_VERSION = 2;
 const STORE = 'projects';
+const PROFILE_IDS = new Set(['adult_male', 'adult_female', 'infant', 'neonate']);
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
@@ -31,6 +32,7 @@ export function normalizeProject(project) {
     id: project.id || 'default',
     projectName: project.projectName || 'Proyecto sin título',
     schemaVersion: PROJECT_SCHEMA_VERSION,
+    profile: PROFILE_IDS.has(project.profile) ? project.profile : 'adult_male',
     selected: project.selected || 'skull',
     status: project.status || {},
     preservation: project.preservation || {},
@@ -54,9 +56,9 @@ export function normalizeProject(project) {
     measurements: project.measurements || {},
     landmarks: project.landmarks || {},
     photos: project.photos || {},
-    language: project.language || 'es',
-    filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', ...(project.filters || {}) },
-    report: project.report || { individual: 'IND-LOCAL', site: '', context: '', investigator: '' }
+    language: ['es', 'en'].includes(project.language) ? project.language : 'es',
+    filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', ...(project.filters && typeof project.filters === 'object' ? project.filters : {}) },
+    report: { individual: 'IND-LOCAL', site: '', context: '', investigator: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
   };
 }
 

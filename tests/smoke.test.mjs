@@ -5,6 +5,7 @@ import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
 import { portionOptionsForBone } from '../src/domain/portions.js';
 import { downloadModelPackage, formatPackageSize, glbContainsBoneId, importModelPackageFiles, modelPackageDownloadPlan, modelPackageSummary, validateModelManifest, validateModelSourceRegistry } from '../src/anatomy/package.js';
 import { applyInventoryRows, createBackup, parseCsv, validateBackup } from '../src/domain/backup.js';
+import { normalizeProject } from '../src/data/store.js';
 
 const text = async path => readFile(path, 'utf8');
 const exists = async path => { try { await access(path); return true; } catch { return false; } };
@@ -52,6 +53,10 @@ assert.match(store, /normalizeProject/);
 assert.match(store, /localStorage\.getItem/);
 assert.match(store, /normalizeProject\(result\) \|\| readFallbackProject\(\)/);
 assert.match(store, /projects\.length \? projects :/);
+const normalizedLegacy = normalizeProject({ profile: 'unknown', language: 'fr', report: null, filters: null });
+assert.equal(normalizedLegacy.profile, 'adult_male');
+assert.equal(normalizedLegacy.language, 'es');
+assert.equal(normalizedLegacy.report.individual, 'IND-LOCAL');
 assert.match(styles, /:root\{/);
 assert.match(styles, /\.layout\{/);
 assert.match(styles, /canvas\{touch-action:none\}/);
