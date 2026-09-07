@@ -52,6 +52,10 @@ for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTAD
 assert.match(main, /project-selector/);
 assert.match(main, /new-project/);
 assert.match(main, /verifyModelPackages/);
+assert.match(main, /model-package-panel/);
+assert.match(main, /downloadSelectedModelPackage/);
+assert.match(main, /Pendiente de incorporar assets licenciados/);
+assert.match(main, /Descargar paquete offline/);
 assert.match(main, /Actualizar ahora/);
 assert.match(main, /Más tarde/);
 assert.match(main, /await saveLocal\(\{ notify:false \}\)/);
