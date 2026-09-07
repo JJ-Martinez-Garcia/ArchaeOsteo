@@ -8,7 +8,8 @@
     "build": "vite build --base ./",
     "preview": "vite preview",
     "test": "node tests/smoke.test.mjs",
-    "validate-model-assets": "node scripts/validate-model-assets.mjs"
+    "validate-model-assets": "node scripts/validate-model-assets.mjs",
+    "generate-pwa-icons": "node scripts/generate-pwa-icons.mjs"
   },
   "dependencies": {
     "three": "^0.178.0",

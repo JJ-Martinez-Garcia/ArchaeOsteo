@@ -1,5 +1,5 @@
-const CACHE = 'osteo3d-shell-v6';
-const SHELL = ['./', './index.html', './manifest.json', './models/manifest.json', './models/sources.json', './icons/osteo3d-192.svg', './icons/osteo3d-512.svg'];
+const CACHE = 'osteo3d-shell-v7';
+const SHELL = ['./', './index.html', './manifest.json', './models/manifest.json', './models/sources.json', './icons/osteo3d-192.png', './icons/osteo3d-512.png', './icons/osteo3d-192.svg', './icons/osteo3d-512.svg'];
 function assetPathsFromHtml(html) {
   return [...new Set([...html.matchAll(/(?:src|href)=["'](\.\/assets\/[^"']+)["']/g)].map(match => match[1]))];
 }
