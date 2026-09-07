@@ -26,8 +26,13 @@ export function modelPackageSummary(manifest, profileId, boneIds = []) {
     status: profile.asset_status,
     expected: boneIds.length,
     pattern: String(manifest.bone_asset_pattern || '').replace('{profile}', profileId),
-    requiredMetadata: manifest.required_metadata || []
+    requiredMetadata: manifest.required_metadata || [],
+    approximateSizeMb: Number.isFinite(profile.approximate_size_mb) ? profile.approximate_size_mb : null
   };
+}
+
+export function formatPackageSize(sizeMb) {
+  return Number.isFinite(sizeMb) && sizeMb > 0 ? `aprox. ${sizeMb} MB` : 'no disponible';
 }
 
 export function modelPackageDownloadPlan(manifest, profileId, boneIds = []) {
@@ -61,4 +66,22 @@ export async function removeModelPackage(manifest, profileId, boneIds = [], opti
   const cache = await caches.open(options.cacheName || MODEL_PACKAGE_CACHE);
   await Promise.all(plan.urls.map(url => cache.delete(url)));
   return { ...plan, removed: plan.urls.length, cacheName: options.cacheName || MODEL_PACKAGE_CACHE };
+}
+
+export async function getModelPackageCacheStatus(manifest, profileId, boneIds = [], options = {}) {
+  const plan = modelPackageDownloadPlan(manifest, profileId, boneIds);
+  const cacheName = options.cacheName || MODEL_PACKAGE_CACHE;
+  if (!globalThis.caches?.open) return { ...plan, cached: 0, cachedBytes: 0, cacheName };
+  if (globalThis.caches.has && !(await caches.has(cacheName))) return { ...plan, cached: 0, cachedBytes: 0, cacheName };
+  const cache = await caches.open(cacheName);
+  let cached = 0;
+  let cachedBytes = 0;
+  for (const url of plan.urls) {
+    const response = await cache.match(url);
+    if (!response) continue;
+    cached += 1;
+    const length = Number(response.headers.get('content-length'));
+    if (Number.isFinite(length)) cachedBytes += length;
+  }
+  return { ...plan, cached, cachedBytes, cacheName };
 }
