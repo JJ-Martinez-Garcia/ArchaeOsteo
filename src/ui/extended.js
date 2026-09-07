@@ -1,5 +1,5 @@
 import { calculateOsteoAnalysis } from '../domain/analysis.js';
-import { applyInventoryRows, createBackup, downloadJson, parseCsv, validateBackup } from '../domain/backup.js';
+import { applyInventoryRows, createBackup, downloadJson, parseCsv, shareJson, validateBackup } from '../domain/backup.js';
 import { translate } from '../i18n/translations.js';
 import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
 
@@ -17,7 +17,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   state.language ||= 'es';
 
   const topActions = document.querySelector('.top-actions');
-  topActions.insertAdjacentHTML('beforeend', `<label class="language-control">Idioma <select id="language"><option value="es">ES</option><option value="en">EN</option></select></label><button id="backup-project" class="secondary-action">Copia</button><button id="import-project" class="secondary-action">Importar</button><input id="import-file" type="file" accept=".json,.csv,.xlsx" hidden>`);
+  topActions.insertAdjacentHTML('beforeend', `<label class="language-control">Idioma <select id="language"><option value="es">ES</option><option value="en">EN</option></select></label><button id="backup-project" class="secondary-action">Copia</button><button id="share-project" class="secondary-action">Compartir</button><button id="import-project" class="secondary-action">Importar</button><input id="import-file" type="file" accept=".json,.csv,.xlsx" hidden>`);
 
   const inspector = document.querySelector('.inspector');
   inspector.insertAdjacentHTML('beforeend', `<div class="extended-tools"><div class="paint-title">ANÁLISIS Y APRENDIZAJE</div><div class="extended-buttons"><button id="record-panel-button" class="secondary-action">Registro científico</button><button id="analysis-panel-button" class="secondary-action">NISP · MNE · MNI</button><button id="compare-panel-button" class="secondary-action">Comparar perfiles</button><button id="learning-panel-button" class="secondary-action">Aprendizaje</button><button id="sources-panel-button" class="secondary-action">Fuentes y licencias</button></div><div id="extended-panel" hidden></div></div>`);
@@ -31,6 +31,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const setText = (selector, key) => { const element = document.querySelector(selector); if (element) element.textContent = label(key); };
     setText('#save', 'save');
     setText('#backup-project', 'backup');
+    setText('#share-project', 'share');
     setText('#import-project', 'import');
     const tabs = [['#tab-sheet', 'sheet'], ['#tab-inventory', 'inventory'], ['#tab-dental', 'dental'], ['#tab-metrics', 'metrics'], ['#tab-stats', 'stats'], ['#tab-report', 'report']];
     tabs.forEach(([selector, key]) => setText(selector, key));
@@ -119,6 +120,10 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   };
 
   document.querySelector('#backup-project').onclick = () => downloadJson(`osteo3d-backup-${new Date().toISOString().slice(0, 10)}.json`, createBackup(state));
+  document.querySelector('#share-project').onclick = async () => {
+    const result = await shareJson(`osteo3d-backup-${new Date().toISOString().slice(0, 10)}.json`, createBackup(state), { title: 'Osteo3D', text: state.language === 'en' ? 'Osteo3D project backup' : 'Copia de proyecto Osteo3D' });
+    if (result === 'downloaded') document.querySelector('#toast').textContent = state.language === 'en' ? 'Sharing unavailable · backup downloaded' : 'Compartir no disponible · copia descargada';
+  };
   document.querySelector('#import-project').onclick = () => document.querySelector('#import-file').click();
   document.querySelector('#import-file').onchange = async event => {
     const file = event.target.files?.[0];

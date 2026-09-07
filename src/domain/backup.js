@@ -107,3 +107,21 @@ export function downloadJson(filename, value) {
   link.click();
   setTimeout(() => { URL.revokeObjectURL(link.href); link.remove(); }, 1000);
 }
+
+export async function shareJson(filename, value, { title = 'Osteo3D', text = 'Copia de proyecto Osteo3D' } = {}) {
+  const file = new File([JSON.stringify(value, null, 2)], filename, { type: 'application/json' });
+  if (navigator.share) {
+    try {
+      if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+        await navigator.share({ title, text, files: [file] });
+        return 'shared';
+      }
+      await navigator.share({ title, text, url: window.location.href });
+      return 'shared-link';
+    } catch (error) {
+      if (error?.name === 'AbortError') return 'cancelled';
+    }
+  }
+  downloadJson(filename, value);
+  return 'downloaded';
+}
