@@ -25,7 +25,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
 
   const language = document.querySelector('#language');
   language.value = state.language;
-  language.onchange = () => { state.language = language.value; document.documentElement.lang = state.language; updateLabels(); selectBone(state.selected); renderList(); renderStats(); saveLocal(); };
+  language.onchange = () => { state.language = language.value; document.documentElement.lang = state.language; updateLabels(); selectBone(state.selected); renderList(); renderStats(); const table=document.querySelector('#inventory-table'); if(table && !table.hidden){ document.querySelector('#show-table')?.click(); document.querySelector('#show-table')?.click(); } saveLocal(); };
   const updateLabels = () => {
     const label = key => translate(state.language, key);
     const setText = (selector, key) => { const element = document.querySelector(selector); if (element) element.textContent = label(key); };
