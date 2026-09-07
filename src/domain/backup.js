@@ -6,7 +6,11 @@ export function createBackup(state) {
     version: BACKUP_VERSION,
     exportedAt: new Date().toISOString(),
     project: structuredClone({
+      id: state.projectId || state.id || 'default',
+      projectName: state.projectName || 'Proyecto sin título',
+      schemaVersion: state.schemaVersion,
       profile: state.profile,
+      selected: state.selected,
       status: state.status,
       preservation: state.preservation,
       completeness: state.completeness,
@@ -29,6 +33,8 @@ export function createBackup(state) {
       measurements: state.measurements,
       landmarks: state.landmarks,
       photos: state.photos,
+      language: state.language || 'es',
+      filters: state.filters || { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all' },
       report: state.report
     })
   };

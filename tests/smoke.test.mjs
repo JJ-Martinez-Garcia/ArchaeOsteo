@@ -258,8 +258,11 @@ assert.equal(sanitized.completeness.right_femur, 100);
 assert.equal(sanitized.fragments.right_femur, 0);
 assert.equal(sanitized.rejectedRows, 1);
 assert.throws(() => validateBackup({ format: 'wrong' }));
-const backup = createBackup({ profile: 'infant', status: {}, preservation: {}, completeness: {}, fragments: {}, portions: {}, individuals: {}, taphonomy: {}, pathology: {}, notes: {}, locked: {}, dental: {}, deciduousDental: { '51': 'present' }, dentitionType: 'deciduous', measurements: {}, landmarks: {}, photos: {}, report: {} });
+const backup = createBackup({ projectId: 'field-01', projectName: 'Excavación 2026', schemaVersion: 2, profile: 'infant', selected: 'left_femur', status: {}, preservation: {}, completeness: {}, fragments: {}, portions: {}, individuals: {}, taphonomy: {}, pathology: {}, notes: {}, locked: {}, dental: {}, deciduousDental: { '51': 'present' }, dentitionType: 'deciduous', measurements: {}, landmarks: {}, photos: {}, language: 'en', filters: { status: 'present', region: 'all', side: 'left', taphonomy: 'all', pathology: 'all' }, report: {} });
 assert.equal(validateBackup(backup).deciduousDental['51'], 'present');
+assert.equal(validateBackup(backup).projectName, 'Excavación 2026');
+assert.equal(validateBackup(backup).language, 'en');
+assert.equal(validateBackup(backup).filters.side, 'left');
 assert.deepEqual(validateBackup(createBackup({ ...backup.project, changeLog: [{ boneId: 'skull', previousStatus: 'not_recorded', newStatus: 'present' }] })).changeLog[0].newStatus, 'present');
 
 console.log('Osteo3D smoke tests: OK');
