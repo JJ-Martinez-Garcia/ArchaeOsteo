@@ -41,12 +41,14 @@ assert.match(sw, /caches\.delete/);
 
 const main = await text('src/main.js');
 const store = await text('src/data/store.js');
+const translations = await text('src/i18n/translations.js');
 assert.match(store, /indexedDB/);
 assert.match(store, /PROJECT_SCHEMA_VERSION = 2/);
 assert.match(store, /normalizeProject/);
 assert.match(store, /localStorage\.getItem/);
 assert.match(store, /listProjects/);
 assert.match(store, /projectName/);
+for (const marker of ['inventory', 'dental', 'metrics', 'stats', 'report', 'scientificRecord', 'changes']) assert.match(translations, new RegExp(`${marker}:`));
 assert.match(main, /setInterval\(\(\) =>/);
 assert.match(main, /connection-status/);
 assert.match(main, /filter-taphonomy/);

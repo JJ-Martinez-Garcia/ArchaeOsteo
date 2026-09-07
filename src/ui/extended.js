@@ -27,10 +27,22 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   language.value = state.language;
   language.onchange = () => { state.language = language.value; document.documentElement.lang = state.language; updateLabels(); saveLocal(); };
   const updateLabels = () => {
-    document.querySelector('#save').textContent = state.language === 'en' ? 'Save locally' : 'Guardar localmente';
-    document.querySelector('#backup-project').textContent = translate(state.language, 'backup');
-    document.querySelector('#import-project').textContent = translate(state.language, 'import');
-    document.querySelector('#analysis-panel-button').textContent = state.language === 'en' ? 'NISP · MNE · MNI' : 'NISP · MNE · MNI';
+    const label = key => translate(state.language, key);
+    const setText = (selector, key) => { const element = document.querySelector(selector); if (element) element.textContent = label(key); };
+    setText('#save', 'save');
+    setText('#backup-project', 'backup');
+    setText('#import-project', 'import');
+    const tabs = [['#tab-sheet', 'sheet'], ['#tab-inventory', 'inventory'], ['#tab-dental', 'dental'], ['#tab-metrics', 'metrics'], ['#tab-stats', 'stats'], ['#tab-report', 'report']];
+    tabs.forEach(([selector, key]) => setText(selector, key));
+    setText('#record-panel-button', 'scientificRecord');
+    setText('#analysis-panel-button', 'analysis');
+    setText('#compare-panel-button', 'compare');
+    setText('#learning-panel-button', 'learning');
+    setText('#changes-panel-button', 'changes');
+    setText('#reset', 'reset');
+    setText('#isolate', 'isolate');
+    setText('#center', 'center');
+    [['[data-view="front"]', 'previous'], ['[data-view="back"]', 'next'], ['[data-view="left"]', 'left'], ['[data-view="right"]', 'right']].forEach(([selector, key]) => setText(selector, key));
   };
   updateLabels();
 
