@@ -91,6 +91,7 @@ assert.match(main, /mobile-open/);
 assert.match(main, /runPwaDiagnostics/);
 assert.match(main, /beforeinstallprompt/);
 assert.match(main, /appinstalled/);
+assert.match(main, /Añadir a pantalla de inicio/);
 assert.match(main, /disponible en este navegador/);
 assert.match(main, /osteo3d-shell-v7/);
 assert.match(main, /Iconos PWA/);
