@@ -14,6 +14,8 @@
 .record-editor, .record-editor label { display: grid; gap: 5px; }
 .record-editor { gap: 8px; }
 .record-editor input, .record-editor select, .record-editor textarea { width: 100%; box-sizing: border-box; }
+.dentition-control { display: grid; gap: 5px; margin: 10px 0; font-size: 11px; color: #627d98; }
+.dentition-control select { border: 1px solid #bcccdc; border-radius: 4px; padding: 7px; color: #334e68; }
 .compare-card, .quiz-card { margin-top: 10px; padding: 10px; background: #fff; border-radius: 8px; color: #486581; font-size: .86rem; }
 .quiz-options { display: grid; gap: 6px; margin: 10px 0; }
 @media (max-width: 900px) { .extended-buttons { grid-template-columns: 1fr; } }

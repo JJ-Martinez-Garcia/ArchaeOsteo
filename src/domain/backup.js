@@ -18,6 +18,8 @@ export function createBackup(state) {
       notes: state.notes,
       locked: state.locked,
       dental: state.dental,
+      deciduousDental: state.deciduousDental,
+      dentitionType: state.dentitionType,
       measurements: state.measurements,
       landmarks: state.landmarks,
       photos: state.photos,

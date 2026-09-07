@@ -51,3 +51,10 @@
 - Aplicados los filtros científicos al visor 3D para aislar los elementos con o sin registro.
 - Añadidas las regiones Manos y Pies a la aplicación masiva de estados y al filtrado regional.
 - Persistidos los filtros activos dentro del proyecto local.
+
+## 0.6.0 - 2026-09-07
+
+- Añadido odontograma deciduo FDI de 20 piezas separado del permanente.
+- Añadidas hojas XLSX independientes para dentición permanente y decidua.
+- Ampliada la tabla de inventario con fragmentos, porción, tafonomía y patología.
+- Persistido el tipo de dentición activo y sus estados en copias y proyectos locales.

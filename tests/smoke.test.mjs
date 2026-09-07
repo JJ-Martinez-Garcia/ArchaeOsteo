@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { access } from 'node:fs/promises';
 import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
-import { applyInventoryRows, parseCsv, validateBackup } from '../src/domain/backup.js';
+import { applyInventoryRows, createBackup, parseCsv, validateBackup } from '../src/domain/backup.js';
 
 const text = async path => readFile(path, 'utf8');
 const exists = async path => { try { await access(path); return true; } catch { return false; } };
@@ -28,6 +28,9 @@ assert.match(main, /setInterval\(\(\) =>/);
 assert.match(main, /connection-status/);
 assert.match(main, /filter-taphonomy/);
 assert.match(main, /filter-pathology/);
+assert.match(main, /deciduousTeeth/);
+assert.match(main, /dentition-type/);
+assert.match(main, /Odontograma deciduo/);
 assert.equal(manifest.scope, './');
 for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTADÍSTICAS', 'INFORME OSTEOARQUEOLÓGICO', 'exportXlsx', 'registerPwa']) {
   assert.match(main, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Falta módulo: ${marker}`);
@@ -58,5 +61,7 @@ assert.equal(analysis.mni.value, 2);
 assert.equal(parseCsv('Bone_ID,Presence\nleft_femur,present')[0].Bone_ID, 'left_femur');
 assert.equal(applyInventoryRows({}, [{ Bone_ID: 'left_femur', Presence: 'present' }], testBones).status.left_femur, 'present');
 assert.throws(() => validateBackup({ format: 'wrong' }));
+const backup = createBackup({ profile: 'infant', status: {}, preservation: {}, completeness: {}, fragments: {}, portions: {}, individuals: {}, taphonomy: {}, pathology: {}, notes: {}, locked: {}, dental: {}, deciduousDental: { '51': 'present' }, dentitionType: 'deciduous', measurements: {}, landmarks: {}, photos: {}, report: {} });
+assert.equal(validateBackup(backup).deciduousDental['51'], 'present');
 
 console.log('Osteo3D smoke tests: OK');

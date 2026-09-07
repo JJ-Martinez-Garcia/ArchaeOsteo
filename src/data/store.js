@@ -33,6 +33,8 @@ export function normalizeProject(project) {
     notes: project.notes || {},
     locked: project.locked || {},
     dental: project.dental || {},
+    deciduousDental: project.deciduousDental || {},
+    dentitionType: project.dentitionType || 'permanent',
     measurements: project.measurements || {},
     landmarks: project.landmarks || {},
     photos: project.photos || {},
