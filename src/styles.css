@@ -1,1 +1,2 @@
 .viewer-wrap #viewer canvas:focus-visible{outline:3px solid #2f80ed;outline-offset:-3px}
+.viewer-wrap #viewer canvas{touch-action:none}

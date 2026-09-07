@@ -64,6 +64,9 @@ assert.match(main, /aria-label.*Visor 3D/);
 assert.match(main, /onViewerKeyDown/);
 assert.match(main, /ArrowLeft/);
 assert.match(main, /toLowerCase\(\) === 'r'/);
+assert.match(main, /activePointers/);
+assert.match(main, /pinchDistance/);
+assert.match(main, /pointerDistance/);
 
 assert.equal(await exists('src/anatomy/catalog.js'), true);
 assert.equal(await exists('src/anatomy/loader.js'), true);
