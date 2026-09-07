@@ -17,5 +17,8 @@
 .dentition-control { display: grid; gap: 5px; margin: 10px 0; font-size: 11px; color: #627d98; }
 .dentition-control select { border: 1px solid #bcccdc; border-radius: 4px; padding: 7px; color: #334e68; }
 .compare-card, .quiz-card { margin-top: 10px; padding: 10px; background: #fff; border-radius: 8px; color: #486581; font-size: .86rem; }
+.compare-inventory { overflow-x: auto; margin-top: 10px; }
+.compare-inventory p { color: #486581; font-size: .82rem; }
+.compare-inventory .analysis-table { min-width: 460px; }
 .quiz-options { display: grid; gap: 6px; margin: 10px 0; }
 @media (max-width: 900px) { .extended-buttons { grid-template-columns: 1fr; } }

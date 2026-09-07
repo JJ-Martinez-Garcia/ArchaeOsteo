@@ -7,7 +7,7 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 }
 
-export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile }) {
+export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject }) {
   state.fragments ||= {};
   state.portions ||= {};
   state.individuals ||= {};
@@ -66,9 +66,30 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   };
 
   document.querySelector('#compare-panel-button').onclick = () => {
-    show(`<label>Perfil de comparación<select id="compare-profile"><option value="adult_male">Adulto masculino</option><option value="adult_female">Adulto femenino</option><option value="infant">Infante</option><option value="neonate">Neonato</option></select></label><div class="compare-card"><strong>Perfil actual:</strong> ${escapeHtml(document.querySelector('#profile').selectedOptions[0].textContent)}<br><strong>Perfil comparado:</strong> <span id="compare-label">Adulto masculino</span><p>La comparación conserva IDs osteológicos y separa escala visual de datos científicos. Los GLB documentados se podrán cargar por perfil cuando estén disponibles.</p></div>`);
+    show(`<label>Perfil anatómico de referencia<select id="compare-profile"><option value="adult_male">Adulto masculino</option><option value="adult_female">Adulto femenino</option><option value="infant">Infante</option><option value="neonate">Neonato</option></select></label><label>Inventario local a comparar<select id="compare-project"><option value="">Cargando proyectos…</option></select></label><div class="compare-card"><strong>Perfil actual:</strong> ${escapeHtml(document.querySelector('#profile').selectedOptions[0].textContent)}<br><strong>Perfil comparado:</strong> <span id="compare-label">Adulto masculino</span><p>La comparación conserva IDs osteológicos y separa los datos científicos de la visualización 3D.</p></div><div id="compare-inventory" class="compare-inventory" aria-live="polite"></div>`);
     const select = document.querySelector('#compare-profile');
     select.onchange = () => { document.querySelector('#compare-label').textContent = select.selectedOptions[0].textContent; };
+    const projectSelect = document.querySelector('#compare-project');
+    const comparison = document.querySelector('#compare-inventory');
+    const renderComparison = project => {
+      if (!project) { comparison.innerHTML = '<p class="small-copy">No hay otro proyecto local disponible para comparar.</p>'; return; }
+      const differences = bones.map(bone => {
+        const current = { status: state.status?.[bone.id] || 'not_recorded', preservation: state.preservation?.[bone.id] || 'not_evaluated', fragments: Number(state.fragments?.[bone.id] || 0), portion: state.portions?.[bone.id] || 'whole' };
+        const other = { status: project.status?.[bone.id] || 'not_recorded', preservation: project.preservation?.[bone.id] || 'not_evaluated', fragments: Number(project.fragments?.[bone.id] || 0), portion: project.portions?.[bone.id] || 'whole' };
+        const changed = Object.keys(current).some(key => current[key] !== other[key]);
+        return changed ? { bone, current, other } : null;
+      }).filter(Boolean);
+      const rows = differences.map(({ bone, current, other }) => `<tr><th scope="row">${escapeHtml(bone.es)}</th><td>${escapeHtml(current.status)} · ${current.fragments} frag. · ${escapeHtml(current.portion)}</td><td>${escapeHtml(other.status)} · ${other.fragments} frag. · ${escapeHtml(other.portion)}</td></tr>`).join('');
+      comparison.innerHTML = `<p><strong>${differences.length}</strong> de ${bones.length} elementos con diferencias frente a <strong>${escapeHtml(project.projectName || project.id)}</strong>.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Elemento</th><th>Proyecto actual</th><th>Proyecto comparado</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">No se han detectado diferencias en los campos comparados.</p>'}`;
+    };
+    if (!listProjects || !loadProject) { renderComparison(null); return; }
+    listProjects().then(projects => {
+      const candidates = projects.filter(project => project.id !== state.projectId);
+      projectSelect.innerHTML = candidates.length ? candidates.map(project => `<option value="${escapeHtml(project.id)}">${escapeHtml(project.projectName || project.id)}</option>`).join('') : '<option value="">Sin otro proyecto</option>';
+      const first = candidates[0];
+      renderComparison(first);
+      projectSelect.onchange = async () => renderComparison(await loadProject(projectSelect.value));
+    }).catch(() => { projectSelect.innerHTML = '<option value="">No disponible</option>'; renderComparison(null); });
   };
 
   document.querySelector('#learning-panel-button').onclick = () => {

@@ -191,7 +191,7 @@ async function initProjectManager() {
     await saveLocal({ notify: false }); applyProjectData(state); await refreshProjectSelector();
   };
 }
-initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile });
+initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject });
 document.querySelector('#profile').addEventListener('change', () => loadAvailableProfileModels());
 applyPwaLaunchView();
 setTimeout(() => initProjectManager().catch(() => {}), 0);
