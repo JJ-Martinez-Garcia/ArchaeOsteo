@@ -11,6 +11,7 @@ export function inventoryRows(bones, state) {
     side: bone.side,
     status: state.status?.[bone.id] || 'not_recorded',
     fragments: Math.max(0, Number(state.fragments?.[bone.id] || 0)),
+    weight: Number.isFinite(Number(state.weights?.[bone.id])) ? Math.max(0, Number(state.weights[bone.id])) : null,
     portion: state.portions?.[bone.id] || 'whole',
     individual: state.individuals?.[bone.id] || state.report?.individual || 'IND-LOCAL',
     taphonomy: state.taphonomy?.[bone.id] || [],

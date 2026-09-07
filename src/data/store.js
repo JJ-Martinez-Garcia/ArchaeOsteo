@@ -38,6 +38,7 @@ export function normalizeProject(project) {
     preservation: project.preservation || {},
     completeness: project.completeness || {},
     fragments: project.fragments || {},
+    weights: project.weights || {},
     portions: project.portions || {},
     individuals: project.individuals || {},
     taphonomy: project.taphonomy || {},

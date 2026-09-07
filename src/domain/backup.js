@@ -15,6 +15,7 @@ export function createBackup(state) {
       preservation: state.preservation,
       completeness: state.completeness,
       fragments: state.fragments,
+      weights: state.weights,
       portions: state.portions,
       individuals: state.individuals,
       taphonomy: state.taphonomy,
@@ -75,6 +76,7 @@ export function applyInventoryRows(project, rows, bones) {
   const preservation = { ...(project.preservation || {}) };
   const completeness = { ...(project.completeness || {}) };
   const fragments = { ...(project.fragments || {}) };
+  const weights = { ...(project.weights || {}) };
   const portions = { ...(project.portions || {}) };
   const individuals = { ...(project.individuals || {}) };
   const taphonomy = { ...(project.taphonomy || {}) };
@@ -85,16 +87,18 @@ export function applyInventoryRows(project, rows, bones) {
     const importedPreservation = row.Preservation || 'not_evaluated';
     const importedCompleteness = Number(row.Percentage ?? row.Completeness ?? 100);
     const importedFragments = Number(row.Fragments ?? 0);
+    const importedWeight = Number(row.Weight_g ?? row.Weight ?? '');
     status[boneId] = ['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded'].includes(importedStatus) ? importedStatus : 'not_recorded';
     preservation[boneId] = ['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor'].includes(importedPreservation) ? importedPreservation : 'not_evaluated';
     completeness[boneId] = Number.isFinite(importedCompleteness) ? Math.max(0, Math.min(100, importedCompleteness)) : 100;
     fragments[boneId] = Number.isFinite(importedFragments) ? Math.max(0, Math.floor(importedFragments)) : 0;
+    if (Number.isFinite(importedWeight) && importedWeight >= 0) weights[boneId] = importedWeight;
     if (row.Portion) portions[boneId] = String(row.Portion).trim();
     if (row.Individual_ID || row.Individual) individuals[boneId] = String(row.Individual_ID || row.Individual).trim();
     if (row.Taphonomy) taphonomy[boneId] = String(row.Taphonomy).split(';').map(value => value.trim()).filter(Boolean);
     if (row.Pathology) pathology[boneId] = String(row.Pathology).split(';').map(value => value.trim()).filter(Boolean);
   });
-  return { ...project, status, preservation, completeness, fragments, portions, individuals, taphonomy, pathology, importedRows: accepted.length, rejectedRows: rows.length - accepted.length };
+  return { ...project, status, preservation, completeness, fragments, weights, portions, individuals, taphonomy, pathology, importedRows: accepted.length, rejectedRows: rows.length - accepted.length };
 }
 
 export function downloadJson(filename, value) {
