@@ -1,4 +1,5 @@
 export const MODEL_MANIFEST_SCHEMA = 1;
+export const MODEL_SOURCE_REGISTRY_SCHEMA = 1;
 export const MODEL_PACKAGE_CACHE = 'osteo3d-models-v1';
 
 const ASSET_STATUSES = new Set(['placeholder', 'ready', 'partial']);
@@ -20,14 +21,17 @@ export function validateModelManifest(manifest, boneIds = []) {
 
 export function validateModelSourceRegistry(manifest, registry = {}) {
   const errors = [];
-  const records = registry?.profiles || {};
+  if (!registry || registry.schema_version !== MODEL_SOURCE_REGISTRY_SCHEMA) errors.push('schema_version del registro no compatible');
+  if (!registry?.profiles || typeof registry.profiles !== 'object' || Array.isArray(registry.profiles)) errors.push('falta profiles en el registro');
+  const records = registry?.profiles && typeof registry.profiles === 'object' ? registry.profiles : {};
   for (const [profileId, profile] of Object.entries(manifest?.profiles || {})) {
-    if (profile.asset_status === 'placeholder') continue;
     const source = records[profileId];
     if (!source) {
       errors.push(`${profileId}: falta registro de fuente`);
       continue;
     }
+    if (!['pending', 'published'].includes(source.source_status)) errors.push(`${profileId}: source_status no válido`);
+    if (profile.asset_status === 'placeholder' && source.source_status === 'pending') continue;
     for (const field of ['author', 'institution', 'url', 'license', 'version', 'consulted_at']) {
       if (!source[field]) errors.push(`${profileId}: falta ${field}`);
     }
