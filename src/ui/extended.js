@@ -146,5 +146,5 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const rows = entries.slice(0, 100).map(entry => `<tr><td>${escapeHtml(new Date(entry.changedAt).toLocaleString('es-ES'))}</td><td>${escapeHtml(entry.boneId)}</td><td>${escapeHtml(entry.previousStatus)} → ${escapeHtml(entry.newStatus)}</td><td>${escapeHtml(entry.individualId)}</td><td>${escapeHtml(entry.investigator || '—')}</td><td>${escapeHtml(entry.method)}</td></tr>`).join('');
     show(`<p class="small-copy">Se muestran las últimas ${Math.min(entries.length, 100)} acciones. El registro se conserva en IndexedDB y en las copias de seguridad.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Fecha</th><th>Bone_ID</th><th>Cambio</th><th>Individuo</th><th>Investigador</th><th>Método</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">Todavía no hay cambios registrados.</p>'}`);
   };
-  return { hidePanels };
+  return { hidePanels, updateLabels };
 }

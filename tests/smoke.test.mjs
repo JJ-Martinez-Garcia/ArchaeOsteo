@@ -65,6 +65,7 @@ for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTAD
   assert.match(main, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Falta módulo: ${marker}`);
 }
 assert.match(main, /project-selector/);
+assert.match(main, /extendedUi\?\.updateLabels\(\)/);
 assert.match(main, /new-project/);
 assert.match(main, /verifyModelPackages/);
 assert.match(main, /protectLocalStorage/);
