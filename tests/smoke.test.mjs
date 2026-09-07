@@ -47,6 +47,10 @@ for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTAD
 assert.match(main, /project-selector/);
 assert.match(main, /new-project/);
 assert.match(main, /verifyModelPackages/);
+assert.match(main, /Actualizar ahora/);
+assert.match(main, /Más tarde/);
+assert.match(main, /await saveLocal\(\{ notify:false \}\)/);
+assert.match(main, /if\(updateRequested\) window\.location\.reload/);
 assert.match(main, /onWheel/);
 assert.match(main, /onPointerMove/);
 assert.match(main, /orbit\.target/);
