@@ -13,6 +13,9 @@ const manifest = JSON.parse(await text('public/manifest.json'));
 assert.equal(manifest.display, 'standalone');
 assert.equal(manifest.start_url, './');
 assert.ok(manifest.icons.length > 0);
+assert.equal(manifest.icons.length, 2);
+assert.equal(manifest.icons[0].sizes, '192x192');
+assert.equal(manifest.icons[1].sizes, '512x512');
 
 const sw = await text('public/sw.js');
 assert.match(sw, /caches\.open/);
@@ -22,6 +25,8 @@ assert.match(sw, /no-store/);
 assert.match(sw, /assetPathsFromHtml/);
 assert.match(sw, /assets/);
 assert.match(sw, /osteo3d-shell-v5/);
+assert.match(sw, /osteo3d-192\.svg/);
+assert.match(sw, /osteo3d-512\.svg/);
 assert.match(sw, /startsWith\('osteo3d-shell-'\)/);
 assert.match(sw, /caches\.delete/);
 
@@ -62,6 +67,8 @@ const { extendedBones } = await import('../src/anatomy/extended-bones.js');
 assert.ok(extendedBones.length > 100, 'expanded catalog should contain independent placeholders');
 assert.ok(extendedBones.some((bone) => bone.id === 'left_rib_1'));
 assert.equal(await exists('public/models/manifest.json'), true);
+assert.equal(await exists('public/icons/osteo3d-192.svg'), true);
+assert.equal(await exists('public/icons/osteo3d-512.svg'), true);
 const modelManifest = JSON.parse(await text('public/models/manifest.json'));
 assert.equal(validateModelManifest(modelManifest, extendedBones).valid, true);
 assert.equal(modelPackageSummary(modelManifest, 'infant', extendedBones).status, 'placeholder');

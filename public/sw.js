@@ -1,5 +1,5 @@
 const CACHE = 'osteo3d-shell-v5';
-const SHELL = ['./', './index.html', './manifest.json'];
+const SHELL = ['./', './index.html', './manifest.json', './icons/osteo3d-192.svg', './icons/osteo3d-512.svg'];
 function assetPathsFromHtml(html) {
   return [...new Set([...html.matchAll(/(?:src|href)=["'](\.\/assets\/[^"']+)["']/g)].map(match => match[1]))];
 }
