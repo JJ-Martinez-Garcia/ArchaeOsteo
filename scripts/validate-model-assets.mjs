@@ -1,6 +1,6 @@
 import { access, readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { validateModelManifest, validateModelSourceRegistry } from '../src/anatomy/package.js';
+import { glbContainsBoneId, validateModelManifest, validateModelSourceRegistry } from '../src/anatomy/package.js';
 
 const root = resolve('public/models');
 const readJson = async name => JSON.parse(await readFile(resolve(root, name), 'utf8'));
@@ -37,6 +37,11 @@ for (const [profileId, profile] of Object.entries(manifest.profiles || {})) {
     }
     if (profile.asset_status === 'ready' && files.length !== manifest.bone_count) {
       errors.push(`${profileId}: ready exige ${manifest.bone_count} GLB y hay ${files.length}`);
+    }
+    for (const filename of files) {
+      const boneId = filename.replace(/\.glb$/i, '');
+      const body = await readFile(resolve(profileRoot, filename));
+      if (!glbContainsBoneId(body, boneId)) errors.push(`${profileId}/${filename}: falta un nodo con nombre exacto ${boneId}`);
     }
   }
 }

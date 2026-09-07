@@ -4,6 +4,26 @@ export const MODEL_PACKAGE_CACHE = 'osteo3d-models-v1';
 
 const ASSET_STATUSES = new Set(['placeholder', 'ready', 'partial']);
 
+export function glbNodeNames(body) {
+  const bytes = body instanceof ArrayBuffer ? new Uint8Array(body) : body instanceof Uint8Array ? body : new Uint8Array(body || []);
+  if (bytes.byteLength < 20 || new TextDecoder().decode(bytes.slice(0, 4)) !== 'glTF') return [];
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (view.getUint32(4, true) !== 2) return [];
+  const jsonLength = view.getUint32(12, true);
+  const chunkType = new TextDecoder().decode(bytes.slice(16, 20));
+  if (chunkType !== 'JSON' || 20 + jsonLength > bytes.byteLength) return [];
+  try {
+    const json = JSON.parse(new TextDecoder().decode(bytes.slice(20, 20 + jsonLength)));
+    return Array.isArray(json.nodes) ? json.nodes.map(node => node?.name).filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function glbContainsBoneId(body, boneId) {
+  return glbNodeNames(body).includes(boneId);
+}
+
 export function validateModelManifest(manifest, boneIds = []) {
   const errors = [];
   if (!manifest || manifest.schema_version !== MODEL_MANIFEST_SCHEMA) errors.push('schema_version no compatible');
@@ -99,7 +119,7 @@ export async function importModelPackageFiles(profileId, files = [], boneIds = [
     }
     const body = await file.arrayBuffer();
     const magic = new TextDecoder().decode(new Uint8Array(body).slice(0, 4));
-    if (magic !== 'glTF') {
+    if (magic !== 'glTF' || !glbContainsBoneId(body, baseName)) {
       rejected.push(file?.name || 'archivo sin nombre');
       continue;
     }
