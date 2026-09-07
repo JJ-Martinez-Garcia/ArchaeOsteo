@@ -205,6 +205,8 @@ assert.equal(packagePlan.urls[0], './models/adult_male/skull.glb');
 assert.match(main, /Importar GLB locales/);
 assert.match(main, /importLocalModelFiles/);
 assert.match(main, /La importación reemplazará los modelos GLB locales/);
+assert.match(main, /const report=state\.report\|\|\{\}/);
+assert.match(main, /escapeHtml\(individual\)/);
 assert.match(await text('src/anatomy/package.js'), /importModelPackageFiles/);
 const modelCacheEntries = new Map();
 globalThis.caches = { open: async () => ({ put: async (key, response) => modelCacheEntries.set(key, response) }) };
