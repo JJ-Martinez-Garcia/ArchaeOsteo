@@ -12,6 +12,7 @@
 - Conservado el inventario activo al cambiar de proyecto y reiniciado el formulario al crear uno nuevo.
 - Añadida validación automatizada del manifiesto de paquetes GLB y resumen de cobertura por perfil.
 - Añadida cámara orbital funcional con rotación, zoom, desplazamiento y centrado del hueso seleccionado.
+- El service worker precarga los chunks JS/CSS declarados por `index.html` para permitir arranque offline tras la primera visita.
 
 ## 0.1.0
 

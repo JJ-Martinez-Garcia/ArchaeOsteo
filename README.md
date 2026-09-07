@@ -34,6 +34,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - gestor local de proyectos con selector, creación de proyectos y persistencia independiente por proyecto;
 - autosalvado silencioso cada 30 segundos y al pasar la aplicación a segundo plano;
 - indicador de conectividad para distinguir trabajo sincronizado de trabajo local offline;
+- precarga offline del HTML, manifest y chunks JS/CSS del build publicado;
 - catálogo de perfiles y loader preparado para assets GLB independientes;
 - validador de manifiestos GLB que exige perfiles, rutas, estado de cobertura y licencia antes de incorporar assets;
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;

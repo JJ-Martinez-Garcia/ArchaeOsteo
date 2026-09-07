@@ -19,6 +19,9 @@ assert.match(sw, /caches\.open/);
 assert.match(sw, /SKIP_WAITING/);
 assert.match(sw, /cache: 'reload'/);
 assert.match(sw, /no-store/);
+assert.match(sw, /assetPathsFromHtml/);
+assert.match(sw, /assets/);
+assert.match(sw, /osteo3d-shell-v5/);
 
 const main = await text('src/main.js');
 const store = await text('src/data/store.js');
