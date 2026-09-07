@@ -21,6 +21,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - filtros científicos por registro de tafonomía y patología aplicados al visor y a las estadísticas;
 - informe osteoarqueológico imprimible con identificación, inventario, dentición, mediciones y landmarks;
 - exportación XLSX diferida con hojas de inventario y odontogramas permanente/deciduo;
+- porciones anatómicas dependientes del tipo de elemento y cuantificación agrupada por individuo;
 - fotografías locales asociadas al elemento seleccionado y almacenadas offline;
 - registro científico de fragmentos, porciones, tafonomía, patología y notas;
 - copias de seguridad JSON e importación validada de JSON, CSV y XLSX;

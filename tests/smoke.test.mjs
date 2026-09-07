@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { access } from 'node:fs/promises';
 import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
+import { portionOptionsForBone } from '../src/domain/portions.js';
 import { applyInventoryRows, createBackup, parseCsv, validateBackup } from '../src/domain/backup.js';
 
 const text = async path => readFile(path, 'utf8');
@@ -53,13 +54,21 @@ const testBones = [
   { id: 'left_femur', es: 'Fémur izquierdo', region: 'Extremidad inferior', side: 'Izquierda' },
   { id: 'right_femur', es: 'Fémur derecho', region: 'Extremidad inferior', side: 'Derecha' }
 ];
-const testState = { status: { left_femur: 'fragmentary', right_femur: 'not_recorded' }, fragments: { left_femur: 2 }, portions: { left_femur: 'proximal' }, report: { individual: 'IND-TEST' } };
+const testState = { status: { left_femur: 'fragmentary', right_femur: 'not_recorded' }, fragments: { left_femur: 2 }, portions: { left_femur: 'epiphysis_proximal' }, individuals: { left_femur: 'IND-A' }, report: { individual: 'IND-TEST' } };
 const analysis = calculateOsteoAnalysis(testBones, testState);
 assert.equal(analysis.nisp.value, 1);
 assert.equal(analysis.mne.value, 2);
 assert.equal(analysis.mni.value, 2);
+assert.equal(analysis.individuals.value, 1);
+assert.equal(analysis.individuals.rows[0].individual, 'IND-A');
+assert.ok(portionOptionsForBone({ type: 'long_bone' }).some(([key]) => key === 'epiphysis_proximal'));
+assert.ok(!portionOptionsForBone({ type: 'rib' }).some(([key]) => key === 'epiphysis_proximal'));
 assert.equal(parseCsv('Bone_ID,Presence\nleft_femur,present')[0].Bone_ID, 'left_femur');
-assert.equal(applyInventoryRows({}, [{ Bone_ID: 'left_femur', Presence: 'present' }], testBones).status.left_femur, 'present');
+const imported = applyInventoryRows({}, [{ Bone_ID: 'left_femur', Presence: 'present', Individual_ID: 'IND-B', Portion: 'shaft_mid', Taphonomy: 'raíces; erosión', Pathology: 'fractura' }], testBones);
+assert.equal(imported.status.left_femur, 'present');
+assert.equal(imported.individuals.left_femur, 'IND-B');
+assert.equal(imported.portions.left_femur, 'shaft_mid');
+assert.deepEqual(imported.taphonomy.left_femur, ['raíces', 'erosión']);
 assert.throws(() => validateBackup({ format: 'wrong' }));
 const backup = createBackup({ profile: 'infant', status: {}, preservation: {}, completeness: {}, fragments: {}, portions: {}, individuals: {}, taphonomy: {}, pathology: {}, notes: {}, locked: {}, dental: {}, deciduousDental: { '51': 'present' }, dentitionType: 'deciduous', measurements: {}, landmarks: {}, photos: {}, report: {} });
 assert.equal(validateBackup(backup).deciduousDental['51'], 'present');

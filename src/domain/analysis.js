@@ -68,7 +68,33 @@ export function calculateMni(rows) {
   };
 }
 
+export function calculateIndividualQuantification(rows) {
+  const identified = rows.filter(row => ['present', 'fragmentary'].includes(row.status));
+  const groups = new Map();
+  for (const row of identified) {
+    const individual = row.individual || 'IND-LOCAL';
+    const entry = groups.get(individual) || { individual, nisp: 0, fragments: 0, elements: new Set(), regions: new Set() };
+    entry.nisp += 1;
+    entry.fragments += Math.max(1, row.fragments || 1);
+    entry.elements.add(row.boneId);
+    entry.regions.add(row.region);
+    groups.set(individual, entry);
+  }
+  const groupedRows = [...groups.values()].map(entry => ({
+    individual: entry.individual,
+    nisp: entry.nisp,
+    fragments: entry.fragments,
+    elements: [...entry.elements],
+    regions: [...entry.regions]
+  }));
+  return {
+    value: groupedRows.length,
+    rows: groupedRows,
+    method: 'Agrupa los registros identificados por el ID de individuo explícito; no resuelve por sí solo duplicación ni asociación estratigráfica.'
+  };
+}
+
 export function calculateOsteoAnalysis(bones, state) {
   const rows = inventoryRows(bones, state);
-  return { nisp: calculateNisp(rows), mne: calculateMne(rows), mni: calculateMni(rows), rows };
+  return { nisp: calculateNisp(rows), mne: calculateMne(rows), mni: calculateMni(rows), individuals: calculateIndividualQuantification(rows), rows };
 }

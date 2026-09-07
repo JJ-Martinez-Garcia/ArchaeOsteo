@@ -63,13 +63,21 @@ export function applyInventoryRows(project, rows, bones) {
   const preservation = { ...(project.preservation || {}) };
   const completeness = { ...(project.completeness || {}) };
   const fragments = { ...(project.fragments || {}) };
+  const portions = { ...(project.portions || {}) };
+  const individuals = { ...(project.individuals || {}) };
+  const taphonomy = { ...(project.taphonomy || {}) };
+  const pathology = { ...(project.pathology || {}) };
   accepted.forEach(row => {
     status[row.Bone_ID] = row.Presence || row.Status || 'not_recorded';
     preservation[row.Bone_ID] = row.Preservation || 'not_evaluated';
     completeness[row.Bone_ID] = Math.max(0, Math.min(100, Number(row.Percentage || row.Completeness || 100)));
     fragments[row.Bone_ID] = Math.max(0, Number(row.Fragments || 0));
+    if (row.Portion) portions[row.Bone_ID] = row.Portion;
+    if (row.Individual_ID || row.Individual) individuals[row.Bone_ID] = row.Individual_ID || row.Individual;
+    if (row.Taphonomy) taphonomy[row.Bone_ID] = String(row.Taphonomy).split(';').map(value => value.trim()).filter(Boolean);
+    if (row.Pathology) pathology[row.Bone_ID] = String(row.Pathology).split(';').map(value => value.trim()).filter(Boolean);
   });
-  return { ...project, status, preservation, completeness, fragments, importedRows: accepted.length };
+  return { ...project, status, preservation, completeness, fragments, portions, individuals, taphonomy, pathology, importedRows: accepted.length };
 }
 
 export function downloadJson(filename, value) {

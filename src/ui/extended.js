@@ -1,6 +1,7 @@
 import { calculateOsteoAnalysis } from '../domain/analysis.js';
 import { applyInventoryRows, createBackup, downloadJson, parseCsv, validateBackup } from '../domain/backup.js';
 import { translate } from '../i18n/translations.js';
+import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -39,13 +40,16 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
 
   document.querySelector('#record-panel-button').onclick = () => {
     const id = state.selected;
+    const bone = bones.find(item => item.id === id) || {};
+    const portionOptions = portionOptionsForBone(bone);
     const taphonomy = (state.taphonomy[id] || []).join(', ');
     const pathology = (state.pathology[id] || []).join(', ');
-    show(`<div class="record-editor"><strong>${escapeHtml(bones.find(bone => bone.id === id)?.es || id)}</strong><label>Número de fragmentos<input id="record-fragments" type="number" min="0" step="1" value="${state.fragments[id] || 0}"></label><label>Porción<select id="record-portion"><option value="whole">Completo</option><option value="proximal">Proximal</option><option value="shaft_proximal">Diáfisis proximal</option><option value="shaft_mid">Diáfisis media</option><option value="shaft_distal">Diáfisis distal</option><option value="distal">Distal</option><option value="indeterminate">Indeterminada</option></select></label><label>Tafonomía<input id="record-taphonomy" value="${escapeHtml(taphonomy)}" placeholder="erosión, raíces…"></label><label>Patología / trauma<input id="record-pathology" value="${escapeHtml(pathology)}" placeholder="fractura, caries…"></label><label>Nota científica<textarea id="record-note" rows="3">${escapeHtml(state.notes[id] || '')}</textarea></label><button id="save-record" class="secondary-action">Guardar registro</button></div>`);
+    show(`<div class="record-editor"><strong>${escapeHtml(bone.es || id)}</strong><label>Número de fragmentos<input id="record-fragments" type="number" min="0" step="1" value="${state.fragments[id] || 0}"></label><label>Porción anatómica<select id="record-portion">${portionOptions.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label><label>Individuo<input id="record-individual" value="${escapeHtml(state.individuals[id] || state.report?.individual || 'IND-LOCAL')}" placeholder="IND-01"></label><label>Tafonomía<input id="record-taphonomy" value="${escapeHtml(taphonomy)}" placeholder="erosión, raíces…"></label><label>Patología / trauma<input id="record-pathology" value="${escapeHtml(pathology)}" placeholder="fractura, caries…"></label><label>Nota científica<textarea id="record-note" rows="3">${escapeHtml(state.notes[id] || '')}</textarea></label><button id="save-record" class="secondary-action">Guardar registro</button></div>`);
     document.querySelector('#record-portion').value = state.portions[id] || 'whole';
     document.querySelector('#save-record').onclick = async () => {
       state.fragments[id] = Math.max(0, Number(document.querySelector('#record-fragments').value || 0));
       state.portions[id] = document.querySelector('#record-portion').value;
+      state.individuals[id] = document.querySelector('#record-individual').value.trim() || 'IND-LOCAL';
       state.taphonomy[id] = document.querySelector('#record-taphonomy').value.split(',').map(value => value.trim()).filter(Boolean);
       state.pathology[id] = document.querySelector('#record-pathology').value.split(',').map(value => value.trim()).filter(Boolean);
       state.notes[id] = document.querySelector('#record-note').value.trim();
@@ -56,7 +60,8 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
 
   document.querySelector('#analysis-panel-button').onclick = () => {
     const analysis = calculateOsteoAnalysis(bones, state);
-    show(`<div class="analysis-summary"><div><strong>${analysis.nisp.value}</strong><small>NISP</small></div><div><strong>${analysis.mne.value}</strong><small>MNE</small></div><div><strong>${analysis.mni.value}</strong><small>MNI</small></div></div><dl class="analysis-method"><dt>NISP</dt><dd>${escapeHtml(analysis.nisp.method)}</dd><dt>MNE</dt><dd>${escapeHtml(analysis.mne.method)}</dd><dt>MNI</dt><dd>${escapeHtml(analysis.mni.method)}</dd></dl><button id="export-analysis" class="secondary-action">Exportar análisis JSON</button>`);
+    const individualRows = analysis.individuals.rows.length ? analysis.individuals.rows.map(row => `<tr><td>${escapeHtml(row.individual)}</td><td>${row.nisp}</td><td>${row.fragments}</td><td>${row.elements.length}</td></tr>`).join('') : '<tr><td colspan="4">Sin registros identificados</td></tr>';
+    show(`<div class="analysis-summary"><div><strong>${analysis.nisp.value}</strong><small>NISP</small></div><div><strong>${analysis.mne.value}</strong><small>MNE</small></div><div><strong>${analysis.mni.value}</strong><small>MNI</small></div><div><strong>${analysis.individuals.value}</strong><small>Individuos</small></div></div><dl class="analysis-method"><dt>NISP</dt><dd>${escapeHtml(analysis.nisp.method)}</dd><dt>MNE</dt><dd>${escapeHtml(analysis.mne.method)}</dd><dt>MNI</dt><dd>${escapeHtml(analysis.mni.method)}</dd><dt>Individuos</dt><dd>${escapeHtml(analysis.individuals.method)}</dd></dl><table class="analysis-table"><thead><tr><th>Individuo</th><th>NISP</th><th>Fragmentos</th><th>Elementos</th></tr></thead><tbody>${individualRows}</tbody></table><button id="export-analysis" class="secondary-action">Exportar análisis JSON</button>`);
     document.querySelector('#export-analysis').onclick = () => downloadJson('osteo3d-analysis.json', analysis);
   };
 

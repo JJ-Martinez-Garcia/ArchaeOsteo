@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0
+
+- Registro científico de individuo por elemento y exportaciones con el identificador conservado.
+- Porciones anatómicas dependientes del tipo de elemento, incluyendo epífisis y diáfisis de huesos largos.
+- Resumen transparente de cuantificación por individuo junto a NISP, MNE y MNI.
+
 ## 0.1.0
 
 - Primer MVP PWA.
