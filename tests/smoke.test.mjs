@@ -93,6 +93,8 @@ assert.match(main, /changeLog: \[\], quickPresent: false/);
 assert.match(main, /changeLog:state\.changeLog},null,2/);
 assert.match(main, /hidden: state\.hidden, opacity: state\.opacity, wireframe: state\.wireframe/);
 assert.match(main, /localStorage\.setItem\('osteo3d-mvp'/);
+assert.match(main, /state\.hidden=savedProject\.hidden/);
+assert.match(main, /state\.tableTransforms=savedProject\.tableTransforms/);
 assert.match(await text('src/ui/extended.js'), /Registro de cambios/);
 assert.match(await text('src/ui/extended.js'), /changedAt/);
 assert.match(main, /model-package-panel/);
