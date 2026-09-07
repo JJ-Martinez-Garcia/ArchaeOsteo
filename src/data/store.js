@@ -21,7 +21,9 @@ export function normalizeProject(project) {
   return {
     ...project,
     id: project.id || 'default',
+    projectName: project.projectName || 'Proyecto sin título',
     schemaVersion: PROJECT_SCHEMA_VERSION,
+    selected: project.selected || 'skull',
     status: project.status || {},
     preservation: project.preservation || {},
     completeness: project.completeness || {},
@@ -71,5 +73,21 @@ export async function loadProject(id) {
     } catch {
       return null;
     }
+  }
+}
+
+export async function listProjects() {
+  try {
+    const db = await openDatabase();
+    const result = await new Promise((resolve, reject) => {
+      const request = db.transaction(STORE).objectStore(STORE).getAll();
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error);
+    });
+    db.close();
+    return result.map(normalizeProject).filter(Boolean).sort((a, b) => String(a.projectName || a.id).localeCompare(String(b.projectName || b.id), 'es'));
+  } catch {
+    const fallback = normalizeProject(JSON.parse(localStorage.getItem('osteo3d-mvp') || 'null'));
+    return fallback ? [fallback] : [];
   }
 }

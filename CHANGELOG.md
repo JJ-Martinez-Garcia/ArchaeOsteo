@@ -6,6 +6,11 @@
 - Porciones anatómicas dependientes del tipo de elemento, incluyendo epífisis y diáfisis de huesos largos.
 - Resumen transparente de cuantificación por individuo junto a NISP, MNE y MNI.
 
+## 0.8.0
+
+- Añadido selector y creación de proyectos locales persistidos de forma independiente en IndexedDB.
+- Conservado el inventario activo al cambiar de proyecto y reiniciado el formulario al crear uno nuevo.
+
 ## 0.1.0
 
 - Primer MVP PWA.

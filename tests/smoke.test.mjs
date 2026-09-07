@@ -25,6 +25,8 @@ assert.match(store, /indexedDB/);
 assert.match(store, /PROJECT_SCHEMA_VERSION = 2/);
 assert.match(store, /normalizeProject/);
 assert.match(store, /localStorage\.getItem/);
+assert.match(store, /listProjects/);
+assert.match(store, /projectName/);
 assert.match(main, /setInterval\(\(\) =>/);
 assert.match(main, /connection-status/);
 assert.match(main, /filter-taphonomy/);
@@ -36,6 +38,8 @@ assert.equal(manifest.scope, './');
 for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTADÍSTICAS', 'INFORME OSTEOARQUEOLÓGICO', 'exportXlsx', 'registerPwa']) {
   assert.match(main, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Falta módulo: ${marker}`);
 }
+assert.match(main, /project-selector/);
+assert.match(main, /new-project/);
 
 assert.equal(await exists('src/anatomy/catalog.js'), true);
 assert.equal(await exists('src/anatomy/loader.js'), true);
