@@ -34,6 +34,7 @@ export function normalizeProject(project) {
     pathology: project.pathology || {},
     notes: project.notes || {},
     locked: project.locked || {},
+    changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],
     dental: project.dental || {},
     deciduousDental: project.deciduousDental || {},
     dentitionType: project.dentitionType || 'permanent',

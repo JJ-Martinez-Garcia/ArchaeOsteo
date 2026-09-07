@@ -80,6 +80,10 @@ assert.match(main, /Marcar restantes como ausentes/);
 assert.match(main, /window\.confirm\(`Se marcarán/);
 assert.match(main, /status-legend/);
 assert.match(main, /Inventario completado/);
+assert.match(main, /recordInventoryChange/);
+assert.match(main, /changeLog/);
+assert.match(await text('src/ui/extended.js'), /Registro de cambios/);
+assert.match(await text('src/ui/extended.js'), /changedAt/);
 assert.match(main, /model-package-panel/);
 assert.match(main, /downloadSelectedModelPackage/);
 assert.match(main, /Pendiente de incorporar assets licenciados/);
@@ -163,5 +167,6 @@ assert.deepEqual(imported.taphonomy.left_femur, ['raíces', 'erosión']);
 assert.throws(() => validateBackup({ format: 'wrong' }));
 const backup = createBackup({ profile: 'infant', status: {}, preservation: {}, completeness: {}, fragments: {}, portions: {}, individuals: {}, taphonomy: {}, pathology: {}, notes: {}, locked: {}, dental: {}, deciduousDental: { '51': 'present' }, dentitionType: 'deciduous', measurements: {}, landmarks: {}, photos: {}, report: {} });
 assert.equal(validateBackup(backup).deciduousDental['51'], 'present');
+assert.deepEqual(validateBackup(createBackup({ ...backup.project, changeLog: [{ boneId: 'skull', previousStatus: 'not_recorded', newStatus: 'present' }] })).changeLog[0].newStatus, 'present');
 
 console.log('Osteo3D smoke tests: OK');
