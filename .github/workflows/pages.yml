@@ -35,6 +35,8 @@ jobs:
         run: pnpm build
       - name: Run smoke tests
         run: pnpm test
+      - name: Validate model assets and licenses
+        run: pnpm validate-model-assets
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

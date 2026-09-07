@@ -89,6 +89,7 @@ assert.equal(await exists('public/icons/osteo3d-192.svg'), true);
 assert.equal(await exists('public/icons/osteo3d-512.svg'), true);
 const modelManifest = JSON.parse(await text('public/models/manifest.json'));
 assert.equal(validateModelManifest(modelManifest, extendedBones).valid, true);
+assert.equal(modelManifest.bone_count, 178);
 assert.equal(modelPackageSummary(modelManifest, 'infant', extendedBones).status, 'placeholder');
 assert.equal(formatPackageSize(null), 'no disponible');
 assert.equal(formatPackageSize(42.5), 'aprox. 42.5 MB');
@@ -99,6 +100,7 @@ assert.equal(validateModelSourceRegistry(modelManifest, { ...sourceRegistry, sch
 assert.equal(validateModelSourceRegistry(modelManifest, { schema_version: 1, profiles: { adult_male: { source_status: 'pending' } } }).valid, false);
 assert.match(await text('src/anatomy/loader.js'), /loadModelSourceRegistry/);
 assert.equal(await exists('public/models/SOURCES.md'), true);
+assert.equal(await exists('scripts/validate-model-assets.mjs'), true);
 const packagePlan = modelPackageDownloadPlan(modelManifest, 'adult_male', [{ id: 'skull' }].map(bone => bone.id));
 assert.equal(packagePlan.urls[0], './models/adult_male/skull.glb');
 await assert.rejects(() => downloadModelPackage(modelManifest, 'adult_male', ['skull']), /placeholder/);
