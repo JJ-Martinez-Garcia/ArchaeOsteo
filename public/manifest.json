@@ -1,11 +1,17 @@
 {
   "name": "Osteo3D",
   "short_name": "Osteo3D",
+  "id": "./",
+  "lang": "es",
+  "dir": "ltr",
+  "scope": "./",
+  "orientation": "any",
   "description": "Atlas osteológico 3D e inventario bioarqueológico local.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fa",
   "theme_color": "#102a43",
+  "prefer_related_applications": false,
   "icons": [
     { "src": "./icons/osteo3d.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any maskable" }
   ]

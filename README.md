@@ -25,6 +25,9 @@ Esta primera fase implementa un MVP ejecutable con:
 - comparación de perfiles, quiz de identificación y selector inicial español/inglés;
 - Three.js cargado de forma diferida para reducir el bundle inicial;
 - instalación y actualización de la PWA controladas por el usuario;
+- persistencia IndexedDB versionada (esquema 2) con normalización y respaldo automático a `localStorage`;
+- autosalvado silencioso cada 30 segundos y al pasar la aplicación a segundo plano;
+- indicador de conectividad para distinguir trabajo sincronizado de trabajo local offline;
 - catálogo de perfiles y loader preparado para assets GLB independientes;
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
@@ -48,7 +51,7 @@ npm test
 ## Fases siguientes
 
 1. Sustituir marcadores por modelos GLB con metadatos y licencias.
-2. Versionar IndexedDB y separar completamente inventario, informes y configuración en stores especializados.
+2. Separar completamente inventario, informes y configuración en stores especializados.
 3. Ampliar “Pintar inventario” con filtros de tafonomía/patología, dentición decidua y porciones de huesos largos.
 4. Incorporar modelos GLB documentados por perfil y pruebas end-to-end en navegador.
 

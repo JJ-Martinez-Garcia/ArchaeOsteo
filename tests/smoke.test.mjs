@@ -21,6 +21,12 @@ assert.match(sw, /no-store/);
 const main = await text('src/main.js');
 const store = await text('src/data/store.js');
 assert.match(store, /indexedDB/);
+assert.match(store, /PROJECT_SCHEMA_VERSION = 2/);
+assert.match(store, /normalizeProject/);
+assert.match(store, /localStorage\.getItem/);
+assert.match(main, /setInterval\(\(\) =>/);
+assert.match(main, /connection-status/);
+assert.equal(manifest.scope, './');
 for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTADÍSTICAS', 'INFORME OSTEOARQUEOLÓGICO', 'exportXlsx', 'registerPwa']) {
   assert.match(main, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Falta módulo: ${marker}`);
 }

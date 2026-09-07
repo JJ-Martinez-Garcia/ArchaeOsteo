@@ -37,3 +37,10 @@
 - Ampliado el catálogo de marcadores independientes con vértebras, costillas, cintura, extremidades, manos y pies.
 - Añadidos colores y protección de renderizado para las nuevas regiones anatómicas.
 - Añadida prueba de humo para comprobar la presencia y el tamaño mínimo del catálogo ampliado.
+
+## 0.4.0 - 2026-09-07
+
+- Versionado IndexedDB a esquema 2 con migración segura de proyectos existentes.
+- Añadida normalización de proyectos y recuperación automática desde `localStorage` cuando IndexedDB no está disponible.
+- Añadido autosalvado periódico y al ocultar la aplicación.
+- Añadido indicador visible de conectividad offline/online y metadatos PWA ampliados.

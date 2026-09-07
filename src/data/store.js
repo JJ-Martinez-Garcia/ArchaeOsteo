@@ -1,22 +1,51 @@
 const DB_NAME = 'osteo3d';
-const DB_VERSION = 1;
+export const PROJECT_SCHEMA_VERSION = 2;
+const DB_VERSION = 2;
 const STORE = 'projects';
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
     if (!('indexedDB' in window)) return reject(new Error('IndexedDB no disponible'));
     const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = () => request.result.createObjectStore(STORE, { keyPath: 'id' });
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: 'id' });
+    };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
+}
+
+export function normalizeProject(project) {
+  if (!project || typeof project !== 'object') return null;
+  return {
+    ...project,
+    id: project.id || 'default',
+    schemaVersion: PROJECT_SCHEMA_VERSION,
+    status: project.status || {},
+    preservation: project.preservation || {},
+    completeness: project.completeness || {},
+    fragments: project.fragments || {},
+    portions: project.portions || {},
+    individuals: project.individuals || {},
+    taphonomy: project.taphonomy || {},
+    pathology: project.pathology || {},
+    notes: project.notes || {},
+    locked: project.locked || {},
+    dental: project.dental || {},
+    measurements: project.measurements || {},
+    landmarks: project.landmarks || {},
+    photos: project.photos || {},
+    language: project.language || 'es',
+    report: project.report || { individual: 'IND-LOCAL', site: '', context: '', investigator: '' }
+  };
 }
 
 export async function saveProject(project) {
   const db = await openDatabase();
   await new Promise((resolve, reject) => {
     const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).put(project);
+    tx.objectStore(STORE).put(normalizeProject(project));
     tx.oncomplete = resolve;
     tx.onerror = () => reject(tx.error);
   });
@@ -24,12 +53,20 @@ export async function saveProject(project) {
 }
 
 export async function loadProject(id) {
-  const db = await openDatabase();
-  const result = await new Promise((resolve, reject) => {
-    const request = db.transaction(STORE).objectStore(STORE).get(id);
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-  db.close();
-  return result;
+  try {
+    const db = await openDatabase();
+    const result = await new Promise((resolve, reject) => {
+      const request = db.transaction(STORE).objectStore(STORE).get(id);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    db.close();
+    return normalizeProject(result);
+  } catch {
+    try {
+      return normalizeProject(JSON.parse(localStorage.getItem('osteo3d-mvp') || 'null'));
+    } catch {
+      return null;
+    }
+  }
 }
