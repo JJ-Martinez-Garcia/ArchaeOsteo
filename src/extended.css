@@ -1,0 +1,19 @@
+.language-control { display: inline-flex; align-items: center; gap: 6px; }
+.extended-tools { border-top: 1px solid var(--line, #d9e2ec); margin-top: 16px; padding-top: 14px; }
+.extended-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.extended-buttons button { min-height: 36px; }
+#extended-panel { margin-top: 10px; border: 1px solid var(--line, #d9e2ec); border-radius: 10px; padding: 10px; background: #f8fbfd; }
+.analysis-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.analysis-summary > div { background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; padding: 9px; text-align: center; }
+.analysis-summary strong, .analysis-summary small { display: block; }
+.analysis-summary strong { font-size: 1.35rem; color: #102a43; }
+.analysis-summary small { color: #627d98; }
+.analysis-method { font-size: .78rem; }
+.analysis-method dt { font-weight: 700; margin-top: 8px; }
+.analysis-method dd { margin: 2px 0 0; color: #486581; }
+.record-editor, .record-editor label { display: grid; gap: 5px; }
+.record-editor { gap: 8px; }
+.record-editor input, .record-editor select, .record-editor textarea { width: 100%; box-sizing: border-box; }
+.compare-card, .quiz-card { margin-top: 10px; padding: 10px; background: #fff; border-radius: 8px; color: #486581; font-size: .86rem; }
+.quiz-options { display: grid; gap: 6px; margin: 10px 0; }
+@media (max-width: 900px) { .extended-buttons { grid-template-columns: 1fr; } }

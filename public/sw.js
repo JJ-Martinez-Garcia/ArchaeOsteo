@@ -1,4 +1,4 @@
-const CACHE = 'osteo3d-shell-v2';
+const CACHE = 'osteo3d-shell-v3';
 const SHELL = ['./', './index.html', './manifest.json'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));

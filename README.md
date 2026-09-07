@@ -19,6 +19,10 @@ Esta primera fase implementa un MVP ejecutable con:
 - informe osteoarqueológico imprimible con identificación, inventario, dentición, mediciones y landmarks;
 - exportación XLSX diferida con hojas de inventario y odontograma;
 - fotografías locales asociadas al elemento seleccionado y almacenadas offline;
+- registro científico de fragmentos, porciones, tafonomía, patología y notas;
+- copias de seguridad JSON e importación validada de JSON, CSV y XLSX;
+- análisis transparente de NISP, MNE y MNI con desglose de método;
+- comparación de perfiles, quiz de identificación y selector inicial español/inglés;
 - Three.js cargado de forma diferida para reducir el bundle inicial;
 - instalación y actualización de la PWA controladas por el usuario;
 - catálogo de perfiles y loader preparado para assets GLB independientes;
@@ -43,8 +47,8 @@ npm test
 ## Fases siguientes
 
 1. Sustituir marcadores por modelos GLB con metadatos y licencias.
-2. Extraer el estado a módulos y añadir IndexedDB versionado.
-3. Ampliar “Pintar inventario” con filtros avanzados, odontograma y conservación avanzada.
-4. Añadir análisis osteoarqueológicos avanzados, modelos GLB documentados y pruebas end-to-end.
+2. Versionar IndexedDB y separar completamente inventario, informes y configuración en stores especializados.
+3. Ampliar “Pintar inventario” con filtros de tafonomía/patología, dentición decidua y porciones de huesos largos.
+4. Incorporar modelos GLB documentados por perfil y pruebas end-to-end en navegador.
 
 La especificación completa de producto está documentada en el requisito de proyecto entregado a Codex.

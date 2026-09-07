@@ -24,3 +24,10 @@
 - Instalación y actualización controlada de la PWA mediante manifest y service worker.
 - Catálogo de perfiles, manifest de assets y loader GLB preparado sin redistribuir modelos no licenciados.
 - Pruebas de humo automatizadas para la base PWA y sus módulos principales.
+# 0.2.0 - 2026-09-07
+
+- Añadido registro científico modular para fragmentos, porciones, tafonomía, patología y notas.
+- Añadidas copias de seguridad e importación validada JSON/CSV/XLSX.
+- Añadidos cálculos transparentes de NISP, MNE y MNI.
+- Añadidos comparación de perfiles y modo aprendizaje.
+- Actualizada la caché del service worker.
