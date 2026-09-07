@@ -105,6 +105,8 @@ assert.match(main, /state\.tableMode/);
 assert.match(main, /setCameraProjection/);
 assert.match(main, /OrthographicCamera/);
 assert.match(main, /Proyección ortográfica/);
+assert.match(main, /data-view-extra="superior"/);
+assert.match(main, /data-view-extra="inferior"/);
 assert.match(main, /modelSource: 'glb'/);
 assert.match(main, /intersectObjects\(group\.children, true\)/);
 assert.match(main, /listProjects, loadProject/);

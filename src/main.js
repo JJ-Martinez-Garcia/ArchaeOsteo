@@ -211,6 +211,8 @@ document.querySelector('.actions')?.insertAdjacentHTML('beforeend','<button id="
 document.querySelector('#table-mode').onclick=()=>{state.tableMode=!state.tableMode;document.querySelector('#table-mode').setAttribute('aria-pressed',String(state.tableMode));document.querySelector('#table-mode').textContent=state.tableMode?'Restaurar posición anatómica':'Mesa osteológica';document.querySelector('#toast').textContent=state.tableMode?'Mesa osteológica activada':'Posición anatómica restaurada';};
 document.querySelector('.actions')?.insertAdjacentHTML('beforeend','<button id="projection-toggle" class="secondary-action" aria-pressed="false">Proyección ortográfica</button>');
 document.querySelector('#projection-toggle').onclick=()=>setCameraProjection(!state.orthographic);
+document.querySelector('.viewer-toolbar')?.insertAdjacentHTML('beforeend','<button data-view-extra="superior">Superior</button><button data-view-extra="inferior">Inferior</button>');
+document.querySelectorAll('[data-view-extra]').forEach(button=>button.onclick=()=>{orbit.theta=0;orbit.phi=button.dataset.viewExtra==='superior'?0.12:Math.PI-0.12;orbit.target.set(0,0,0);updateCamera();});
 document.querySelector('#reset').addEventListener('click',()=>{state.tableMode=false;const button=document.querySelector('#table-mode');if(button){button.setAttribute('aria-pressed','false');button.textContent='Mesa osteológica';}setCameraProjection(false);});
 document.querySelector('#profile').addEventListener('change', () => loadAvailableProfileModels());
 initQuickInventory();
