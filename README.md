@@ -7,6 +7,7 @@ Base inicial de una PWA modular para atlas osteológico 3D e inventario bioarque
 Esta primera fase implementa un MVP ejecutable con:
 
 - visor Three.js con elementos osteológicos independientes;
+- cámara orbital con rotación por arrastre, zoom con rueda, desplazamiento y centrado contextual;
 - selección por clic, árbol y búsqueda en español/inglés/latín/ID;
 - ficha básica, aislamiento, centrado, vistas y control de explosión;
 - selector de perfiles preparado para adulto masculino, adulto femenino, infante y neonato;

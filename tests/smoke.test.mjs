@@ -42,6 +42,9 @@ for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTAD
 assert.match(main, /project-selector/);
 assert.match(main, /new-project/);
 assert.match(main, /verifyModelPackages/);
+assert.match(main, /onWheel/);
+assert.match(main, /onPointerMove/);
+assert.match(main, /orbit\.target/);
 
 assert.equal(await exists('src/anatomy/catalog.js'), true);
 assert.equal(await exists('src/anatomy/loader.js'), true);
