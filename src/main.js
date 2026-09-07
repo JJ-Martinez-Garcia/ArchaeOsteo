@@ -206,7 +206,7 @@ async function initProjectManager() {
   };
 }
 const saveLocalWithoutChangeLog = saveLocal;
-saveLocal = async options => { await saveLocalWithoutChangeLog(options); await saveProject({ ...state, id: state.projectId || 'default', changeLog: state.changeLog }); };
+saveLocal = async options => { await saveLocalWithoutChangeLog(options); try { await saveProject({ ...state, id: state.projectId || 'default', hidden: state.hidden, opacity: state.opacity, wireframe: state.wireframe, changeLog: state.changeLog }); } catch { try { const fallback=JSON.parse(localStorage.getItem('osteo3d-mvp') || '{}'); localStorage.setItem('osteo3d-mvp',JSON.stringify({ ...fallback, hidden: state.hidden, opacity: state.opacity, wireframe: state.wireframe, changeLog: state.changeLog })); } catch {} } };
 initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject });
 document.querySelector('#model-package-action')?.insertAdjacentHTML('afterend','<label class="secondary-action model-import-label">Importar GLB locales<input id="model-package-import" type="file" accept=".glb,model/gltf-binary" multiple hidden></label>');
 document.querySelector('#model-package-import')?.addEventListener('change',event=>{importLocalModelFiles([...event.target.files]);event.target.value='';});
