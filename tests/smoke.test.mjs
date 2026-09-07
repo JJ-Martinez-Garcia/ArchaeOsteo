@@ -107,6 +107,7 @@ assert.match(main, /tablePosition/);
 assert.match(main, /state\.tableMode/);
 assert.match(main, /tableTransforms/);
 assert.match(main, /table-rotation/);
+assert.match(main, /table-z/);
 assert.match(main, /syncTableControls/);
 assert.match(main, /setCameraProjection/);
 assert.match(main, /OrthographicCamera/);
