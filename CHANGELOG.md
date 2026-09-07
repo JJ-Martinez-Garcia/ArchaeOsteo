@@ -10,6 +10,7 @@
 
 - Añadido selector y creación de proyectos locales persistidos de forma independiente en IndexedDB.
 - Conservado el inventario activo al cambiar de proyecto y reiniciado el formulario al crear uno nuevo.
+- Añadida validación automatizada del manifiesto de paquetes GLB y resumen de cobertura por perfil.
 
 ## 0.1.0
 

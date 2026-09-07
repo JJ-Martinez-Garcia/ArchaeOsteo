@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { access } from 'node:fs/promises';
 import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
 import { portionOptionsForBone } from '../src/domain/portions.js';
+import { modelPackageSummary, validateModelManifest } from '../src/anatomy/package.js';
 import { applyInventoryRows, createBackup, parseCsv, validateBackup } from '../src/domain/backup.js';
 
 const text = async path => readFile(path, 'utf8');
@@ -40,6 +41,7 @@ for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTAD
 }
 assert.match(main, /project-selector/);
 assert.match(main, /new-project/);
+assert.match(main, /verifyModelPackages/);
 
 assert.equal(await exists('src/anatomy/catalog.js'), true);
 assert.equal(await exists('src/anatomy/loader.js'), true);
@@ -48,6 +50,9 @@ const { extendedBones } = await import('../src/anatomy/extended-bones.js');
 assert.ok(extendedBones.length > 100, 'expanded catalog should contain independent placeholders');
 assert.ok(extendedBones.some((bone) => bone.id === 'left_rib_1'));
 assert.equal(await exists('public/models/manifest.json'), true);
+const modelManifest = JSON.parse(await text('public/models/manifest.json'));
+assert.equal(validateModelManifest(modelManifest, extendedBones).valid, true);
+assert.equal(modelPackageSummary(modelManifest, 'infant', extendedBones).status, 'placeholder');
 assert.equal(await exists('dist/index.html'), true);
 assert.equal(await exists('dist/sw.js'), true);
 assert.equal(await exists('src/domain/analysis.js'), true);

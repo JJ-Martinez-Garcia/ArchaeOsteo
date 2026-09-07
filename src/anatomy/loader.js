@@ -1,3 +1,14 @@
+import { validateModelManifest } from './package.js';
+
+export async function loadModelManifest(url = './models/manifest.json') {
+  const response = await fetch(url, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`No se pudo cargar el manifiesto de modelos (${response.status}).`);
+  const manifest = await response.json();
+  const validation = validateModelManifest(manifest);
+  if (!validation.valid) throw new Error(`Manifiesto de modelos inválido: ${validation.errors.join('; ')}`);
+  return manifest;
+}
+
 export async function loadBoneModel(THREE, profileId, boneId, options = {}) {
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
   const loader = new GLTFLoader(options.manager);

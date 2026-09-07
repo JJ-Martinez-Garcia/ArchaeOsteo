@@ -34,6 +34,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - autosalvado silencioso cada 30 segundos y al pasar la aplicación a segundo plano;
 - indicador de conectividad para distinguir trabajo sincronizado de trabajo local offline;
 - catálogo de perfiles y loader preparado para assets GLB independientes;
+- validador de manifiestos GLB que exige perfiles, rutas, estado de cobertura y licencia antes de incorporar assets;
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
 - interfaz responsive para escritorio y móvil.
