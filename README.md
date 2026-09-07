@@ -26,10 +26,11 @@ Esta primera fase implementa un MVP ejecutable con:
 - Three.js cargado de forma diferida para reducir el bundle inicial;
 - instalación y actualización de la PWA controladas por el usuario;
 - catálogo de perfiles y loader preparado para assets GLB independientes;
+- catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
 - interfaz responsive para escritorio y móvil.
 
-Los elementos 3D actuales son marcadores geométricos de desarrollo. No representan modelos anatómicos aptos para medición o diagnóstico. Los modelos reales deberán incorporarse como GLB documentados en `SOURCES.md` y separados por perfil.
+Los elementos 3D actuales son marcadores geométricos de desarrollo, ahora organizados como piezas independientes para facilitar el inventario completo. No representan modelos anatómicos aptos para medición o diagnóstico. Los modelos reales deberán incorporarse como GLB documentados en `SOURCES.md` y separados por perfil.
 
 ## Arquitectura prevista
 

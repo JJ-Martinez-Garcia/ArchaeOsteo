@@ -27,6 +27,10 @@ for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTAD
 
 assert.equal(await exists('src/anatomy/catalog.js'), true);
 assert.equal(await exists('src/anatomy/loader.js'), true);
+assert.equal(await exists('src/anatomy/extended-bones.js'), true);
+const { extendedBones } = await import('../src/anatomy/extended-bones.js');
+assert.ok(extendedBones.length > 100, 'expanded catalog should contain independent placeholders');
+assert.ok(extendedBones.some((bone) => bone.id === 'left_rib_1'));
 assert.equal(await exists('public/models/manifest.json'), true);
 assert.equal(await exists('dist/index.html'), true);
 assert.equal(await exists('dist/sw.js'), true);

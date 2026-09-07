@@ -31,3 +31,9 @@
 - Añadidos cálculos transparentes de NISP, MNE y MNI.
 - Añadidos comparación de perfiles y modo aprendizaje.
 - Actualizada la caché del service worker.
+
+## 0.3.0 - 2026-09-07
+
+- Ampliado el catálogo de marcadores independientes con vértebras, costillas, cintura, extremidades, manos y pies.
+- Añadidos colores y protección de renderizado para las nuevas regiones anatómicas.
+- Añadida prueba de humo para comprobar la presencia y el tamaño mínimo del catálogo ampliado.
