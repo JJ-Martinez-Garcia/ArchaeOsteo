@@ -59,6 +59,7 @@ for (const marker of ['inventory', 'dental', 'metrics', 'stats', 'report', 'scie
 assert.match(main, /setInterval\(\(\) =>/);
 assert.match(main, /connection-status/);
 assert.match(main, /id="toast" role="status" aria-live="polite"/);
+assert.match(main, /setTimeout\(\(\)=>\{URL\.revokeObjectURL\(a\.href\);a\.remove\(\);\},1000\)/);
 assert.match(main, /filter-taphonomy/);
 assert.match(main, /filter-pathology/);
 assert.match(main, /deciduousTeeth/);

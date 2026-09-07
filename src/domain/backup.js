@@ -102,6 +102,8 @@ export function downloadJson(filename, value) {
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = filename;
+  link.style.display = 'none';
+  document.body?.append(link);
   link.click();
-  URL.revokeObjectURL(link.href);
+  setTimeout(() => { URL.revokeObjectURL(link.href); link.remove(); }, 1000);
 }
