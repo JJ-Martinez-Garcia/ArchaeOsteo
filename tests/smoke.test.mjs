@@ -18,6 +18,9 @@ assert.equal(manifest.icons[0].type, 'image/png');
 assert.equal(manifest.icons[1].type, 'image/png');
 assert.equal(manifest.icons[0].sizes, '192x192');
 assert.equal(manifest.icons[1].sizes, '512x512');
+assert.equal(manifest.shortcuts.length, 2);
+assert.equal(manifest.shortcuts[0].url, './?view=inventory');
+assert.equal(manifest.shortcuts[1].url, './?view=report');
 
 const sw = await text('public/sw.js');
 assert.match(sw, /caches\.open/);
@@ -70,6 +73,7 @@ assert.match(main, /osteo3d-shell-v7/);
 assert.match(main, /Iconos PWA/);
 assert.match(main, /HTML, datos e iconos en caché/);
 assert.match(main, /models\/sources\.json/);
+assert.match(main, /applyPwaLaunchView/);
 assert.match(main, /model-package-panel/);
 assert.match(main, /downloadSelectedModelPackage/);
 assert.match(main, /Pendiente de incorporar assets licenciados/);

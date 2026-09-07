@@ -13,6 +13,10 @@
   "background_color": "#f5f7fa",
   "theme_color": "#102a43",
   "prefer_related_applications": false,
+  "shortcuts": [
+    { "name": "Inventario osteológico", "short_name": "Inventario", "description": "Abrir el inventario arqueológico", "url": "./?view=inventory", "icons": [{ "src": "./icons/osteo3d-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Informe osteoarqueológico", "short_name": "Informe", "description": "Abrir el informe osteoarqueológico", "url": "./?view=report", "icons": [{ "src": "./icons/osteo3d-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ],
   "icons": [
     { "src": "./icons/osteo3d-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "./icons/osteo3d-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
