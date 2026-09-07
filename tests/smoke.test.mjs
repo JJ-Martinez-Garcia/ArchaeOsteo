@@ -40,12 +40,16 @@ assert.match(sw, /startsWith\('osteo3d-shell-'\)/);
 assert.match(sw, /caches\.delete/);
 
 const main = await text('src/main.js');
+const styles = await text('src/styles.css');
 const store = await text('src/data/store.js');
 const translations = await text('src/i18n/translations.js');
 assert.match(store, /indexedDB/);
 assert.match(store, /PROJECT_SCHEMA_VERSION = 2/);
 assert.match(store, /normalizeProject/);
 assert.match(store, /localStorage\.getItem/);
+assert.match(styles, /:root\{/);
+assert.match(styles, /\.layout\{/);
+assert.match(styles, /canvas\{touch-action:none\}/);
 assert.match(store, /listProjects/);
 assert.match(store, /projectName/);
 for (const marker of ['inventory', 'dental', 'metrics', 'stats', 'report', 'scientificRecord', 'changes']) assert.match(translations, new RegExp(`${marker}:`));
