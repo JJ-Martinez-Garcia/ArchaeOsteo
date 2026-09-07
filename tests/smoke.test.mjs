@@ -71,6 +71,8 @@ assert.match(main, /protectLocalStorage/);
 assert.match(main, /navigator\.storage\.persist/);
 assert.match(main, /storage-status/);
 assert.match(main, /pwa-diagnostics/);
+assert.match(main, /inspector-toggle/);
+assert.match(main, /mobile-open/);
 assert.match(main, /runPwaDiagnostics/);
 assert.match(main, /beforeinstallprompt/);
 assert.match(main, /appinstalled/);
