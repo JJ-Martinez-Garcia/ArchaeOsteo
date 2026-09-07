@@ -15,6 +15,8 @@ assert.ok(manifest.icons.length > 0);
 const sw = await text('public/sw.js');
 assert.match(sw, /caches\.open/);
 assert.match(sw, /SKIP_WAITING/);
+assert.match(sw, /cache: 'reload'/);
+assert.match(sw, /no-store/);
 
 const main = await text('src/main.js');
 const store = await text('src/data/store.js');
