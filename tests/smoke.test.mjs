@@ -142,6 +142,8 @@ assert.match(store, /wireframe: Boolean/);
 assert.match(store, /lightIntensity/);
 assert.match(main, /data-view-extra="superior"/);
 assert.match(main, /data-view-extra="inferior"/);
+assert.match(main, /id="zoom-out"/);
+assert.match(main, /id="zoom-in"/);
 assert.match(main, /modelSource: 'glb'/);
 assert.match(main, /intersectObjects\(group\.children, true\)/);
 assert.match(main, /listProjects, loadProject/);

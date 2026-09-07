@@ -249,6 +249,9 @@ document.querySelector('#light-slider').oninput=event=>{setLightIntensity(Number
 setInterval(()=>{const slider=document.querySelector('#light-slider');if(slider){const value=Math.round((state.lightIntensity??1)*100);slider.value=value;document.querySelector('#light-value').textContent=value+'%';}},500);
 document.querySelector('.viewer-toolbar')?.insertAdjacentHTML('beforeend','<button data-view-extra="superior">Superior</button><button data-view-extra="inferior">Inferior</button>');
 document.querySelectorAll('[data-view-extra]').forEach(button=>button.onclick=()=>{orbit.theta=0;orbit.phi=button.dataset.viewExtra==='superior'?0.12:Math.PI-0.12;orbit.target.set(0,0,0);updateCamera();});
+document.querySelector('.viewer-toolbar')?.insertAdjacentHTML('beforeend','<button id="zoom-out" aria-label="Alejar">−</button><button id="zoom-in" aria-label="Acercar">+</button>');
+document.querySelector('#zoom-out').onclick=()=>{orbit.radius=Math.min(40,orbit.radius+1);updateCamera();};
+document.querySelector('#zoom-in').onclick=()=>{orbit.radius=Math.max(4,orbit.radius-1);updateCamera();};
 document.querySelector('#reset').addEventListener('click',()=>{state.tableMode=false;state.tableTransforms={};state.skeletonFilter='all';state.regionFilter='all';state.hidden={};state.opacity={};state.wireframe=false;setLightIntensity(1);renderList();const button=document.querySelector('#table-mode');if(button){button.setAttribute('aria-pressed','false');button.textContent='Mesa osteológica';}const wireframe=document.querySelector('#wireframe-toggle');if(wireframe){wireframe.setAttribute('aria-pressed','false');wireframe.textContent='Wireframe';}setCameraProjection(false);});
 document.querySelector('#profile').addEventListener('change', () => loadAvailableProfileModels());
 initQuickInventory();
