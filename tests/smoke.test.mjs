@@ -59,6 +59,11 @@ assert.match(main, /if\(updateRequested\) window\.location\.reload/);
 assert.match(main, /onWheel/);
 assert.match(main, /onPointerMove/);
 assert.match(main, /orbit\.target/);
+assert.match(main, /tabIndex = 0/);
+assert.match(main, /aria-label.*Visor 3D/);
+assert.match(main, /onViewerKeyDown/);
+assert.match(main, /ArrowLeft/);
+assert.match(main, /toLowerCase\(\) === 'r'/);
 
 assert.equal(await exists('src/anatomy/catalog.js'), true);
 assert.equal(await exists('src/anatomy/loader.js'), true);
