@@ -95,6 +95,7 @@ assert.equal(formatPackageSize(42.5), 'aprox. 42.5 MB');
 const sourceRegistry = JSON.parse(await text('public/models/sources.json'));
 assert.equal(validateModelSourceRegistry(modelManifest, sourceRegistry).valid, true);
 assert.equal(validateModelSourceRegistry({ profiles: { adult_male: { asset_status: 'ready' } } }, sourceRegistry).valid, false);
+assert.match(await text('src/anatomy/loader.js'), /loadModelSourceRegistry/);
 assert.equal(await exists('public/models/SOURCES.md'), true);
 const packagePlan = modelPackageDownloadPlan(modelManifest, 'adult_male', [{ id: 'skull' }].map(bone => bone.id));
 assert.equal(packagePlan.urls[0], './models/adult_male/skull.glb');
