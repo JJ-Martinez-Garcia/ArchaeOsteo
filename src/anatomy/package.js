@@ -29,6 +29,10 @@ export function validateModelManifest(manifest, boneIds = []) {
   if (!manifest || manifest.schema_version !== MODEL_MANIFEST_SCHEMA) errors.push('schema_version no compatible');
   if (!manifest?.profiles || typeof manifest.profiles !== 'object') errors.push('falta profiles');
   if (!manifest?.bone_asset_pattern) errors.push('falta bone_asset_pattern');
+  else {
+    if (!manifest.bone_asset_pattern.includes('{profile}')) errors.push('bone_asset_pattern debe incluir {profile}');
+    if (!manifest.bone_asset_pattern.includes('{bone_id}')) errors.push('bone_asset_pattern debe incluir {bone_id}');
+  }
   if (!Array.isArray(manifest?.required_metadata) || !manifest.required_metadata.includes('license')) errors.push('required_metadata debe exigir license');
   for (const [profileId, profile] of Object.entries(manifest?.profiles || {})) {
     if (!profile.root) errors.push(`${profileId}: falta root`);

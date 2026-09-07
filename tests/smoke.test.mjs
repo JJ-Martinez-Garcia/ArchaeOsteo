@@ -196,6 +196,7 @@ assert.equal(await exists('public/icons/osteo3d-192.png'), true);
 assert.equal(await exists('public/icons/osteo3d-512.png'), true);
 const modelManifest = JSON.parse(await text('public/models/manifest.json'));
 assert.equal(validateModelManifest(modelManifest, extendedBones).valid, true);
+assert.equal(validateModelManifest({ ...modelManifest, bone_asset_pattern: '{profile}/model.glb' }, extendedBones).valid, false);
 assert.equal(modelManifest.bone_count, 178);
 assert.equal(modelPackageSummary(modelManifest, 'infant', extendedBones).status, 'placeholder');
 assert.equal(formatPackageSize(null), 'no disponible');
