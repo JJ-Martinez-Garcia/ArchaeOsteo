@@ -123,6 +123,7 @@ assert.match(main, /skeleton-complete/);
 assert.match(main, /skeletonFilter/);
 assert.match(main, /matchesSkeletonFilter/);
 assert.match(main, /bone-subgroup/);
+assert.match(main, /Axial skeleton/);
 assert.match(main, /region-filter-controls/);
 assert.match(main, /matchesRegionFilter/);
 assert.match(main, /data-region-filter="Cráneo"/);

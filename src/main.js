@@ -143,7 +143,8 @@ function renderList() {
   const visible = bones.filter(b => matchesSkeletonFilter(b) && matchesRegionFilter(b) && [b.id, b.es, b.en, b.la].some(v => v.toLowerCase().includes(q)));
   const renderGroup = group => visible.filter(b => group === 'axial' ? ['Cráneo', 'Columna', 'Tórax'].includes(b.region) : !['Cráneo', 'Columna', 'Tórax'].includes(b.region)).map(b => `<button class="bone-row ${b.id===state.selected?'selected':''}" data-bone="${b.id}"><span class="bone-icon" style="background:#${(regionColors[b.region] || 0xc4ad8b).toString(16)}"></span>${displayBoneName(b)}<small>${b.id}</small></button>`).join('');
   const list = document.querySelector('#bone-list');
-  list.innerHTML = `<div class="bone-subgroup" aria-label="Esqueleto axial"><div class="bone-subgroup-title">Axial</div>${renderGroup('axial')}</div><div class="bone-subgroup" aria-label="Esqueleto apendicular"><div class="bone-subgroup-title">Apendicular</div>${renderGroup('appendicular')}</div>`;
+  const groupLabels = state.language === 'en' ? { axial: 'Axial skeleton', appendicular: 'Appendicular skeleton' } : { axial: 'Esqueleto axial', appendicular: 'Esqueleto apendicular' };
+  list.innerHTML = `<div class="bone-subgroup" aria-label="${groupLabels.axial}"><div class="bone-subgroup-title">${groupLabels.axial}</div>${renderGroup('axial')}</div><div class="bone-subgroup" aria-label="${groupLabels.appendicular}"><div class="bone-subgroup-title">${groupLabels.appendicular}</div>${renderGroup('appendicular')}</div>`;
   document.querySelectorAll('[data-bone]').forEach(x => x.onclick = () => selectBone(x.dataset.bone));
 }
 const preservationNames = { not_evaluated:'No evaluada', excellent:'Excelente', good:'Buena', regular:'Regular', poor:'Mala', very_poor:'Muy mala' };
