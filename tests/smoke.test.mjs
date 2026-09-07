@@ -263,6 +263,8 @@ assert.equal(validateBackup(backup).deciduousDental['51'], 'present');
 assert.equal(validateBackup(backup).projectName, 'Excavación 2026');
 assert.equal(validateBackup(backup).language, 'en');
 assert.equal(validateBackup(backup).filters.side, 'left');
+assert.match(await text('src/ui/extended.js'), /if \(imported\.id\) state\.projectId = imported\.id/);
+assert.match(await text('src/ui/extended.js'), /updateLabels\(\);\n      renderList/);
 assert.deepEqual(validateBackup(createBackup({ ...backup.project, changeLog: [{ boneId: 'skull', previousStatus: 'not_recorded', newStatus: 'present' }] })).changeLog[0].newStatus, 'present');
 
 console.log('Osteo3D smoke tests: OK');

@@ -135,6 +135,11 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       } else imported = validateBackup(JSON.parse(await file.text()));
       if (!window.confirm('La importación reemplazará los datos del proyecto actual. ¿Continuar?')) return;
       Object.assign(state, imported);
+      if (imported.id) state.projectId = imported.id;
+      if (imported.projectName) state.projectName = imported.projectName;
+      language.value = state.language || 'es';
+      document.documentElement.lang = state.language || 'es';
+      updateLabels();
       renderList(); renderStats?.(); selectBone(state.selected); await saveLocal();
       document.querySelector('#toast').textContent = imported.importedRows == null ? 'Importación completada · copia completa' : `Importación completada · ${imported.importedRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} ignorados` : ''}`;
     } catch (error) { document.querySelector('#toast').textContent = `Importación rechazada: ${error.message}`; }
