@@ -38,6 +38,7 @@ export function normalizeProject(project) {
     opacity: project.opacity || {},
     wireframe: Boolean(project.wireframe),
     tableTransforms: project.tableTransforms || {},
+    lightIntensity: Number.isFinite(project.lightIntensity) ? project.lightIntensity : 1,
     changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],
     dental: project.dental || {},
     deciduousDental: project.deciduousDental || {},

@@ -4,3 +4,4 @@
 .model-import-label{display:block;text-align:center;cursor:pointer}
 .table-controls{display:grid;gap:4px;padding:8px;background:#f0f4f7;border-radius:6px;font-size:10px}.table-controls label{display:grid;grid-template-columns:55px 1fr;align-items:center;color:#486581}.table-controls input{width:100%}
 .region-filter-controls{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.region-filter-controls button{border:1px solid #bcccdc;background:#fff;border-radius:4px;padding:4px 6px;font-size:10px;cursor:pointer}
+.light-control{display:grid;grid-template-columns:auto auto;gap:4px;align-items:center;font-size:10px;color:#486581}.light-control input{grid-column:1/-1;width:100%}
