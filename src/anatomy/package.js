@@ -84,6 +84,27 @@ export async function downloadModelPackage(manifest, profileId, boneIds = [], op
   return { ...plan, downloaded: plan.urls.length, cacheName: options.cacheName || MODEL_PACKAGE_CACHE };
 }
 
+export async function importModelPackageFiles(profileId, files = [], boneIds = [], options = {}) {
+  if (!globalThis.caches?.open) throw new Error('Cache Storage no disponible en este navegador.');
+  const cacheName = options.cacheName || MODEL_PACKAGE_CACHE;
+  const cache = await caches.open(cacheName);
+  const knownIds = new Set(boneIds);
+  const imported = [];
+  const rejected = [];
+  for (const file of files) {
+    const baseName = String(file?.name || '').replace(/\.glb$/i, '');
+    if (!/\.glb$/i.test(String(file?.name || '')) || !knownIds.has(baseName)) {
+      rejected.push(file?.name || 'archivo sin nombre');
+      continue;
+    }
+    const url = `./models/${profileId}/${baseName}.glb`;
+    const body = await file.arrayBuffer();
+    await cache.put(url, new Response(body, { headers: { 'content-type': 'model/gltf-binary', 'content-length': String(file.size || body.byteLength) } }));
+    imported.push(baseName);
+  }
+  return { imported, rejected, importedCount: imported.length, rejectedCount: rejected.length, cacheName };
+}
+
 export async function removeModelPackage(manifest, profileId, boneIds = [], options = {}) {
   const plan = modelPackageDownloadPlan(manifest, profileId, boneIds);
   if (!globalThis.caches?.open) throw new Error('Cache Storage no disponible en este navegador.');
