@@ -97,8 +97,13 @@ export async function importModelPackageFiles(profileId, files = [], boneIds = [
       rejected.push(file?.name || 'archivo sin nombre');
       continue;
     }
-    const url = `./models/${profileId}/${baseName}.glb`;
     const body = await file.arrayBuffer();
+    const magic = new TextDecoder().decode(new Uint8Array(body).slice(0, 4));
+    if (magic !== 'glTF') {
+      rejected.push(file?.name || 'archivo sin nombre');
+      continue;
+    }
+    const url = `./models/${profileId}/${baseName}.glb`;
     await cache.put(url, new Response(body, { headers: { 'content-type': 'model/gltf-binary', 'content-length': String(file.size || body.byteLength) } }));
     imported.push(baseName);
   }
