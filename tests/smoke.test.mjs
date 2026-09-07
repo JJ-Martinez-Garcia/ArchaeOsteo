@@ -121,6 +121,8 @@ assert.match(main, /Proyección ortográfica/);
 assert.match(main, /statusNamesEn/);
 assert.match(main, /preservationNamesEn/);
 assert.match(main, /dentalNamesEn/);
+assert.match(main, /displayBoneName/);
+assert.match(main, /state\.language==='en'\?'SELECTED':'SELECCIONADO'/);
 assert.match(main, /hide-selected/);
 assert.match(main, /state\.hidden\[id\]/);
 assert.match(main, /opacity-slider/);
