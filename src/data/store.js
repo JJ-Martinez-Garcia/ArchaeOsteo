@@ -16,6 +16,14 @@ function openDatabase() {
   });
 }
 
+function readFallbackProject() {
+  try {
+    return normalizeProject(JSON.parse(localStorage.getItem('osteo3d-mvp') || 'null'));
+  } catch {
+    return null;
+  }
+}
+
 export function normalizeProject(project) {
   if (!project || typeof project !== 'object') return null;
   return {
@@ -72,13 +80,9 @@ export async function loadProject(id) {
       request.onerror = () => reject(request.error);
     });
     db.close();
-    return normalizeProject(result);
+    return normalizeProject(result) || readFallbackProject();
   } catch {
-    try {
-      return normalizeProject(JSON.parse(localStorage.getItem('osteo3d-mvp') || 'null'));
-    } catch {
-      return null;
-    }
+    return readFallbackProject();
   }
 }
 
@@ -91,9 +95,10 @@ export async function listProjects() {
       request.onerror = () => reject(request.error);
     });
     db.close();
-    return result.map(normalizeProject).filter(Boolean).sort((a, b) => String(a.projectName || a.id).localeCompare(String(b.projectName || b.id), 'es'));
+    const projects = result.map(normalizeProject).filter(Boolean).sort((a, b) => String(a.projectName || a.id).localeCompare(String(b.projectName || b.id), 'es'));
+    return projects.length ? projects : (readFallbackProject() ? [readFallbackProject()] : []);
   } catch {
-    const fallback = normalizeProject(JSON.parse(localStorage.getItem('osteo3d-mvp') || 'null'));
+    const fallback = readFallbackProject();
     return fallback ? [fallback] : [];
   }
 }

@@ -50,6 +50,8 @@ assert.match(store, /indexedDB/);
 assert.match(store, /PROJECT_SCHEMA_VERSION = 2/);
 assert.match(store, /normalizeProject/);
 assert.match(store, /localStorage\.getItem/);
+assert.match(store, /normalizeProject\(result\) \|\| readFallbackProject\(\)/);
+assert.match(store, /projects\.length \? projects :/);
 assert.match(styles, /:root\{/);
 assert.match(styles, /\.layout\{/);
 assert.match(styles, /canvas\{touch-action:none\}/);
