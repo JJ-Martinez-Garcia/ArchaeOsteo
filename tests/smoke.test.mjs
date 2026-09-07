@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { access } from 'node:fs/promises';
 import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
 import { portionOptionsForBone } from '../src/domain/portions.js';
-import { modelPackageSummary, validateModelManifest } from '../src/anatomy/package.js';
+import { downloadModelPackage, modelPackageDownloadPlan, modelPackageSummary, validateModelManifest } from '../src/anatomy/package.js';
 import { applyInventoryRows, createBackup, parseCsv, validateBackup } from '../src/domain/backup.js';
 
 const text = async path => readFile(path, 'utf8');
@@ -80,6 +80,9 @@ assert.equal(await exists('public/icons/osteo3d-512.svg'), true);
 const modelManifest = JSON.parse(await text('public/models/manifest.json'));
 assert.equal(validateModelManifest(modelManifest, extendedBones).valid, true);
 assert.equal(modelPackageSummary(modelManifest, 'infant', extendedBones).status, 'placeholder');
+const packagePlan = modelPackageDownloadPlan(modelManifest, 'adult_male', [{ id: 'skull' }].map(bone => bone.id));
+assert.equal(packagePlan.urls[0], './models/adult_male/skull.glb');
+await assert.rejects(() => downloadModelPackage(modelManifest, 'adult_male', ['skull']), /placeholder/);
 assert.equal(await exists('dist/index.html'), true);
 assert.equal(await exists('dist/sw.js'), true);
 assert.equal(await exists('src/domain/analysis.js'), true);

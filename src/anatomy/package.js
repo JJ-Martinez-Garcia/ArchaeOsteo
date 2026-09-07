@@ -1,4 +1,5 @@
 export const MODEL_MANIFEST_SCHEMA = 1;
+export const MODEL_PACKAGE_CACHE = 'osteo3d-models-v1';
 
 const ASSET_STATUSES = new Set(['placeholder', 'ready', 'partial']);
 
@@ -27,4 +28,37 @@ export function modelPackageSummary(manifest, profileId, boneIds = []) {
     pattern: String(manifest.bone_asset_pattern || '').replace('{profile}', profileId),
     requiredMetadata: manifest.required_metadata || []
   };
+}
+
+export function modelPackageDownloadPlan(manifest, profileId, boneIds = []) {
+  const summary = modelPackageSummary(manifest, profileId, boneIds);
+  return {
+    ...summary,
+    urls: summary.status === 'missing'
+      ? []
+      : boneIds.map(boneId => `./models/${summary.pattern.replace('{bone_id}', boneId)}`)
+  };
+}
+
+export async function downloadModelPackage(manifest, profileId, boneIds = [], options = {}) {
+  const plan = modelPackageDownloadPlan(manifest, profileId, boneIds);
+  if (plan.status !== 'ready' && plan.status !== 'partial') {
+    throw new Error(`El paquete ${profileId} no está disponible: ${plan.status}.`);
+  }
+  if (!globalThis.caches?.open) throw new Error('Cache Storage no disponible en este navegador.');
+  const cache = await caches.open(options.cacheName || MODEL_PACKAGE_CACHE);
+  for (const url of plan.urls) {
+    const response = await fetch(url, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`No se pudo descargar ${url} (${response.status}).`);
+    await cache.put(url, response.clone());
+  }
+  return { ...plan, downloaded: plan.urls.length, cacheName: options.cacheName || MODEL_PACKAGE_CACHE };
+}
+
+export async function removeModelPackage(manifest, profileId, boneIds = [], options = {}) {
+  const plan = modelPackageDownloadPlan(manifest, profileId, boneIds);
+  if (!globalThis.caches?.open) throw new Error('Cache Storage no disponible en este navegador.');
+  const cache = await caches.open(options.cacheName || MODEL_PACKAGE_CACHE);
+  await Promise.all(plan.urls.map(url => cache.delete(url)));
+  return { ...plan, removed: plan.urls.length, cacheName: options.cacheName || MODEL_PACKAGE_CACHE };
 }
