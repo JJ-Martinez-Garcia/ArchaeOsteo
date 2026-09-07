@@ -44,3 +44,10 @@
 - Añadida normalización de proyectos y recuperación automática desde `localStorage` cuando IndexedDB no está disponible.
 - Añadido autosalvado periódico y al ocultar la aplicación.
 - Añadido indicador visible de conectividad offline/online y metadatos PWA ampliados.
+
+## 0.5.0 - 2026-09-07
+
+- Añadidos filtros de tafonomía y patología/trauma en estadísticas.
+- Aplicados los filtros científicos al visor 3D para aislar los elementos con o sin registro.
+- Añadidas las regiones Manos y Pies a la aplicación masiva de estados y al filtrado regional.
+- Persistidos los filtros activos dentro del proyecto local.

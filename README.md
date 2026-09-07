@@ -16,6 +16,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - odontograma permanente FDI con estados dentales y persistencia local;
 - módulo de osteometría con medidas en milímetros, landmarks relativos y resumen de cobertura;
 - panel de estadísticas con representación, conservación media y filtros por estado, región y lateralidad;
+- filtros científicos por registro de tafonomía y patología aplicados al visor y a las estadísticas;
 - informe osteoarqueológico imprimible con identificación, inventario, dentición, mediciones y landmarks;
 - exportación XLSX diferida con hojas de inventario y odontograma;
 - fotografías locales asociadas al elemento seleccionado y almacenadas offline;
@@ -52,7 +53,7 @@ npm test
 
 1. Sustituir marcadores por modelos GLB con metadatos y licencias.
 2. Separar completamente inventario, informes y configuración en stores especializados.
-3. Ampliar “Pintar inventario” con filtros de tafonomía/patología, dentición decidua y porciones de huesos largos.
+3. Ampliar “Pintar inventario” con dentición decidua y porciones de huesos largos.
 4. Incorporar modelos GLB documentados por perfil y pruebas end-to-end en navegador.
 
 La especificación completa de producto está documentada en el requisito de proyecto entregado a Codex.

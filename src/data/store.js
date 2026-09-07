@@ -37,6 +37,7 @@ export function normalizeProject(project) {
     landmarks: project.landmarks || {},
     photos: project.photos || {},
     language: project.language || 'es',
+    filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', ...(project.filters || {}) },
     report: project.report || { individual: 'IND-LOCAL', site: '', context: '', investigator: '' }
   };
 }

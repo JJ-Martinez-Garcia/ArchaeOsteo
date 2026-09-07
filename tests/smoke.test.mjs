@@ -26,6 +26,8 @@ assert.match(store, /normalizeProject/);
 assert.match(store, /localStorage\.getItem/);
 assert.match(main, /setInterval\(\(\) =>/);
 assert.match(main, /connection-status/);
+assert.match(main, /filter-taphonomy/);
+assert.match(main, /filter-pathology/);
 assert.equal(manifest.scope, './');
 for (const marker of ['PINTAR INVENTARIO', 'ODONTOGRAMA', 'OSTEOMETRÍA', 'ESTADÍSTICAS', 'INFORME OSTEOARQUEOLÓGICO', 'exportXlsx', 'registerPwa']) {
   assert.match(main, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `Falta módulo: ${marker}`);
