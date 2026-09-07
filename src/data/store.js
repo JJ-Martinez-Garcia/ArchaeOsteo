@@ -35,6 +35,7 @@ export function normalizeProject(project) {
     notes: project.notes || {},
     locked: project.locked || {},
     hidden: project.hidden || {},
+    opacity: project.opacity || {},
     changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],
     dental: project.dental || {},
     deciduousDental: project.deciduousDental || {},

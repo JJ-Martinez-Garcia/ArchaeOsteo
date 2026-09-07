@@ -18,6 +18,7 @@ export function createBackup(state) {
       notes: state.notes,
       locked: state.locked,
       hidden: state.hidden,
+      opacity: state.opacity,
       changeLog: state.changeLog,
       dental: state.dental,
       deciduousDental: state.deciduousDental,
