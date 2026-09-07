@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "adult_male": { "label": "Adulto masculino", "root": "./adult_male", "asset_status": "placeholder" },
+    "adult_female": { "label": "Adulto femenino", "root": "./adult_female", "asset_status": "placeholder" },
+    "infant": { "label": "Infante", "root": "./infant", "asset_status": "placeholder" },
+    "neonate": { "label": "Neonato", "root": "./neonate", "asset_status": "placeholder" }
+  },
+  "bone_asset_pattern": "{profile}/{bone_id}.glb",
+  "required_metadata": ["id", "name_es", "name_en", "name_la", "region", "side", "license"]
+}
