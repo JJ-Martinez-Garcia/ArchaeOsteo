@@ -63,6 +63,7 @@ assert.match(main, /beforeinstallprompt/);
 assert.match(main, /appinstalled/);
 assert.match(main, /disponible en este navegador/);
 assert.match(main, /osteo3d-shell-v6/);
+assert.match(main, /Iconos PWA/);
 assert.match(main, /model-package-panel/);
 assert.match(main, /downloadSelectedModelPackage/);
 assert.match(main, /Pendiente de incorporar assets licenciados/);
