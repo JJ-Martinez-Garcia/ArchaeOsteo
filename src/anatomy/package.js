@@ -18,6 +18,26 @@ export function validateModelManifest(manifest, boneIds = []) {
   return { valid: errors.length === 0, errors, profileCount: Object.keys(manifest?.profiles || {}).length, boneCount: boneIds.length };
 }
 
+export function validateModelSourceRegistry(manifest, registry = {}) {
+  const errors = [];
+  const records = registry?.profiles || {};
+  for (const [profileId, profile] of Object.entries(manifest?.profiles || {})) {
+    if (profile.asset_status === 'placeholder') continue;
+    const source = records[profileId];
+    if (!source) {
+      errors.push(`${profileId}: falta registro de fuente`);
+      continue;
+    }
+    for (const field of ['author', 'institution', 'url', 'license', 'version', 'consulted_at']) {
+      if (!source[field]) errors.push(`${profileId}: falta ${field}`);
+    }
+    if (profile.asset_status === 'ready' && (!Number.isInteger(source.asset_count) || source.asset_count < 1)) {
+      errors.push(`${profileId}: asset_count debe ser mayor que cero`);
+    }
+  }
+  return { valid: errors.length === 0, errors };
+}
+
 export function modelPackageSummary(manifest, profileId, boneIds = []) {
   const profile = manifest?.profiles?.[profileId];
   if (!profile) return { profileId, status: 'missing', expected: boneIds.length, pattern: null };
