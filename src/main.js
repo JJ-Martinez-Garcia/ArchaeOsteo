@@ -83,6 +83,8 @@ const syncInspectorTabA11y = () => inspectorTabIds.forEach(tabId => { const tab 
 inspectorTabs?.addEventListener('keydown', event => { if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return; event.preventDefault(); const current = inspectorTabIds.indexOf(document.activeElement?.id); const offset = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0; const next = event.key === 'Home' ? 0 : event.key === 'End' ? inspectorTabIds.length - 1 : (current + offset + inspectorTabIds.length) % inspectorTabIds.length; const tab = document.querySelector(`#${inspectorTabIds[next]}`); tab?.click(); tab?.focus(); });
 syncInspectorTabA11y();
 if (inspectorTabs && globalThis.MutationObserver) new MutationObserver(syncInspectorTabA11y).observe(inspectorTabs, { attributes: true, subtree: true, attributeFilter: ['class'] });
+document.querySelector('#search')?.setAttribute('aria-label', 'Buscar hueso, latín o identificador');
+document.querySelector('#viewer')?.setAttribute('aria-label', 'Visor 3D del esqueleto');
 document.querySelector('#reviewed')?.replaceChildren(`0/${bones.length}`);
 document.querySelector('#inventory-progress-count')?.replaceChildren(`0/${bones.length} elementos revisados`);
 function createFallbackMesh(bone) {
