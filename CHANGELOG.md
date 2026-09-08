@@ -1,5 +1,12 @@
 # Changelog
 
+## Cambios posteriores a 1.0.0
+
+- Añadida vista previa antes de reemplazar inventarios importados.
+- Conservados pesos y fragmentos indeterminados en exportaciones e informes.
+- Añadidos landmarks visibles y líneas guía para el esqueleto desplegado.
+- Añadidos decodificadores Meshopt y soporte opcional de Draco.
+
 ## 1.0.0 - 2026-09-08
 
 - Añadido registro y resumen separado de pesos identificados e indeterminados.

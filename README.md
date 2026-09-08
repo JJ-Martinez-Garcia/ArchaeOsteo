@@ -19,6 +19,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - odontograma permanente FDI con estados dentales y persistencia local;
 - odontograma deciduo FDI independiente (20 dientes) con persistencia separada;
 - módulo de osteometría con medidas en milímetros, landmarks relativos y resumen de cobertura;
+- osteometría ampliada con diámetro, unidades mm/cm, distancia entre landmarks y marcadores visibles sobre el hueso;
 - panel de estadísticas con representación, conservación media y filtros por estado, región y lateralidad;
 - filtros científicos por registro de tafonomía y patología aplicados al visor y a las estadísticas;
 - informe osteoarqueológico imprimible con identificación, inventario, dentición, mediciones y landmarks;
@@ -41,7 +42,9 @@ Esta primera fase implementa un MVP ejecutable con:
 - autosalvado silencioso cada 30 segundos y al pasar la aplicación a segundo plano;
 - indicador de conectividad para distinguir trabajo sincronizado de trabajo local offline;
 - precarga offline del HTML, manifest y chunks JS/CSS del build publicado;
+- líneas guía en modo explosión para relacionar cada elemento con su posición anatómica;
 - catálogo de perfiles y loader preparado para assets GLB independientes;
+- decodificación Meshopt integrada y Draco opcional mediante ruta de decodificador configurable;
 - importación de GLB locales por perfil, con validación de cabecera `glTF`, correspondencia con `Bone_ID` y caché offline;
 - importación temporal de modelos propios GLB, GLTF, OBJ y STL para el elemento seleccionado;
 - validador de manifiestos GLB que exige perfiles, rutas, estado de cobertura y licencia antes de incorporar assets;
@@ -62,6 +65,8 @@ npm install
 npm run dev
 npm run build
 npm test
+npm run validate-pwa
+npm run validate-model-assets
 ```
 
 ## Fases siguientes
