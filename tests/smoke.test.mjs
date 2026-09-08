@@ -533,6 +533,7 @@ assert.match(main, /customModels:state\.customModels/);
 assert.match(main, /loadedSource==='custom'\?\(english\?'Custom model':'Modelo propio'\)/);
 assert.match(main, /profile\.status==='placeholder'\?\(english\?'Geometric marker':'Marcador geométrico'\)/);
 assert.match(main, /sidebarHeadings/);
+assert.match(main, /function localizeTreeGroups().*COMPLETE SKELETON/);
 assert.match(main, /IndexedDB: disponible para proyectos locales/);
 assert.match(main, /WebGL: visor 3D disponible/);
 assert.match(main, /const english=state\.language==='en'; cacheElement\.textContent=`\$\{english\?'Offline cache'/);
