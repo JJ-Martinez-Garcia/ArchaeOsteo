@@ -260,6 +260,8 @@ assert.match(main, /state\.explosionAnimating\?\(state\.language==='en'\?'Pause 
 assert.match(main, /state\.wireframe\?\(english\?'Solid surface':'Superficie sólida'\)/);
 assert.match(main, /state\.xray\?\(english\?'X-Ray enabled':'X-Ray activado'\)/);
 assert.match(main, /state\.colorByRegion\?\(english\?'Colors by region':'Colores por región'\)/);
+assert.match(main, /const categoryLabels=english\?\{craniometric:'Craniometric',osteometric:'Osteometric',pelvimetric:'Pelvimetric',dental:'Dental'\}/);
+assert.match(main, /Elements with measurements:/);
 assert.match(main, /OSTEOLOGY ATLAS/);
 assert.match(main, /function refreshLocalizedStaticUi\(\)/);
 assert.match(main, /Offline · local data/);
