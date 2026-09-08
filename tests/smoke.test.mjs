@@ -69,6 +69,7 @@ assert.match(main, /function localizePwaDiagnostics\(\)/);
 assert.match(main, /function localizeModelPackagePanel\(\)/);
 assert.match(main, /if\(registration\.waiting\) registration\.waiting\.postMessage/);
 assert.match(main, /else await registration\.update\(\)/);
+assert.match(main, /document\.title=english\?'Osteo3D · Osteology atlas'/);
 assert.match(main, /list\.innerHTML=checks\.join\('\'\); localizePwaDiagnostics\(\)/);
 assert.match(main, /isSmallOrGrouped = \['Manos', 'Pies', 'Columna'\]/);
 assert.match(main, /rib\|costilla\|c\(\?:1_atlas/);
