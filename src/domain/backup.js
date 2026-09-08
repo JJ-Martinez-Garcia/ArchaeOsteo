@@ -36,6 +36,7 @@ export function createBackup(state) {
       landmarks: state.landmarks,
       photos: state.photos,
       photoScope: state.photoScope || 'bone',
+      photoTargetId: state.photoTargetId || '',
       language: state.language || 'es',
       filters: state.filters || { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all' },
       report: state.report

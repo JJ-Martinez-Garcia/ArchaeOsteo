@@ -270,6 +270,7 @@ assert.match(main, /photo-scope/);
 assert.match(main, /photoKey/);
 assert.match(await text('src/domain/backup.js'), /photoScope/);
 assert.match(main, /savedProject\.photoScope/);
+assert.match(main, /photoTargetId/);
 assert.match(main, /12\*1024\*1024/);
 assert.match(main, /canvas\.toDataURL/);
 assert.match(await text('src/anatomy/package.js'), /importModelPackageFiles/);
