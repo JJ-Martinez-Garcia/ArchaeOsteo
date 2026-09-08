@@ -264,6 +264,8 @@ assert.match(main, /metric-unit/);
 assert.match(main, /Distancia entre landmarks/);
 assert.match(main, /updateLandmarkVisuals/);
 assert.match(main, /landmark-visuals/);
+assert.match(main, /explosion-guides/);
+assert.match(main, /guideLines/);
 assert.match(await text('src/anatomy/package.js'), /importModelPackageFiles/);
 assert.match(await text('src/anatomy/loader.js'), /MeshoptDecoder/);
 assert.match(await text('src/anatomy/loader.js'), /DRACOLoader/);
