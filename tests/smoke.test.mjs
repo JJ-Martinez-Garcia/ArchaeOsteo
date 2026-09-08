@@ -256,6 +256,7 @@ assert.match(main, /Fragmentos indeterminados:/);
 assert.match(main, /excluidos de NISP\/MNE\/MNI/);
 assert.match(main, /Weight_g:state\.weights\[b\.id\]/);
 assert.match(main, /indeterminateFragments:state\.indeterminateFragments/);
+assert.match(main, /state\.indeterminateFragments = \[\]/);
 assert.match(main, /Fragmentos indeterminados/);
 assert.match(main, /escapeHtml\(individual\)/);
 assert.match(main, /metric-diameter/);
