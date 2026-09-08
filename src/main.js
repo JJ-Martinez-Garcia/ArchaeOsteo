@@ -249,6 +249,7 @@ const saveLocalWithoutChangeLog = saveLocal;
 saveLocal = async options => { await saveLocalWithoutChangeLog(options); const visualState={ hidden:state.hidden, opacity:state.opacity, opacityScope:state.opacityScope, wireframe:state.wireframe, xray:state.xray, labelMode:state.labelMode, colorByRegion:state.colorByRegion, comparisonProfile:state.comparisonProfile, tableTransforms:state.tableTransforms, lightIntensity:state.lightIntensity, changeLog:state.changeLog }; try { await saveProject({ ...state, id: state.projectId || 'default', ...visualState }); } catch { try { const fallback=JSON.parse(localStorage.getItem('osteo3d-mvp') || '{}'); localStorage.setItem('osteo3d-mvp',JSON.stringify({ ...fallback, weights: state.weights, indeterminateFragments: state.indeterminateFragments, ...visualState })); } catch {} } };
 const extendedUi = initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject });
 document.querySelector('#language')?.addEventListener('change', () => { renderDental(); updateDentalCount(); });
+document.querySelector('#profile')?.addEventListener('change', () => saveLocal({ notify: false }));
 document.querySelector('.tree')?.insertAdjacentHTML('afterbegin','<button id="skeleton-complete" class="tree-group">▣ ESQUELETO COMPLETO</button>');
 document.querySelector('#skeleton-complete').onclick=()=>{state.skeletonFilter='all';renderList();document.querySelector('#toast').textContent='Esqueleto completo';};
 const inspectorToggle=document.querySelector('#inspector-toggle');

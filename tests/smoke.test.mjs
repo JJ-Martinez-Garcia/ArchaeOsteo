@@ -59,6 +59,7 @@ assert.match(store, /projects\.length \? projects :/);
 assert.match(main, /visualState=\{ hidden:state\.hidden/);
 assert.match(main, /xray:state\.xray/);
 assert.match(main, /labelMode:state\.labelMode/);
+assert.match(main, /#profile.*saveLocal\(\{ notify: false \}\)/);
 const normalizedLegacy = normalizeProject({ profile: 'unknown', language: 'fr', report: null, filters: null });
 assert.equal(normalizedLegacy.profile, 'adult_male');
 assert.equal(normalizedLegacy.language, 'es');
