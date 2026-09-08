@@ -35,7 +35,7 @@ const teeth = ['18','17','16','15','14','13','12','11','21','22','23','24','25',
 const deciduousTeeth = ['55','54','53','52','51','61','62','63','64','65','85','84','83','82','81','71','72','73','74','75'];
 bones.push(...extendedBones);
 
-const state = { projectId: 'default', projectName: 'Proyecto sin título', profile: 'adult_male', selected: 'skull', skeletonFilter: 'all', regionFilter: 'all', explosion: 0, tableMode: false, tableTransforms: {}, orthographic: false, wireframe: false, xray: false, labelMode: 'selected', colorByRegion: true, lightIntensity: 1, isolate: false, hidden: {}, opacity: {}, opacityScope: 'bone', query: '', status: {}, preservation: {}, completeness: {}, fragments: {}, weights: {}, portions: {}, individuals: {}, taphonomy: {}, pathology: {}, notes: {}, indeterminateFragments: [], locked: {}, multiSelect: false, multiSelected: {}, dental: {}, deciduousDental: {}, dentitionType: 'permanent', dentalStatus: 'present', quickPresent: false, changeLog: [], measurements: {}, landmarks: {}, photos: {}, language: 'es', filters: { status:'all', region:'all', side:'all', taphonomy:'all', pathology:'all' }, report: { individual:'IND-LOCAL', site:'', context:'', investigator:'' }, history: [], future: [] };
+const state = { projectId: 'default', projectName: 'Proyecto sin título', profile: 'adult_male', selected: 'skull', skeletonFilter: 'all', regionFilter: 'all', explosion: 0, tableMode: false, tableTransforms: {}, orthographic: false, wireframe: false, xray: false, labelMode: 'selected', colorByRegion: true, comparisonProfile: '', lightIntensity: 1, isolate: false, hidden: {}, opacity: {}, opacityScope: 'bone', query: '', status: {}, preservation: {}, completeness: {}, fragments: {}, weights: {}, portions: {}, individuals: {}, taphonomy: {}, pathology: {}, notes: {}, indeterminateFragments: [], locked: {}, multiSelect: false, multiSelected: {}, dental: {}, deciduousDental: {}, dentitionType: 'permanent', dentalStatus: 'present', quickPresent: false, changeLog: [], measurements: {}, landmarks: {}, photos: {}, language: 'es', filters: { status:'all', region:'all', side:'all', taphonomy:'all', pathology:'all' }, report: { individual:'IND-LOCAL', site:'', context:'', investigator:'' }, history: [], future: [] };
 function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char])); }
 let modelManifest = null;
 let modelSourceRegistry = null;
@@ -46,7 +46,8 @@ setTimeout(() => { const csvButton=document.querySelector('#export-csv'); if(csv
 setTimeout(() => { const preview=document.querySelector('#report-preview'); if(preview) { preview.insertAdjacentHTML('afterend','<label class="photo-upload">Fotografías locales<input id="photo-input" type="file" accept="image/*" multiple></label><div id="photo-list" class="photo-list"></div>'); document.querySelector('#photo-input').onchange=event=>addPhotos(event.target.files); } }, 0);
 setTimeout(() => { document.querySelector('.top-actions').insertAdjacentHTML('afterbegin','<button id="install-app" class="pwa-action" hidden>Instalar PWA</button><button id="inspector-toggle" class="inspector-toggle" aria-controls="inspector" aria-expanded="false">Panel</button><span id="update-actions" class="pwa-update-actions" hidden><span class="pwa-update-label">Nueva versión disponible</span><button id="update-app" class="pwa-action">Actualizar ahora</button><button id="dismiss-update" class="pwa-action secondary-action">Más tarde</button></span>'); }, 0);
 const regionColors = { 'Cráneo': 0xd7a86e, 'Columna': 0xb88659, 'Tórax': 0x8eabc0, 'Cintura escapular': 0x6f9f9b, 'Extremidad superior': 0x6585aa, 'Extremidad inferior': 0x836b9c, 'Manos': 0x7196b5, 'Pies': 0x8c779e };
-let scene, camera, renderer, controls, raycaster, pointer, group;
+let scene, camera, renderer, controls, raycaster, pointer, group, comparisonGroup;
+let comparisonProfile = '';
 const loadedModelObjects = new Map();
 let landmarksRenderedFor = '';
 let guideGroup;
@@ -75,6 +76,8 @@ function createFallbackMesh(bone) {
   if (bone.shape === 'sphere') geo = new THREE.SphereGeometry(1, 24, 16); else if (bone.shape === 'ring') geo = new THREE.TorusGeometry(.25, .07, 8, 20); else geo = new THREE.BoxGeometry(1, 1, 1);
   const mesh = new THREE.Mesh(geo, mat); mesh.name = bone.id; mesh.userData = { ...bone, boneId: bone.id, modelSource: 'fallback' }; mesh.position.set(...bone.p); mesh.scale.set(...bone.size); if (bone.shape === 'bone') mesh.rotation.z = bone.id.includes('humerus') ? (bone.side === 'Izquierda' ? -.08 : .08) : 0; mesh.userData.baseRotationZ=mesh.rotation.z; mesh.userData.baseScale=mesh.scale.clone(); return mesh;
 }
+function profileComparisonScale(profileId) { return profileId === 'infant' ? .76 : profileId === 'neonate' ? .62 : 1; }
+function setComparisonProfile(profileId) { if (!THREE || !scene) return; if (comparisonGroup) { scene.remove(comparisonGroup); disposeObject(comparisonGroup); comparisonGroup = null; } comparisonProfile = profileId || ''; if (!comparisonProfile || comparisonProfile === state.profile) return; comparisonGroup = new THREE.Group(); comparisonGroup.name = `comparison-${comparisonProfile}`; const scale = profileComparisonScale(comparisonProfile); bones.forEach(bone => { const mesh=createFallbackMesh(bone); mesh.name=`comparison-${bone.id}`; mesh.position.x += 6; mesh.scale.multiplyScalar(scale); mesh.traverse(node=>{const materials=Array.isArray(node.material)?node.material:[node.material];materials.filter(Boolean).forEach(material=>{material.color?.setHex(0x4299e1);material.transparent=true;material.opacity=.34;material.depthWrite=false;});}); comparisonGroup.add(mesh); }); scene.add(comparisonGroup); document.querySelector('#toast').textContent=`Referencia 3D: ${profileCatalog(comparisonProfile).label}`; }
 function disposeObject(object) { object.traverse?.(node => { node.geometry?.dispose?.(); const materials = Array.isArray(node.material) ? node.material : [node.material]; materials.filter(Boolean).forEach(material => material.dispose?.()); }); }
 function restoreFallbackModels() { if (!group) return; for (const [id, object] of loadedModelObjects) { const bone = bones.find(item => item.id === id); group.remove(object); disposeObject(object); if (bone) group.add(createFallbackMesh(bone)); } loadedModelObjects.clear(); }
 async function loadAvailableProfileModels() {
@@ -104,6 +107,7 @@ async function loadAvailableProfileModels() {
   }
   selectBone(state.selected);
 }
+window.addEventListener('oste3d:compare-profile', event => { state.comparisonProfile=event.detail?.profileId||''; setComparisonProfile(state.comparisonProfile); });
 async function init3D() {
   THREE = await import('three');
   const host = document.querySelector('#viewer'); scene = new THREE.Scene(); scene.background = new THREE.Color(0xf0f4f7);

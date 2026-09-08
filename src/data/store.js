@@ -53,6 +53,7 @@ export function normalizeProject(project) {
     xray: Boolean(project.xray),
     labelMode: ['selected', 'region', 'all', 'none'].includes(project.labelMode) ? project.labelMode : 'selected',
     colorByRegion: project.colorByRegion !== false,
+    comparisonProfile: project.comparisonProfile || '',
     tableTransforms: project.tableTransforms || {},
     lightIntensity: Number.isFinite(project.lightIntensity) ? project.lightIntensity : 1,
     changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],

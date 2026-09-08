@@ -30,6 +30,7 @@ export function createBackup(state) {
       xray: state.xray,
       labelMode: state.labelMode,
       colorByRegion: state.colorByRegion,
+      comparisonProfile: state.comparisonProfile || '',
       tableTransforms: state.tableTransforms,
       lightIntensity: state.lightIntensity,
       changeLog: state.changeLog,
