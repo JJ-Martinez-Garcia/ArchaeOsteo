@@ -139,6 +139,8 @@ assert.match(main, /function focusSelectedBone/);
 assert.match(main, /orbit\.radius = 8/);
 assert.match(main, /'dentalStatus'/);
 assert.match(main, /'measurements'/);
+assert.match(main, /const diameter=Number\(document\.querySelector\('#metric-diameter'\)\?\.value\)/);
+assert.match(main, /unit:document\.querySelector\('#metric-unit'\)\?\.value==='cm'\?'cm':'mm'/);
 assert.match(main, /'landmarks'/);
 assert.match(main, /const visible=bones\.filter\(matchesFilters\)/);
 assert.match(extendedUi, /formatChangeValue/);
