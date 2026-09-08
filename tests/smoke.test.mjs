@@ -294,6 +294,8 @@ assert.match(main, /const report=state\.report\|\|\{\}/);
 assert.match(main, /Peso total registrado/);
 assert.match(main, /Fragmentos indeterminados:/);
 assert.match(main, /excluidos de NISP\/MNE\/MNI/);
+assert.match(main, /dentalReportHtml/);
+assert.match(main, /Odontograma permanente/);
 assert.match(main, /Weight_g:state\.weights\[b\.id\]/);
 assert.match(main, /indeterminateFragments:state\.indeterminateFragments/);
 assert.match(main, /state\.indeterminateFragments = \[\]/);
