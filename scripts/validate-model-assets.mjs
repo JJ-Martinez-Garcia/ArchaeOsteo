@@ -23,6 +23,8 @@ for (const [profileId, profile] of Object.entries(manifest.profiles || {})) {
   const files = await exists(profileRoot)
     ? (await readdir(profileRoot)).filter(name => name.toLowerCase().endsWith('.glb'))
     : [];
+  const fileIds = files.map(name => name.replace(/\.glb$/i, ''));
+  const declaredIds = Array.isArray(profile.asset_ids) ? profile.asset_ids : [];
   profileCounts[profileId] = files.length;
   const source = registry.profiles?.[profileId];
 
@@ -34,6 +36,12 @@ for (const [profileId, profile] of Object.entries(manifest.profiles || {})) {
     if (source?.source_status !== 'published') errors.push(`${profileId}: el registro de fuente debe estar published`);
     if (Number.isInteger(source?.asset_count) && source.asset_count !== files.length) {
       errors.push(`${profileId}: asset_count (${source.asset_count}) no coincide con los GLB (${files.length})`);
+    }
+    if (declaredIds.length !== files.length || declaredIds.some(id => !fileIds.includes(id)) || fileIds.some(id => !declaredIds.includes(id))) {
+      errors.push(`${profileId}: asset_ids no coincide exactamente con los GLB publicados`);
+    }
+    if (Array.isArray(source?.asset_ids) && (source.asset_ids.length !== declaredIds.length || source.asset_ids.some(id => !declaredIds.includes(id)))) {
+      errors.push(`${profileId}: asset_ids del registro de fuentes no coincide con el manifiesto`);
     }
     if (profile.asset_status === 'ready' && files.length !== manifest.bone_count) {
       errors.push(`${profileId}: ready exige ${manifest.bone_count} GLB y hay ${files.length}`);

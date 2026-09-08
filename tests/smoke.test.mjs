@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { access } from 'node:fs/promises';
 import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
 import { portionOptionsForBone } from '../src/domain/portions.js';
-import { cacheCustomModelFile, customModelUrl, downloadModelPackage, formatPackageSize, glbContainsBoneId, importModelPackageFiles, modelPackageDownloadPlan, modelPackageSummary, validateModelManifest, validateModelSourceRegistry } from '../src/anatomy/package.js';
+import { cacheCustomModelFile, customModelUrl, downloadModelPackage, formatPackageSize, getCachedModelBoneIds, glbContainsBoneId, importModelPackageFiles, modelPackageDownloadPlan, modelPackageSummary, validateModelManifest, validateModelSourceRegistry } from '../src/anatomy/package.js';
 import { applyInventoryRows, createBackup, parseCsv, validateBackup } from '../src/domain/backup.js';
 import { normalizeProject } from '../src/data/store.js';
 
@@ -617,6 +617,9 @@ assert.match(main, /Representación regional/);
 assert.match(main, /Método MNE/);
 assert.equal(modelPackageSummary(modelManifest, 'infant', extendedBones).status, 'placeholder');
 assert.equal(modelPackageSummary(modelManifest, 'adult_male', extendedBones).availableCount, 1);
+assert.equal(modelPackageSummary(modelManifest, 'adult_male', extendedBones).publishedCount, 1);
+assert.equal(modelPackageSummary(modelManifest, 'infant', extendedBones).publishedCount, 0);
+assert.equal(validateModelManifest({ ...modelManifest, profiles: { ...modelManifest.profiles, adult_male: { ...modelManifest.profiles.adult_male, asset_ids: [] } } }).valid, false);
 assert.equal(formatPackageSize(null), 'no disponible');
 assert.equal(formatPackageSize(42.5), 'aprox. 42.5 MB');
 const sourceRegistry = JSON.parse(await text('public/models/sources.json'));
@@ -715,6 +718,7 @@ const importedModels = await importModelPackageFiles('adult_male', [{ name: 'sku
 assert.equal(importedModels.importedCount, 1);
 assert.equal(importedModels.rejectedCount, 2);
 assert.equal(modelCacheEntries.has('./models/adult_male/skull.glb'), true);
+assert.deepEqual(await getCachedModelBoneIds('adult_male', ['skull', 'mandible']), ['skull']);
 const customFile = { name: 'skull.glb', type: 'model/gltf-binary', size: 64, arrayBuffer: async () => makeGlb(['skull']) };
 modelCacheEntries.set(customModelUrl('adult_male', 'skull', 'obj'), new Response('old'));
 const customCache = await cacheCustomModelFile('adult_male', 'skull', customFile);

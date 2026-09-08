@@ -38,6 +38,12 @@ export function validateModelManifest(manifest, boneIds = []) {
   for (const [profileId, profile] of Object.entries(manifest?.profiles || {})) {
     if (!profile.root) errors.push(`${profileId}: falta root`);
     if (!ASSET_STATUSES.has(profile.asset_status)) errors.push(`${profileId}: asset_status no válido`);
+    if (profile.asset_status === 'partial' && (!Array.isArray(profile.asset_ids) || profile.asset_ids.length === 0)) errors.push(`${profileId}: partial exige asset_ids`);
+    if (Array.isArray(profile.asset_ids)) {
+      if (new Set(profile.asset_ids).size !== profile.asset_ids.length) errors.push(`${profileId}: asset_ids contiene duplicados`);
+      if (profile.asset_ids.some(id => typeof id !== 'string' || !id.trim())) errors.push(`${profileId}: asset_ids contiene identificadores inválidos`);
+      if (Number.isInteger(profile.asset_count) && profile.asset_count !== profile.asset_ids.length) errors.push(`${profileId}: asset_count no coincide con asset_ids`);
+    }
   }
   const expectedProfiles = ['adult_male', 'adult_female', 'infant', 'neonate'];
   for (const profileId of expectedProfiles) if (!manifest?.profiles?.[profileId]) errors.push(`falta perfil ${profileId}`);
@@ -70,6 +76,7 @@ export function validateModelSourceRegistry(manifest, registry = {}) {
 export function modelPackageSummary(manifest, profileId, boneIds = []) {
   const profile = manifest?.profiles?.[profileId];
   if (!profile) return { profileId, status: 'missing', expected: boneIds.length, pattern: null };
+  const availableBoneIds = Array.isArray(profile.asset_ids) ? profile.asset_ids : [];
   return {
     profileId,
     status: profile.asset_status,
@@ -77,8 +84,9 @@ export function modelPackageSummary(manifest, profileId, boneIds = []) {
     pattern: String(manifest.bone_asset_pattern || '').replace('{profile}', profileId),
     requiredMetadata: manifest.required_metadata || [],
     approximateSizeMb: Number.isFinite(profile.approximate_size_mb) ? profile.approximate_size_mb : null,
-    availableBoneIds: Array.isArray(profile.asset_ids) ? profile.asset_ids : [],
-    availableCount: Array.isArray(profile.asset_ids) ? profile.asset_ids.length : 0
+    availableBoneIds,
+    availableCount: availableBoneIds.length,
+    publishedCount: profile.asset_status === 'ready' ? boneIds.length : availableBoneIds.length
   };
 }
 
@@ -162,6 +170,18 @@ export async function getModelPackageCacheStatus(manifest, profileId, boneIds = 
     if (Number.isFinite(length)) cachedBytes += length;
   }
   return { ...plan, cached, cachedBytes, cacheName };
+}
+
+export async function getCachedModelBoneIds(profileId, boneIds = [], options = {}) {
+  if (!globalThis.caches?.open) return [];
+  const cacheName = options.cacheName || MODEL_PACKAGE_CACHE;
+  if (globalThis.caches.has && !(await caches.has(cacheName))) return [];
+  const cache = await caches.open(cacheName);
+  const entries = await Promise.all(boneIds.map(async boneId => {
+    const response = await cache.match(`./models/${profileId}/${boneId}.glb`);
+    return response ? boneId : null;
+  }));
+  return entries.filter(Boolean);
 }
 
 export function customModelUrl(profileId, boneId, format = 'glb') {
