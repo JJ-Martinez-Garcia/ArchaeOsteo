@@ -276,6 +276,8 @@ assert.match(main, /Orthographic projection/);
 assert.match(main, /Hide bone/);
 assert.match(main, /data-view-extra/);
 assert.match(main, /const legendLabels=english\?\['Skull','Spine','Thorax','Extremities'\]/);
+assert.match(main, /function localizeAccessibilityUi\(\)/);
+assert.match(main, /Search bone, Latin name or ID/);
 assert.match(main, /Interface error · local data preserved/);
 assert.match(main, /Fallback atlas active · local data operational/);
 assert.match(main, /function localizeModelPackageHelp\(\)/);
