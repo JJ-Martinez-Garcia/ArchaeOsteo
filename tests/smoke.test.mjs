@@ -155,6 +155,8 @@ assert.match(main, /state\.explosion = Math\.max\(0, Math\.min\(100/);
 assert.match(main, /const tableModeButton = document\.querySelector\('#table-mode'\)/);
 assert.match(main, /const projectionButton = document\.querySelector\('#projection-toggle'\)/);
 assert.match(main, /const wantedProjection = state\.orthographic/);
+assert.match(main, /explosionAnimating: false/);
+assert.match(main, /const explosionPlayButton = document\.querySelector\('#explosion-play'\)/);
 assert.match(main, /recordInventorySnapshotChanges/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);

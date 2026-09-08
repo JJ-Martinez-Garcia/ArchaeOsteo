@@ -223,7 +223,7 @@ document.querySelector('#tab-stats').onclick=()=>{state.inventoryMode=false;docu
 document.querySelector('#dentition-type').onchange=e=>{state.dentitionType=e.target.value;renderDental();updateDentalCount();saveLocal({notify:false});};
 function applyProjectData(saved) {
   if (!saved) return;
-  Object.assign(state, saved, { projectId: saved.id || saved.projectId || 'default', projectName: saved.projectName || saved.name || 'Proyecto sin título', history: [], future: [], inventoryMode: false, pendingOnly: false, activeStatus: 'present' });
+  Object.assign(state, saved, { projectId: saved.id || saved.projectId || 'default', projectName: saved.projectName || saved.name || 'Proyecto sin título', history: [], future: [], inventoryMode: false, pendingOnly: false, activeStatus: 'present', explosionAnimating: false });
   state.hidden = saved.hidden || {};
   state.opacity = saved.opacity || {};
   state.opacityScope = ['bone', 'region', 'skeleton'].includes(saved.opacityScope) ? saved.opacityScope : 'bone';
@@ -254,6 +254,8 @@ function applyProjectData(saved) {
   if (projectionButton) { projectionButton.setAttribute('aria-pressed', String(state.orthographic)); projectionButton.textContent = state.orthographic ? 'Proyección perspectiva' : 'Proyección ortográfica'; }
   const isolateButton = document.querySelector('#isolate');
   if (isolateButton) isolateButton.textContent = state.isolate ? 'Mostrar esqueleto' : 'Aislar hueso';
+  const explosionPlayButton = document.querySelector('#explosion-play');
+  if (explosionPlayButton) { explosionPlayButton.setAttribute('aria-pressed', 'false'); explosionPlayButton.textContent = 'Reproducir despliegue'; }
   const wantedProjection = state.orthographic;
   state.orthographic = !wantedProjection;
   setCameraProjection(wantedProjection);
@@ -373,7 +375,7 @@ setInterval(updateInventoryProgress, 1000);
 setTimeout(() => { auditedStatusSnapshot={...state.status}; setInterval(() => { bones.forEach(bone => { const current=state.status[bone.id] || 'not_recorded'; const previous=auditedStatusSnapshot[bone.id] || 'not_recorded'; if (current !== previous) recordInventoryChange(bone.id, previous, current, 'inventory_action'); auditedStatusSnapshot[bone.id]=current; }); }, 500); }, 1200);
 applyPwaLaunchView();
 setTimeout(() => initProjectManager().catch(() => {}), 0);
-setTimeout(() => document.querySelector('#new-project')?.addEventListener('click', () => { state.hidden = {}; state.opacity = {}; state.opacityScope = 'bone'; state.tableMode = false; state.orthographic = false; state.skeletonFilter = 'all'; state.regionFilter = 'all'; state.explosion = 0; state.isolate = false; document.querySelector('#opacity-scope').value='bone'; state.wireframe = false; state.xray = false; state.labelMode='selected'; state.colorByRegion=true; state.tableTransforms = {}; state.lightIntensity = 1; }), 0);
+setTimeout(() => document.querySelector('#new-project')?.addEventListener('click', () => { state.hidden = {}; state.opacity = {}; state.opacityScope = 'bone'; state.tableMode = false; state.orthographic = false; state.skeletonFilter = 'all'; state.regionFilter = 'all'; state.explosion = 0; state.explosionAnimating = false; state.isolate = false; document.querySelector('#opacity-scope').value='bone'; state.wireframe = false; state.xray = false; state.labelMode='selected'; state.colorByRegion=true; state.tableTransforms = {}; state.lightIntensity = 1; }), 0);
 setTimeout(() => runPwaDiagnostics().catch(() => {}), 400);
 setTimeout(async () => { const activeId = localStorage.getItem('osteo3d-active-project'); if (activeId && activeId !== state.projectId) { const activeProject = await loadProject(activeId); if (activeProject) { applyProjectData(activeProject); await refreshProjectSelector(); } } }, 150);
 setTimeout(async () => { const savedProject = await loadProject(state.projectId); if (savedProject?.changeLog) state.changeLog = savedProject.changeLog; }, 180);
