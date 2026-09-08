@@ -33,6 +33,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build application
         run: pnpm build
+      - name: Check JavaScript syntax
+        run: node --check src/main.js
       - name: Run smoke tests
         run: pnpm test
       - name: Validate PWA artifact
