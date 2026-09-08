@@ -374,7 +374,7 @@ function applyProjectData(saved) {
   populateReportFields();
   document.querySelector('#dentition-type').value = state.dentitionType;
   ['status', 'region', 'side', 'taphonomy', 'pathology'].forEach(key => { const element = document.querySelector('#filter-' + key); if (element) element.value = state.filters[key]; }); globalThis.__syncOsteoFilters?.();
-  renderDental(); updateDentalCount(); renderList(); selectBone(state.selected || 'skull'); updateInventory(); renderStats();
+  renderDental(); updateDentalCount(); renderList(); selectBone(state.selected || 'skull'); refreshProfileDetailLabel(); updateInventory(); renderStats();
   const selector = document.querySelector('#project-selector'); if (selector) selector.value = state.projectId;
   document.querySelector('#toast').textContent = `Proyecto cargado · ${state.projectName}`;
 }
