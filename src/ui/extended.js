@@ -14,6 +14,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   state.taphonomy ||= {};
   state.pathology ||= {};
   state.notes ||= {};
+  state.indeterminateFragments ||= [];
   state.language ||= 'es';
 
   const topActions = document.querySelector('.top-actions');
@@ -21,7 +22,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
 
   const inspector = document.querySelector('.inspector');
   inspector.insertAdjacentHTML('beforeend', `<div class="extended-tools"><div class="paint-title">ANÁLISIS Y APRENDIZAJE</div><div class="extended-buttons"><button id="record-panel-button" class="secondary-action">Registro científico</button><button id="analysis-panel-button" class="secondary-action">NISP · MNE · MNI</button><button id="compare-panel-button" class="secondary-action">Comparar perfiles</button><button id="learning-panel-button" class="secondary-action">Aprendizaje</button><button id="sources-panel-button" class="secondary-action">Fuentes y licencias</button></div><div id="extended-panel" hidden></div></div>`);
-  inspector.querySelector('.extended-buttons').insertAdjacentHTML('beforeend', '<button id="changes-panel-button" class="secondary-action">Registro de cambios</button>');
+  inspector.querySelector('.extended-buttons').insertAdjacentHTML('beforeend', '<button id="changes-panel-button" class="secondary-action">Registro de cambios</button><button id="indeterminate-fragments-button" class="secondary-action">Fragmentos indeterminados</button>');
 
   const language = document.querySelector('#language');
   language.value = state.language;
@@ -40,6 +41,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     setText('#compare-panel-button', 'compare');
     setText('#learning-panel-button', 'learning');
     setText('#changes-panel-button', 'changes');
+    setText('#indeterminate-fragments-button', 'indeterminateFragments');
     setText('#sources-panel-button', 'sources');
     setText('#reset', 'reset');
     setText('#isolate', 'isolate');
@@ -161,5 +163,14 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     show(`<p class="small-copy">Se muestran las últimas ${Math.min(entries.length, 100)} acciones. El registro se conserva en IndexedDB y en las copias de seguridad.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Fecha</th><th>Bone_ID</th><th>Cambio</th><th>Individuo</th><th>Investigador</th><th>Método</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">Todavía no hay cambios registrados.</p>'}`);
   };
   document.querySelector('#sources-panel-button').onclick = () => show('<h3>Fuentes y licencias</h3><p>Los marcadores geométricos actuales son material de desarrollo y no representan modelos anatómicos aptos para medición o diagnóstico.</p><p>Los perfiles adulto masculino, adulto femenino, infante y neonato permanecen pendientes de incorporar como GLB independientes, con licencia y correspondencia verificada con cada <code>Bone_ID</code>.</p><p>La fuente candidata Z-Anatomy se mantiene documentada, pero no se redistribuye desde esta PWA hasta completar la conversión, la atribución y la cobertura requerida.</p><p class="small-copy">El registro completo está en <a href="https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/blob/main/public/models/SOURCES.md" target="_blank" rel="noreferrer">public/models/SOURCES.md</a>.</p>');
+  document.querySelector('#indeterminate-fragments-button').onclick = () => {
+    const render = () => {
+      const rows = state.indeterminateFragments.map((item, index) => `<li><strong>${escapeHtml(item.type || 'Sin tipo')}</strong> · ${escapeHtml(item.size || 'Tamaño no registrado')} · ${item.weight == null ? 'Peso no registrado' : `${item.weight} g`}<small>${escapeHtml(item.individual || 'Sin individuo')} · ${escapeHtml(item.context || 'Sin contexto')} · ${escapeHtml(item.observations || 'Sin observaciones')}</small><button class="secondary-action" data-remove-indeterminate="${index}">Eliminar</button></li>`).join('');
+      show(`<h3>Fragmentos indeterminados</h3><p class="small-copy">Registra restos sin identificación anatómica definitiva. La información no se incorpora automáticamente al NISP/MNE/MNI.</p><div class="record-editor"><label>Tipo o descripción<input id="indeterminate-type" placeholder="fragmento cortical, astilla…"></label><label>Tamaño<input id="indeterminate-size" placeholder="pequeño, 35 × 18 mm…"></label><label>Peso (g)<input id="indeterminate-weight" type="number" min="0" step="0.01"></label><label>Individuo / lote<input id="indeterminate-individual" placeholder="IND-LOCAL"></label><label>Contexto<input id="indeterminate-context" placeholder="UE, tumba, nivel…"></label><label>Observaciones<textarea id="indeterminate-observations" rows="3"></textarea></label><button id="add-indeterminate" class="secondary-action">Guardar fragmento</button></div><ul class="indeterminate-list">${rows || '<li class="small-copy">Todavía no hay fragmentos registrados.</li>'}</ul>`);
+      document.querySelector('#add-indeterminate').onclick = async () => { const weight = Number(document.querySelector('#indeterminate-weight').value); state.indeterminateFragments.push({ type: document.querySelector('#indeterminate-type').value.trim(), size: document.querySelector('#indeterminate-size').value.trim(), weight: Number.isFinite(weight) && weight >= 0 ? weight : null, individual: document.querySelector('#indeterminate-individual').value.trim(), context: document.querySelector('#indeterminate-context').value.trim(), observations: document.querySelector('#indeterminate-observations').value.trim(), createdAt: new Date().toISOString() }); await saveLocal({ notify: false }); render(); };
+      document.querySelectorAll('[data-remove-indeterminate]').forEach(button => button.onclick = async () => { state.indeterminateFragments.splice(Number(button.dataset.removeIndeterminate), 1); await saveLocal({ notify: false }); render(); });
+    };
+    render();
+  };
   return { hidePanels, updateLabels };
 }

@@ -44,6 +44,7 @@ export function normalizeProject(project) {
     taphonomy: project.taphonomy || {},
     pathology: project.pathology || {},
     notes: project.notes || {},
+    indeterminateFragments: Array.isArray(project.indeterminateFragments) ? project.indeterminateFragments : [],
     locked: project.locked || {},
     hidden: project.hidden || {},
     opacity: project.opacity || {},

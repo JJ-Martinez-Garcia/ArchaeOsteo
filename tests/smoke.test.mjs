@@ -125,6 +125,8 @@ assert.match(main, /state\.hidden=savedProject\.hidden/);
 assert.match(main, /state\.tableTransforms=savedProject\.tableTransforms/);
 assert.match(main, /state\.weights=savedProject\.weights/);
 assert.match(extendedUi, /record-weight/);
+assert.match(extendedUi, /Fragmentos indeterminados/);
+assert.match(await text('src/data/store.js'), /indeterminateFragments/);
 assert.match(await text('src/ui/extended.js'), /Registro de cambios/);
 assert.match(await text('src/ui/extended.js'), /Fuentes y licencias/);
 assert.match(await text('src/ui/extended.js'), /SOURCES\.md/);

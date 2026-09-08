@@ -28,4 +28,8 @@
 .conservation-bar { height: 7px; overflow: hidden; background: #edf2f7; border-radius: 5px; }
 .conservation-bar i { display: block; height: 100%; border-radius: inherit; }
 .weight-summary { margin: 8px 0 12px; color: #486581; font-size: 10px; line-height: 1.45; }
+.indeterminate-list { display: grid; gap: 7px; padding-left: 18px; font-size: 11px; color: #486581; }
+.indeterminate-list li { padding: 7px; background: #fff; border: 1px solid #d9e2ec; border-radius: 6px; }
+.indeterminate-list small { display: block; margin-top: 3px; color: #829ab1; }
+.indeterminate-list button { margin-top: 5px; }
 @media (max-width: 900px) { .extended-buttons { grid-template-columns: 1fr; } }

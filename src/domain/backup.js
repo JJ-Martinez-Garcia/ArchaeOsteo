@@ -21,6 +21,7 @@ export function createBackup(state) {
       taphonomy: state.taphonomy,
       pathology: state.pathology,
       notes: state.notes,
+      indeterminateFragments: state.indeterminateFragments,
       locked: state.locked,
       hidden: state.hidden,
       opacity: state.opacity,
