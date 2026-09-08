@@ -136,6 +136,8 @@ assert.match(main, /inspector-toggle/);
 assert.match(main, /mobile-open/);
 assert.match(main, /runPwaDiagnostics/);
 assert.match(main, /tableTransforms: \{\}/);
+assert.match(main, /filters: \{ status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', preservation: 'all', type: 'all' \}/);
+assert.match(main, /indeterminateFragments: \[\]/);
 assert.match(main, /beforeinstallprompt/);
 assert.match(main, /appinstalled/);
 assert.match(main, /Añadir a pantalla de inicio/);
