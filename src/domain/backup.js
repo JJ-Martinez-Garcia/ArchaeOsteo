@@ -80,12 +80,49 @@ export function parseCsv(text) {
     return values;
   };
   const headers = parseLine(lines[0]).map(header => header.trim());
+  if (!headers.includes('Bone_ID')) throw new Error('El CSV debe incluir la columna Bone_ID.');
+  if (headers.some(header => !header) || new Set(headers).size !== headers.length) throw new Error('El CSV contiene encabezados vacíos o duplicados.');
   return lines.slice(1).map(line => Object.fromEntries(parseLine(line).map((value, index) => [headers[index], value])));
 }
 
 export function applyInventoryRows(project, rows, bones) {
   const known = new Set(bones.map(bone => bone.id));
-  const accepted = rows.filter(row => known.has(String(row.Bone_ID || '').trim()));
+  const validStatuses = new Set(['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded']);
+  const validPreservation = new Set(['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor', 'very_fragmented', 'not_evaluable']);
+  const validationErrors = [];
+  const seen = new Set();
+  const accepted = rows.filter((row, index) => {
+    const rowNumber = index + 2;
+    const boneId = String(row?.Bone_ID || '').trim();
+    const errors = [];
+    if (!boneId) errors.push('Bone_ID vacío');
+    else if (!known.has(boneId)) errors.push(`Bone_ID desconocido: ${boneId}`);
+    else if (seen.has(boneId)) errors.push(`Bone_ID duplicado: ${boneId}`);
+    const status = row?.Presence ?? row?.Status;
+    if (status != null && String(status).trim() !== '' && !validStatuses.has(String(status).trim())) errors.push(`Presence no válido: ${status}`);
+    const preservation = row?.Preservation;
+    if (preservation != null && String(preservation).trim() !== '' && !validPreservation.has(String(preservation).trim())) errors.push(`Preservation no válida: ${preservation}`);
+    const percentage = row?.Percentage ?? row?.Completeness;
+    if (percentage != null && String(percentage).trim() !== '') {
+      const value = Number(percentage);
+      if (!Number.isFinite(value) || value < 0 || value > 100) errors.push('Percentage/Completeness debe estar entre 0 y 100');
+    }
+    if (row?.Fragments != null && String(row.Fragments).trim() !== '') {
+      const value = Number(row.Fragments);
+      if (!Number.isInteger(value) || value < 0) errors.push('Fragments debe ser un entero no negativo');
+    }
+    const weight = row?.Weight_g ?? row?.Weight;
+    if (weight != null && String(weight).trim() !== '') {
+      const value = Number(weight);
+      if (!Number.isFinite(value) || value < 0) errors.push('Weight_g/Weight debe ser un número no negativo');
+    }
+    if (errors.length) {
+      validationErrors.push({ row: rowNumber, boneId, errors });
+      return false;
+    }
+    if (boneId) seen.add(boneId);
+    return true;
+  });
   const status = { ...(project.status || {}) };
   const preservation = { ...(project.preservation || {}) };
   const completeness = { ...(project.completeness || {}) };
@@ -133,7 +170,7 @@ export function applyInventoryRows(project, rows, bones) {
   const first = rows.find(row => row && typeof row === 'object') || {};
   const reportFields = { individual: first.Individual_ID || first.Individual, burial: first.Burial, grave: first.Grave, tomb: first.Tomb, ue: first.UE, sector: first.Sector, grid: first.Grid, site: first.Site, campaign: first.Campaign, date: first.Date, context: first.Context, chronology: first.Chronology, observations: first.Observations };
   const importedReport = Object.fromEntries(Object.entries(reportFields).filter(([, value]) => value != null && String(value).trim() !== '').map(([key, value]) => [key, String(value).trim()]));
-  return { ...project, status, preservation, completeness, fragments, weights, portions, individuals, ue, taphonomy, pathology, taphonomyDetails, pathologyDetails, notes, report: { ...(project.report || {}), ...importedReport }, importedRows: accepted.length, rejectedRows: rows.length - accepted.length };
+  return { ...project, status, preservation, completeness, fragments, weights, portions, individuals, ue, taphonomy, pathology, taphonomyDetails, pathologyDetails, notes, report: { ...(project.report || {}), ...importedReport }, importedRows: accepted.length, rejectedRows: validationErrors.length, validationErrors };
 }
 
 export function downloadJson(filename, value) {
