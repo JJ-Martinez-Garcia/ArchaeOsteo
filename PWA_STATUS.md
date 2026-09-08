@@ -21,10 +21,13 @@ node tests/smoke.test.mjs
 node scripts/check-js-syntax.mjs
 node scripts/validate-pwa.mjs
 node scripts/validate-model-assets.mjs
+node scripts/e2e-pwa.mjs
 git diff --check
 ```
 
-El workflow `.github/workflows/pages.yml` ejecuta además la instalación reproducible, la compilación Vite, la verificación de sintaxis, las pruebas smoke, las validaciones PWA y de modelos, y el despliegue a Pages. La ejecución verde más reciente corresponde al commit `6a1e95a` (run `34218230456`).
+La prueba E2E abre la compilación en un perfil temporal de Chrome, comprueba el manifiesto detectado por el navegador, el registro y control del Service Worker, la cobertura publicada, la carga GLB, la persistencia IndexedDB y un segundo arranque con la red desactivada.
+
+El workflow `.github/workflows/pages.yml` ejecuta además la instalación reproducible, la compilación Vite, la verificación de sintaxis, las pruebas smoke, las validaciones PWA y de modelos, la prueba E2E en Chrome y el despliegue a Pages. El estado actualizado se consulta en [GitHub Actions](https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/actions), evitando fijar aquí un número de ejecución que quede obsoleto.
 
 ## Models 3D: estado y criterio de publicación
 

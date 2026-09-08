@@ -57,6 +57,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - validador de manifiestos GLB que exige perfiles, rutas, estado de cobertura y licencia antes de incorporar assets;
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
+- prueba de extremo a extremo en Chrome real para manifiesto, Service Worker, GLB, IndexedDB y reinicio sin conexión;
 - interfaz responsive para escritorio y móvil.
 - recuperación de errores de interfaz con aviso no destructivo y diagnóstico en consola;
 
@@ -75,9 +76,12 @@ npm run build
 npm test
 npm run validate-pwa
 npm run validate-model-assets
+npm run test:e2e
 ```
 
 `npm test` comienza verificando la sintaxis de todos los archivos JavaScript de `src`, `scripts` y `tests`, y después ejecuta las pruebas de humo. El mismo control se ejecuta en GitHub Actions antes del despliegue.
+
+`npm run test:e2e` necesita una compilación previa en `dist` y Chrome, Edge o Chromium. También puede comprobar un despliegue existente mediante `OSTEO3D_E2E_URL=https://.../ npm run test:e2e`. La prueba abre un perfil de navegador temporal, valida la carga de un GLB y la persistencia, activa el modo sin red y exige que la aplicación vuelva a arrancar desde el Service Worker.
 
 ## Probar la PWA publicada
 
@@ -87,13 +91,13 @@ Para comprobar el funcionamiento offline, abre la aplicación una vez con conexi
 
 Cuando se publica una nueva versión, la aplicación muestra `Nueva versión disponible`. Guarda primero los datos locales y pulsa `Actualizar ahora`; el service worker activa el nuevo shell y recarga la aplicación de forma controlada.
 
-El workflow de GitHub Actions ejecuta automáticamente `pnpm build`, los smoke tests, la validación PWA y la validación de modelos antes de desplegar a Pages.
+El workflow de GitHub Actions ejecuta automáticamente `pnpm build`, los smoke tests, las validaciones PWA y de modelos y la prueba E2E en Chrome antes de desplegar a Pages.
 
 ## Fases siguientes
 
 1. Completar los 13 elementos adultos pendientes y localizar modelos independientes para los perfiles femenino, infantil y neonatal.
 2. Separar completamente inventario, informes y configuración en stores especializados.
 3. Añadir porciones específicas por anatomía y controles de cuantificación por individuo.
-4. Incorporar modelos GLB documentados por perfil y pruebas end-to-end en navegador.
+4. Incorporar modelos GLB documentados para los perfiles todavía pendientes.
 
 La especificación completa de producto está documentada en el requisito de proyecto entregado a Codex.
