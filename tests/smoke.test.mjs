@@ -53,6 +53,9 @@ assert.match(packageJson.scripts.build, /generate-sw-assets\.mjs/);
 
 const main = await text('src/main.js');
 const styles = await text('src/styles.css');
+assert.match(main, /function renderViewerFallback\(error\)/);
+assert.match(main, /data-fallback-bone/);
+assert.match(styles, /\.viewer-fallback/);
 const store = await text('src/data/store.js');
 const translations = await text('src/i18n/translations.js');
 const extendedUi = await text('src/ui/extended.js');

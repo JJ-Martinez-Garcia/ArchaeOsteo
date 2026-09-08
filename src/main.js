@@ -147,6 +147,19 @@ async function init3D() {
   bones.forEach(bone => { group.add(createFallbackMesh(bone)); const geometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...bone.p), new THREE.Vector3(...bone.p)]); const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x9fb3c8, transparent: true, opacity: 0.55 })); line.name = `guide-${bone.id}`; line.visible = false; guideGroup.add(line); guideLines.set(bone.id, line); });
   renderer.domElement.addEventListener('pointerdown', onPointerDown); renderer.domElement.addEventListener('pointermove', onPointerMove); renderer.domElement.addEventListener('pointerup', onPointerUp); renderer.domElement.addEventListener('pointercancel', onPointerUp); renderer.domElement.addEventListener('wheel', onWheel, { passive: false }); renderer.domElement.addEventListener('keydown', onViewerKeyDown); renderer.domElement.addEventListener('contextmenu', event => event.preventDefault()); window.addEventListener('resize', resize); animate(); selectBone(state.selected);
 }
+function renderViewerFallback(error) {
+  const viewer = document.querySelector('#viewer');
+  if (!viewer) return;
+  group ||= { traverse() {} };
+  const groups = new Map();
+  bones.forEach(bone => { if (!groups.has(bone.region)) groups.set(bone.region, []); groups.get(bone.region).push(bone); });
+  viewer.innerHTML = `<div class="viewer-fallback" role="status" aria-label="Atlas interactivo de respaldo"><strong>Atlas interactivo de respaldo</strong><span>WebGL no está disponible en este navegador. Selecciona un elemento para consultar su ficha o pintarlo en el inventario.</span><div class="viewer-fallback-groups">${[...groups.entries()].map(([region, items]) => `<section><h3>${escapeHtml(region)}</h3><div>${items.map(bone => `<button type="button" data-fallback-bone="${escapeHtml(bone.id)}" aria-label="${escapeHtml(displayBoneName(bone))}"><span class="fallback-dot" aria-hidden="true"></span>${escapeHtml(displayBoneName(bone))}<small>${escapeHtml(bone.id)}</small></button>`).join('')}</div></section>`).join('')}</div></div>`;
+  viewer.querySelectorAll('[data-fallback-bone]').forEach(button => button.onclick = () => {
+    const id = button.dataset.fallbackBone;
+    if (state.inventoryMode) paintBone(id); else selectBone(id);
+  });
+  console.warn('Osteo3D viewer fallback active', error);
+}
 function detailHasValue(detail) { return Boolean(detail && typeof detail === 'object' && Object.values(detail).some(value => String(value ?? '').trim() !== '')); } function matchesFilters(bone) { const status=state.status[bone.id]||'not_recorded'; const hasTaphonomy=(state.taphonomy[bone.id]||[]).length>0||detailHasValue(state.taphonomyDetails?.[bone.id]); const hasPathology=(state.pathology[bone.id]||[]).length>0||detailHasValue(state.pathologyDetails?.[bone.id]); const preservation=state.preservation[bone.id]||'not_evaluated'; const filter=state.filters; return (filter.status==='all'||status===filter.status) && (filter.region==='all'||bone.region===filter.region) && (filter.side==='all'||bone.side===filter.side) && (filter.taphonomy==='all'||(filter.taphonomy==='with'?hasTaphonomy:!hasTaphonomy)) && (filter.pathology==='all'||(filter.pathology==='with'?hasPathology:!hasPathology)) && (filter.preservation==='all'||preservation===filter.preservation) && (filter.type==='all'||bone.type===filter.type); }
 function matchesSkeletonFilter(bone) { const axial=['Cráneo','Columna','Tórax'].includes(bone.region); return state.skeletonFilter==='all'||(state.skeletonFilter==='axial'?axial:!axial); }
 function matchesRegionFilter(bone) { return state.regionFilter==='all'||bone.region===state.regionFilter; }
@@ -512,7 +525,7 @@ window.addEventListener('online', updateConnectionStatus); window.addEventListen
 function reportRuntimeError(error) { console.error('Osteo3D runtime error', error); const toast=document.querySelector('#toast'); if(toast) toast.textContent='Error de interfaz · los datos locales se conservan'; }
 window.addEventListener('error', event => { if (!String(event.message || '').includes('ResizeObserver loop')) reportRuntimeError(event.error || event.message); });
 window.addEventListener('unhandledrejection', event => reportRuntimeError(event.reason || 'Promesa rechazada'));
-state.activeStatus='present'; state.inventoryMode=false; state.pendingOnly=false; renderDental(); updateDentalCount(); renderList(); init3D().catch(error=>{ const viewer=document.querySelector('#viewer'); if(viewer){ viewer.innerHTML='<div class="viewer-error" role="alert"><strong>Visor 3D no disponible</strong><span>El inventario y los datos locales siguen disponibles. Comprueba la compatibilidad con WebGL o vuelve a cargar la aplicación.</span></div>'; } const toast=document.querySelector('#toast'); if(toast) toast.textContent='Visor 3D no disponible · datos locales operativos'; console.warn('Osteo3D viewer unavailable', error); }); registerPwa().catch(()=>{});
+state.activeStatus='present'; state.inventoryMode=false; state.pendingOnly=false; renderDental(); updateDentalCount(); renderList(); init3D().catch(error=>{ renderViewerFallback(error); const toast=document.querySelector('#toast'); if(toast) toast.textContent='Atlas de respaldo activo · datos locales operativos'; }); registerPwa().catch(()=>{});
 ensurePreservationOptions();
 verifyModelPackages();
 setTimeout(() => { if (modelManifest) loadAvailableProfileModels(); }, 800);
