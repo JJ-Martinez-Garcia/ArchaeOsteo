@@ -254,6 +254,7 @@ assert.match(main, /html=html\.replace\('<html lang="es">','<html lang="en">'\)/
 assert.match(main, /Osteoarchaeological report/);
 assert.match(main, /function localizeModelPackageHelp\(\)/);
 assert.match(main, /This profile has no licensed GLB models published yet/);
+assert.match(main, /const sides=english\?\{'Izquierda':'Left','Derecha':'Right'\}/);
 assert.match(main, /OSTEOLOGY ATLAS/);
 assert.match(main, /function refreshLocalizedStaticUi\(\)/);
 assert.match(main, /Offline · local data/);
