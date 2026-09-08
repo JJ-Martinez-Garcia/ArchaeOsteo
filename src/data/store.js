@@ -82,6 +82,7 @@ export function normalizeProject(project) {
     comparisonProfile: project.comparisonProfile || '',
     tableTransforms: project.tableTransforms || {},
     lightIntensity: Number.isFinite(project.lightIntensity) ? project.lightIntensity : 1,
+    lightingMode: ['neutral', 'laboratory', 'high_contrast'].includes(project.lightingMode) ? project.lightingMode : 'neutral',
     changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],
     dental: normalizeDental(project.dental),
     deciduousDental: normalizeDental(project.deciduousDental),
