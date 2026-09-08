@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build --base ./ && node scripts/generate-sw-assets.mjs",
     "preview": "vite preview",
-    "test": "node tests/smoke.test.mjs",
+    "test": "node --check src/main.js && node tests/smoke.test.mjs",
     "validate-pwa": "node scripts/validate-pwa.mjs",
     "validate-model-assets": "node scripts/validate-model-assets.mjs",
     "generate-pwa-icons": "node scripts/generate-pwa-icons.mjs"
