@@ -58,6 +58,9 @@ if (!manifestValid) {
 }
 const missingBuildAssets = buildAssets.filter(asset => !serviceWorker.includes(asset));
 if (missingBuildAssets.length) throw new Error(`El Service Worker no incluye todos los chunks del build: ${missingBuildAssets.join(', ')}`);
+if (!/const CACHE = 'osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}';/.test(serviceWorker)) {
+  throw new Error('El Service Worker publicado no contiene una caché versionada por fingerprint del build.');
+}
 if (!/addEventListener\(['"](?:install|activate|fetch)['"]/.test(serviceWorker)
   || !/caches\.open\(/.test(serviceWorker)
   || !/SKIP_WAITING/.test(serviceWorker)
