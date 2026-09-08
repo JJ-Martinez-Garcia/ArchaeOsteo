@@ -477,6 +477,7 @@ assert.match(main, /photoKey/);
 assert.match(await text('src/domain/backup.js'), /photoScope/);
 assert.match(main, /if \(scope && state\.photoScope\)/);
 assert.match(main, /photoTargetId/);
+assert.match(main, /photoScope:state\.photoScope/);
 assert.match(main, /Selected element/);
 assert.match(main, /FDI tooth/);
 assert.match(main, /12\*1024\*1024/);
