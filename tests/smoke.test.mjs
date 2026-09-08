@@ -243,6 +243,7 @@ assert.match(main, /function syncInventoryVisualColors\(\)/);
 assert.match(main, /inventory-status-legend/);
 assert.match(await text('src/pwa.css'), /status-swatch/);
 assert.match(main, /function localizeStaticUi\(\)/);
+assert.match(main, /document\.documentElement\.lang=state\.language/);
 assert.match(main, /OSTEOLOGY ATLAS/);
 assert.match(main, /function refreshLocalizedStaticUi\(\)/);
 assert.match(main, /Offline · local data/);
