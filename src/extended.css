@@ -27,4 +27,5 @@
 .conservation-row small { text-align: right; color: #829ab1; }
 .conservation-bar { height: 7px; overflow: hidden; background: #edf2f7; border-radius: 5px; }
 .conservation-bar i { display: block; height: 100%; border-radius: inherit; }
+.weight-summary { margin: 8px 0 12px; color: #486581; font-size: 10px; line-height: 1.45; }
 @media (max-width: 900px) { .extended-buttons { grid-template-columns: 1fr; } }

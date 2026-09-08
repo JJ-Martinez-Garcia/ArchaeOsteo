@@ -75,6 +75,8 @@ assert.match(main, /filter-taphonomy/);
 assert.match(main, /filter-pathology/);
 assert.match(main, /conservation-map/);
 assert.match(main, /function updateConservationMap/);
+assert.match(main, /function updateWeightSummary/);
+assert.match(main, /weight-summary/);
 assert.match(main, /deciduousTeeth/);
 assert.match(main, /dentition-type/);
 assert.match(main, /Odontograma deciduo/);
