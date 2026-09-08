@@ -696,6 +696,8 @@ await assert.rejects(() => downloadModelPackage(modelManifest, 'adult_male', ['s
 assert.equal(await exists('dist/index.html'), true);
 assert.equal(await exists('dist/sw.js'), true);
 assert.equal(await exists('scripts/validate-pwa.mjs'), true);
+assert.match(await text('README.md'), /Probar la PWA publicada/);
+assert.match(await text('README.md'), /service worker activa el nuevo shell/);
 assert.match(await text('scripts/validate-pwa.mjs'), /PWA artifact OK/);
 assert.match(await text('scripts/validate-pwa.mjs'), /hasRequiredPngIcon/);
 assert.match(await text('scripts/validate-pwa.mjs'), /SKIP_WAITING/);

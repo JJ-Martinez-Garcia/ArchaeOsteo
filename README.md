@@ -77,6 +77,16 @@ npm run validate-pwa
 npm run validate-model-assets
 ```
 
+## Probar la PWA publicada
+
+La versión desplegada está disponible en [GitHub Pages](https://jj-martinez-garcia.github.io/ArchaeOsteo/). Para instalarla, abre la URL en un navegador compatible y usa el botón `Instalar PWA` o la opción equivalente del navegador. En iOS/iPadOS: `Compartir → Añadir a pantalla de inicio`.
+
+Para comprobar el funcionamiento offline, abre la aplicación una vez con conexión, espera a que el diagnóstico indique que el shell está en caché y vuelve a abrirla sin red. Los proyectos, el inventario y los modelos importados se conservan localmente en el navegador; los modelos propios no forman parte de las copias JSON.
+
+Cuando se publica una nueva versión, la aplicación muestra `Nueva versión disponible`. Guarda primero los datos locales y pulsa `Actualizar ahora`; el service worker activa el nuevo shell y recarga la aplicación de forma controlada.
+
+El workflow de GitHub Actions ejecuta automáticamente `pnpm build`, los smoke tests, la validación PWA y la validación de modelos antes de desplegar a Pages.
+
 ## Fases siguientes
 
 1. Sustituir marcadores por modelos GLB con metadatos y licencias.
