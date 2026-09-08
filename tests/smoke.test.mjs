@@ -259,6 +259,8 @@ assert.match(main, /escapeHtml\(individual\)/);
 assert.match(main, /metric-diameter/);
 assert.match(main, /metric-unit/);
 assert.match(main, /Distancia entre landmarks/);
+assert.match(main, /updateLandmarkVisuals/);
+assert.match(main, /landmark-visuals/);
 assert.match(await text('src/anatomy/package.js'), /importModelPackageFiles/);
 assert.match(await text('src/anatomy/loader.js'), /MeshoptDecoder/);
 assert.match(await text('src/anatomy/loader.js'), /DRACOLoader/);
