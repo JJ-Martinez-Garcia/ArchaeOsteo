@@ -234,6 +234,8 @@ assert.match(main, /function inventoryColor\(status\)/);
 assert.match(main, /function syncInventoryVisualColors\(\)/);
 assert.match(main, /inventory-status-legend/);
 assert.match(await text('src/pwa.css'), /status-swatch/);
+assert.match(main, /function localizeStaticUi\(\)/);
+assert.match(main, /OSTEOLOGY ATLAS/);
 assert.match(await text('src/pwa.css'), /bone-region-group summary/);
 assert.match(main, /filter-preservation/);
 assert.match(main, /filter-type/);
