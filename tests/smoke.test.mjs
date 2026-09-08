@@ -413,6 +413,7 @@ assert.match(main, /Importar modelo propio/);
 assert.match(main, /cacheCustomModelFile/);
 assert.match(main, /loadCachedCustomModels/);
 assert.match(main, /customModels:state\.customModels/);
+assert.match(main, /loadedSource==='custom'\?'Modelo propio'/);
 assert.match(await text('src/data/store.js'), /normalizeCustomModels/);
 assert.match(await text('src/domain/backup.js'), /customModels: state\.customModels/);
 assert.equal(await exists('src/anatomy/extended-bones.js'), true);
