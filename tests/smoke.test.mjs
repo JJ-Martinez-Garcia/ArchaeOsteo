@@ -63,6 +63,8 @@ assert.match(sw, /event\.request\.method !== 'GET'/);
 assert.match(sw, /if \(!response\.ok\) throw/);
 assert.match(sw, /if \(response\.ok\)/);
 assert.match(await text('scripts/generate-sw-assets.mjs'), /BUILD_ASSETS/);
+assert.match(await text('scripts/generate-sw-assets.mjs'), /fingerprintFiles/);
+assert.match(await text('scripts/generate-sw-assets.mjs'), /file !== 'sw\.js'/);
 assert.match(await text('scripts/generate-sw-assets.mjs'), /createHash/);
 assert.match(await text('scripts/generate-sw-assets.mjs'), /cacheFingerprint/);
 assert.match(await text('scripts/check-js-syntax.mjs'), /JavaScript syntax OK/);
