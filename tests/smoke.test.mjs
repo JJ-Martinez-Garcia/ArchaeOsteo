@@ -67,6 +67,8 @@ assert.match(main, /values\?\.\[7\].*textContent=source==='custom'/);
 assert.match(main, /function profileLabel\(profileId\)/);
 assert.match(main, /function localizePwaDiagnostics\(\)/);
 assert.match(main, /function localizeModelPackagePanel\(\)/);
+assert.match(main, /if\(registration\.waiting\) registration\.waiting\.postMessage/);
+assert.match(main, /else await registration\.update\(\)/);
 assert.match(main, /list\.innerHTML=checks\.join\('\'\); localizePwaDiagnostics\(\)/);
 assert.match(main, /isSmallOrGrouped = \['Manos', 'Pies', 'Columna'\]/);
 assert.match(main, /rib\|costilla\|c\(\?:1_atlas/);
