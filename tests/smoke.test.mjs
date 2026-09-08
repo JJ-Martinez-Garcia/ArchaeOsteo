@@ -63,6 +63,8 @@ assert.match(packageJson.scripts.build, /generate-sw-assets\.mjs/);
 const main = await text('src/main.js');
 const styles = await text('src/styles.css');
 assert.match(main, /function renderViewerFallback\(error\)/);
+assert.match(main, /values\?\.\[7\].*textContent=source==='custom'/);
+assert.match(main, /function profileLabel\(profileId\)/);
 assert.match(main, /isSmallOrGrouped = \['Manos', 'Pies', 'Columna'\]/);
 assert.match(main, /rib\|costilla\|c\(\?:1_atlas/);
 assert.match(main, /data-fallback-bone/);
