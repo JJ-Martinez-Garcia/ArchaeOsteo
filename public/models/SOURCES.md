@@ -13,7 +13,20 @@ Por cada perfil y paquete se deben documentar:
 - modificaciones realizadas y herramientas utilizadas;
 - número de assets incluidos y sus identificadores anatómicos.
 
-El estado actual de los cuatro perfiles es `pending`: no se han incluido modelos de terceros y el visor utiliza primitivas geométricas de demostración. No cambiar `asset_status` a `partial` o `ready` hasta completar este registro y verificar cada archivo GLB.
+El perfil adulto masculino tiene cobertura `partial`: incluye un cráneo GLB CC0 verificado. Los perfiles adulto femenino, infante y neonato siguen en `placeholder`; el visor utiliza primitivas geométricas de demostración para los huesos sin asset publicado. `partial` no implica cobertura anatómica completa ni aptitud automática para medición.
+
+### Publicado: ScatteringSkull (perfil adulto masculino)
+
+- autor: Vladimir Petkovic;
+- institución/repositorio: Khronos Group, glTF Sample Assets;
+- URL permanente: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ScatteringSkull;
+- licencia: CC0 1.0 Universal, según `LICENSE.md` del asset;
+- versión: rama `main`, directorio `Models/ScatteringSkull`;
+- fecha de consulta: `2026-09-08`;
+- asset incluido: `public/models/adult_male/skull.glb` (`Bone_ID`: `skull`);
+- modificación: se añadió el nombre de nodo glTF exacto `skull` al primer nodo para enlazar el asset con el catálogo. No se modificaron geometría ni materiales.
+
+La aplicación se distribuye gratuitamente. La licencia CC0 permite la redistribución; se conserva esta atribución por trazabilidad y reconocimiento del autor.
 
 ### Candidato no publicado
 

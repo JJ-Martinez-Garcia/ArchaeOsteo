@@ -4,4 +4,6 @@
 - SheetJS (`xlsx`): Apache-2.0. Se usa para exportación de inventarios.
 - Vite: MIT. Se usa como herramienta de desarrollo y build.
 
-El repositorio no incluye actualmente modelos anatómicos de terceros. Los archivos `.glb` deberán incorporarse únicamente cuando su licencia permita redistribución y se documentará cada fuente en `SOURCES.md`.
+ - ScatteringSkull: © Vladimir Petkovic, distribuido bajo CC0 1.0 Universal; se incluye como `public/models/adult_male/skull.glb` y se documenta en `public/models/SOURCES.md`.
+
+La aplicación se distribuye gratuitamente. Los assets de terceros mantienen sus licencias originales; la licencia CC0 del cráneo no cambia la licencia del resto del proyecto ni de sus dependencias.

@@ -1,7 +1,18 @@
 {
   "schema_version": 1,
   "profiles": {
-    "adult_male": { "source_status": "pending" },
+    "adult_male": {
+      "source_status": "published",
+      "author": "Vladimir Petkovic",
+      "institution": "Khronos Group glTF Sample Assets",
+      "url": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ScatteringSkull",
+      "license": "CC0 1.0 Universal",
+      "version": "main · ScatteringSkull",
+      "consulted_at": "2026-09-08",
+      "modifications": "Se añadió el nombre de nodo glTF exacto 'skull' al primer nodo para enlazarlo con el Bone_ID de Osteo3D; la geometría y los materiales no se modificaron.",
+      "asset_count": 1,
+      "asset_ids": ["skull"]
+    },
     "adult_female": { "source_status": "pending" },
     "infant": { "source_status": "pending" },
     "neonate": { "source_status": "pending" }
