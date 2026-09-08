@@ -143,6 +143,8 @@ assert.match(main, /'landmarks'/);
 assert.match(main, /const visible=bones\.filter\(matchesFilters\)/);
 assert.match(extendedUi, /formatChangeValue/);
 assert.match(extendedUi, /entry\.field \?/);
+assert.match(main, /'landmark_remove'/);
+assert.match(main, /'lock'/);
 assert.match(main, /recordInventorySnapshotChanges/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);
