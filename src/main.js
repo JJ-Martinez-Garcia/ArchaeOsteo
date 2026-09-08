@@ -541,10 +541,10 @@ setTimeout(async () => {
   await refreshProjectSelector();
 }, 150);
 window.addEventListener('online', updateConnectionStatus); window.addEventListener('offline', updateConnectionStatus); updateConnectionStatus(); setInterval(() => { if (document.visibilityState === 'visible') saveLocal({ notify: false }).catch(() => {}); }, 30000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveLocal({ notify: false }).catch(() => {}); else { updateConnectionStatus(); runPwaDiagnostics().catch(() => {}); } });
-function reportRuntimeError(error) { console.error('Osteo3D runtime error', error); const toast=document.querySelector('#toast'); if(toast) toast.textContent='Error de interfaz · los datos locales se conservan'; }
+function reportRuntimeError(error) { console.error('Osteo3D runtime error', error); const toast=document.querySelector('#toast'); if(toast) toast.textContent=state.language==='en'?'Interface error · local data preserved':'Error de interfaz · los datos locales se conservan'; }
 window.addEventListener('error', event => { if (!String(event.message || '').includes('ResizeObserver loop')) reportRuntimeError(event.error || event.message); });
 window.addEventListener('unhandledrejection', event => reportRuntimeError(event.reason || 'Promesa rechazada'));
-state.activeStatus='present'; state.inventoryMode=false; state.pendingOnly=false; renderDental(); updateDentalCount(); renderList(); init3D().catch(error=>{ renderViewerFallback(error); const toast=document.querySelector('#toast'); if(toast) toast.textContent='Atlas de respaldo activo · datos locales operativos'; }); registerPwa().catch(()=>{});
+state.activeStatus='present'; state.inventoryMode=false; state.pendingOnly=false; renderDental(); updateDentalCount(); renderList(); init3D().catch(error=>{ renderViewerFallback(error); const toast=document.querySelector('#toast'); if(toast) toast.textContent=state.language==='en'?'Fallback atlas active · local data operational':'Atlas de respaldo activo · datos locales operativos'; }); registerPwa().catch(()=>{});
 ensurePreservationOptions();
 verifyModelPackages();
 setTimeout(() => { if (modelManifest) loadAvailableProfileModels(); }, 800);

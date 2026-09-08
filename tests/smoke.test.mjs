@@ -274,6 +274,8 @@ assert.match(main, /Update now/);
 assert.match(main, /function localizeSecondaryControls\(\)/);
 assert.match(main, /Orthographic projection/);
 assert.match(main, /Hide bone/);
+assert.match(main, /Interface error · local data preserved/);
+assert.match(main, /Fallback atlas active · local data operational/);
 assert.match(main, /function localizeModelPackageHelp\(\)/);
 assert.match(main, /This profile has no licensed GLB models published yet/);
 assert.match(main, /const sides=english\?\{'Izquierda':'Left','Derecha':'Right'\}/);
