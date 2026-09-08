@@ -36,6 +36,8 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     setText('#import-project', 'import');
     const tabs = [['#tab-sheet', 'sheet'], ['#tab-inventory', 'inventory'], ['#tab-dental', 'dental'], ['#tab-metrics', 'metrics'], ['#tab-stats', 'stats'], ['#tab-report', 'report']];
     tabs.forEach(([selector, key]) => setText(selector, key));
+    const dentalLabels = state.language === 'en' ? { present: '✓ Present', absent_am: 'Absent AM', absent_pm: 'Absent PM', unerupted: 'Unerupted', developing: 'Developing', caries: 'Caries', wear: 'Wear', fragmented: 'Fragmented', pathology: 'Pathology', not_observable: 'Not observable' } : { present: '✓ Presente', absent_am: 'Ausente AM', absent_pm: 'Ausente PM', unerupted: 'No erupcionado', developing: 'En formación', caries: 'Caries', wear: 'Desgaste', fragmented: 'Fragmentado', pathology: 'Patología', not_observable: 'No observable' };
+    document.querySelectorAll('[data-dental]').forEach(button => { button.textContent = dentalLabels[button.dataset.dental] || button.textContent; });
     setText('#record-panel-button', 'scientificRecord');
     setText('#analysis-panel-button', 'analysis');
     setText('#compare-panel-button', 'compare');
