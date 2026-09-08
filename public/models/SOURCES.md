@@ -17,7 +17,7 @@ El estado actual de los cuatro perfiles es `pending`: no se han incluido modelos
 
 ### Candidato no publicado
 
-Z-Anatomy (Models of human anatomy) es una posible fuente para estudiar el paquete adulto; su repositorio declara CC BY-SA 4.0 y requiere atribución de Z-Anatomy y del material BodyParts3D de origen. No se considera una fuente publicada para este proyecto: todavía falta verificar la conversión a GLB, la correspondencia de todos los `Bone_ID` y la existencia de modelos independientes para los cuatro perfiles.
+Z-Anatomy (Models of human anatomy, [licencia declarada](https://github.com/Z-Anatomy/Models-of-human-anatomy/blob/master/License.txt)) es una posible fuente para estudiar el paquete adulto; su repositorio declara CC BY-SA 4.0 y requiere atribución de Z-Anatomy y del material BodyParts3D de origen. No se considera una fuente publicada para este proyecto: todavía falta verificar la conversión a GLB, la correspondencia de todos los `Bone_ID` y la existencia de modelos independientes para los cuatro perfiles. La licencia no autoriza a inferir que una reducción de escala constituya un modelo infantil o neonatal independiente.
 
 ### Candidatos revisados y no incorporados
 

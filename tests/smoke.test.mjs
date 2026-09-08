@@ -333,6 +333,7 @@ assert.ok(extendedBones.length > 100, 'expanded catalog should contain independe
 assert.ok(extendedBones.some((bone) => bone.id === 'left_rib_1'));
 for (const id of ['cervical_indeterminate', 'thoracic_indeterminate', 'lumbar_indeterminate', 'left_rib_indeterminate', 'right_rib_indeterminate', 'rib_indeterminate', 'carpal_indeterminate', 'metacarpal_indeterminate', 'hand_phalanx_indeterminate', 'tarsal_indeterminate', 'metatarsal_indeterminate', 'foot_phalanx_indeterminate']) assert.ok(extendedBones.some((bone) => bone.id === id), `missing catalog item ${id}`);
 assert.equal(await exists('public/models/manifest.json'), true);
+assert.match(await text('public/models/SOURCES.md'), /License\.txt/);
 assert.equal(await exists('public/icons/osteo3d-192.svg'), true);
 assert.equal(await exists('public/icons/osteo3d-512.svg'), true);
 assert.equal(await exists('public/icons/osteo3d-192.png'), true);
