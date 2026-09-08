@@ -107,6 +107,7 @@ function disposeObject(object) { object.traverse?.(node => { node.geometry?.disp
 function restoreFallbackModels() { if (!group) return; for (const [id, object] of loadedModelObjects) { const bone = bones.find(item => item.id === id); group.remove(object); disposeObject(object); if (bone) group.add(createFallbackMesh(bone)); } loadedModelObjects.clear(); }
 function addLoadedModelRoot(root, bone, modelSource = 'glb') { root.name = bone.id; root.position.set(...bone.p); root.userData = { ...bone, boneId: bone.id, modelSource, baseScale: root.scale.clone() }; root.traverse(node => { node.userData = { ...node.userData, boneId: bone.id }; }); const fallback = group.getObjectByName(bone.id); if (fallback) { group.remove(fallback); disposeObject(fallback); } group.add(root); loadedModelObjects.set(bone.id, root); }
 async function loadCachedCustomModels(generation) { for (const [boneId, metadata] of Object.entries(state.customModels?.[state.profile] || {})) { if (generation !== modelLoadGeneration) return; const bone = bones.find(item => item.id === boneId); if (!bone || metadata?.cached === false) continue; try { const response = await getCachedCustomModelFile(state.profile, boneId, metadata.format); if (!response) continue; const body = await response.arrayBuffer(); const file = new File([body], metadata.fileName || `${boneId}.${metadata.format}`, { type: response.headers.get('content-type') || 'application/octet-stream' }); const loaded = await loadLocalModel(THREE, file); addLoadedModelRoot(loaded.scene || loaded, bone, 'custom'); } catch { /* El archivo local puede haber sido eliminado por el navegador. */ } } }
+function yieldToBrowser() { return new Promise(resolve => { if (typeof globalThis.requestIdleCallback === 'function') globalThis.requestIdleCallback(() => resolve(), { timeout: 120 }); else setTimeout(resolve, 0); }); }
 async function loadAvailableProfileModels() {
   if (!group || !THREE || !modelManifest) return;
   const generation = ++modelLoadGeneration;
@@ -116,7 +117,8 @@ async function loadAvailableProfileModels() {
   const cached = await getModelPackageCacheStatus(modelManifest, state.profile, bones).catch(() => ({ cached: 0 }));
   const customModels = Object.values(state.customModels?.[state.profile] || {});
   if (!['ready', 'partial'].includes(profile.asset_status) && cached.cached === 0 && !customModels.some(model => model?.cached !== false)) { selectBone(state.selected); return; }
-  for (const bone of bones) {
+  const orderedBones = [bones.find(bone => bone.id === state.selected), ...bones.filter(bone => bone.id !== state.selected)].filter(Boolean);
+  for (const [index, bone] of orderedBones.entries()) {
     try {
       const gltf = await loadBoneModel(THREE, state.profile, bone.id);
       if (generation !== modelLoadGeneration) return;
@@ -124,6 +126,7 @@ async function loadAvailableProfileModels() {
     } catch {
       // Assets partial or temporarily unavailable keep their independent fallback marker.
     }
+    if ((index + 1) % 4 === 0) await yieldToBrowser();
   }
   await loadCachedCustomModels(generation);
   selectBone(state.selected);
