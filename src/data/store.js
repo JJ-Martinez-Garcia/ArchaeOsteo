@@ -90,7 +90,7 @@ export function normalizeProject(project) {
     landmarks: project.landmarks || {},
     photos: normalizePhotos(project.photos),
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
-    filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', ...(project.filters && typeof project.filters === 'object' ? project.filters : {}) },
+    filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', preservation: 'all', type: 'all', ...(project.filters && typeof project.filters === 'object' ? project.filters : {}) },
     report: { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
   };
 }

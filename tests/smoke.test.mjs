@@ -156,6 +156,10 @@ assert.match(main, /const diameter=Number\(document\.querySelector\('#metric-dia
 assert.match(main, /unit:document\.querySelector\('#metric-unit'\)\?\.value==='cm'\?'cm':'mm'/);
 assert.match(main, /'landmarks'/);
 assert.match(main, /const visible=bones\.filter\(matchesFilters\)/);
+assert.match(main, /filter-preservation/);
+assert.match(main, /filter-type/);
+assert.match(main, /filter\.preservation==='all'\|\|preservation===filter\.preservation/);
+assert.match(main, /filter\.type==='all'\|\|bone\.type===filter\.type/);
 assert.match(extendedUi, /formatChangeValue/);
 assert.match(extendedUi, /entry\.field \?/);
 assert.match(main, /'landmark_remove'/);
