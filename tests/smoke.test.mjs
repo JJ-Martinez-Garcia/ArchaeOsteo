@@ -135,6 +135,7 @@ assert.match(main, /pwa-diagnostics/);
 assert.match(main, /inspector-toggle/);
 assert.match(main, /mobile-open/);
 assert.match(main, /runPwaDiagnostics/);
+assert.match(main, /tableTransforms: \{\}/);
 assert.match(main, /beforeinstallprompt/);
 assert.match(main, /appinstalled/);
 assert.match(main, /Añadir a pantalla de inicio/);
