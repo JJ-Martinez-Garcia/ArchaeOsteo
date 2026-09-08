@@ -764,6 +764,7 @@ assert.match(await text('.github/workflows/pages.yml'), /pnpm test:e2e/);
 assert.match(await text('package.json'), /"test:e2e": "node scripts\/e2e-pwa\.mjs"/);
 assert.match(await text('scripts/e2e-pwa.mjs'), /emulateOfflineServiceWorker: offline/);
 assert.match(await text('scripts/e2e-pwa.mjs'), /Network\.overrideNetworkState/);
+assert.match(await text('scripts/e2e-pwa.mjs'), /server\.closeAllConnections/);
 assert.equal(await exists('src/domain/analysis.js'), true);
 assert.equal(await exists('src/domain/backup.js'), true);
 assert.equal(await exists('src/ui/extended.js'), true);

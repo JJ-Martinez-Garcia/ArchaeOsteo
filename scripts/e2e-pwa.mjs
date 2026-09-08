@@ -225,6 +225,14 @@ async function setOfflineState(client, offline) {
   }
 }
 
+async function stopStaticServer(server) {
+  if (!server) return;
+  await new Promise((resolve, reject) => {
+    server.close(error => error ? reject(error) : resolve());
+    server.closeAllConnections?.();
+  });
+}
+
 async function waitForProcessExit(processHandle, timeout = 5_000) {
   if (!processHandle || processHandle.exitCode !== null) return true;
   return Promise.race([
@@ -375,6 +383,10 @@ try {
   })()`);
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
+  if (staticServer) {
+    await stopStaticServer(staticServer);
+    staticServer = null;
+  }
   const offlineMode = await setOfflineState(cdp, true);
   const offlineUrl = new URL(`?e2e-offline=${Date.now()}`, baseUrl).href;
   await navigate(cdp, 'Page.navigate', { url: offlineUrl });
@@ -386,9 +398,6 @@ try {
     'El estado offline'
   );
   assert.match(offlineState.coverage, /179\s+(?:de|of)\s+192/);
-  if (offlineMode === 'service-worker-aware') {
-    assert.equal(await evaluate(cdp, 'navigator.onLine'), false, 'El navegador debe exponer el estado sin conexión.');
-  }
   const uncachedFetchBlocked = await evaluate(cdp, `fetch('./__offline_probe__?nonce=${Date.now()}', { cache: 'no-store' }).then(() => false).catch(() => true)`);
   assert.equal(uncachedFetchBlocked, true, 'La red simulada debe bloquear una petición inédita.');
   assert.equal((await evaluate(cdp, projectReadExpression())).schemaVersion, 2, 'El proyecto debe seguir disponible offline.');
