@@ -21,4 +21,10 @@
 .compare-inventory p { color: #486581; font-size: .82rem; }
 .compare-inventory .analysis-table { min-width: 460px; }
 .quiz-options { display: grid; gap: 6px; margin: 10px 0; }
+.conservation-map { display: grid; gap: 7px; margin: 12px 0; padding: 10px; background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; }
+.conservation-row { display: grid; grid-template-columns: 74px 24px 1fr 54px; gap: 5px; align-items: center; font-size: 10px; color: #486581; }
+.conservation-row strong { text-align: right; color: #102a43; }
+.conservation-row small { text-align: right; color: #829ab1; }
+.conservation-bar { height: 7px; overflow: hidden; background: #edf2f7; border-radius: 5px; }
+.conservation-bar i { display: block; height: 100%; border-radius: inherit; }
 @media (max-width: 900px) { .extended-buttons { grid-template-columns: 1fr; } }

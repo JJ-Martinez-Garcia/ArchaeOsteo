@@ -73,6 +73,8 @@ assert.match(main, /id="toast" role="status" aria-live="polite"/);
 assert.match(main, /setTimeout\(\(\)=>\{URL\.revokeObjectURL\(a\.href\);a\.remove\(\);\},1000\)/);
 assert.match(main, /filter-taphonomy/);
 assert.match(main, /filter-pathology/);
+assert.match(main, /conservation-map/);
+assert.match(main, /function updateConservationMap/);
 assert.match(main, /deciduousTeeth/);
 assert.match(main, /dentition-type/);
 assert.match(main, /Odontograma deciduo/);
