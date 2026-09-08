@@ -21,6 +21,14 @@ export async function loadModelSourceRegistry(manifest, url = './models/sources.
 export async function loadBoneModel(THREE, profileId, boneId, options = {}) {
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
   const loader = new GLTFLoader(options.manager);
+  const { MeshoptDecoder } = await import('three/addons/libs/meshopt_decoder.module.js');
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  if (options.dracoDecoderPath) {
+    const { DRACOLoader } = await import('three/addons/loaders/DRACOLoader.js');
+    const draco = new DRACOLoader(options.manager);
+    draco.setDecoderPath(options.dracoDecoderPath);
+    loader.setDRACOLoader(draco);
+  }
   const url = options.url || `./models/${profileId}/${boneId}.glb`;
   return new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject));
 }

@@ -12,7 +12,9 @@ export async function loadLocalModel(THREE, file) {
   }
   if (extension === 'glb' || extension === 'gltf') {
     const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+    const { MeshoptDecoder } = await import('three/addons/libs/meshopt_decoder.module.js');
     const loader = new GLTFLoader();
+    loader.setMeshoptDecoder(MeshoptDecoder);
     const body = await file.arrayBuffer();
     return new Promise((resolve, reject) => loader.parse(body, '', resolve, reject));
   }
