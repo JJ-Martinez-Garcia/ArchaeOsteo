@@ -7,7 +7,7 @@ Fecha de revisión: 2026-09-08
 - Aplicación publicada en GitHub Pages: https://jj-martinez-garcia.github.io/ArchaeOsteo/
 - Repositorio y rama de publicación: `JJ-Martinez-Garcia/ArchaeOsteo`, `main`.
 - Manifiesto PWA con `standalone`, iconos PNG de 192 y 512 px, accesos directos a inventario e informe y rutas relativas compatibles con GitHub Pages.
-- Service Worker con precarga del shell, caché de recursos generados por Vite, recuperación offline y actualización controlada mediante `SKIP_WAITING`.
+- Service Worker con precarga del shell, caché de recursos generados por Vite, recuperación offline y actualización controlada mediante `SKIP_WAITING`. El nombre de caché se calcula por versión y fingerprint de assets en cada build.
 - Datos de proyectos, inventario, informes, fotografías y modelos importados guardados localmente con IndexedDB y respaldo localStorage.
 - Visor Three.js/WebGL con controles de cámara, selección, aislamiento, transparencia, rayos X, wireframe, colores regionales, explosión y modo de mesa.
 - Interfaz en español e inglés, incluida la localización de controles y avisos después de la interacción.
