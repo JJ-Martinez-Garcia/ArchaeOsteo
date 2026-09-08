@@ -14,6 +14,7 @@ export function inventoryRows(bones, state) {
     weight: Number.isFinite(Number(state.weights?.[bone.id])) ? Math.max(0, Number(state.weights[bone.id])) : null,
     portion: state.portions?.[bone.id] || 'whole',
     individual: state.individuals?.[bone.id] || state.report?.individual || 'IND-LOCAL',
+    context: state.ue?.[bone.id] || state.report?.context || 'Sin contexto',
     taphonomy: state.taphonomy?.[bone.id] || [],
     pathology: state.pathology?.[bone.id] || [],
     completeness: state.completeness?.[bone.id] ?? 100
@@ -30,10 +31,14 @@ export function calculateNisp(rows) {
     side,
     identified.filter(row => row.side === side).length
   ]));
+  const byIndividual = Object.fromEntries([...new Set(identified.map(row => row.individual))].map(individual => [individual, identified.filter(row => row.individual === individual).length]));
+  const byContext = Object.fromEntries([...new Set(identified.map(row => row.context))].map(context => [context, identified.filter(row => row.context === context).length]));
   return {
     value: identified.length,
     byRegion,
     bySide,
+    byIndividual,
+    byContext,
     method: 'Cuenta de registros identificados con estado presente o fragmentario; no equivale a huesos completos.'
   };
 }
