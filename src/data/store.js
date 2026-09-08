@@ -6,11 +6,24 @@ const PROFILE_IDS = new Set(['adult_male', 'adult_female', 'infant', 'neonate'])
 const DENTAL_STATUSES = new Set(['present', 'absent_am', 'absent_pm', 'unerupted', 'developing', 'caries', 'wear', 'fragmented', 'pathology', 'not_observable']);
 const STATUS_VALUES = new Set(['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded']);
 const PRESERVATION_VALUES = new Set(['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor', 'very_fragmented', 'not_evaluable']);
+const REGION_VALUES = new Set(['all', 'Cráneo', 'Columna', 'Tórax', 'Cintura escapular', 'Extremidad superior', 'Extremidad inferior', 'Manos', 'Pies', 'Pelvis']);
 
 function objectEntries(value) { return value && typeof value === 'object' && !Array.isArray(value) ? Object.entries(value) : []; }
 function normalizeEnumMap(value, allowed) { return Object.fromEntries(objectEntries(value).filter(([, item]) => allowed.has(item))); }
 function normalizeNumberMap(value, { min = 0, max = Number.POSITIVE_INFINITY, integer = false, rejectBelowMin = false } = {}) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, Number(item)]).filter(([, item]) => Number.isFinite(item) && (!rejectBelowMin || item >= min)).map(([key, item]) => [key, Math.max(min, Math.min(max, integer ? Math.floor(item) : item))])); }
 function normalizeStringMap(value) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, String(item ?? '').trim()]).filter(([, item]) => item)); }
+function normalizeFilters(value) {
+  const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  return {
+    status: STATUS_VALUES.has(source.status) ? source.status : 'all',
+    region: REGION_VALUES.has(source.region) ? source.region : 'all',
+    side: ['all', 'left', 'right', 'Izquierda', 'Derecha', '—'].includes(source.side) ? source.side : 'all',
+    taphonomy: ['all', 'with', 'without'].includes(source.taphonomy) ? source.taphonomy : 'all',
+    pathology: ['all', 'with', 'without'].includes(source.pathology) ? source.pathology : 'all',
+    preservation: PRESERVATION_VALUES.has(source.preservation) ? source.preservation : 'all',
+    type: typeof source.type === 'string' && source.type.trim() ? source.type.trim() : 'all'
+  };
+}
 
 function normalizeDental(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
@@ -100,7 +113,7 @@ export function normalizeProject(project) {
     landmarks: project.landmarks || {},
     photos: normalizePhotos(project.photos),
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
-    filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', preservation: 'all', type: 'all', ...(project.filters && typeof project.filters === 'object' ? project.filters : {}) },
+    filters: normalizeFilters(project.filters),
     report: { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
   };
 }

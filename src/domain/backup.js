@@ -48,7 +48,7 @@ export function createBackup(state) {
       photoScope: state.photoScope || 'bone',
       photoTargetId: state.photoTargetId || '',
       language: state.language || 'es',
-      filters: state.filters || { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all' },
+      filters: state.filters || { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', preservation: 'all', type: 'all' },
       report: state.report
     })
   };
