@@ -164,6 +164,8 @@ assert.match(main, /const wantedProjection = state\.orthographic/);
 assert.match(main, /explosionAnimating: false/);
 assert.match(main, /const explosionPlayButton = document\.querySelector\('#explosion-play'\)/);
 assert.match(main, /runPwaDiagnostics\(\)\.catch\(\(\) => \{\}\)/);
+assert.match(main, /recordInventoryFieldChange\(key,'photos',previous,photos,'photo_remove'\)/);
+assert.match(main, /recordInventoryFieldChange\(key,'photos',previous,state\.photos\[key\],'photo_add'\)/);
 assert.match(main, /recordInventorySnapshotChanges/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);
