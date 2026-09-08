@@ -329,6 +329,8 @@ assert.match(main, /Los datos científicos no se infieren a partir de la geometr
 assert.match(main, /anatomy-facts/);
 assert.match(main, /Anatomical landmarks/);
 assert.match(main, /Anatomical reference/);
+assert.match(main, /landmark-category/);
+assert.match(main, /category:document\.querySelector\('#landmark-category'\)/);
 assert.match(main, /data-view-extra="superior"/);
 assert.match(main, /data-view-extra="inferior"/);
 assert.match(main, /id="zoom-out"/);
