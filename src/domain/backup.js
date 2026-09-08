@@ -102,7 +102,7 @@ export function applyInventoryRows(project, rows, bones) {
     const importedFragments = Number(row.Fragments ?? 0);
     const importedWeight = Number(row.Weight_g ?? row.Weight ?? '');
     status[boneId] = ['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded'].includes(importedStatus) ? importedStatus : 'not_recorded';
-    preservation[boneId] = ['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor'].includes(importedPreservation) ? importedPreservation : 'not_evaluated';
+    preservation[boneId] = ['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor', 'very_fragmented', 'not_evaluable'].includes(importedPreservation) ? importedPreservation : 'not_evaluated';
     completeness[boneId] = Number.isFinite(importedCompleteness) ? Math.max(0, Math.min(100, importedCompleteness)) : 100;
     fragments[boneId] = Number.isFinite(importedFragments) ? Math.max(0, Math.floor(importedFragments)) : 0;
     if (Number.isFinite(importedWeight) && importedWeight >= 0) weights[boneId] = importedWeight;
