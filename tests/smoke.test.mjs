@@ -266,6 +266,8 @@ assert.match(main, /function localizePanelUi\(\)/);
 assert.match(main, /Select a status and tap elements in the viewer/);
 assert.match(main, /Save measurements/);
 assert.match(main, /function localizeActiveStatusPrefix\(\)/);
+assert.match(main, /function localizeDentalUi\(\)/);
+assert.match(main, /Not observable/);
 assert.match(main, /function localizeModelPackageHelp\(\)/);
 assert.match(main, /This profile has no licensed GLB models published yet/);
 assert.match(main, /const sides=english\?\{'Izquierda':'Left','Derecha':'Right'\}/);
