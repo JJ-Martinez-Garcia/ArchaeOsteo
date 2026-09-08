@@ -154,6 +154,8 @@ assert.doesNotMatch(main, /setTimeout\(async \(\) => \{ const savedProject = awa
 assert.match(main, /function requestProjectName\(\)/);
 assert.match(main, /aria-modal="true"/);
 assert.doesNotMatch(main, /window\.prompt\(/);
+assert.match(main, /function requestConfirmation\(message\)/);
+assert.doesNotMatch(main, /window\.confirm\(/);
 assert.match(main, /inventory-progress-label/);
 assert.match(main, /Presencia rápida/);
 assert.match(main, /Fragmentación rápida/);
@@ -163,7 +165,7 @@ assert.match(main, /multi-selected/);
 assert.match(main, /aria-pressed="\$\{Boolean\(state\.multiSelected/);
 assert.match(main, /aria-label="\$\{displayBoneName\(b\)\}/);
 assert.match(main, /Marcar restantes como ausentes/);
-assert.match(main, /window\.confirm\(`Se marcarán/);
+assert.match(main, /requestConfirmation\(`Se marcarán/);
 assert.match(main, /status-legend/);
 assert.match(main, /Inventario completado/);
 assert.match(main, /recordInventoryChange/);
