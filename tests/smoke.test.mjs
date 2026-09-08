@@ -284,6 +284,7 @@ assert.match(main, /function observationsReportHtml\(\)/);
 assert.match(main, /Tafonomía y patología \/ trauma/);
 assert.match(main, /taphonomyDetails:state\.taphonomyDetails/);
 assert.match(main, /state\.taphonomyDetails = saved\.taphonomyDetails/);
+assert.match(main, /taphonomyDetails: \{\}, pathologyDetails: \{\}, notes:/);
 assert.match(main, /observationsReportHtml\(\)/);
 assert.match(main, /Muy fragmentado/);
 assert.match(main, /No evaluable/);
