@@ -33,6 +33,11 @@
 .side-stat-row { display: grid; grid-template-columns: 1fr 42px 1.8fr; gap: 5px; align-items: center; }
 .side-stat-row strong { text-align: right; color: #102a43; }
 .side-stat-row small { text-align: right; color: #829ab1; }
+.quantification-summary { display: grid; gap: 7px; margin: 12px 0; padding: 10px; background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; font-size: 10px; color: #486581; }
+.quantification-values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.quantification-values span { display: grid; text-align: center; padding: 6px 2px; background: #f0f4f7; border-radius: 4px; }
+.quantification-values b { font-size: 18px; color: #102a43; }
+.quantification-summary small { color: #829ab1; line-height: 1.35; }
 .conservation-bar { height: 7px; overflow: hidden; background: #edf2f7; border-radius: 5px; }
 .conservation-bar i { display: block; height: 100%; border-radius: inherit; }
 .weight-summary { margin: 8px 0 12px; color: #486581; font-size: 10px; line-height: 1.45; }
