@@ -18,6 +18,7 @@ export function createBackup(state) {
       weights: state.weights,
       portions: state.portions,
       individuals: state.individuals,
+      ue: state.ue,
       taphonomy: state.taphonomy,
       pathology: state.pathology,
       notes: state.notes,
@@ -87,8 +88,10 @@ export function applyInventoryRows(project, rows, bones) {
   const weights = { ...(project.weights || {}) };
   const portions = { ...(project.portions || {}) };
   const individuals = { ...(project.individuals || {}) };
+  const ue = { ...(project.ue || {}) };
   const taphonomy = { ...(project.taphonomy || {}) };
   const pathology = { ...(project.pathology || {}) };
+  const notes = { ...(project.notes || {}) };
   accepted.forEach(row => {
     const boneId = String(row.Bone_ID).trim();
     const importedStatus = row.Presence || row.Status || 'not_recorded';
@@ -103,10 +106,12 @@ export function applyInventoryRows(project, rows, bones) {
     if (Number.isFinite(importedWeight) && importedWeight >= 0) weights[boneId] = importedWeight;
     if (row.Portion) portions[boneId] = String(row.Portion).trim();
     if (row.Individual_ID || row.Individual) individuals[boneId] = String(row.Individual_ID || row.Individual).trim();
+    if (row.UE || row.Context_UE) ue[boneId] = String(row.UE || row.Context_UE).trim();
     if (row.Taphonomy) taphonomy[boneId] = String(row.Taphonomy).split(';').map(value => value.trim()).filter(Boolean);
     if (row.Pathology) pathology[boneId] = String(row.Pathology).split(';').map(value => value.trim()).filter(Boolean);
+    if (row.Notes || row.Observations) notes[boneId] = String(row.Notes || row.Observations).trim();
   });
-  return { ...project, status, preservation, completeness, fragments, weights, portions, individuals, taphonomy, pathology, importedRows: accepted.length, rejectedRows: rows.length - accepted.length };
+  return { ...project, status, preservation, completeness, fragments, weights, portions, individuals, ue, taphonomy, pathology, notes, report: { ...(project.report || {}), site: project.report?.site || rows.find(row => row.Site)?.Site || '', context: project.report?.context || rows.find(row => row.Context)?.Context || '' }, importedRows: accepted.length, rejectedRows: rows.length - accepted.length };
 }
 
 export function downloadJson(filename, value) {

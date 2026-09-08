@@ -145,6 +145,8 @@ assert.match(main, /state\.weights=savedProject\.weights/);
 assert.match(extendedUi, /record-weight/);
 assert.match(extendedUi, /Fragmentos indeterminados/);
 assert.match(await text('src/data/store.js'), /indeterminateFragments/);
+assert.match(await text('src/domain/backup.js'), /ue\[boneId\]/);
+assert.match(await text('src/domain/backup.js'), /site: project\.report/);
 assert.match(await text('src/ui/extended.js'), /Registro de cambios/);
 assert.match(await text('src/ui/extended.js'), /Fuentes y licencias/);
 assert.match(await text('src/ui/extended.js'), /SOURCES\.md/);

@@ -47,6 +47,7 @@ export function normalizeProject(project) {
     weights: project.weights || {},
     portions: project.portions || {},
     individuals: project.individuals || {},
+    ue: project.ue || {},
     taphonomy: project.taphonomy || {},
     pathology: project.pathology || {},
     notes: project.notes || {},
