@@ -120,6 +120,8 @@ assert.match(styles, /\.layout\{/);
 assert.match(styles, /canvas\{touch-action:none\}/);
 assert.match(await text('src/pwa.css'), /safe-area-inset-top/);
 assert.match(await text('src/pwa.css'), /safe-area-inset-bottom/);
+assert.match(await text('src/pwa.css'), /@media\(max-width:650px\).*top-actions label\{display:inline-flex/s);
+assert.match(await text('src/pwa.css'), /top-actions label select.*font-size:11px/s);
 assert.match(store, /listProjects/);
 assert.match(store, /projectName/);
 for (const marker of ['inventory', 'dental', 'metrics', 'stats', 'report', 'scientificRecord', 'changes', 'sources']) assert.match(translations, new RegExp(`${marker}:`));
