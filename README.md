@@ -52,6 +52,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - etiquetas configurables para el elemento seleccionado, regiones, catálogo completo o ninguna;
 - modo de coloración por región con alternativa de color neutro;
 - comparación 3D de referencia entre perfiles, con escala diferenciada y aviso de geometría provisional;
+- reproducción y pausa del despliegue osteológico mediante animación del slider de explosión;
 - validador de manifiestos GLB que exige perfiles, rutas, estado de cobertura y licencia antes de incorporar assets;
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
