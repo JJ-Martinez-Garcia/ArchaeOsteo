@@ -317,6 +317,9 @@ assert.doesNotMatch(main, /setTimeout\(\(\) => \{ document\.querySelector\('\.to
 assert.match(main, /onViewerKeyDown/);
 assert.match(main, /ArrowLeft/);
 assert.match(main, /toLowerCase\(\) === 'r'/);
+assert.match(main, /data-row-status.*paintBone\(input\.dataset\.rowStatus\)/);
+assert.match(main, /data-row-percent.*recordInventoryFieldChange\(id,'completeness',previous,next,'table'\)/);
+assert.match(main, /paintBoneWithoutAudit\(id\).*saveLocal\(\{ notify: false \}\)/);
 assert.match(main, /activePointers/);
 assert.match(main, /pinchDistance/);
 assert.match(main, /pointerDistance/);
