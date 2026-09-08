@@ -536,6 +536,7 @@ assert.match(main, /sidebarHeadings/);
 assert.match(main, /function localizeTreeGroups().*COMPLETE SKELETON/);
 assert.match(main, /const keys=\['complete','axial','appendicular'\]/);
 assert.match(main, /function localizeInventoryActionLabels().*Show pending only/);
+assert.match(main, /function localizeInteractionToast\(target\).*Complete skeleton/);
 assert.match(main, /IndexedDB: disponible para proyectos locales/);
 assert.match(main, /WebGL: visor 3D disponible/);
 assert.match(main, /const english=state\.language==='en'; cacheElement\.textContent=`\$\{english\?'Offline cache'/);
