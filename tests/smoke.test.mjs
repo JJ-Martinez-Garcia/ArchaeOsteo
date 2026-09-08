@@ -68,6 +68,12 @@ const normalizedLegacy = normalizeProject({ profile: 'unknown', language: 'fr', 
 assert.equal(normalizedLegacy.profile, 'adult_male');
 assert.equal(normalizedLegacy.language, 'es');
 assert.equal(normalizedLegacy.report.individual, 'IND-LOCAL');
+const normalizedViewer = normalizeProject({ skeletonFilter: 'axial', regionFilter: 'Cráneo', explosion: 140, tableMode: 1, orthographic: 1, isolate: 1, explosionAnimating: 1 });
+assert.equal(normalizedViewer.skeletonFilter, 'axial');
+assert.equal(normalizedViewer.regionFilter, 'Cráneo');
+assert.equal(normalizedViewer.explosion, 100);
+assert.equal(normalizedViewer.tableMode, true);
+assert.equal(normalizedViewer.explosionAnimating, false);
 const normalizedDental = normalizeProject({ dental: { '11': 'fragmented', '12': 'invented' }, deciduousDental: ['invalid'], dentitionType: 'unknown' });
 assert.equal(normalizedDental.dental['11'], 'fragmented');
 assert.equal(normalizedDental.dental['12'], undefined);
