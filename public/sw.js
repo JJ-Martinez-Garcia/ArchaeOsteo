@@ -35,7 +35,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(fetch(event.request, { cache: 'no-store' }).then(response => {
       if (!response.ok) throw new Error(`Navegación no disponible: ${response.status}`);
       const copy = response.clone();
-      caches.open(CACHE).then(cache => cache.put('./index.html', copy));
+      caches.open(CACHE).then(cache => cache.put('./index.html', copy)).catch(() => {});
       return response;
     }).catch(() => caches.match('./index.html')));
     return;
@@ -46,7 +46,7 @@ self.addEventListener('fetch', event => {
     const response = await fetch(event.request);
     if (response.ok) {
       const copy = response.clone();
-      caches.open(CACHE).then(cache => cache.put(event.request, copy));
+      caches.open(CACHE).then(cache => cache.put(event.request, copy)).catch(() => {});
     }
     return response;
   }));

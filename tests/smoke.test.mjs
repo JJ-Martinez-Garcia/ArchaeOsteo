@@ -57,6 +57,8 @@ assert.match(sw, /osteo3d-192\.svg/);
 assert.match(sw, /osteo3d-512\.svg/);
 assert.match(sw, /startsWith\('osteo3d-shell-'\)/);
 assert.match(sw, /caches\.delete/);
+assert.match(sw, /cache\.put\('\.\/index\.html', copy\)\)\.catch/);
+assert.match(sw, /cache\.put\(event\.request, copy\)\)\.catch/);
 assert.match(sw, /event\.request\.method !== 'GET'/);
 assert.match(sw, /if \(!response\.ok\) throw/);
 assert.match(sw, /if \(response\.ok\)/);
