@@ -176,6 +176,8 @@ assert.match(main, /data:image/);
 assert.match(main, /recordInventorySnapshotChanges/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);
+assert.match(main, /replaceChildren\(`0\/\$\{bones\.length\}`\)/);
+assert.match(main, /replaceChildren\(`0\/\$\{bones\.length\} elementos revisados`\)/);
 assert.match(main, /recordInventorySnapshotChanges\(current,previous,'undo'\)/);
 assert.match(main, /data-paint-tool="preservation"/);
 assert.match(main, /data-paint-tool="taphonomy"/);
