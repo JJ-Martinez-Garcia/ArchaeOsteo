@@ -224,6 +224,9 @@ assert.match(main, /const diameter=Number\(document\.querySelector\('#metric-dia
 assert.match(main, /unit:document\.querySelector\('#metric-unit'\)\?\.value==='cm'\?'cm':'mm'/);
 assert.match(main, /'landmarks'/);
 assert.match(main, /const visible=bones\.filter\(matchesFilters\)/);
+assert.match(main, /class="bone-region-group" open/);
+assert.match(main, /const regions = \[\.\.\.new Set\(groupBones\.map\(b => b\.region\)\)\]/);
+assert.match(await text('src/pwa.css'), /bone-region-group summary/);
 assert.match(main, /filter-preservation/);
 assert.match(main, /filter-type/);
 assert.match(main, /filter\.preservation==='all'\|\|preservation===filter\.preservation/);
