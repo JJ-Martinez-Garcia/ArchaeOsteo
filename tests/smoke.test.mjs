@@ -255,6 +255,8 @@ assert.match(main, /Osteoarchaeological report/);
 assert.match(main, /function localizeModelPackageHelp\(\)/);
 assert.match(main, /This profile has no licensed GLB models published yet/);
 assert.match(main, /const sides=english\?\{'Izquierda':'Left','Derecha':'Right'\}/);
+assert.match(main, /state\.isolate\?\(state\.language==='en'\?'Show skeleton':'Mostrar esqueleto'\)/);
+assert.match(main, /state\.explosionAnimating\?\(state\.language==='en'\?'Pause deployment':'Pausar despliegue'\)/);
 assert.match(main, /OSTEOLOGY ATLAS/);
 assert.match(main, /function refreshLocalizedStaticUi\(\)/);
 assert.match(main, /Offline · local data/);
