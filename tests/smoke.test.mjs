@@ -470,6 +470,7 @@ assert.match(main, /unhandledrejection/);
 assert.match(main, /function hasExternalStack\(error\)/);
 assert.match(main, /hasExternalStack\(event\.error\)/);
 assert.match(main, /hasExternalStack\(event\.reason\)/);
+assert.match(main, /appinstalled.*runPwaDiagnostics\(\)\.catch\(\(\)=>\{\}\)/s);
 assert.match(main, /material\.wireframe=state\.wireframe/);
 assert.match(main, /light-slider/);
 assert.match(main, /setLightIntensity/);
