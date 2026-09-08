@@ -65,6 +65,8 @@ const styles = await text('src/styles.css');
 assert.match(main, /function renderViewerFallback\(error\)/);
 assert.match(main, /values\?\.\[7\].*textContent=source==='custom'/);
 assert.match(main, /function profileLabel\(profileId\)/);
+assert.match(main, /function localizePwaDiagnostics\(\)/);
+assert.match(main, /list\.innerHTML=checks\.join\('\'\); localizePwaDiagnostics\(\)/);
 assert.match(main, /isSmallOrGrouped = \['Manos', 'Pies', 'Columna'\]/);
 assert.match(main, /rib\|costilla\|c\(\?:1_atlas/);
 assert.match(main, /data-fallback-bone/);
