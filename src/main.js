@@ -85,6 +85,9 @@ syncInspectorTabA11y();
 if (inspectorTabs && globalThis.MutationObserver) new MutationObserver(syncInspectorTabA11y).observe(inspectorTabs, { attributes: true, subtree: true, attributeFilter: ['class'] });
 document.querySelector('#search')?.setAttribute('aria-label', 'Buscar hueso, latín o identificador');
 document.querySelector('#viewer')?.setAttribute('aria-label', 'Visor 3D del esqueleto');
+document.querySelector('.sidebar')?.setAttribute('aria-label', 'Árbol osteológico y estado PWA');
+document.querySelector('.inspector')?.setAttribute('aria-label', 'Panel de inspección osteológica');
+document.querySelector('#update-actions')?.setAttribute('role', 'status');
 document.querySelector('#reviewed')?.replaceChildren(`0/${bones.length}`);
 document.querySelector('#inventory-progress-count')?.replaceChildren(`0/${bones.length} elementos revisados`);
 function createFallbackMesh(bone) {
