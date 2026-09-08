@@ -194,6 +194,7 @@ assert.match(main, /appinstalled/);
 assert.match(main, /Añadir a pantalla de inicio/);
 assert.match(main, /disponible en este navegador/);
 assert.match(main, /cacheNames.*startsWith\('osteo3d-shell-v'\)/);
+assert.doesNotMatch(main, /cacheName.*\|\|'osteo3d-shell-v7'/);
 assert.match(main, /Iconos PWA/);
 assert.match(main, /HTML, datos e iconos en caché/);
 assert.match(main, /models\/sources\.json/);
