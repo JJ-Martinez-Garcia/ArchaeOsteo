@@ -346,13 +346,29 @@ async function refreshProjectSelector() {
   selector.innerHTML = projects.map(project => `<option value="${escapeMarkup(project.id)}">${escapeMarkup(project.projectName || project.id)}</option>`).join('');
   selector.value = state.projectId;
 }
+function requestProjectName() {
+  return new Promise(resolve => {
+    const en = state.language === 'en';
+    const overlay = document.createElement('div');
+    overlay.className = 'project-name-modal';
+    overlay.innerHTML = `<div class="project-name-dialog" role="dialog" aria-modal="true" aria-labelledby="project-name-title"><h2 id="project-name-title">${en ? 'New project' : 'Nuevo proyecto'}</h2><p>${en ? 'Choose a name for the local project.' : 'Elige un nombre para el proyecto local.'}</p><form id="project-name-form"><label for="project-name-input">${en ? 'Project name' : 'Nombre del proyecto'}<input id="project-name-input" required maxlength="120" value="${en ? 'Osteology project' : 'Proyecto osteológico'}"></label><div class="project-name-actions"><button type="button" id="project-name-cancel" class="secondary-action">${en ? 'Cancel' : 'Cancelar'}</button><button type="submit" class="secondary-action">${en ? 'Create project' : 'Crear proyecto'}</button></div></form></div>`;
+    document.body.appendChild(overlay);
+    const input = overlay.querySelector('#project-name-input');
+    const finish = value => { overlay.remove(); resolve(value); };
+    overlay.querySelector('#project-name-form').addEventListener('submit', event => { event.preventDefault(); finish(input.value.trim()); });
+    overlay.querySelector('#project-name-cancel').addEventListener('click', () => finish(''));
+    overlay.addEventListener('click', event => { if (event.target === overlay) finish(''); });
+    overlay.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); finish(''); } });
+    input.focus(); input.select();
+  });
+}
 async function initProjectManager() {
   await refreshProjectSelector();
   const selector = document.querySelector('#project-selector');
   selector.onchange = async () => { await saveLocal({ notify: false }); applyProjectData(await loadProject(selector.value)); await refreshProjectSelector(); };
   document.querySelector('#new-project').onclick = async () => {
-    const name = window.prompt('Nombre del nuevo proyecto', 'Proyecto osteológico');
-    if (!name?.trim()) return;
+    const name = await requestProjectName();
+    if (!name) return;
     await saveLocal({ notify: false });
     Object.assign(state, { projectId: `project-${Date.now()}`, projectName: name.trim(), profile: 'adult_male', selected: 'skull', status: {}, preservation: {}, completeness: {}, fragments: {}, weights: {}, portions: {}, individuals: {}, ue: {}, taphonomy: {}, pathology: {}, notes: {}, indeterminateFragments: [], locked: {}, changeLog: [], quickPresent: false, dental: {}, deciduousDental: {}, dentitionType: 'permanent', measurements: {}, landmarks: {}, photos: {}, hidden: {}, opacity: {}, opacityScope: 'bone', tableTransforms: {}, comparisonProfile: '', language: 'es', filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', preservation: 'all', type: 'all' }, report: { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '' } });
     await saveLocal({ notify: false }); applyProjectData(state); await refreshProjectSelector();

@@ -151,6 +151,9 @@ assert.match(main, /const activeId = localStorage\.getItem\('osteo3d-active-proj
 assert.match(main, /applyProjectData\(savedProject\)/);
 assert.doesNotMatch(main, /loadProject\('default'\)\.then\(saved=>\{/);
 assert.doesNotMatch(main, /setTimeout\(async \(\) => \{ const savedProject = await loadProject\(state\.projectId\)/);
+assert.match(main, /function requestProjectName\(\)/);
+assert.match(main, /aria-modal="true"/);
+assert.doesNotMatch(main, /window\.prompt\(/);
 assert.match(main, /inventory-progress-label/);
 assert.match(main, /Presencia rápida/);
 assert.match(main, /Fragmentación rápida/);
