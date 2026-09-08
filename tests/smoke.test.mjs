@@ -312,6 +312,7 @@ assert.match(main, /aria-label.*Visor 3D/);
 assert.match(main, /Árbol osteológico y estado PWA/);
 assert.match(main, /Panel de inspección osteológica/);
 assert.match(main, /id="update-actions"[^>]*role="status"[^>]*aria-live="polite"/);
+assert.doesNotMatch(main, /setTimeout\(\(\) => \{ document\.querySelector\('\.top-actions'\)/);
 assert.match(main, /onViewerKeyDown/);
 assert.match(main, /ArrowLeft/);
 assert.match(main, /toLowerCase\(\) === 'r'/);
