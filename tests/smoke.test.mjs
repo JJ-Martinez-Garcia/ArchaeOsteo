@@ -474,6 +474,8 @@ assert.match(main, /IndexedDB: disponible para proyectos locales/);
 assert.match(main, /WebGL: visor 3D disponible/);
 assert.match(main, /const english=state\.language==='en'; cacheElement\.textContent=`\$\{english\?'Offline cache'/);
 assert.match(main, /setTimeout\(localizePwaDiagnostics,1500\)/);
+assert.match(main, /const english=state\.language==='en'; const replacements=\[/);
+assert.match(main, /const source=english\?from:to; const target=english\?to:from/);
 assert.match(main, /lowPowerDevice/);
 assert.match(main, /powerPreference/);
 assert.match(main, /renderer\.setPixelRatio\(lowPowerDevice \? 1/);
