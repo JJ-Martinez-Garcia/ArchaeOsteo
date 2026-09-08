@@ -181,6 +181,8 @@ assert.match(main, /replaceChildren\(`0\/\$\{bones\.length\} elementos revisados
 assert.match(main, /inspectorTabs\.setAttribute\('role', 'tablist'\)/);
 assert.match(main, /aria-selected/);
 assert.match(main, /MutationObserver\(syncInspectorTabA11y\)/);
+assert.match(main, /ArrowLeft/);
+assert.match(main, /tab\?\.focus\(\)/);
 assert.match(main, /recordInventorySnapshotChanges\(current,previous,'undo'\)/);
 assert.match(main, /data-paint-tool="preservation"/);
 assert.match(main, /data-paint-tool="taphonomy"/);
