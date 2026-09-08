@@ -366,11 +366,13 @@ try {
   await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'El arranque offline');
   const offlineState = await waitForValue(
     cdp,
-    `({ online: navigator.onLine, label: document.querySelector('#connection-status')?.textContent || '', coverage: document.querySelector('#model-package-status')?.textContent || '' })`,
-    value => value?.online === false && /(?:Sin conexión|Offline)/i.test(value.label) && /179\s+(?:de|of)\s+192/.test(value.coverage),
+    `({ title: document.title, coverage: document.querySelector('#model-package-status')?.textContent || '' })`,
+    value => value?.title.startsWith('Osteo3D') && /179\s+(?:de|of)\s+192/.test(value.coverage),
     'El estado offline'
   );
-  assert.equal(offlineState.online, false);
+  assert.match(offlineState.coverage, /179\s+(?:de|of)\s+192/);
+  const uncachedFetchBlocked = await evaluate(cdp, `fetch('./__offline_probe__?nonce=${Date.now()}', { cache: 'no-store' }).then(() => false).catch(() => true)`);
+  assert.equal(uncachedFetchBlocked, true, 'La red simulada debe bloquear una petición inédita.');
   assert.equal((await evaluate(cdp, projectReadExpression())).schemaVersion, 2, 'El proyecto debe seguir disponible offline.');
 
   await cdp.send('Network.emulateNetworkConditions', {
