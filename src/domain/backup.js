@@ -111,7 +111,10 @@ export function applyInventoryRows(project, rows, bones) {
     if (row.Pathology) pathology[boneId] = String(row.Pathology).split(';').map(value => value.trim()).filter(Boolean);
     if (row.Notes || row.Observations) notes[boneId] = String(row.Notes || row.Observations).trim();
   });
-  return { ...project, status, preservation, completeness, fragments, weights, portions, individuals, ue, taphonomy, pathology, notes, report: { ...(project.report || {}), site: project.report?.site || rows.find(row => row.Site)?.Site || '', context: project.report?.context || rows.find(row => row.Context)?.Context || '' }, importedRows: accepted.length, rejectedRows: rows.length - accepted.length };
+  const first = rows.find(row => row && typeof row === 'object') || {};
+  const reportFields = { burial: first.Burial, grave: first.Grave, tomb: first.Tomb, ue: first.UE, sector: first.Sector, grid: first.Grid, site: first.Site, campaign: first.Campaign, date: first.Date, context: first.Context, chronology: first.Chronology, observations: first.Observations };
+  const importedReport = Object.fromEntries(Object.entries(reportFields).filter(([, value]) => value != null && String(value).trim() !== '').map(([key, value]) => [key, String(value).trim()]));
+  return { ...project, status, preservation, completeness, fragments, weights, portions, individuals, ue, taphonomy, pathology, notes, report: { ...(project.report || {}), ...importedReport }, importedRows: accepted.length, rejectedRows: rows.length - accepted.length };
 }
 
 export function downloadJson(filename, value) {

@@ -72,7 +72,7 @@ export function normalizeProject(project) {
     photos: project.photos || {},
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
     filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', ...(project.filters && typeof project.filters === 'object' ? project.filters : {}) },
-    report: { individual: 'IND-LOCAL', site: '', context: '', investigator: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
+    report: { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
   };
 }
 
