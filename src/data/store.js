@@ -12,6 +12,17 @@ function objectEntries(value) { return value && typeof value === 'object' && !Ar
 function normalizeEnumMap(value, allowed) { return Object.fromEntries(objectEntries(value).filter(([, item]) => allowed.has(item))); }
 function normalizeNumberMap(value, { min = 0, max = Number.POSITIVE_INFINITY, integer = false, rejectBelowMin = false } = {}) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, Number(item)]).filter(([, item]) => Number.isFinite(item) && (!rejectBelowMin || item >= min)).map(([key, item]) => [key, Math.max(min, Math.min(max, integer ? Math.floor(item) : item))])); }
 function normalizeStringMap(value) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, String(item ?? '').trim()]).filter(([, item]) => item)); }
+function normalizeCustomModels(value) {
+  const profiles = objectEntries(value).map(([profileId, models]) => {
+    const normalized = Object.fromEntries(objectEntries(models).map(([boneId, model]) => {
+    const source = model && typeof model === 'object' && !Array.isArray(model) ? model : {};
+    const format = ['glb', 'gltf', 'obj', 'stl'].includes(String(source.format || '').toLowerCase()) ? String(source.format).toLowerCase() : '';
+    return [boneId, { fileName: String(source.fileName || `${boneId}.${format || 'glb'}`).trim(), format: format || 'glb', cached: source.cached !== false, updatedAt: String(source.updatedAt || '') }];
+    }).filter(([, model]) => model.fileName));
+    return [profileId, normalized];
+  }).filter(([, models]) => Object.keys(models).length);
+  return Object.fromEntries(profiles);
+}
 function normalizeFilters(value) {
   const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   return {
@@ -102,6 +113,7 @@ export function normalizeProject(project) {
     labelMode: ['selected', 'region', 'all', 'none'].includes(project.labelMode) ? project.labelMode : 'selected',
     colorByRegion: project.colorByRegion !== false,
     comparisonProfile: project.comparisonProfile || '',
+    customModels: normalizeCustomModels(project.customModels),
     tableTransforms: project.tableTransforms || {},
     lightIntensity: Number.isFinite(project.lightIntensity) ? project.lightIntensity : 1,
     lightingMode: ['neutral', 'laboratory', 'high_contrast'].includes(project.lightingMode) ? project.lightingMode : 'neutral',

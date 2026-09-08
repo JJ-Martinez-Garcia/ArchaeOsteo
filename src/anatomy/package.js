@@ -1,6 +1,7 @@
 export const MODEL_MANIFEST_SCHEMA = 1;
 export const MODEL_SOURCE_REGISTRY_SCHEMA = 1;
 export const MODEL_PACKAGE_CACHE = 'osteo3d-models-v1';
+export const CUSTOM_MODEL_CACHE = 'osteo3d-custom-models-v1';
 
 const ASSET_STATUSES = new Set(['placeholder', 'ready', 'partial']);
 
@@ -158,4 +159,41 @@ export async function getModelPackageCacheStatus(manifest, profileId, boneIds = 
     if (Number.isFinite(length)) cachedBytes += length;
   }
   return { ...plan, cached, cachedBytes, cacheName };
+}
+
+export function customModelUrl(profileId, boneId, format = 'glb') {
+  const safeFormat = String(format || 'glb').toLowerCase().replace(/[^a-z0-9]/g, '') || 'glb';
+  return `./models/custom/${encodeURIComponent(profileId)}/${encodeURIComponent(boneId)}.${safeFormat}`;
+}
+
+export async function cacheCustomModelFile(profileId, boneId, file, options = {}) {
+  if (!globalThis.caches?.open) throw new Error('Cache Storage no disponible en este navegador.');
+  const format = String(file?.name || '').split('.').pop().toLowerCase() || 'glb';
+  const url = customModelUrl(profileId, boneId, format);
+  const body = await file.arrayBuffer();
+  const cacheName = options.cacheName || CUSTOM_MODEL_CACHE;
+  const cache = await caches.open(cacheName);
+  await cache.put(url, new Response(body, {
+    headers: {
+      'content-type': file.type || 'application/octet-stream',
+      'content-length': String(file.size || body.byteLength)
+    }
+  }));
+  return { url, format, cacheName, bytes: body.byteLength };
+}
+
+export async function getCachedCustomModelFile(profileId, boneId, format = 'glb', options = {}) {
+  if (!globalThis.caches?.open) return null;
+  const cacheName = options.cacheName || CUSTOM_MODEL_CACHE;
+  if (globalThis.caches.has && !(await caches.has(cacheName))) return null;
+  const cache = await caches.open(cacheName);
+  return cache.match(customModelUrl(profileId, boneId, format));
+}
+
+export async function removeCachedCustomModelFile(profileId, boneId, format = 'glb', options = {}) {
+  if (!globalThis.caches?.open) return false;
+  const cacheName = options.cacheName || CUSTOM_MODEL_CACHE;
+  if (globalThis.caches.has && !(await caches.has(cacheName))) return false;
+  const cache = await caches.open(cacheName);
+  return cache.delete(customModelUrl(profileId, boneId, format));
 }

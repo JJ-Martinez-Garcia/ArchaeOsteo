@@ -36,6 +36,7 @@ export function createBackup(state) {
       labelMode: state.labelMode,
       colorByRegion: state.colorByRegion,
       comparisonProfile: state.comparisonProfile || '',
+      customModels: state.customModels,
       tableTransforms: state.tableTransforms,
       lightIntensity: state.lightIntensity,
       changeLog: state.changeLog,
