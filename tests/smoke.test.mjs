@@ -211,6 +211,7 @@ assert.match(main, /normalize\('NFD'\)/);
 assert.match(main, /normalizeSearchText\(v\)\.includes\(q\)/);
 assert.match(main, /id="search-status" class="search-status small-copy" aria-live="polite"/);
 assert.match(main, /searchStatus\.textContent = state\.language === 'en'/);
+assert.match(main, /change', \(\) => \{ renderDental\(\); updateDentalCount\(\); renderList\(\); selectBone\(state\.selected\); \}\)/);
 assert.match(main, /const matching=bones\.filter\(b=>matchesSkeletonFilter\(b\)&&matchesRegionFilter\(b\)/);
 assert.match(main, /const exact=matching\.find/);
 assert.match(main, /target=exact\|\|\(matching\.length===1\?matching\[0\]:null\)/);
