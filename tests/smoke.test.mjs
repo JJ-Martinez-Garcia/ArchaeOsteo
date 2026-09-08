@@ -11,10 +11,12 @@ const text = async path => readFile(path, 'utf8');
 const exists = async path => { try { await access(path); return true; } catch { return false; } };
 
 const manifest = JSON.parse(await text('public/manifest.json'));
+const packageJson = JSON.parse(await text('package.json'));
 const indexHtml = await text('index.html');
 assert.match(indexHtml, /apple-mobile-web-app-capable/);
 assert.match(indexHtml, /apple-touch-icon.*osteo3d-192\.png/);
 assert.equal(manifest.display, 'standalone');
+assert.equal(packageJson.version, '1.0.0');
 assert.equal(manifest.start_url, './');
 assert.ok(manifest.icons.length > 0);
 assert.equal(manifest.icons.length, 4);
