@@ -1,5 +1,10 @@
 # Changelog
 
+## Cambios recientes
+
+- Documentada la persistencia offline de modelos propios y su límite al restaurar copias en otro navegador.
+- Añadida carga progresiva de paquetes 3D, priorizando el hueso seleccionado y cediendo tiempo al navegador por lotes.
+
 ## Cambios posteriores a 1.0.0
 
 - Añadida vista previa antes de reemplazar inventarios importados.
