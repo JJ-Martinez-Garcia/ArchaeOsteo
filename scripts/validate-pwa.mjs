@@ -30,13 +30,26 @@ const pngIcons = (manifest.icons || []).filter(icon => icon.type === 'image/png'
 const hasRequiredPngIcon = size => pngIcons.some(icon => String(icon.sizes || '').split(/\s+/).includes(size));
 const manifestValid = manifest.name === 'Osteo3D'
   && manifest.short_name === 'Osteo3D'
+  && manifest.id === './'
+  && manifest.lang === 'es'
+  && manifest.dir === 'ltr'
   && manifest.display === 'standalone'
+  && Array.isArray(manifest.display_override)
+  && manifest.display_override.includes('standalone')
+  && typeof manifest.description === 'string'
+  && manifest.description.length > 0
   && manifest.start_url === './'
   && manifest.scope === './'
+  && manifest.orientation === 'any'
+  && /^#[0-9a-f]{6}$/i.test(manifest.theme_color || '')
+  && /^#[0-9a-f]{6}$/i.test(manifest.background_color || '')
+  && manifest.prefer_related_applications === false
+  && Array.isArray(manifest.shortcuts)
+  && manifest.shortcuts.length >= 2
   && hasRequiredPngIcon('192x192')
   && hasRequiredPngIcon('512x512');
 if (!manifestValid) {
-  throw new Error('El manifiesto no conserva identidad, instalación standalone, rutas GitHub Pages o iconos PNG requeridos.');
+  throw new Error('El manifiesto no conserva identidad, metadatos de instalación, accesos directos, rutas GitHub Pages o iconos PNG requeridos.');
 }
 const missingBuildAssets = buildAssets.filter(asset => !serviceWorker.includes(asset));
 if (missingBuildAssets.length) throw new Error(`El Service Worker no incluye todos los chunks del build: ${missingBuildAssets.join(', ')}`);
