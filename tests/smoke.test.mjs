@@ -679,6 +679,8 @@ assert.equal(await exists('scripts/validate-pwa.mjs'), true);
 assert.match(await text('scripts/validate-pwa.mjs'), /PWA artifact OK/);
 assert.match(await text('scripts/validate-pwa.mjs'), /hasRequiredPngIcon/);
 assert.match(await text('scripts/validate-pwa.mjs'), /SKIP_WAITING/);
+assert.match(await text('scripts/validate-pwa.mjs'), /shortcutsValid/);
+assert.match(await text('scripts/validate-pwa.mjs'), /index\\\.html/);
 assert.match(await text('.github/workflows/pages.yml'), /pnpm validate-pwa/);
 assert.equal(await exists('src/domain/analysis.js'), true);
 assert.equal(await exists('src/domain/backup.js'), true);

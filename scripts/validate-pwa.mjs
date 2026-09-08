@@ -28,6 +28,10 @@ for (const resource of required) {
 }
 const pngIcons = (manifest.icons || []).filter(icon => icon.type === 'image/png');
 const hasRequiredPngIcon = size => pngIcons.some(icon => String(icon.sizes || '').split(/\s+/).includes(size));
+const shortcutsValid = manifest.shortcuts?.every(shortcut => /^\.\/\?view=(?:inventory|report)$/.test(shortcut.url || '')
+  && typeof shortcut.name === 'string'
+  && Array.isArray(shortcut.icons)
+  && shortcut.icons.some(icon => normalize(icon.src) === 'icons/osteo3d-192.png'));
 const manifestValid = manifest.name === 'Osteo3D'
   && manifest.short_name === 'Osteo3D'
   && manifest.id === './'
@@ -46,6 +50,7 @@ const manifestValid = manifest.name === 'Osteo3D'
   && manifest.prefer_related_applications === false
   && Array.isArray(manifest.shortcuts)
   && manifest.shortcuts.length >= 2
+  && shortcutsValid
   && hasRequiredPngIcon('192x192')
   && hasRequiredPngIcon('512x512');
 if (!manifestValid) {
@@ -55,7 +60,9 @@ const missingBuildAssets = buildAssets.filter(asset => !serviceWorker.includes(a
 if (missingBuildAssets.length) throw new Error(`El Service Worker no incluye todos los chunks del build: ${missingBuildAssets.join(', ')}`);
 if (!/addEventListener\(['"](?:install|activate|fetch)['"]/.test(serviceWorker)
   || !/caches\.open\(/.test(serviceWorker)
-  || !/SKIP_WAITING/.test(serviceWorker)) {
+  || !/SKIP_WAITING/.test(serviceWorker)
+  || !/\.\/index\.html/.test(serviceWorker)
+  || !/\.\/manifest\.json/.test(serviceWorker)) {
   throw new Error('El Service Worker no conserva instalación, caché offline y actualización controlada.');
 }
 if (missing.length) throw new Error(`Faltan recursos del artefacto PWA: ${missing.join(', ')}`);
