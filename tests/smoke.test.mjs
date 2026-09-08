@@ -238,6 +238,7 @@ assert.match(main, /function localizeStaticUi\(\)/);
 assert.match(main, /OSTEOLOGY ATLAS/);
 assert.match(main, /function refreshLocalizedStaticUi\(\)/);
 assert.match(main, /Offline · local data/);
+assert.match(main, /function refreshProfileDetailLabel\(\)/);
 assert.match(await text('src/pwa.css'), /bone-region-group summary/);
 assert.match(main, /filter-preservation/);
 assert.match(main, /filter-type/);
