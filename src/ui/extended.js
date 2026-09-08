@@ -144,17 +144,33 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     }).catch(() => { projectSelect.innerHTML = '<option value="">No disponible</option>'; renderComparison(null); });
   };
 
+  let learningSession = { mode: 'identify', targetBoneId: '' };
+  window.addEventListener('oste3d:bone-selected', event => {
+    if (learningSession.mode !== 'locate' || !learningSession.targetBoneId) return;
+    const feedback = document.querySelector('#quiz-feedback');
+    const target = bones.find(item => item.id === learningSession.targetBoneId);
+    if (!feedback || !target) return;
+    const en = state.language === 'en';
+    feedback.textContent = event.detail?.boneId === learningSession.targetBoneId ? (en ? 'Correct' : 'Correcto') : (en ? `Try again: locate ${target.en}` : `Inténtalo de nuevo: localiza ${target.es}`);
+  });
   document.querySelector('#learning-panel-button').onclick = () => {
     let level = 'basic';
+    let mode = 'identify';
     const nextQuestion = () => {
       const en = state.language === 'en';
       const bone = bones[Math.floor(Math.random() * bones.length)];
       const optionCount = level === 'advanced' ? 5 : level === 'intermediate' ? 4 : 3;
       const options = [bone, ...bones.filter(item => item.id !== bone.id).sort(() => Math.random() - 0.5).slice(0, optionCount - 1)].sort(() => Math.random() - 0.5);
-      show(`<div class="quiz-card"><strong>${en ? 'Identify bone' : 'Identificar hueso'}</strong><label>${en ? 'Level' : 'Nivel'}<select id="quiz-level"><option value="basic">${en ? 'Basic' : 'Básico'}</option><option value="intermediate">${en ? 'Intermediate' : 'Intermedio'}</option><option value="advanced">${en ? 'Advanced' : 'Avanzado'}</option></select></label><p>${en ? 'Select the answer for the highlighted element.' : 'Selecciona la respuesta para el elemento resaltado.'}</p><div class="quiz-options">${options.map(option => `<button data-answer="${escapeHtml(option.id)}">${escapeHtml(en ? option.en : option.es)}</button>`).join('')}</div><p id="quiz-feedback" class="small-copy"></p><button id="next-question" class="secondary-action">${en ? 'New question' : 'Nueva pregunta'}</button></div>`);
+      learningSession = { mode, targetBoneId: bone.id };
+      const modeLabel = mode === 'locate' ? (en ? 'Locate bone' : 'Localizar hueso') : (en ? 'Identify bone' : 'Identificar hueso');
+      const prompt = mode === 'locate' ? (en ? `Touch ${bone.en} in the 3D viewer.` : `Toca ${bone.es} en el visor 3D.`) : (en ? 'Select the answer for the highlighted element.' : 'Selecciona la respuesta para el elemento resaltado.');
+      const answerOptions = mode === 'locate' ? '' : `<div class="quiz-options">${options.map(option => `<button data-answer="${escapeHtml(option.id)}">${escapeHtml(en ? option.en : option.es)}</button>`).join('')}</div>`;
+      show(`<div class="quiz-card"><strong>${modeLabel}</strong><label>${en ? 'Mode' : 'Modo'}<select id="quiz-mode"><option value="identify">${en ? 'Identify bone' : 'Identificar hueso'}</option><option value="locate">${en ? 'Locate bone' : 'Localizar hueso'}</option><option value="quiz">Quiz</option></select></label><label>${en ? 'Level' : 'Nivel'}<select id="quiz-level"><option value="basic">${en ? 'Basic' : 'Básico'}</option><option value="intermediate">${en ? 'Intermediate' : 'Intermedio'}</option><option value="advanced">${en ? 'Advanced' : 'Avanzado'}</option></select></label><p>${prompt}</p>${answerOptions}<p id="quiz-feedback" class="small-copy" aria-live="polite"></p><button id="next-question" class="secondary-action">${en ? 'New question' : 'Nueva pregunta'}</button></div>`);
+      document.querySelector('#quiz-mode').value = mode;
       document.querySelector('#quiz-level').value = level;
+      document.querySelector('#quiz-mode').onchange = event => { mode = event.target.value; nextQuestion(); };
       document.querySelector('#quiz-level').onchange = event => { level = event.target.value; nextQuestion(); };
-      selectBone(bone.id);
+      if (mode !== 'locate') selectBone(bone.id);
       document.querySelectorAll('[data-answer]').forEach(button => button.onclick = () => { document.querySelector('#quiz-feedback').textContent = button.dataset.answer === bone.id ? (en ? 'Correct' : 'Correcto') : `${en ? 'Correct answer' : 'Respuesta correcta'}: ${en ? bone.en : bone.es}`; });
       document.querySelector('#next-question').onclick = nextQuestion;
     };
