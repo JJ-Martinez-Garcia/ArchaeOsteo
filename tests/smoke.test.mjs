@@ -66,7 +66,7 @@ assert.match(main, /visualState=\{ hidden:state\.hidden/);
 assert.match(main, /xray:state\.xray/);
 assert.match(main, /labelMode:state\.labelMode/);
 assert.match(main, /#profile.*saveLocal\(\{ notify: false \}\)/);
-assert.match(main, /saved\?\.ue/);
+assert.doesNotMatch(main, /saved\?\.ue/);
 const normalizedLegacy = normalizeProject({ profile: 'unknown', language: 'fr', report: null, filters: null });
 assert.equal(normalizedLegacy.profile, 'adult_male');
 assert.equal(normalizedLegacy.language, 'es');
@@ -151,6 +151,8 @@ assert.match(main, /const activeId = localStorage\.getItem\('osteo3d-active-proj
 assert.match(main, /applyProjectData\(savedProject\)/);
 assert.doesNotMatch(main, /loadProject\('default'\)\.then\(saved=>\{/);
 assert.doesNotMatch(main, /setTimeout\(async \(\) => \{ const savedProject = await loadProject\(state\.projectId\)/);
+assert.doesNotMatch(main, /setTimeout\(async \(\) => \{ const saved = await loadProject\(state\.projectId\)/);
+assert.doesNotMatch(main, /addEventListener\('click', \(\) => \{ state\.ue = \{\}; \}\)/);
 assert.match(main, /function requestProjectName\(\)/);
 assert.match(main, /aria-modal="true"/);
 assert.doesNotMatch(main, /window\.prompt\(/);

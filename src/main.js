@@ -394,8 +394,6 @@ saveLocal = async options => { await saveLocalWithoutChangeLog(options); const v
 const extendedUi = initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject });
 document.querySelector('#language')?.addEventListener('change', () => { renderDental(); updateDentalCount(); });
 document.querySelector('#profile')?.addEventListener('change', () => saveLocal({ notify: false }));
-setTimeout(async () => { const saved = await loadProject(state.projectId); if (saved?.ue) state.ue = saved.ue; }, 250);
-document.querySelector('#new-project')?.addEventListener('click', () => { state.ue = {}; });
 document.querySelector('.tree')?.insertAdjacentHTML('afterbegin','<button id="skeleton-complete" class="tree-group">▣ ESQUELETO COMPLETO</button>');
 document.querySelector('#skeleton-complete').onclick=()=>{state.skeletonFilter='all';renderList();document.querySelector('#toast').textContent='Esqueleto completo';};
 const inspectorToggle=document.querySelector('#inspector-toggle');
