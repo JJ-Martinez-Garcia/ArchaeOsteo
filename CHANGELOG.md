@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0 - 2026-09-08
+
+- Añadido registro y resumen separado de pesos identificados e indeterminados.
+- Añadido mapa visual de conservación esquelética.
+- Añadido módulo de fragmentos indeterminados con persistencia local.
+- Añadido compartir copias mediante Web Share API y fallback de descarga.
+- Añadida importación temporal de modelos propios GLB, GLTF, OBJ y STL.
+- Mejorada la recuperación de preferencias visuales y la tolerancia a fallos del visor 3D.
+
 ## 0.9.0
 
 - Añadida mesa osteológica reversible en el visor 3D.

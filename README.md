@@ -26,7 +26,11 @@ Esta primera fase implementa un MVP ejecutable con:
 - porciones anatómicas dependientes del tipo de elemento y cuantificación agrupada por individuo;
 - fotografías locales asociadas al elemento seleccionado y almacenadas offline;
 - registro científico de fragmentos, porciones, tafonomía, patología y notas;
+- registro separado de fragmentos indeterminados con tipo, tamaño, peso, contexto y observaciones;
+- registro de peso por elemento, total y región, con separación del peso indeterminado;
+- mapa visual de conservación esquelética actualizado con el inventario;
 - copias de seguridad JSON e importación validada de JSON, CSV y XLSX;
+- compartir copias mediante Web Share API con fallback seguro a descarga;
 - historial auditable de cambios de presencia, acciones masivas y deshacer/rehacer, persistido con el proyecto;
 - análisis transparente de NISP, MNE y MNI con desglose de método;
 - comparación de perfiles, quiz de identificación y selector español/inglés para navegación y acciones principales;
@@ -39,6 +43,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - precarga offline del HTML, manifest y chunks JS/CSS del build publicado;
 - catálogo de perfiles y loader preparado para assets GLB independientes;
 - importación de GLB locales por perfil, con validación de cabecera `glTF`, correspondencia con `Bone_ID` y caché offline;
+- importación temporal de modelos propios GLB, GLTF, OBJ y STL para el elemento seleccionado;
 - validador de manifiestos GLB que exige perfiles, rutas, estado de cobertura y licencia antes de incorporar assets;
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
