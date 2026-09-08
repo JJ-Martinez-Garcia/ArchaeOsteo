@@ -3,6 +3,7 @@
 ## Cambios recientes
 
 - Añadida prueba PWA de extremo a extremo en Chrome para manifiesto, Service Worker, modelo GLB, IndexedDB y arranque sin conexión.
+- La ficha del hueso seleccionado refleja cada GLB en cuanto termina su carga, sin esperar al resto del perfil.
 - Incorporados 178 elementos Open3Dmodel bajo CC BY-SA 4.0; el perfil adulto masculino alcanza 179/192 GLB documentados junto al cráneo CC0.
 - Añadidos decodificadores Draco offline, carga concurrente limitada y normalización automática de escala y centro para modelos publicados o importados.
 - Documentada la persistencia offline de modelos propios y su límite al restaurar copias en otro navegador.

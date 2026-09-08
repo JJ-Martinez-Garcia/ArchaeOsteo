@@ -402,6 +402,7 @@ assert.match(main, /Pendiente de incorporar assets licenciados/);
 assert.match(main, /Descargar paquete offline/);
 assert.match(main, /loadBoneModel/);
 assert.match(main, /loadAvailableProfileModels/);
+assert.match(main, /loadedModelObjects\.set\(bone\.id,model\); if\(bone\.id===state\.selected\)refreshProfileDetailLabel\(\)/);
 assert.match(main, /if \(modelManifest\) loadAvailableProfileModels\(\)/);
 assert.match(main, /if \(group\) await loadAvailableProfileModels\(\)/);
 assert.doesNotMatch(main, /setTimeout\(\(\) => \{ if \(modelManifest\) loadAvailableProfileModels/);
