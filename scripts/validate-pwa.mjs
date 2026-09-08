@@ -1,4 +1,4 @@
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = path.resolve('dist');
@@ -14,6 +14,9 @@ const normalize = value => value.replace(/^\.\//, '').split(/[?#]/, 1)[0];
 const html = await readFile(path.join(root, 'index.html'), 'utf8');
 const manifest = JSON.parse(await readFile(path.join(root, 'manifest.json'), 'utf8'));
 const serviceWorker = await readFile(path.join(root, 'sw.js'), 'utf8');
+const buildAssets = (await readdir(path.join(root, 'assets'), { withFileTypes: true }))
+  .filter(entry => entry.isFile())
+  .map(entry => `./assets/${entry.name}`);
 const references = [...html.matchAll(/(?:src|href)=["']([^"']+)["']/g)]
   .map(match => normalize(match[1]))
   .filter(value => value && !value.startsWith('#') && !/^(?:https?:|data:|mailto:)/i.test(value));
@@ -35,6 +38,8 @@ const manifestValid = manifest.name === 'Osteo3D'
 if (!manifestValid) {
   throw new Error('El manifiesto no conserva identidad, instalación standalone, rutas GitHub Pages o iconos PNG requeridos.');
 }
+const missingBuildAssets = buildAssets.filter(asset => !serviceWorker.includes(asset));
+if (missingBuildAssets.length) throw new Error(`El Service Worker no incluye todos los chunks del build: ${missingBuildAssets.join(', ')}`);
 if (!/addEventListener\(['"](?:install|activate|fetch)['"]/.test(serviceWorker)
   || !/caches\.open\(/.test(serviceWorker)
   || !/SKIP_WAITING/.test(serviceWorker)) {

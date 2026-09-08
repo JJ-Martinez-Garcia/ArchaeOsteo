@@ -34,6 +34,7 @@ assert.match(sw, /SKIP_WAITING/);
 assert.match(sw, /cache: 'reload'/);
 assert.match(sw, /no-store/);
 assert.match(sw, /assetPathsFromHtml/);
+assert.match(sw, /BUILD_ASSETS/);
 assert.match(sw, /assets/);
 assert.match(sw, /osteo3d-shell-v7/);
 assert.match(sw, /osteo3d-192\.png/);
@@ -47,6 +48,8 @@ assert.match(sw, /caches\.delete/);
 assert.match(sw, /event\.request\.method !== 'GET'/);
 assert.match(sw, /if \(!response\.ok\) throw/);
 assert.match(sw, /if \(response\.ok\)/);
+assert.match(await text('scripts/generate-sw-assets.mjs'), /BUILD_ASSETS/);
+assert.match(packageJson.scripts.build, /generate-sw-assets\.mjs/);
 
 const main = await text('src/main.js');
 const styles = await text('src/styles.css');

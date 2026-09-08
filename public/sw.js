@@ -1,5 +1,6 @@
 const CACHE = 'osteo3d-shell-v7';
 const SHELL = ['./', './index.html', './manifest.json', './models/manifest.json', './models/sources.json', './icons/osteo3d-192.png', './icons/osteo3d-512.png', './icons/osteo3d-192.svg', './icons/osteo3d-512.svg'];
+const BUILD_ASSETS = [];
 function assetPathsFromHtml(html) {
   return [...new Set([...html.matchAll(/(?:src|href)=["'](\.\/assets\/[^"']+)["']/g)].map(match => match[1]))];
 }
@@ -10,7 +11,7 @@ self.addEventListener('install', event => {
     if (!indexResponse.ok) throw new Error('No se pudo precargar ./index.html');
     await cache.put(indexRequest, indexResponse.clone());
     const html = await indexResponse.text();
-    const paths = [...new Set([...SHELL.filter(path => path !== './index.html'), ...assetPathsFromHtml(html)])];
+    const paths = [...new Set([...SHELL.filter(path => path !== './index.html'), ...BUILD_ASSETS, ...assetPathsFromHtml(html)])];
     await Promise.all(paths.map(async path => {
       const request = new Request(path, { cache: 'reload' });
       const response = await fetch(request);
