@@ -255,6 +255,7 @@ assert.match(main, /Osteoarchaeological report/);
 assert.match(main, /Permanent odontogram/);
 assert.match(main, /Quantitative analysis/);
 assert.match(main, /Taphonomy and pathology \/ trauma/);
+assert.match(main, /\['Conservación media','Average completeness'\],\['Conservación','Preservation'\]/);
 assert.match(main, /Downloading…/);
 assert.match(main, /Offline GLB models for profile/);
 assert.match(main, /Local GLB models imported/);
