@@ -476,6 +476,7 @@ assert.match(extendedUi, /imported\.dental = Object\.fromEntries/);
 assert.match(extendedUi, /imported\.deciduousDental = Object\.fromEntries/);
 assert.match(main, /Método MNI/);
 assert.match(main, /reviewed after filters/);
+assert.match(main, /state\.filters\.preservation='all';state\.filters\.type='all'/);
 assert.match(main, /average completeness recorded/);
 assert.match(main, /reportContextFields/);
 assert.match(main, /Ficha de contexto/);
