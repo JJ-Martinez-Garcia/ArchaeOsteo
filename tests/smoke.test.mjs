@@ -268,6 +268,8 @@ assert.match(main, /explosion-guides/);
 assert.match(main, /guideLines/);
 assert.match(main, /photo-scope/);
 assert.match(main, /photoKey/);
+assert.match(main, /12\*1024\*1024/);
+assert.match(main, /canvas\.toDataURL/);
 assert.match(await text('src/anatomy/package.js'), /importModelPackageFiles/);
 assert.match(await text('src/anatomy/loader.js'), /MeshoptDecoder/);
 assert.match(await text('src/anatomy/loader.js'), /DRACOLoader/);
