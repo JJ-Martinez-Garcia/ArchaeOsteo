@@ -183,6 +183,14 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
         const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
         previewRows = rows;
         imported = applyInventoryRows(state, rows, bones);
+        const contextRows = workbook.Sheets['Ficha contexto'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Ficha contexto']) : [];
+        const fragmentRows = workbook.Sheets['Fragmentos indeterminados'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Fragmentos indeterminados']) : [];
+        const dentalRows = workbook.Sheets['Odontograma permanente'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Odontograma permanente']) : [];
+        const deciduousRows = workbook.Sheets['Odontograma deciduo'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Odontograma deciduo']) : [];
+        if (contextRows[0]) imported.report = { ...(imported.report || {}), ...contextRows[0] };
+        if (fragmentRows.length) imported.indeterminateFragments = fragmentRows;
+        if (dentalRows.length) imported.dental = Object.fromEntries(dentalRows.filter(row => row.Tooth_FDI).map(row => [String(row.Tooth_FDI), row.Status || 'not_recorded']));
+        if (deciduousRows.length) imported.deciduousDental = Object.fromEntries(deciduousRows.filter(row => row.Tooth_FDI).map(row => [String(row.Tooth_FDI), row.Status || 'not_recorded']));
       } else {
         imported = validateBackup(JSON.parse(await file.text()));
         previewRows = Object.entries(imported.status || {}).map(([boneId, status]) => ({ Bone_ID: boneId, Presence: status, Preservation: imported.preservation?.[boneId] || 'not_evaluated', Fragments: imported.fragments?.[boneId] || 0 }));
