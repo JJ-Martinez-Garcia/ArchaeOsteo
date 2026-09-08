@@ -401,6 +401,8 @@ assert.match(main, /Odontograma permanente/);
 assert.match(main, /calculateOsteoAnalysis/);
 assert.match(main, /photosReportHtml/);
 assert.match(main, /Método MNI/);
+assert.match(main, /reviewed after filters/);
+assert.match(main, /average completeness recorded/);
 assert.match(main, /reportContextFields/);
 assert.match(main, /Ficha de contexto/);
 assert.match(main, /Weight_g:state\.weights\[b\.id\]/);
