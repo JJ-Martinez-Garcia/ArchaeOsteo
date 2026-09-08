@@ -324,6 +324,8 @@ assert.match(store, /lightingMode/);
 assert.match(main, /data-lighting-mode/);
 assert.match(main, /function setLightingMode\(mode\)/);
 assert.match(main, /lightingMode:state\.lightingMode/);
+assert.match(main, /Los datos científicos no se infieren a partir de la geometría/);
+assert.match(main, /anatomy-facts/);
 assert.match(main, /data-view-extra="superior"/);
 assert.match(main, /data-view-extra="inferior"/);
 assert.match(main, /id="zoom-out"/);
