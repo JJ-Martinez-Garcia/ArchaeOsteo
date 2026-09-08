@@ -14,12 +14,17 @@ function formatChangeValue(value) {
   return String(value);
 }
 
+const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
+const PATHOLOGY_TYPES = ['Normal', 'Patológico', 'Traumatizado', 'Alterado', 'Indeterminado'];
+
 export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject }) {
   state.fragments ||= {};
   state.portions ||= {};
   state.individuals ||= {};
   state.taphonomy ||= {};
   state.pathology ||= {};
+  state.taphonomyDetails ||= {};
+  state.pathologyDetails ||= {};
   state.notes ||= {};
   state.indeterminateFragments ||= [];
   state.language ||= 'es';
@@ -72,7 +77,10 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const portionOptions = portionOptionsForBone(bone);
     const taphonomy = (state.taphonomy[id] || []).join(', ');
     const pathology = (state.pathology[id] || []).join(', ');
-    show(`<div class="record-editor"><strong>${escapeHtml(bone.es || id)}</strong><label>Número de fragmentos<input id="record-fragments" type="number" min="0" step="1" value="${state.fragments[id] || 0}"></label><label>Peso (g)<input id="record-weight" type="number" min="0" step="0.01" value="${state.weights[id] ?? ''}"></label><label>Porción anatómica<select id="record-portion">${portionOptions.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label><label>Individuo<input id="record-individual" value="${escapeHtml(state.individuals[id] || state.report?.individual || 'IND-LOCAL')}" placeholder="IND-01"></label><label>Tafonomía<input id="record-taphonomy" value="${escapeHtml(taphonomy)}" placeholder="erosión, raíces…"></label><label>Patología / trauma<input id="record-pathology" value="${escapeHtml(pathology)}" placeholder="fractura, caries…"></label><label>Nota científica<textarea id="record-note" rows="3">${escapeHtml(state.notes[id] || '')}</textarea></label><button id="save-record" class="secondary-action">Guardar registro</button></div>`);
+    show(`<div class="record-editor"><strong>${escapeHtml(bone.es || id)}</strong><label>Número de fragmentos<input id="record-fragments" type="number" min="0" step="1" value="${state.fragments[id] || 0}"></label><label>Peso (g)<input id="record-weight" type="number" min="0" step="0.01" value="${state.weights[id] ?? ''}"></label><label>Porción anatómica<select id="record-portion">${portionOptions.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label><label>Individuo<input id="record-individual" value="${escapeHtml(state.individuals[id] || state.report?.individual || 'IND-LOCAL')}" placeholder="IND-01"></label><label>Tafonomía<input id="record-taphonomy" list="taphonomy-options" value="${escapeHtml(taphonomy)}" placeholder="erosión, raíces…"><datalist id="taphonomy-options">${TAPHONOMY_OPTIONS.map(value => `<option value="${value}">`).join('')}</datalist></label><label>Patología / trauma<input id="record-pathology" value="${escapeHtml(pathology)}" placeholder="fractura, caries…"></label><label>Nota científica<textarea id="record-note" rows="3">${escapeHtml(state.notes[id] || '')}</textarea></label><button id="save-record" class="secondary-action">Guardar registro</button></div>`);
+    const pathologyDetails = state.pathologyDetails[id] || {};
+    document.querySelector('#record-pathology').insertAdjacentHTML('afterend', `<fieldset class="structured-observation"><legend>Detalle patología / trauma</legend><label>Estado<select id="record-pathology-type">${PATHOLOGY_TYPES.map(value => `<option value="${value}">${value}</option>`).join('')}</select></label><label>Descripción<textarea id="record-pathology-description" rows="2">${escapeHtml(pathologyDetails.description || '')}</textarea></label><label>Posición<input id="record-pathology-position" value="${escapeHtml(pathologyDetails.position || '')}" placeholder="proximal, cara anterior…"></label><label>Extensión<input id="record-pathology-extent" value="${escapeHtml(pathologyDetails.extent || '')}" placeholder="localizada, 20 mm…"></label><label>Observaciones<textarea id="record-pathology-observations" rows="2">${escapeHtml(pathologyDetails.observations || '')}</textarea></label></fieldset>`);
+    document.querySelector('#record-pathology-type').value = pathologyDetails.type || 'Indeterminado';
     document.querySelector('#record-portion').value = state.portions[id] || 'whole';
     document.querySelector('#save-record').onclick = async () => {
       state.fragments[id] = Math.max(0, Number(document.querySelector('#record-fragments').value || 0));
@@ -83,6 +91,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       state.individuals[id] = document.querySelector('#record-individual').value.trim() || 'IND-LOCAL';
       state.taphonomy[id] = document.querySelector('#record-taphonomy').value.split(',').map(value => value.trim()).filter(Boolean);
       state.pathology[id] = document.querySelector('#record-pathology').value.split(',').map(value => value.trim()).filter(Boolean);
+      state.pathologyDetails[id] = { type: document.querySelector('#record-pathology-type')?.value || 'Indeterminado', description: document.querySelector('#record-pathology-description')?.value.trim() || '', position: document.querySelector('#record-pathology-position')?.value.trim() || '', extent: document.querySelector('#record-pathology-extent')?.value.trim() || '', observations: document.querySelector('#record-pathology-observations')?.value.trim() || '' };
       state.notes[id] = document.querySelector('#record-note').value.trim();
       await saveLocal();
       document.querySelector('#toast').textContent = 'Registro científico guardado';

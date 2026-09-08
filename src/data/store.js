@@ -62,6 +62,8 @@ export function normalizeProject(project) {
     ue: project.ue || {},
     taphonomy: project.taphonomy || {},
     pathology: project.pathology || {},
+    taphonomyDetails: project.taphonomyDetails || {},
+    pathologyDetails: project.pathologyDetails || {},
     notes: project.notes || {},
     indeterminateFragments: Array.isArray(project.indeterminateFragments) ? project.indeterminateFragments : [],
     locked: project.locked || {},
