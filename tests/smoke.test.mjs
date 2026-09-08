@@ -562,6 +562,7 @@ assert.equal(imported.portions.left_femur, 'shaft_mid');
 assert.equal(imported.weights.left_femur, 88.2);
 assert.deepEqual(imported.taphonomy.left_femur, ['raíces', 'erosión']);
 assert.equal(imported.report.burial, 'B-12');
+assert.equal(imported.report.individual, 'IND-B');
 assert.equal(imported.report.ue, 'UE-4');
 assert.equal(imported.report.chronology, 'siglo IV');
 const structuredImported = applyInventoryRows({}, [{ Bone_ID: 'left_femur', Taphonomy_Detail: JSON.stringify({ type: 'raíces', description: 'Galerías', position: 'diáfisis', extent: 'parcial', observations: 'Húmedo' }), Pathology_Detail: JSON.stringify({ type: 'fractura', description: 'Remodelada', position: 'epífisis', extent: 'localizada', observations: 'Antigua' }) }], testBones);
