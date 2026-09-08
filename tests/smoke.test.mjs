@@ -466,6 +466,8 @@ assert.match(main, /taphonomyDetails: structuredClone\(state\.taphonomyDetails\|
 assert.match(main, /pathologyDetails: structuredClone\(state\.pathologyDetails\|\|\{\}\)/);
 assert.match(main, /delete state\.taphonomyDetails\[id\]/);
 assert.match(main, /delete state\.pathologyDetails\[id\]/);
+assert.match(extendedUi, /if \(hasTaphonomyDetail\) state\.taphonomyDetails\[id\] = taphonomyDetail; else delete state\.taphonomyDetails\[id\]/);
+assert.match(extendedUi, /if \(hasPathologyDetail\) state\.pathologyDetails\[id\] = pathologyDetail; else delete state\.pathologyDetails\[id\]/);
 assert.match(main, /Método MNI/);
 assert.match(main, /reviewed after filters/);
 assert.match(main, /average completeness recorded/);
