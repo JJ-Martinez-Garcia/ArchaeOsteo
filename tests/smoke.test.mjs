@@ -44,6 +44,9 @@ assert.match(sw, /osteo3d-192\.svg/);
 assert.match(sw, /osteo3d-512\.svg/);
 assert.match(sw, /startsWith\('osteo3d-shell-'\)/);
 assert.match(sw, /caches\.delete/);
+assert.match(sw, /event\.request\.method !== 'GET'/);
+assert.match(sw, /if \(!response\.ok\) throw/);
+assert.match(sw, /if \(response\.ok\)/);
 
 const main = await text('src/main.js');
 const styles = await text('src/styles.css');

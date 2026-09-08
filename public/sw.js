@@ -32,15 +32,21 @@ self.addEventListener('message', event => { if (event.data?.type === 'SKIP_WAITI
 self.addEventListener('fetch', event => {
   if (event.request.mode === 'navigate') {
     event.respondWith(fetch(event.request, { cache: 'no-store' }).then(response => {
+      if (!response.ok) throw new Error(`Navegación no disponible: ${response.status}`);
       const copy = response.clone();
       caches.open(CACHE).then(cache => cache.put('./index.html', copy));
       return response;
     }).catch(() => caches.match('./index.html')));
     return;
   }
-  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
-    const copy = response.clone();
-    caches.open(CACHE).then(cache => cache.put(event.request, copy));
+  if (event.request.method !== 'GET') return;
+  event.respondWith(caches.match(event.request).then(async cached => {
+    if (cached) return cached;
+    const response = await fetch(event.request);
+    if (response.ok) {
+      const copy = response.clone();
+      caches.open(CACHE).then(cache => cache.put(event.request, copy));
+    }
     return response;
-  })));
+  }));
 });
