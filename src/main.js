@@ -227,6 +227,13 @@ function applyProjectData(saved) {
   state.hidden = saved.hidden || {};
   state.opacity = saved.opacity || {};
   state.opacityScope = ['bone', 'region', 'skeleton'].includes(saved.opacityScope) ? saved.opacityScope : 'bone';
+  state.skeletonFilter = ['all', 'axial', 'appendicular'].includes(saved.skeletonFilter) ? saved.skeletonFilter : 'all';
+  state.regionFilter = saved.regionFilter || 'all';
+  state.explosion = Math.max(0, Math.min(100, Number(saved.explosion) || 0));
+  state.tableMode = Boolean(saved.tableMode);
+  state.orthographic = Boolean(saved.orthographic);
+  state.isolate = Boolean(saved.isolate);
+  state.filters = { status:'all', region:'all', side:'all', taphonomy:'all', pathology:'all', ...(saved.filters || {}) };
   state.wireframe = Boolean(saved.wireframe);
   state.xray = Boolean(saved.xray);
   state.labelMode = ['selected', 'region', 'all', 'none'].includes(saved.labelMode) ? saved.labelMode : 'selected';
@@ -237,6 +244,19 @@ function applyProjectData(saved) {
   setLightIntensity(state.lightIntensity);
   document.querySelector('#opacity-scope') && (document.querySelector('#opacity-scope').value = state.opacityScope);
   document.querySelector('#label-mode') && (document.querySelector('#label-mode').value = state.labelMode);
+  const explosionSlider = document.querySelector('#explosion');
+  if (explosionSlider) explosionSlider.value = String(Math.round(state.explosion));
+  const explosionValue = document.querySelector('#explosion-value');
+  if (explosionValue) explosionValue.textContent = `${Math.round(state.explosion)}%`;
+  const tableModeButton = document.querySelector('#table-mode');
+  if (tableModeButton) { tableModeButton.setAttribute('aria-pressed', String(state.tableMode)); tableModeButton.textContent = state.tableMode ? 'Restaurar posición anatómica' : 'Mesa osteológica'; }
+  const projectionButton = document.querySelector('#projection-toggle');
+  if (projectionButton) { projectionButton.setAttribute('aria-pressed', String(state.orthographic)); projectionButton.textContent = state.orthographic ? 'Proyección perspectiva' : 'Proyección ortográfica'; }
+  const isolateButton = document.querySelector('#isolate');
+  if (isolateButton) isolateButton.textContent = state.isolate ? 'Mostrar esqueleto' : 'Aislar hueso';
+  const wantedProjection = state.orthographic;
+  state.orthographic = !wantedProjection;
+  setCameraProjection(wantedProjection);
   const xrayButton = document.querySelector('#xray-toggle');
   if (xrayButton) { xrayButton.setAttribute('aria-pressed', String(state.xray)); xrayButton.textContent = state.xray ? 'X-Ray activado' : 'X-Ray'; }
   const regionColorsButton = document.querySelector('#region-colors-toggle');
