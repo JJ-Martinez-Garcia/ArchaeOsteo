@@ -228,6 +228,8 @@ assert.match(main, /class="bone-region-group" open/);
 assert.match(main, /const regions = \[\.\.\.new Set\(groupBones\.map\(b => b\.region\)\)\]/);
 assert.match(main, /function regionLabel\(region\)/);
 assert.match(main, /regionLabel\(b\.region\)/);
+assert.match(main, /function profileLabel\(profileId\)/);
+assert.match(main, /Adult male/);
 assert.match(await text('src/pwa.css'), /bone-region-group summary/);
 assert.match(main, /filter-preservation/);
 assert.match(main, /filter-type/);

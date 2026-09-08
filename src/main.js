@@ -234,6 +234,7 @@ function renderInventoryTable() {
   });
 }
 function displayBoneName(bone) { return state.language === 'en' ? bone.en : bone.es; }
+function profileLabel(profileId) { if (state.language !== 'en') return profileCatalog(profileId).label; return ({ adult_male: 'Adult male', adult_female: 'Adult female', infant: 'Infant', neonate: 'Neonate' })[profileId] || profileCatalog(profileId).label; }
 function regionLabel(region) { if (state.language !== 'en') return region; return ({ 'Cráneo': 'Skull', 'Columna': 'Spine', 'Tórax': 'Thorax', 'Cintura escapular': 'Shoulder girdle', 'Extremidad superior': 'Upper limb', 'Extremidad inferior': 'Lower limb', 'Manos': 'Hands', 'Pies': 'Feet', 'Pelvis': 'Pelvis' })[region] || region; }
 function normalizeSearchText(value) { return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
 function renderList() {
@@ -241,6 +242,8 @@ function renderList() {
   const visible = bones.filter(b => matchesSkeletonFilter(b) && matchesRegionFilter(b) && [b.id, b.es, b.en, b.la].some(v => normalizeSearchText(v).includes(q)));
   const renderGroup = group => { const groupBones = visible.filter(b => group === 'axial' ? ['Cráneo', 'Columna', 'Tórax'].includes(b.region) : !['Cráneo', 'Columna', 'Tórax'].includes(b.region)); const regions = [...new Set(groupBones.map(b => b.region))]; return regions.map(region => `<details class="bone-region-group" open><summary>${regionLabel(region)} <small>${groupBones.filter(b => b.region === region).length}</small></summary>${groupBones.filter(b => b.region === region).map(b => `<button class="bone-row ${b.id===state.selected?'selected':''} ${state.multiSelected[b.id]?'multi-selected':''}" data-bone="${b.id}" aria-pressed="${Boolean(state.multiSelected[b.id])}" aria-label="${displayBoneName(b)} (${b.id})"><span class="bone-icon" style="background:#${(regionColors[b.region] || 0xc4ad8b).toString(16)}"></span>${displayBoneName(b)}<small>${b.id}</small></button>`).join('')}</details>`).join(''); };
   const list = document.querySelector('#bone-list');
+  document.querySelectorAll('[data-region-filter]').forEach(button => { button.textContent = button.dataset.regionFilter === 'all' ? (state.language === 'en' ? 'All' : 'Todas') : regionLabel(button.dataset.regionFilter); });
+  document.querySelectorAll('#profile option').forEach(option => { option.textContent = profileLabel(option.value); });
   const searchStatus = document.querySelector('#search-status');
   if (searchStatus) searchStatus.textContent = state.language === 'en' ? `${visible.length} result${visible.length === 1 ? '' : 's'}` : `${visible.length} resultado${visible.length === 1 ? '' : 's'}`;
   const groupLabels = state.language === 'en' ? { axial: 'Axial skeleton', appendicular: 'Appendicular skeleton' } : { axial: 'Esqueleto axial', appendicular: 'Esqueleto apendicular' };
@@ -364,6 +367,7 @@ function applyProjectData(saved) {
   if (regionColorsButton) { regionColorsButton.setAttribute('aria-pressed', String(state.colorByRegion)); regionColorsButton.textContent = state.colorByRegion ? 'Colores por región' : 'Color neutro'; }
   setComparisonProfile(state.comparisonProfile);
   document.querySelector('#profile').value = state.profile;
+  document.querySelectorAll('#profile option').forEach(option => { option.textContent = profileLabel(option.value); });
   document.querySelector('#language').value = state.language;
   document.documentElement.lang = state.language;
   extendedUi?.updateLabels();
