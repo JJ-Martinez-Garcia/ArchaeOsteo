@@ -29,6 +29,7 @@ export function createBackup(state) {
       wireframe: state.wireframe,
       xray: state.xray,
       labelMode: state.labelMode,
+      colorByRegion: state.colorByRegion,
       tableTransforms: state.tableTransforms,
       lightIntensity: state.lightIntensity,
       changeLog: state.changeLog,

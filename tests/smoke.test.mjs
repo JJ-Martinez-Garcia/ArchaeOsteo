@@ -192,6 +192,8 @@ assert.match(main, /depthWrite=!state\.xray/);
 assert.match(main, /labels-layer/);
 assert.match(main, /renderLabels/);
 assert.match(main, /labelMode/);
+assert.match(main, /region-colors-toggle/);
+assert.match(main, /colorByRegion/);
 assert.match(main, /material\.wireframe=state\.wireframe/);
 assert.match(main, /light-slider/);
 assert.match(main, /setLightIntensity/);
