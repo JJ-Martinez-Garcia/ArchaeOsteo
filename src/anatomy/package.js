@@ -76,7 +76,8 @@ export function modelPackageSummary(manifest, profileId, boneIds = []) {
     expected: boneIds.length,
     pattern: String(manifest.bone_asset_pattern || '').replace('{profile}', profileId),
     requiredMetadata: manifest.required_metadata || [],
-    approximateSizeMb: Number.isFinite(profile.approximate_size_mb) ? profile.approximate_size_mb : null
+    approximateSizeMb: Number.isFinite(profile.approximate_size_mb) ? profile.approximate_size_mb : null,
+    availableBoneIds: Array.isArray(profile.asset_ids) ? profile.asset_ids : []
   };
 }
 
@@ -90,7 +91,8 @@ export function modelPackageDownloadPlan(manifest, profileId, boneIds = []) {
     ...summary,
     urls: summary.status === 'missing'
       ? []
-      : boneIds.map(boneId => `./models/${summary.pattern.replace('{bone_id}', boneId)}`)
+      : (summary.status === 'partial' && summary.availableBoneIds.length > 0 ? summary.availableBoneIds : boneIds)
+        .map(boneId => `./models/${summary.pattern.replace('{bone_id}', boneId)}`)
   };
 }
 

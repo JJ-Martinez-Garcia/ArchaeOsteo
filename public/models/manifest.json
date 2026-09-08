@@ -2,7 +2,7 @@
   "schema_version": 1,
   "bone_count": 192,
   "profiles": {
-    "adult_male": { "label": "Adulto masculino", "root": "./adult_male", "asset_status": "partial", "approximate_size_mb": 8.54, "asset_count": 1 },
+    "adult_male": { "label": "Adulto masculino", "root": "./adult_male", "asset_status": "partial", "approximate_size_mb": 8.54, "asset_count": 1, "asset_ids": ["skull"] },
     "adult_female": { "label": "Adulto femenino", "root": "./adult_female", "asset_status": "placeholder", "approximate_size_mb": null },
     "infant": { "label": "Infante", "root": "./infant", "asset_status": "placeholder", "approximate_size_mb": null },
     "neonate": { "label": "Neonato", "root": "./neonate", "asset_status": "placeholder", "approximate_size_mb": null }

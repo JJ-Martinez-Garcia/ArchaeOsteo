@@ -629,6 +629,7 @@ assert.match(await text('public/models/SOURCES.md'), /Anatria-3D/);
 assert.equal(await exists('scripts/validate-model-assets.mjs'), true);
 const packagePlan = modelPackageDownloadPlan(modelManifest, 'adult_male', [{ id: 'skull' }].map(bone => bone.id));
 assert.equal(packagePlan.urls[0], './models/adult_male/skull.glb');
+assert.deepEqual(modelPackageDownloadPlan(modelManifest, 'adult_male', ['skull', 'mandible']).urls, ['./models/adult_male/skull.glb']);
 assert.match(main, /Importar GLB locales/);
 assert.match(main, /importLocalModelFiles/);
 assert.match(main, /La importación reemplazará los modelos GLB locales/);
