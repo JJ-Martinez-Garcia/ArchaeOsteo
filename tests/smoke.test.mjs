@@ -283,6 +283,8 @@ assert.match(main, /Search bone, Latin name or ID/);
 assert.match(main, /function localizeStatsUi\(\)/);
 assert.match(main, /Clear filters/);
 assert.match(main, /With record/);
+assert.match(main, /function localizeReportUi\(\)/);
+assert.match(main, /Generate report \/ print PDF/);
 assert.match(main, /Interface error · local data preserved/);
 assert.match(main, /Fallback atlas active · local data operational/);
 assert.match(main, /function localizeModelPackageHelp\(\)/);
