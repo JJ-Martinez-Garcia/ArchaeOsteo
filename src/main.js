@@ -107,7 +107,7 @@ async function loadAvailableProfileModels() {
   }
   selectBone(state.selected);
 }
-window.addEventListener('oste3d:compare-profile', event => { state.comparisonProfile=event.detail?.profileId||''; setComparisonProfile(state.comparisonProfile); });
+window.addEventListener('oste3d:compare-profile', event => { state.comparisonProfile=event.detail?.profileId||''; setComparisonProfile(state.comparisonProfile); saveLocal?.({notify:false}); });
 async function init3D() {
   THREE = await import('three');
   const host = document.querySelector('#viewer'); scene = new THREE.Scene(); scene.background = new THREE.Color(0xf0f4f7);
@@ -335,6 +335,8 @@ setTimeout(()=>{ const summary=document.querySelector('#stats-summary'); if(summ
 function updateWeightSummary() { const target=document.querySelector('#weight-summary'); if(!target)return; const totals=new Map(); let total=0; let recorded=0; bones.forEach(bone=>{const weight=Number(state.weights[bone.id]); if(!Number.isFinite(weight)||weight<0)return; total+=weight; recorded+=1; totals.set(bone.region,(totals.get(bone.region)||0)+weight);}); const indeterminateWeight=(state.indeterminateFragments||[]).reduce((sum,item)=>sum+(Number.isFinite(Number(item.weight))&&Number(item.weight)>=0?Number(item.weight):0),0); const regions=[...totals.entries()].sort((a,b)=>a[0].localeCompare(b[0],'es')).map(([region,weight])=>`${region}: ${weight.toFixed(2)} g`).join(' · '); target.textContent=`Peso identificado: ${total.toFixed(2)} g en ${recorded}/${bones.length} elementos${indeterminateWeight?` · Peso indeterminado: ${indeterminateWeight.toFixed(2)} g`:''}${regions?` · ${regions}`:''}`; }
 setTimeout(()=>{ const summary=document.querySelector('#conservation-map'); if(summary&&!document.querySelector('#weight-summary')){summary.insertAdjacentHTML('afterend','<p id="weight-summary" class="weight-summary" aria-live="polite"></p>'); updateWeightSummary(); setInterval(updateWeightSummary,1000); } },0);
 setTimeout(() => document.querySelector('#new-project')?.addEventListener('click', () => { state.weights = {}; state.indeterminateFragments = []; state.photoScope = 'bone'; state.photoTargetId = ''; }), 0);
+document.querySelector('#reset').addEventListener('click',()=>{state.comparisonProfile='';setComparisonProfile('');});
+document.querySelector('#new-project')?.addEventListener('click',()=>{state.comparisonProfile='';setComparisonProfile('');});
 document.querySelector('.range-label')?.insertAdjacentHTML('afterend','<button id="explosion-play" class="secondary-action" aria-pressed="false">Reproducir despliegue</button>');
 document.querySelector('#explosion-play').onclick=()=>{state.explosionAnimating=!state.explosionAnimating;const button=document.querySelector('#explosion-play');button.setAttribute('aria-pressed',String(state.explosionAnimating));button.textContent=state.explosionAnimating?'Pausar despliegue':'Reproducir despliegue';};
 document.querySelector('#reset').addEventListener('click',()=>{state.explosionAnimating=false;const button=document.querySelector('#explosion-play');if(button){button.setAttribute('aria-pressed','false');button.textContent='Reproducir despliegue';}});

@@ -198,6 +198,8 @@ assert.match(main, /setComparisonProfile/);
 assert.match(main, /comparisonGroup/);
 assert.match(await text('src/ui/extended.js'), /compare-3d-toggle/);
 assert.match(await text('src/ui/extended.js'), /oste3d:compare-profile/);
+assert.match(main, /comparisonProfile/);
+assert.match(main, /saveLocal\?\./);
 assert.match(main, /explosion-play/);
 assert.match(main, /explosionAnimating/);
 assert.match(main, /material\.wireframe=state\.wireframe/);
