@@ -616,6 +616,7 @@ assert.match(main, /reportAnalysisSummaryHtml/);
 assert.match(main, /Representación regional/);
 assert.match(main, /Método MNE/);
 assert.equal(modelPackageSummary(modelManifest, 'infant', extendedBones).status, 'placeholder');
+assert.equal(modelPackageSummary(modelManifest, 'adult_male', extendedBones).availableCount, 1);
 assert.equal(formatPackageSize(null), 'no disponible');
 assert.equal(formatPackageSize(42.5), 'aprox. 42.5 MB');
 const sourceRegistry = JSON.parse(await text('public/models/sources.json'));

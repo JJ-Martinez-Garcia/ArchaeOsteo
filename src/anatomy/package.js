@@ -77,7 +77,8 @@ export function modelPackageSummary(manifest, profileId, boneIds = []) {
     pattern: String(manifest.bone_asset_pattern || '').replace('{profile}', profileId),
     requiredMetadata: manifest.required_metadata || [],
     approximateSizeMb: Number.isFinite(profile.approximate_size_mb) ? profile.approximate_size_mb : null,
-    availableBoneIds: Array.isArray(profile.asset_ids) ? profile.asset_ids : []
+    availableBoneIds: Array.isArray(profile.asset_ids) ? profile.asset_ids : [],
+    availableCount: Array.isArray(profile.asset_ids) ? profile.asset_ids.length : 0
   };
 }
 
