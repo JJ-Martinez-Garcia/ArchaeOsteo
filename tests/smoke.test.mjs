@@ -274,6 +274,8 @@ assert.match(main, /photoTargetId/);
 assert.match(main, /Selected element/);
 assert.match(main, /FDI tooth/);
 assert.match(main, /12\*1024\*1024/);
+assert.match(main, /updateRegionalStats/);
+assert.match(main, /regional-stats/);
 assert.match(main, /canvas\.toDataURL/);
 assert.match(await text('src/ui/extended.js'), /quiz-level/);
 assert.match(await text('src/ui/extended.js'), /optionCount/);
