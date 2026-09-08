@@ -461,6 +461,8 @@ assert.match(main, /calculateOsteoAnalysis/);
 assert.match(main, /photosReportHtml/);
 assert.match(main, /Taphonomy_Detail:JSON\.stringify/);
 assert.match(main, /Pathology_Detail:JSON\.stringify/);
+assert.match(main, /Taphonomy:\(state\.taphonomy\[b\.id\]\|\|\[\]\)\.join\('; '\)/);
+assert.match(main, /Pathology:\(state\.pathology\[b\.id\]\|\|\[\]\)\.join\('; '\)/);
 assert.match(main, /detailValues=\(details\)=>Object\.values\(details\|\|\{\}\)/);
 assert.match(main, /taphonomyDetails: structuredClone\(state\.taphonomyDetails\|\|\{\}\)/);
 assert.match(main, /pathologyDetails: structuredClone\(state\.pathologyDetails\|\|\{\}\)/);
