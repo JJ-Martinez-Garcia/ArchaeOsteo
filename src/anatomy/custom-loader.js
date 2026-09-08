@@ -1,4 +1,4 @@
-export async function loadLocalModel(THREE, file) {
+export async function loadLocalModel(THREE, file, options = {}) {
   const extension = String(file?.name || '').split('.').pop().toLowerCase();
   if (extension === 'obj') {
     const { OBJLoader } = await import('three/addons/loaders/OBJLoader.js');
@@ -15,6 +15,12 @@ export async function loadLocalModel(THREE, file) {
     const { MeshoptDecoder } = await import('three/addons/libs/meshopt_decoder.module.js');
     const loader = new GLTFLoader();
     loader.setMeshoptDecoder(MeshoptDecoder);
+    if (options.dracoDecoderPath) {
+      const { DRACOLoader } = await import('three/addons/loaders/DRACOLoader.js');
+      const draco = new DRACOLoader();
+      draco.setDecoderPath(options.dracoDecoderPath);
+      loader.setDRACOLoader(draco);
+    }
     const body = await file.arrayBuffer();
     return new Promise((resolve, reject) => loader.parse(body, '', resolve, reject));
   }

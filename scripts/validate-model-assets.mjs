@@ -1,8 +1,12 @@
 import { access, readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { glbContainsBoneId, validateModelManifest, validateModelSourceRegistry } from '../src/anatomy/package.js';
+import { extendedBones } from '../src/anatomy/extended-bones.js';
 
 const root = resolve('public/models');
+const baseBoneIds = ['skull', 'mandible', 'c1_atlas', 'vertebrae', 'sternum', 'left_clavicle', 'right_clavicle', 'left_humerus', 'right_humerus', 'left_femur', 'right_femur', 'left_tibia', 'right_tibia', 'left_coxal', 'right_coxal'];
+const catalogIds = [...baseBoneIds, ...extendedBones.map(bone => bone.id)];
+const knownIds = new Set(catalogIds);
 const readJson = async name => JSON.parse(await readFile(resolve(root, name), 'utf8'));
 const exists = async path => { try { await access(path); return true; } catch { return false; } };
 
@@ -13,8 +17,8 @@ const errors = [
   ...validateModelSourceRegistry(manifest, registry).errors,
 ];
 
-if (!Number.isInteger(manifest.bone_count) || manifest.bone_count < 1) {
-  errors.push('manifest: bone_count debe ser un entero positivo');
+if (manifest.bone_count !== catalogIds.length) {
+  errors.push(`manifest: bone_count debe coincidir con el catálogo (${catalogIds.length})`);
 }
 
 const profileCounts = {};
@@ -25,6 +29,7 @@ for (const [profileId, profile] of Object.entries(manifest.profiles || {})) {
     : [];
   const fileIds = files.map(name => name.replace(/\.glb$/i, ''));
   const declaredIds = Array.isArray(profile.asset_ids) ? profile.asset_ids : [];
+  for (const boneId of declaredIds) if (!knownIds.has(boneId)) errors.push(`${profileId}: Bone_ID desconocido en asset_ids: ${boneId}`);
   profileCounts[profileId] = files.length;
   const source = registry.profiles?.[profileId];
 

@@ -5,6 +5,10 @@ export const CUSTOM_MODEL_CACHE = 'osteo3d-custom-models-v1';
 
 const ASSET_STATUSES = new Set(['placeholder', 'ready', 'partial']);
 
+function normalizeBoneIds(items = []) {
+  return items.map(item => typeof item === 'string' ? item : item?.id).filter(id => typeof id === 'string' && id.length > 0);
+}
+
 export function glbNodeNames(body) {
   const bytes = body instanceof ArrayBuffer ? new Uint8Array(body) : body instanceof Uint8Array ? body : new Uint8Array(body || []);
   if (bytes.byteLength < 20 || new TextDecoder().decode(bytes.slice(0, 4)) !== 'glTF') return [];
@@ -75,18 +79,19 @@ export function validateModelSourceRegistry(manifest, registry = {}) {
 
 export function modelPackageSummary(manifest, profileId, boneIds = []) {
   const profile = manifest?.profiles?.[profileId];
-  if (!profile) return { profileId, status: 'missing', expected: boneIds.length, pattern: null };
+  const normalizedBoneIds = normalizeBoneIds(boneIds);
+  if (!profile) return { profileId, status: 'missing', expected: normalizedBoneIds.length, pattern: null };
   const availableBoneIds = Array.isArray(profile.asset_ids) ? profile.asset_ids : [];
   return {
     profileId,
     status: profile.asset_status,
-    expected: boneIds.length,
+    expected: normalizedBoneIds.length,
     pattern: String(manifest.bone_asset_pattern || '').replace('{profile}', profileId),
     requiredMetadata: manifest.required_metadata || [],
     approximateSizeMb: Number.isFinite(profile.approximate_size_mb) ? profile.approximate_size_mb : null,
     availableBoneIds,
     availableCount: availableBoneIds.length,
-    publishedCount: profile.asset_status === 'ready' ? boneIds.length : availableBoneIds.length
+    publishedCount: profile.asset_status === 'ready' ? normalizedBoneIds.length : availableBoneIds.length
   };
 }
 
@@ -96,11 +101,16 @@ export function formatPackageSize(sizeMb) {
 
 export function modelPackageDownloadPlan(manifest, profileId, boneIds = []) {
   const summary = modelPackageSummary(manifest, profileId, boneIds);
+  const normalizedBoneIds = normalizeBoneIds(boneIds);
+  const requestedIds = new Set(normalizedBoneIds);
+  const availableIds = summary.status === 'partial'
+    ? summary.availableBoneIds.filter(boneId => requestedIds.size === 0 || requestedIds.has(boneId))
+    : normalizedBoneIds;
   return {
     ...summary,
     urls: summary.status === 'missing'
       ? []
-      : (summary.status === 'partial' && summary.availableBoneIds.length > 0 ? summary.availableBoneIds : boneIds)
+      : availableIds
         .map(boneId => `./models/${summary.pattern.replace('{bone_id}', boneId)}`)
   };
 }

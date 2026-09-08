@@ -1,4 +1,5 @@
 node_modules/
 dist/
 .pnpm-store/
+.tmp-model-review/
 .DS_Store

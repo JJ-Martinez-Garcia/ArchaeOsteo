@@ -14,6 +14,10 @@ const normalize = value => value.replace(/^\.\//, '').split(/[?#]/, 1)[0];
 const html = await readFile(path.join(root, 'index.html'), 'utf8');
 const manifest = JSON.parse(await readFile(path.join(root, 'manifest.json'), 'utf8'));
 const serviceWorker = await readFile(path.join(root, 'sw.js'), 'utf8');
+const shellMatch = serviceWorker.match(/const SHELL = (\[[^;]+\]);/);
+if (!shellMatch) throw new Error('El Service Worker no declara la lista SHELL.');
+const shellReferences = [...shellMatch[1].matchAll(/['"]([^'"]+)['"]/g)].map(match => normalize(match[1])).filter(Boolean);
+if (shellReferences.length === 0) throw new Error('La lista SHELL no contiene recursos.');
 const buildAssets = (await readdir(path.join(root, 'assets'), { withFileTypes: true }))
   .filter(entry => entry.isFile())
   .map(entry => `./assets/${entry.name}`);
@@ -21,7 +25,7 @@ const references = [...html.matchAll(/(?:src|href)=["']([^"']+)["']/g)]
   .map(match => normalize(match[1]))
   .filter(value => value && !value.startsWith('#') && !/^(?:https?:|data:|mailto:)/i.test(value));
 const manifestReferences = (manifest.icons || []).map(icon => normalize(icon.src));
-const required = [...new Set([...references, ...manifestReferences, 'sw.js', 'manifest.json'])];
+const required = [...new Set([...references, ...manifestReferences, ...shellReferences, 'sw.js', 'manifest.json'])];
 const missing = [];
 for (const resource of required) {
   if (!(await exists(resource))) missing.push(resource);

@@ -1,5 +1,5 @@
 const CACHE = 'osteo3d-shell-v7';
-const SHELL = ['./', './index.html', './manifest.json', './models/manifest.json', './models/sources.json', './icons/osteo3d-192.png', './icons/osteo3d-512.png', './icons/osteo3d-192.svg', './icons/osteo3d-512.svg'];
+const SHELL = ['./', './index.html', './manifest.json', './models/manifest.json', './models/sources.json', './models/SOURCES.md', './licenses/CC-BY-SA-4.0.txt', './licenses/DRACO-APACHE-2.0.txt', './draco/draco_decoder.js', './draco/draco_decoder.wasm', './draco/draco_wasm_wrapper.js', './icons/osteo3d-192.png', './icons/osteo3d-512.png', './icons/osteo3d-192.svg', './icons/osteo3d-512.svg'];
 const BUILD_ASSETS = [];
 function assetPathsFromHtml(html) {
   return [...new Set([...html.matchAll(/(?:src|href)=["'](\.\/assets\/[^"']+)["']/g)].map(match => match[1]))];

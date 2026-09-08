@@ -13,20 +13,39 @@ Por cada perfil y paquete se deben documentar:
 - modificaciones realizadas y herramientas utilizadas;
 - número de assets incluidos y sus identificadores anatómicos.
 
-El perfil adulto masculino tiene cobertura `partial`: incluye un cráneo GLB CC0 verificado. Los perfiles adulto femenino, infante y neonato siguen en `placeholder`; el visor utiliza primitivas geométricas de demostración para los huesos sin asset publicado. `partial` no implica cobertura anatómica completa ni aptitud automática para medición.
+El perfil adulto masculino tiene cobertura `partial`: incluye 179 de los 192 `Bone_ID` del catálogo. Los perfiles adulto femenino, infante y neonato siguen en `placeholder`; el visor utiliza primitivas geométricas de demostración para los huesos sin asset publicado. `partial` no implica cobertura anatómica completa ni aptitud automática para medición.
 
 ### Publicado: ScatteringSkull (perfil adulto masculino)
 
 - autor: Vladimir Petkovic;
 - institución/repositorio: Khronos Group, glTF Sample Assets;
-- URL permanente: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ScatteringSkull;
+- URL permanente: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/9429648735279342b4c32b8745f7904196607379/Models/ScatteringSkull;
 - licencia: CC0 1.0 Universal, según `LICENSE.md` del asset;
-- versión: rama `main`, directorio `Models/ScatteringSkull`;
+- versión: commit `9429648735279342b4c32b8745f7904196607379`, directorio `Models/ScatteringSkull`;
 - fecha de consulta: `2026-09-08`;
 - asset incluido: `public/models/adult_male/skull.glb` (`Bone_ID`: `skull`);
 - modificación: se añadió el nombre de nodo glTF exacto `skull` al primer nodo para enlazar el asset con el catálogo. No se modificaron geometría ni materiales.
 
 La aplicación se distribuye gratuitamente. La licencia CC0 permite la redistribución; se conserva esta atribución por trazabilidad y reconocimiento del autor.
+
+### Publicado: esqueleto Open3Dmodel (perfil adulto masculino)
+
+- autoría: Open3Dmodel contributors / Open Anatomy lineage;
+- institución/proyecto: Open3Dmodel / AnatomyTOOL; preparación web del GLB por `yamz8`;
+- URL permanente del archivo usado: https://github.com/yamz8/human-body-simulator/blob/e6570d72bc74f044439798e8503d02e91b87b1ea/public/models/overview-skeleton.glb;
+- licencia del modelo y de estas adaptaciones: Creative Commons Attribution-ShareAlike 4.0 International;
+- texto legal distribuido: `public/licenses/CC-BY-SA-4.0.txt`;
+- versión: commit `e6570d72bc74f044439798e8503d02e91b87b1ea`;
+- SHA-256 del GLB fuente: `253c47077e4ae11421c8ff3eae68c9414335ee2f0ad911eddf8ea0ea7dc0a6ce`;
+- fecha de consulta: `2026-09-08`;
+- assets incluidos: 178 GLB de `public/models/adult_male/`, correspondientes a todos los assets publicados salvo `skull.glb`;
+- modificaciones: las mallas se separaron en un GLB por `Bone_ID`; se retiraron referencias a mapas normales; los huesos pares izquierdos se generaron mediante espejo de los nodos derechos; se añadieron nodos raíz con el `Bone_ID` exacto. Los bloques de geometría Draco no se descomprimieron ni remodelaron.
+
+Las adaptaciones Open3Dmodel se redistribuyen bajo CC BY-SA 4.0. Quien redistribuya o modifique esos GLB debe conservar la atribución, indicar los cambios y mantener la misma licencia para las adaptaciones. El código de la aplicación continúa bajo MIT como obra separada.
+
+No se generaron modelos para las 13 entradas agregadas o indeterminadas del catálogo, porque asociarles una anatomía concreta falsearía su significado. Tampoco se reutiliza esta anatomía adulta para los perfiles femenino, infantil o neonatal.
+
+El archivo fuente es un esqueleto humano adulto de referencia y no aporta por sí solo una validación métrica de sexo, edad o población. Su ubicación en `adult_male` mantiene el contrato actual del visor, pero no debe emplearse para estimar dimorfismo sexual, edad, diagnóstico ni medidas osteométricas sin una validación científica independiente.
 
 ### Candidato no publicado
 

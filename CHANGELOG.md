@@ -2,6 +2,8 @@
 
 ## Cambios recientes
 
+- Incorporados 178 elementos Open3Dmodel bajo CC BY-SA 4.0; el perfil adulto masculino alcanza 179/192 GLB documentados junto al cráneo CC0.
+- Añadidos decodificadores Draco offline, carga concurrente limitada y normalización automática de escala y centro para modelos publicados o importados.
 - Documentada la persistencia offline de modelos propios y su límite al restaurar copias en otro navegador.
 - Añadida carga progresiva de paquetes 3D, priorizando el hueso seleccionado y cediendo tiempo al navegador por lotes.
 

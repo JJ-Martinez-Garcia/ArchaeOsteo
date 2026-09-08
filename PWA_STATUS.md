@@ -28,7 +28,7 @@ El workflow `.github/workflows/pages.yml` ejecuta además la instalación reprod
 
 ## Models 3D: estado y criterio de publicación
 
-`public/models/manifest.json` contiene los cuatro perfiles requeridos (`adult_male`, `adult_female`, `infant` y `neonate`). El perfil `adult_male` está en estado `partial` y publica el cráneo CC0 `skull.glb`; los otros tres perfiles permanecen en `placeholder`. El visor usa marcadores geométricos independientes para los huesos sin asset publicado, sin presentarlos como evidencia anatómica.
+`public/models/manifest.json` contiene los cuatro perfiles requeridos (`adult_male`, `adult_female`, `infant` y `neonate`). El perfil `adult_male` está en estado `partial` y publica 179 de 192 elementos: el cráneo CC0 `skull.glb` y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. Los otros tres perfiles permanecen en `placeholder`. El visor usa marcadores geométricos independientes para los huesos sin asset publicado, sin presentarlos como evidencia anatómica.
 
 Para publicar un perfil se deben aportar archivos GLB independientes por `Bone_ID` y completar `public/models/SOURCES.md` y `public/models/sources.json` con autoría, institución, URL permanente, licencia, versión, fecha de consulta, modificaciones y recuento de assets. El validador comprueba la cabecera GLB, la correspondencia exacta del nodo `Bone_ID`, el manifiesto y el registro de fuentes.
 
