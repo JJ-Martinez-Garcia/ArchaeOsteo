@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bone_count": 178,
+  "bone_count": 190,
   "profiles": {
     "adult_male": { "label": "Adulto masculino", "root": "./adult_male", "asset_status": "placeholder", "approximate_size_mb": null },
     "adult_female": { "label": "Adulto femenino", "root": "./adult_female", "asset_status": "placeholder", "approximate_size_mb": null },
