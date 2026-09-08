@@ -534,6 +534,7 @@ assert.match(main, /loadedSource==='custom'\?\(english\?'Custom model':'Modelo p
 assert.match(main, /profile\.status==='placeholder'\?\(english\?'Geometric marker':'Marcador geométrico'\)/);
 assert.match(main, /sidebarHeadings/);
 assert.match(main, /function localizeTreeGroups().*COMPLETE SKELETON/);
+assert.match(main, /const keys=\['complete','axial','appendicular'\]/);
 assert.match(main, /function localizeInventoryActionLabels().*Show pending only/);
 assert.match(main, /IndexedDB: disponible para proyectos locales/);
 assert.match(main, /WebGL: visor 3D disponible/);
