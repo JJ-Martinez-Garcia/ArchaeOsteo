@@ -47,6 +47,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - decodificación Meshopt integrada y Draco opcional mediante ruta de decodificador configurable;
 - importación de GLB locales por perfil, con validación de cabecera `glTF`, correspondencia con `Bone_ID` y caché offline;
 - importación temporal de modelos propios GLB, GLTF, OBJ y STL para el elemento seleccionado;
+- transparencia aplicada al hueso, a su región o al esqueleto completo, persistida por proyecto;
 - validador de manifiestos GLB que exige perfiles, rutas, estado de cobertura y licencia antes de incorporar assets;
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;

@@ -25,6 +25,7 @@ export function createBackup(state) {
       locked: state.locked,
       hidden: state.hidden,
       opacity: state.opacity,
+      opacityScope: state.opacityScope,
       wireframe: state.wireframe,
       tableTransforms: state.tableTransforms,
       lightIntensity: state.lightIntensity,

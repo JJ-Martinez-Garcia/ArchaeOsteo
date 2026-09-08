@@ -48,6 +48,7 @@ export function normalizeProject(project) {
     locked: project.locked || {},
     hidden: project.hidden || {},
     opacity: project.opacity || {},
+    opacityScope: ['bone', 'region', 'skeleton'].includes(project.opacityScope) ? project.opacityScope : 'bone',
     wireframe: Boolean(project.wireframe),
     tableTransforms: project.tableTransforms || {},
     lightIntensity: Number.isFinite(project.lightIntensity) ? project.lightIntensity : 1,
