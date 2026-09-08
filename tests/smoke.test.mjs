@@ -455,6 +455,8 @@ assert.match(main, /dentalReportHtml/);
 assert.match(main, /Odontograma permanente/);
 assert.match(main, /calculateOsteoAnalysis/);
 assert.match(main, /photosReportHtml/);
+assert.match(main, /Taphonomy_Detail:JSON\.stringify/);
+assert.match(main, /Pathology_Detail:JSON\.stringify/);
 assert.match(main, /Método MNI/);
 assert.match(main, /reviewed after filters/);
 assert.match(main, /average completeness recorded/);
