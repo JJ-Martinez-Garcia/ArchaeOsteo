@@ -1,3 +1,5 @@
+import { normalizeProject } from '../data/store.js';
+
 const BACKUP_VERSION = 1;
 
 export function createBackup(state) {
@@ -57,7 +59,7 @@ export function validateBackup(value) {
   if (value.version !== BACKUP_VERSION) throw new Error(`Versión de copia no compatible: ${value.version}.`);
   if (!value.project || typeof value.project !== 'object') throw new Error('La copia no contiene un proyecto válido.');
   if (value.project.status && typeof value.project.status !== 'object') throw new Error('El inventario no tiene un formato válido.');
-  return value.project;
+  return normalizeProject(value.project);
 }
 
 export function parseCsv(text) {

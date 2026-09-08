@@ -4,6 +4,13 @@ const DB_VERSION = 2;
 const STORE = 'projects';
 const PROFILE_IDS = new Set(['adult_male', 'adult_female', 'infant', 'neonate']);
 const DENTAL_STATUSES = new Set(['present', 'absent_am', 'absent_pm', 'unerupted', 'developing', 'caries', 'wear', 'fragmented', 'pathology', 'not_observable']);
+const STATUS_VALUES = new Set(['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded']);
+const PRESERVATION_VALUES = new Set(['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor', 'very_fragmented', 'not_evaluable']);
+
+function objectEntries(value) { return value && typeof value === 'object' && !Array.isArray(value) ? Object.entries(value) : []; }
+function normalizeEnumMap(value, allowed) { return Object.fromEntries(objectEntries(value).filter(([, item]) => allowed.has(item))); }
+function normalizeNumberMap(value, { min = 0, max = Number.POSITIVE_INFINITY, integer = false, rejectBelowMin = false } = {}) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, Number(item)]).filter(([, item]) => Number.isFinite(item) && (!rejectBelowMin || item >= min)).map(([key, item]) => [key, Math.max(min, Math.min(max, integer ? Math.floor(item) : item))])); }
+function normalizeStringMap(value) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, String(item ?? '').trim()]).filter(([, item]) => item)); }
 
 function normalizeDental(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
@@ -52,22 +59,22 @@ export function normalizeProject(project) {
     schemaVersion: PROJECT_SCHEMA_VERSION,
     profile: PROFILE_IDS.has(project.profile) ? project.profile : 'adult_male',
     selected: project.selected || 'skull',
-    status: project.status || {},
-    preservation: project.preservation || {},
-    completeness: project.completeness || {},
-    fragments: project.fragments || {},
-    weights: project.weights || {},
+    status: normalizeEnumMap(project.status, STATUS_VALUES),
+    preservation: normalizeEnumMap(project.preservation, PRESERVATION_VALUES),
+    completeness: normalizeNumberMap(project.completeness, { min: 0, max: 100 }),
+    fragments: normalizeNumberMap(project.fragments, { min: 0, integer: true }),
+    weights: normalizeNumberMap(project.weights, { rejectBelowMin: true }),
     portions: project.portions || {},
-    individuals: project.individuals || {},
-    ue: project.ue || {},
-    taphonomy: project.taphonomy || {},
-    pathology: project.pathology || {},
+    individuals: normalizeStringMap(project.individuals),
+    ue: normalizeStringMap(project.ue),
+    taphonomy: Object.fromEntries(objectEntries(project.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
+    pathology: Object.fromEntries(objectEntries(project.pathology).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
     taphonomyDetails: project.taphonomyDetails || {},
     pathologyDetails: project.pathologyDetails || {},
-    notes: project.notes || {},
+    notes: normalizeStringMap(project.notes),
     indeterminateFragments: Array.isArray(project.indeterminateFragments) ? project.indeterminateFragments : [],
-    locked: project.locked || {},
-    hidden: project.hidden || {},
+    locked: Object.fromEntries(objectEntries(project.locked).filter(([, item]) => Boolean(item)).map(([key]) => [key, true])),
+    hidden: Object.fromEntries(objectEntries(project.hidden).filter(([, item]) => Boolean(item)).map(([key]) => [key, true])),
     opacity: project.opacity || {},
     opacityScope: ['bone', 'region', 'skeleton'].includes(project.opacityScope) ? project.opacityScope : 'bone',
     skeletonFilter: ['all', 'axial', 'appendicular'].includes(project.skeletonFilter) ? project.skeletonFilter : 'all',
