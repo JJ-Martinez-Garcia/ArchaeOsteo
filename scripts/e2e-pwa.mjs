@@ -204,6 +204,27 @@ async function navigate(client, method, params = {}, timeout = 30_000) {
   await loaded;
 }
 
+async function setOfflineState(client, offline) {
+  const conditions = {
+    connectionType: offline ? 'none' : 'wifi',
+    downloadThroughput: offline ? 0 : -1,
+    latency: 0,
+    offline,
+    uploadThroughput: offline ? 0 : -1
+  };
+  try {
+    await client.send('Network.emulateNetworkConditionsByRule', {
+      emulateOfflineServiceWorker: offline,
+      matchedNetworkConditions: [{ urlPattern: '', ...conditions }]
+    });
+    await client.send('Network.overrideNetworkState', conditions);
+    return 'service-worker-aware';
+  } catch {
+    await client.send('Network.emulateNetworkConditions', conditions);
+    return 'legacy';
+  }
+}
+
 async function waitForProcessExit(processHandle, timeout = 5_000) {
   if (!processHandle || processHandle.exitCode !== null) return true;
   return Promise.race([
@@ -354,13 +375,7 @@ try {
   })()`);
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
-  await cdp.send('Network.emulateNetworkConditions', {
-    connectionType: 'none',
-    downloadThroughput: 0,
-    latency: 0,
-    offline: true,
-    uploadThroughput: 0
-  });
+  const offlineMode = await setOfflineState(cdp, true);
   const offlineUrl = new URL(`?e2e-offline=${Date.now()}`, baseUrl).href;
   await navigate(cdp, 'Page.navigate', { url: offlineUrl });
   await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'El arranque offline');
@@ -371,19 +386,16 @@ try {
     'El estado offline'
   );
   assert.match(offlineState.coverage, /179\s+(?:de|of)\s+192/);
+  if (offlineMode === 'service-worker-aware') {
+    assert.equal(await evaluate(cdp, 'navigator.onLine'), false, 'El navegador debe exponer el estado sin conexión.');
+  }
   const uncachedFetchBlocked = await evaluate(cdp, `fetch('./__offline_probe__?nonce=${Date.now()}', { cache: 'no-store' }).then(() => false).catch(() => true)`);
   assert.equal(uncachedFetchBlocked, true, 'La red simulada debe bloquear una petición inédita.');
   assert.equal((await evaluate(cdp, projectReadExpression())).schemaVersion, 2, 'El proyecto debe seguir disponible offline.');
 
-  await cdp.send('Network.emulateNetworkConditions', {
-    connectionType: 'wifi',
-    downloadThroughput: -1,
-    latency: 0,
-    offline: false,
-    uploadThroughput: -1
-  });
+  await setOfflineState(cdp, false);
   assert.deepEqual(runtimeErrors, [], `La consola del navegador contiene errores: ${runtimeErrors.join(' | ')}`);
-  console.log(`PWA browser E2E: OK · ${coverage.trim()} · ${shellCache} · IndexedDB y arranque offline verificados.`);
+  console.log(`PWA browser E2E: OK · ${coverage.trim()} · ${shellCache} · IndexedDB y arranque offline verificados (${offlineMode}).`);
 } catch (error) {
   if (stderr.trim()) console.error(`Navegador (últimas líneas):\n${stderr.trim()}`);
   throw error;
