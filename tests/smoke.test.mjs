@@ -111,6 +111,8 @@ assert.match(main, /Fragmentación rápida/);
 assert.match(main, /multi-select-toggle/);
 assert.match(main, /multi_select/);
 assert.match(main, /multi-selected/);
+assert.match(main, /aria-pressed="\$\{Boolean\(state\.multiSelected/);
+assert.match(main, /aria-label="\$\{displayBoneName\(b\)\}/);
 assert.match(main, /Marcar restantes como ausentes/);
 assert.match(main, /window\.confirm\(`Se marcarán/);
 assert.match(main, /status-legend/);
