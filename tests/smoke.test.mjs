@@ -141,6 +141,8 @@ assert.match(main, /'dentalStatus'/);
 assert.match(main, /'measurements'/);
 assert.match(main, /'landmarks'/);
 assert.match(main, /const visible=bones\.filter\(matchesFilters\)/);
+assert.match(extendedUi, /formatChangeValue/);
+assert.match(extendedUi, /entry\.field \?/);
 assert.match(main, /recordInventorySnapshotChanges/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);

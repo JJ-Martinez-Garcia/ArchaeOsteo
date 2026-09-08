@@ -7,6 +7,13 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 }
 
+function formatChangeValue(value) {
+  if (value == null || value === '') return '—';
+  if (Array.isArray(value)) return value.join(', ') || '—';
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value);
+}
+
 export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject }) {
   state.fragments ||= {};
   state.portions ||= {};
@@ -180,7 +187,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
 
   document.querySelector('#changes-panel-button').onclick = () => {
     const entries = [...(state.changeLog || [])].reverse();
-    const rows = entries.slice(0, 100).map(entry => `<tr><td>${escapeHtml(new Date(entry.changedAt).toLocaleString('es-ES'))}</td><td>${escapeHtml(entry.boneId)}</td><td>${escapeHtml(entry.previousStatus)} → ${escapeHtml(entry.newStatus)}</td><td>${escapeHtml(entry.individualId)}</td><td>${escapeHtml(entry.investigator || '—')}</td><td>${escapeHtml(entry.method)}</td></tr>`).join('');
+    const rows = entries.slice(0, 100).map(entry => { const change = entry.field ? `${entry.field}: ${formatChangeValue(entry.previousValue)} → ${formatChangeValue(entry.newValue)}` : `${formatChangeValue(entry.previousStatus)} → ${formatChangeValue(entry.newStatus)}`; return `<tr><td>${escapeHtml(new Date(entry.changedAt).toLocaleString('es-ES'))}</td><td>${escapeHtml(entry.boneId)}</td><td>${escapeHtml(change)}</td><td>${escapeHtml(entry.individualId)}</td><td>${escapeHtml(entry.investigator || '—')}</td><td>${escapeHtml(entry.method)}</td></tr>`; }).join('');
     show(`<p class="small-copy">Se muestran las últimas ${Math.min(entries.length, 100)} acciones. El registro se conserva en IndexedDB y en las copias de seguridad.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Fecha</th><th>Bone_ID</th><th>Cambio</th><th>Individuo</th><th>Investigador</th><th>Método</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">Todavía no hay cambios registrados.</p>'}`);
   };
   document.querySelector('#sources-panel-button').onclick = () => show('<h3>Fuentes y licencias</h3><p>Los marcadores geométricos actuales son material de desarrollo y no representan modelos anatómicos aptos para medición o diagnóstico.</p><p>Los perfiles adulto masculino, adulto femenino, infante y neonato permanecen pendientes de incorporar como GLB independientes, con licencia y correspondencia verificada con cada <code>Bone_ID</code>.</p><p>La fuente candidata Z-Anatomy se mantiene documentada, pero no se redistribuye desde esta PWA hasta completar la conversión, la atribución y la cobertura requerida.</p><p class="small-copy">El registro completo está en <a href="https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/blob/main/public/models/SOURCES.md" target="_blank" rel="noreferrer">public/models/SOURCES.md</a>.</p>');
