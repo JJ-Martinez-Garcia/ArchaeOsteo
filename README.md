@@ -16,7 +16,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - pestaña “Pintar inventario” con estados, pendientes y contador de revisión;
 - tabla editable sincronizada, bloqueo de registros y aplicación por región;
 - tabla científica ampliada con fragmentos, porciones, tafonomía y patología por elemento;
-- odontograma permanente FDI con estados dentales y persistencia local;
+- odontograma permanente FDI con estados dentales (incluidos fragmentación y patología) y persistencia local;
 - odontograma deciduo FDI independiente (20 dientes) con persistencia separada;
 - módulo de osteometría con medidas en milímetros, landmarks relativos y resumen de cobertura;
 - osteometría ampliada con diámetro, unidades mm/cm, distancia entre landmarks y marcadores visibles sobre el hueso;
