@@ -61,11 +61,13 @@ if (missingBuildAssets.length) throw new Error(`El Service Worker no incluye tod
 if (!/const CACHE = 'osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}';/.test(serviceWorker)) {
   throw new Error('El Service Worker publicado no contiene una caché versionada por fingerprint del build.');
 }
-if (!/addEventListener\(['"](?:install|activate|fetch)['"]/.test(serviceWorker)
-  || !/caches\.open\(/.test(serviceWorker)
-  || !/SKIP_WAITING/.test(serviceWorker)
-  || !/\.\/index\.html/.test(serviceWorker)
-  || !/\.\/manifest\.json/.test(serviceWorker)) {
+const serviceWorkerMarkers = [
+  /addEventListener\(['"]install['"]/, /addEventListener\(['"]activate['"]/, /addEventListener\(['"]fetch['"]/, /caches\.open\(/,
+  /SKIP_WAITING/, /\.\/index\.html/, /\.\/manifest\.json/, /event\.request\.mode === ['"]navigate['"]/, /cache: ['"]no-store['"]/,
+  /caches\.match\(['"]\.\/index\.html['"]\)/, /event\.request\.method !== ['"]GET['"]|cached \|\| fetch\(event\.request\)/, /caches\.match\(event\.request\)/,
+  /self\.clients\.claim\(\)/, /key\.startsWith\(['"]osteo3d-shell-/
+];
+if (serviceWorkerMarkers.some(marker => !marker.test(serviceWorker))) {
   throw new Error('El Service Worker no conserva instalación, caché offline y actualización controlada.');
 }
 if (missing.length) throw new Error(`Faltan recursos del artefacto PWA: ${missing.join(', ')}`);
