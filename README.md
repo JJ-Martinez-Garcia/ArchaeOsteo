@@ -77,6 +77,8 @@ npm run validate-pwa
 npm run validate-model-assets
 ```
 
+`npm test` comienza verificando la sintaxis de todos los archivos JavaScript de `src`, `scripts` y `tests`, y después ejecuta las pruebas de humo. El mismo control se ejecuta en GitHub Actions antes del despliegue.
+
 ## Probar la PWA publicada
 
 La versión desplegada está disponible en [GitHub Pages](https://jj-martinez-garcia.github.io/ArchaeOsteo/). Para instalarla, abre la URL en un navegador compatible y usa el botón `Instalar PWA` o la opción equivalente del navegador. En iOS/iPadOS: `Compartir → Añadir a pantalla de inicio`.
