@@ -107,6 +107,7 @@ assert.match(main, /models\/sources\.json/);
 assert.match(main, /applyPwaLaunchView/);
 assert.match(main, /inventory-progress-label/);
 assert.match(main, /Presencia rápida/);
+assert.match(main, /Fragmentación rápida/);
 assert.match(main, /Marcar restantes como ausentes/);
 assert.match(main, /window\.confirm\(`Se marcarán/);
 assert.match(main, /status-legend/);
