@@ -194,6 +194,7 @@ assert.match(main, /indeterminateFragments: \[\]/);
 assert.match(main, /beforeinstallprompt/);
 assert.match(main, /appinstalled/);
 assert.match(main, /PWA update deferred/);
+assert.match(main, /event\.filename.*location\.origin/);
 assert.match(main, /Añadir a pantalla de inicio/);
 assert.match(main, /disponible en este navegador/);
 assert.match(main, /cacheNames.*startsWith\('osteo3d-shell-v'\)/);
