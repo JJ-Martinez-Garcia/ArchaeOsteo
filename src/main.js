@@ -151,6 +151,7 @@ function renderViewerFallback(error) {
   const viewer = document.querySelector('#viewer');
   if (!viewer) return;
   group ||= { traverse() {} };
+  orbit.target ||= { set() {} };
   const groups = new Map();
   bones.forEach(bone => { if (!groups.has(bone.region)) groups.set(bone.region, []); groups.get(bone.region).push(bone); });
   viewer.innerHTML = `<div class="viewer-fallback" role="status" aria-label="Atlas interactivo de respaldo"><strong>Atlas interactivo de respaldo</strong><span>WebGL no está disponible en este navegador. Selecciona un elemento para consultar su ficha o pintarlo en el inventario.</span><div class="viewer-fallback-groups">${[...groups.entries()].map(([region, items]) => `<section><h3>${escapeHtml(region)}</h3><div>${items.map(bone => `<button type="button" data-fallback-bone="${escapeHtml(bone.id)}" aria-label="${escapeHtml(displayBoneName(bone))}"><span class="fallback-dot" aria-hidden="true"></span>${escapeHtml(displayBoneName(bone))}<small>${escapeHtml(bone.id)}</small></button>`).join('')}</div></section>`).join('')}</div></div>`;
