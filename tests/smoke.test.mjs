@@ -273,6 +273,8 @@ assert.match(main, /Fragmented/);
 assert.match(main, /function localizePwaControls\(\)/);
 assert.match(main, /Install PWA/);
 assert.match(main, /Update now/);
+assert.match(main, /Inspector/);
+assert.match(main, /Drag to rotate · wheel to zoom/);
 assert.match(main, /function localizeSecondaryControls\(\)/);
 assert.match(main, /Orthographic projection/);
 assert.match(main, /Hide bone/);
