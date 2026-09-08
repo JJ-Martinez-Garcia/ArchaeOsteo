@@ -278,6 +278,8 @@ assert.match(main, /canvas\.toDataURL/);
 assert.match(await text('src/ui/extended.js'), /quiz-level/);
 assert.match(await text('src/ui/extended.js'), /optionCount/);
 assert.match(await text('src/ui/extended.js'), /advanced/);
+assert.match(await text('src/ui/extended.js'), /Identify bone/);
+assert.match(await text('src/ui/extended.js'), /Correct answer/);
 assert.match(await text('src/anatomy/package.js'), /importModelPackageFiles/);
 assert.match(await text('src/anatomy/loader.js'), /MeshoptDecoder/);
 assert.match(await text('src/anatomy/loader.js'), /DRACOLoader/);
