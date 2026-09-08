@@ -135,24 +135,36 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     if (!file) return;
     try {
       let imported;
+      let previewRows = [];
       if (file.name.toLowerCase().endsWith('.csv')) {
         const rows = parseCsv(await file.text());
+        previewRows = rows;
         imported = applyInventoryRows(state, rows, bones);
       } else if (file.name.toLowerCase().endsWith('.xlsx')) {
         const XLSX = await import('xlsx');
         const workbook = XLSX.read(await file.arrayBuffer());
         const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        previewRows = rows;
         imported = applyInventoryRows(state, rows, bones);
-      } else imported = validateBackup(JSON.parse(await file.text()));
-      if (!window.confirm('La importación reemplazará los datos del proyecto actual. ¿Continuar?')) return;
-      Object.assign(state, imported);
-      if (imported.id) state.projectId = imported.id;
-      if (imported.projectName) state.projectName = imported.projectName;
-      language.value = state.language || 'es';
-      document.documentElement.lang = state.language || 'es';
-      updateLabels();
-      renderList(); renderStats?.(); selectBone(state.selected); await saveLocal();
-      document.querySelector('#toast').textContent = imported.importedRows == null ? 'Importación completada · copia completa' : `Importación completada · ${imported.importedRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} ignorados` : ''}`;
+      } else {
+        imported = validateBackup(JSON.parse(await file.text()));
+        previewRows = Object.entries(imported.status || {}).map(([boneId, status]) => ({ Bone_ID: boneId, Presence: status, Preservation: imported.preservation?.[boneId] || 'not_evaluated', Fragments: imported.fragments?.[boneId] || 0 }));
+      }
+      const totalRows = imported.importedRows == null ? previewRows.length : imported.importedRows + (imported.rejectedRows || 0);
+      const sample = previewRows.slice(0, 5).map(row => `<tr>${['Bone_ID', 'Presence', 'Preservation', 'Fragments'].map(field => `<td>${escapeHtml(row[field] ?? '')}</td>`).join('')}</tr>`).join('');
+      show(`<h3>Vista previa de importación</h3><p class="small-copy"><strong>${escapeHtml(file.name)}</strong> · ${totalRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} se ignorarán por errores o IDs desconocidos` : ''}.</p>${sample ? `<table class="analysis-table"><thead><tr><th>Bone_ID</th><th>Presencia</th><th>Conservación</th><th>Fragmentos</th></tr></thead><tbody>${sample}</tbody></table>` : '<p class="small-copy">La copia no contiene registros de inventario visibles en la previsualización.</p>'}<div class="actions"><button id="confirm-import" class="secondary-action">Confirmar importación</button><button id="cancel-import" class="secondary-action">Cancelar</button></div>`);
+      document.querySelector('#cancel-import').onclick = () => { document.querySelector('#extended-panel').hidden = true; };
+      document.querySelector('#confirm-import').onclick = async () => {
+        Object.assign(state, imported);
+        if (imported.id) state.projectId = imported.id;
+        if (imported.projectName) state.projectName = imported.projectName;
+        language.value = state.language || 'es';
+        document.documentElement.lang = state.language || 'es';
+        updateLabels();
+        renderList(); renderStats?.(); selectBone(state.selected); await saveLocal();
+        document.querySelector('#extended-panel').hidden = true;
+        document.querySelector('#toast').textContent = imported.importedRows == null ? 'Importación completada · copia completa' : `Importación completada · ${imported.importedRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} ignorados` : ''}`;
+      };
     } catch (error) { document.querySelector('#toast').textContent = `Importación rechazada: ${error.message}`; }
     event.target.value = '';
   };

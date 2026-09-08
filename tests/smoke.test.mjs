@@ -248,6 +248,8 @@ assert.equal(packagePlan.urls[0], './models/adult_male/skull.glb');
 assert.match(main, /Importar GLB locales/);
 assert.match(main, /importLocalModelFiles/);
 assert.match(main, /La importación reemplazará los modelos GLB locales/);
+assert.match(await text('src/ui/extended.js'), /Vista previa de importación/);
+assert.match(await text('src/ui/extended.js'), /Confirmar importación/);
 assert.match(main, /const report=state\.report\|\|\{\}/);
 assert.match(main, /Peso total registrado/);
 assert.match(main, /escapeHtml\(individual\)/);
@@ -307,7 +309,7 @@ assert.equal(validateBackup(backup).language, 'en');
 assert.equal(validateBackup(backup).filters.side, 'left');
 assert.equal(validateBackup(backup).weights.left_femur, 88.2);
 assert.match(await text('src/ui/extended.js'), /if \(imported\.id\) state\.projectId = imported\.id/);
-assert.match(await text('src/ui/extended.js'), /updateLabels\(\);\n      renderList/);
+assert.match(await text('src/ui/extended.js'), /updateLabels\(\);\s+renderList/);
 assert.deepEqual(validateBackup(createBackup({ ...backup.project, changeLog: [{ boneId: 'skull', previousStatus: 'not_recorded', newStatus: 'present' }] })).changeLog[0].newStatus, 'present');
 
 console.log('Osteo3D smoke tests: OK');
