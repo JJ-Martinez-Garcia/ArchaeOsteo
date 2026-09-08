@@ -130,6 +130,8 @@ assert.match(main, /window\.confirm\(`Se marcarán/);
 assert.match(main, /status-legend/);
 assert.match(main, /Inventario completado/);
 assert.match(main, /recordInventoryChange/);
+assert.match(main, /recordInventoryFieldChange/);
+assert.match(main, /field, previousValue, newValue/);
 assert.match(main, /recordInventorySnapshotChanges/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);
