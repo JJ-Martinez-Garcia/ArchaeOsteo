@@ -77,6 +77,7 @@ assert.match(main, /function localizePwaDiagnostics\(\)/);
 assert.match(main, /function localizeModelPackagePanel\(\)/);
 assert.match(main, /function reconcileVersionedShellDiagnostic\(\)/);
 assert.match(main, /filter\(name=>name\.startsWith\('osteo3d-shell-'\)\)/);
+assert.match(main, /setInterval\(reconcileVersionedShellDiagnostic,1000\)/);
 assert.match(main, /if\(registration\.waiting\) registration\.waiting\.postMessage/);
 assert.match(main, /else await registration\.update\(\)/);
 assert.match(main, /document\.title=english\?'Osteo3D · Osteology atlas'/);
