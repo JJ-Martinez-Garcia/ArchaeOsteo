@@ -29,6 +29,10 @@
 .fragmentation-row { display: grid; grid-template-columns: 1fr 30px 1.4fr; gap: 5px; align-items: center; }
 .fragmentation-row strong { text-align: right; color: #102a43; }
 .fragmentation-row small { text-align: right; color: #829ab1; }
+.side-stats { display: grid; gap: 7px; margin: 12px 0; padding: 10px; background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; font-size: 10px; color: #486581; }
+.side-stat-row { display: grid; grid-template-columns: 1fr 42px 1.8fr; gap: 5px; align-items: center; }
+.side-stat-row strong { text-align: right; color: #102a43; }
+.side-stat-row small { text-align: right; color: #829ab1; }
 .conservation-bar { height: 7px; overflow: hidden; background: #edf2f7; border-radius: 5px; }
 .conservation-bar i { display: block; height: 100%; border-radius: inherit; }
 .weight-summary { margin: 8px 0 12px; color: #486581; font-size: 10px; line-height: 1.45; }
