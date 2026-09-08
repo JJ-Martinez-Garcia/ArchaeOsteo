@@ -149,6 +149,7 @@ assert.match(main, /models\/sources\.json/);
 assert.match(main, /applyPwaLaunchView/);
 assert.match(main, /const activeId = localStorage\.getItem\('osteo3d-active-project'\) \|\| state\.projectId/);
 assert.match(main, /applyProjectData\(savedProject\)/);
+assert.match(main, /extendedUi\?\.updateLabels\(\);\s*populateReportFields\(\);/);
 assert.doesNotMatch(main, /loadProject\('default'\)\.then\(saved=>\{/);
 assert.doesNotMatch(main, /setTimeout\(async \(\) => \{ const savedProject = await loadProject\(state\.projectId\)/);
 assert.doesNotMatch(main, /setTimeout\(async \(\) => \{ const saved = await loadProject\(state\.projectId\)/);

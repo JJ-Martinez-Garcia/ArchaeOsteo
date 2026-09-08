@@ -335,6 +335,7 @@ function applyProjectData(saved) {
   document.querySelector('#language').value = state.language;
   document.documentElement.lang = state.language;
   extendedUi?.updateLabels();
+  populateReportFields();
   document.querySelector('#dentition-type').value = state.dentitionType;
   ['status', 'region', 'side', 'taphonomy', 'pathology'].forEach(key => { const element = document.querySelector('#filter-' + key); if (element) element.value = state.filters[key]; }); globalThis.__syncOsteoFilters?.();
   renderDental(); updateDentalCount(); renderList(); selectBone(state.selected || 'skull'); updateInventory(); renderStats();
