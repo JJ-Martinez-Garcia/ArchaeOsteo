@@ -18,12 +18,13 @@ Desde la raíz del repositorio:
 
 ```text
 node tests/smoke.test.mjs
+node scripts/check-js-syntax.mjs
 node scripts/validate-pwa.mjs
 node scripts/validate-model-assets.mjs
 git diff --check
 ```
 
-El workflow `.github/workflows/pages.yml` ejecuta además la instalación reproducible, la compilación Vite, las tres validaciones y el despliegue a Pages.
+El workflow `.github/workflows/pages.yml` ejecuta además la instalación reproducible, la compilación Vite, la verificación de sintaxis, las pruebas smoke, las validaciones PWA y de modelos, y el despliegue a Pages. La ejecución verde más reciente corresponde al commit `6a1e95a` (run `34218230456`).
 
 ## Models 3D: estado y criterio de publicación
 
