@@ -179,7 +179,36 @@ function restoreInventory(snapshot) { state.status=snapshot.status; state.preser
 function undoInventory() { const previous=state.history.pop(); if(!previous)return; const current=snapshotInventory(); state.future.push(current); restoreInventory(previous); recordInventorySnapshotChanges(current,previous,'undo'); saveLocal({notify:false}); }
 function redoInventory() { const next=state.future.pop(); if(!next)return; const current=snapshotInventory(); state.history.push(current); restoreInventory(next); recordInventorySnapshotChanges(current,next,'redo'); saveLocal({notify:false}); }
 function updateInventory() { const reviewed = bones.filter(b => state.status[b.id] && state.status[b.id] !== 'not_recorded').length; document.querySelector('#reviewed').textContent = `${reviewed}/${bones.length}`; document.querySelectorAll('.bone-row').forEach(row => { const id=row.dataset.bone; row.dataset.status=state.status[id] || 'not_recorded'; row.title=state.locked[id]?'Registro bloqueado':''; }); if(!document.querySelector('#inventory-table').hidden) renderInventoryTable(); }
-function renderInventoryTable() { const target=document.querySelector('#inventory-table'); target.innerHTML=`<table class="inventory-table"><thead><tr><th>Hueso</th><th>Estado</th><th>%</th><th>Frag.</th><th>Porción</th><th>Individuo</th><th>Tafonomía</th><th>Patología</th></tr></thead><tbody>${bones.map(b=>`<tr data-row="${b.id}"><td>${b.es}${state.locked[b.id]?' 🔒':''}</td><td><select data-row-status="${b.id}" ${state.locked[b.id]?'disabled':''}>${Object.entries(statusNames).map(([v,n])=>`<option value="${v}" ${v===(state.status[b.id]||'not_recorded')?'selected':''}>${n}</option>`).join('')}</select></td><td><input data-row-percent="${b.id}" type="number" min="0" max="100" value="${state.completeness[b.id]??100}" ${state.locked[b.id]?'disabled':''}/></td><td>${state.fragments[b.id]||0}</td><td>${escapeHtml(state.portions[b.id]||'whole')}</td><td>${escapeHtml(state.individuals[b.id]||state.report.individual||'IND-LOCAL')}</td><td>${escapeHtml((state.taphonomy[b.id]||[]).join(', ')||'—')}</td><td>${escapeHtml((state.pathology[b.id]||[]).join(', ')||'—')}</td></tr>`).join('')}</tbody></table>`; target.querySelectorAll('[data-row-status]').forEach(input=>input.onchange=()=>{state.activeStatus=input.value;paintBone(input.dataset.rowStatus);}); target.querySelectorAll('[data-row-percent]').forEach(input=>input.onchange=()=>{const id=input.dataset.rowPercent;if(state.locked[id])return;const previous=state.completeness[id]??100;const next=Math.max(0,Math.min(100,Number(input.value)||0));state.completeness[id]=next;recordInventoryFieldChange(id,'completeness',previous,next,'table');updateInventoryProgress();selectBone(state.selected);saveLocal();}); }
+function renderInventoryTable() {
+  const target = document.querySelector('#inventory-table');
+  const names = state.language === 'en' ? statusNamesEn : statusNames;
+  const preservationOptions = state.language === 'en' ? preservationNamesEn : preservationNames;
+  const rows = bones.map(b => {
+    const completeness = state.completeness[b.id] ?? 100;
+    const taphonomy = (state.taphonomy[b.id] || []).join(', ');
+    const pathology = (state.pathology[b.id] || []).join(', ');
+    const disabled = state.locked[b.id] ? 'disabled' : '';
+    return `<tr data-row="${escapeHtml(b.id)}"><td><code>${escapeHtml(b.id)}</code></td><td>${escapeHtml(b.es)}${state.locked[b.id] ? ' 🔒' : ''}</td><td>${escapeHtml(b.side || '—')}</td><td><select data-row-status="${escapeHtml(b.id)}" aria-label="Estado de ${escapeHtml(b.es)}" ${disabled}>${Object.entries(names).map(([v, n]) => `<option value="${v}" ${v === (state.status[b.id] || 'not_recorded') ? 'selected' : ''}>${n}</option>`).join('')}</select></td><td>${completeness}%</td><td><select data-row-field="preservation" data-row-id="${escapeHtml(b.id)}" aria-label="Conservación de ${escapeHtml(b.es)}" ${disabled}>${Object.entries(preservationOptions).map(([v, n]) => `<option value="${v}" ${v === (state.preservation[b.id] || 'not_evaluated') ? 'selected' : ''}>${n}</option>`).join('')}</select></td><td><input data-row-field="fragments" data-row-id="${escapeHtml(b.id)}" type="number" min="0" step="1" value="${Number(state.fragments[b.id]) || 0}" aria-label="Fragmentos de ${escapeHtml(b.es)}" ${disabled}/></td><td><input data-row-field="completeness" data-row-id="${escapeHtml(b.id)}" type="number" min="0" max="100" value="${completeness}" aria-label="Porcentaje de ${escapeHtml(b.es)}" ${disabled}/></td><td><input data-row-field="taphonomy" data-row-id="${escapeHtml(b.id)}" value="${escapeHtml(taphonomy)}" aria-label="Tafonomía de ${escapeHtml(b.es)}" ${disabled}/></td><td><input data-row-field="pathology" data-row-id="${escapeHtml(b.id)}" value="${escapeHtml(pathology)}" aria-label="Patología de ${escapeHtml(b.es)}" ${disabled}/></td><td><input data-row-field="notes" data-row-id="${escapeHtml(b.id)}" value="${escapeHtml(state.notes[b.id] || '')}" aria-label="Observaciones de ${escapeHtml(b.es)}" ${disabled}/></td></tr>`;
+  }).join('');
+  target.innerHTML = `<div class="inventory-table-scroll"><table class="inventory-table"><thead><tr><th>Bone_ID</th><th>Hueso</th><th>Lado</th><th>Estado</th><th>Completitud</th><th>Conservación</th><th>Fragmentos</th><th>Porcentaje</th><th>Tafonomía</th><th>Patología</th><th>Observaciones</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  target.querySelectorAll('[data-row-status]').forEach(input => input.onchange = () => { state.activeStatus = input.value; paintBone(input.dataset.rowStatus); });
+  target.querySelectorAll('[data-row-field]').forEach(input => input.onchange = () => {
+    const id = input.dataset.rowId;
+    if (state.locked[id]) return;
+    const field = input.dataset.rowField;
+    const previousSnapshot = snapshotInventory();
+    const previous = field === 'taphonomy' || field === 'pathology' ? structuredClone(state[field][id] || []) : field === 'notes' ? (state.notes[id] || '') : field === 'fragments' ? (Number(state.fragments[id]) || 0) : field === 'completeness' ? (state.completeness[id] ?? 100) : (state.preservation[id] || 'not_evaluated');
+    if (field === 'taphonomy' || field === 'pathology') state[field][id] = input.value.split(',').map(value => value.trim()).filter(Boolean).filter((value, index, values) => values.indexOf(value) === index);
+    else if (field === 'notes') state.notes[id] = input.value.trim();
+    else if (field === 'fragments') state.fragments[id] = Math.max(0, Math.floor(Number(input.value) || 0));
+    else if (field === 'completeness') state.completeness[id] = Math.max(0, Math.min(100, Number(input.value) || 0));
+    else state.preservation[id] = input.value;
+    const next = field === 'taphonomy' || field === 'pathology' ? state[field][id] : field === 'notes' ? state.notes[id] : field === 'fragments' ? state.fragments[id] : field === 'completeness' ? state.completeness[id] : state.preservation[id];
+    state.history.push(previousSnapshot); state.future = [];
+    recordInventoryFieldChange(id, field, previous, next, 'table');
+    updateInventory(); updateInventoryProgress(); selectBone(state.selected); saveLocal();
+  });
+}
 function displayBoneName(bone) { return state.language === 'en' ? bone.en : bone.es; }
 function renderList() {
   const q = state.query.toLowerCase();
