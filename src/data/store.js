@@ -3,6 +3,12 @@ export const PROJECT_SCHEMA_VERSION = 2;
 const DB_VERSION = 2;
 const STORE = 'projects';
 const PROFILE_IDS = new Set(['adult_male', 'adult_female', 'infant', 'neonate']);
+const DENTAL_STATUSES = new Set(['present', 'absent_am', 'absent_pm', 'unerupted', 'developing', 'caries', 'wear', 'fragmented', 'pathology', 'not_observable']);
+
+function normalizeDental(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return Object.fromEntries(Object.entries(value).filter(([, status]) => DENTAL_STATUSES.has(status)));
+}
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
@@ -57,9 +63,9 @@ export function normalizeProject(project) {
     tableTransforms: project.tableTransforms || {},
     lightIntensity: Number.isFinite(project.lightIntensity) ? project.lightIntensity : 1,
     changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],
-    dental: project.dental || {},
-    deciduousDental: project.deciduousDental || {},
-    dentitionType: project.dentitionType || 'permanent',
+    dental: normalizeDental(project.dental),
+    deciduousDental: normalizeDental(project.deciduousDental),
+    dentitionType: ['permanent', 'deciduous'].includes(project.dentitionType) ? project.dentitionType : 'permanent',
     measurements: project.measurements || {},
     landmarks: project.landmarks || {},
     photos: project.photos || {},

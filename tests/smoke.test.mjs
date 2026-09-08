@@ -60,6 +60,11 @@ const normalizedLegacy = normalizeProject({ profile: 'unknown', language: 'fr', 
 assert.equal(normalizedLegacy.profile, 'adult_male');
 assert.equal(normalizedLegacy.language, 'es');
 assert.equal(normalizedLegacy.report.individual, 'IND-LOCAL');
+const normalizedDental = normalizeProject({ dental: { '11': 'fragmented', '12': 'invented' }, deciduousDental: ['invalid'], dentitionType: 'unknown' });
+assert.equal(normalizedDental.dental['11'], 'fragmented');
+assert.equal(normalizedDental.dental['12'], undefined);
+assert.deepEqual(normalizedDental.deciduousDental, {});
+assert.equal(normalizedDental.dentitionType, 'permanent');
 assert.match(styles, /:root\{/);
 assert.match(styles, /\.layout\{/);
 assert.match(styles, /canvas\{touch-action:none\}/);
