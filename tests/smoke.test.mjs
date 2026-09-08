@@ -202,6 +202,8 @@ assert.match(main, /comparisonProfile/);
 assert.match(main, /saveLocal\?\./);
 assert.match(main, /explosion-play/);
 assert.match(main, /explosionAnimating/);
+assert.match(main, /reportRuntimeError/);
+assert.match(main, /unhandledrejection/);
 assert.match(main, /material\.wireframe=state\.wireframe/);
 assert.match(main, /light-slider/);
 assert.match(main, /setLightIntensity/);

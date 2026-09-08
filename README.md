@@ -58,6 +58,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - catálogo ampliado de marcadores independientes para columna, costillas, cintura, extremidades, manos y pies;
 - pruebas de humo automatizadas para manifest, offline, módulos y artefactos de build;
 - interfaz responsive para escritorio y móvil.
+- recuperación de errores de interfaz con aviso no destructivo y diagnóstico en consola;
 
 Los elementos 3D actuales son marcadores geométricos de desarrollo, ahora organizados como piezas independientes para facilitar el inventario completo. No representan modelos anatómicos aptos para medición o diagnóstico. Los modelos reales deberán incorporarse como GLB documentados en `SOURCES.md` y separados por perfil. Mientras los assets públicos siguen pendientes, el investigador puede importar paquetes GLB por `Bone_ID` o asociar temporalmente un modelo propio GLB, GLTF, OBJ o STL al hueso seleccionado. Estos modelos quedan en la sesión del navegador y no se publican en el repositorio.
 
