@@ -114,7 +114,11 @@ window.addEventListener('oste3d:compare-profile', event => { state.comparisonPro
 async function init3D() {
   THREE = await import('three');
   const host = document.querySelector('#viewer'); scene = new THREE.Scene(); scene.background = new THREE.Color(0xf0f4f7);
-  camera = new THREE.PerspectiveCamera(36, host.clientWidth / host.clientHeight, 0.1, 100); orbit.target = new THREE.Vector3(0, 0, 0); updateCamera();
+  const aspect = host.clientWidth / host.clientHeight;
+  camera = state.orthographic ? new THREE.OrthographicCamera(-7 * aspect, 7 * aspect, 7, -7, 0.1, 100) : new THREE.PerspectiveCamera(36, aspect, 0.1, 100);
+  orbit.target = new THREE.Vector3(0, 0, 0); updateCamera();
+  const projectionButton = document.querySelector('#projection-toggle');
+  if (projectionButton) { projectionButton.setAttribute('aria-pressed', String(state.orthographic)); projectionButton.textContent = state.orthographic ? 'Proyección perspectiva' : 'Proyección ortográfica'; }
   renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(host.clientWidth, host.clientHeight); renderer.domElement.tabIndex = 0; renderer.domElement.setAttribute('aria-label', 'Visor 3D del esqueleto. Usa las flechas para girar, más y menos para zoom, y R para restablecer.'); host.appendChild(renderer.domElement);
   const hemisphere=new THREE.HemisphereLight(0xffffff, 0x8da2b5, 2.2); const key = new THREE.DirectionalLight(0xffffff, 2); key.position.set(4, 8, 8); scene.add(hemisphere, key); scene.userData.lights={hemisphere,key};
   group = new THREE.Group(); scene.add(group); guideGroup = new THREE.Group(); guideGroup.name = 'explosion-guides'; scene.add(guideGroup); raycaster = new THREE.Raycaster(); pointer = new THREE.Vector2();
