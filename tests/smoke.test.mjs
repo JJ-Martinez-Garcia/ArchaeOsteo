@@ -234,6 +234,7 @@ assert.match(main, /Importar GLB locales/);
 assert.match(main, /importLocalModelFiles/);
 assert.match(main, /La importación reemplazará los modelos GLB locales/);
 assert.match(main, /const report=state\.report\|\|\{\}/);
+assert.match(main, /Peso total registrado/);
 assert.match(main, /escapeHtml\(individual\)/);
 assert.match(await text('src/anatomy/package.js'), /importModelPackageFiles/);
 const modelCacheEntries = new Map();
