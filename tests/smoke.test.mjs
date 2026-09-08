@@ -268,6 +268,8 @@ assert.match(main, /Save measurements/);
 assert.match(main, /function localizeActiveStatusPrefix\(\)/);
 assert.match(main, /function localizeDentalUi\(\)/);
 assert.match(main, /Not observable/);
+assert.match(main, /Dentition type/);
+assert.match(main, /Fragmented/);
 assert.match(main, /function localizePwaControls\(\)/);
 assert.match(main, /Install PWA/);
 assert.match(main, /Update now/);
