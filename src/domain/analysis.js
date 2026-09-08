@@ -58,14 +58,18 @@ export function calculateMni(rows) {
   const groups = new Map();
   for (const row of identified) {
     const key = `${row.boneId}|${row.side}`;
-    const individuals = Math.max(1, Number(row.fragments || 1));
-    groups.set(key, Math.max(groups.get(key) || 0, individuals));
+    const entry = groups.get(key) || { explicit: new Set(), fallback: 0 };
+    const individual = String(row.individual || '').trim();
+    if (individual && individual !== 'IND-LOCAL') entry.explicit.add(individual);
+    else entry.fallback = Math.max(entry.fallback, Math.max(1, Number(row.fragments || 1)));
+    groups.set(key, entry);
   }
-  const value = identified.length ? Math.max(1, ...groups.values()) : 0;
+  const counts = [...groups.values()].map(entry => entry.explicit.size || entry.fallback || 1);
+  const value = identified.length ? Math.max(1, ...counts) : 0;
   return {
     value,
-    groups: Object.fromEntries(groups),
-    method: 'Máximo número de unidades incompatibles registradas por elemento y lateralidad; es un cribado transparente, no una inferencia automática definitiva.'
+    groups: Object.fromEntries([...groups.entries()].map(([key, entry]) => [key, entry.explicit.size || entry.fallback || 1])),
+    method: 'Máximo de individuos explícitos por elemento y lateralidad; cuando falta un ID individual se usa el máximo de fragmentos como estimación provisional. Requiere revisión tafonómica y anatómica.'
   };
 }
 

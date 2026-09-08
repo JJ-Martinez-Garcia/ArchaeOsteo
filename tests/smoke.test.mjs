@@ -356,7 +356,10 @@ const testState = { status: { left_femur: 'fragmentary', right_femur: 'not_recor
 const analysis = calculateOsteoAnalysis(testBones, testState);
 assert.equal(analysis.nisp.value, 1);
 assert.equal(analysis.mne.value, 2);
-assert.equal(analysis.mni.value, 2);
+assert.equal(analysis.mni.value, 1);
+const mniWithIndividuals = calculateOsteoAnalysis(testBones, { status: { left_femur: 'present', right_femur: 'present' }, fragments: { left_femur: 4, right_femur: 4 }, individuals: { left_femur: 'IND-A', right_femur: 'IND-B' }, report: { individual: 'IND-LOCAL' } });
+assert.equal(mniWithIndividuals.mni.value, 1);
+assert.match(mniWithIndividuals.mni.method, /individuos explícitos/);
 assert.equal(analysis.individuals.value, 1);
 assert.equal(analysis.individuals.rows[0].individual, 'IND-A');
 assert.equal(analysis.rows[0].weight, 123.45);
