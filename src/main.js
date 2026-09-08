@@ -215,10 +215,22 @@ function applyProjectData(saved) {
   Object.assign(state, saved, { projectId: saved.id || saved.projectId || 'default', projectName: saved.projectName || saved.name || 'Proyecto sin título', history: [], future: [], inventoryMode: false, pendingOnly: false, activeStatus: 'present' });
   state.hidden = saved.hidden || {};
   state.opacity = saved.opacity || {};
+  state.opacityScope = ['bone', 'region', 'skeleton'].includes(saved.opacityScope) ? saved.opacityScope : 'bone';
   state.wireframe = Boolean(saved.wireframe);
+  state.xray = Boolean(saved.xray);
+  state.labelMode = ['selected', 'region', 'all', 'none'].includes(saved.labelMode) ? saved.labelMode : 'selected';
+  state.colorByRegion = saved.colorByRegion !== false;
+  state.comparisonProfile = saved.comparisonProfile || '';
   state.tableTransforms = saved.tableTransforms || {};
   state.lightIntensity = Number.isFinite(saved.lightIntensity) ? saved.lightIntensity : 1;
   setLightIntensity(state.lightIntensity);
+  document.querySelector('#opacity-scope') && (document.querySelector('#opacity-scope').value = state.opacityScope);
+  document.querySelector('#label-mode') && (document.querySelector('#label-mode').value = state.labelMode);
+  const xrayButton = document.querySelector('#xray-toggle');
+  if (xrayButton) { xrayButton.setAttribute('aria-pressed', String(state.xray)); xrayButton.textContent = state.xray ? 'X-Ray activado' : 'X-Ray'; }
+  const regionColorsButton = document.querySelector('#region-colors-toggle');
+  if (regionColorsButton) { regionColorsButton.setAttribute('aria-pressed', String(state.colorByRegion)); regionColorsButton.textContent = state.colorByRegion ? 'Colores por región' : 'Color neutro'; }
+  setComparisonProfile(state.comparisonProfile);
   document.querySelector('#profile').value = state.profile;
   document.querySelector('#language').value = state.language;
   document.documentElement.lang = state.language;
@@ -331,7 +343,7 @@ setTimeout(() => document.querySelector('#new-project')?.addEventListener('click
 setTimeout(() => runPwaDiagnostics().catch(() => {}), 400);
 setTimeout(async () => { const activeId = localStorage.getItem('osteo3d-active-project'); if (activeId && activeId !== state.projectId) { const activeProject = await loadProject(activeId); if (activeProject) { applyProjectData(activeProject); await refreshProjectSelector(); } } }, 150);
 setTimeout(async () => { const savedProject = await loadProject(state.projectId); if (savedProject?.changeLog) state.changeLog = savedProject.changeLog; }, 180);
-setTimeout(async () => { const savedProject = await loadProject(state.projectId); if (!savedProject) return; state.hidden=savedProject.hidden||{}; state.opacity=savedProject.opacity||{}; state.opacityScope=['bone','region','skeleton'].includes(savedProject.opacityScope)?savedProject.opacityScope:'bone'; document.querySelector('#opacity-scope').value=state.opacityScope; state.wireframe=Boolean(savedProject.wireframe); state.xray=Boolean(savedProject.xray); state.colorByRegion=savedProject.colorByRegion!==false; const xray=document.querySelector('#xray-toggle'); if(xray){xray.setAttribute('aria-pressed',String(state.xray));xray.textContent=state.xray?'X-Ray activado':'X-Ray';} const regionColorsButton=document.querySelector('#region-colors-toggle'); if(regionColorsButton){regionColorsButton.setAttribute('aria-pressed',String(state.colorByRegion));regionColorsButton.textContent=state.colorByRegion?'Colores por región':'Color neutro';} state.tableTransforms=savedProject.tableTransforms||{}; state.lightIntensity=Number.isFinite(savedProject.lightIntensity)?savedProject.lightIntensity:1; state.weights=savedProject.weights||{}; state.indeterminateFragments=savedProject.indeterminateFragments||[]; setLightIntensity(state.lightIntensity); }, 220);
+setTimeout(async () => { const savedProject = await loadProject(state.projectId); if (!savedProject) return; applyProjectData(savedProject); state.weights=savedProject.weights||{}; state.indeterminateFragments=savedProject.indeterminateFragments||[]; }, 220);
 setTimeout(async () => { const savedProject=await loadProject(state.projectId).catch(() => null); if(savedProject?.photoScope){ state.photoScope=savedProject.photoScope; state.photoTargetId=savedProject.photoTargetId||''; const scope=document.querySelector('#photo-scope'); const target=document.querySelector('#photo-target'); if(scope){scope.value=state.photoScope; if(target){target.value=state.photoTargetId; target.hidden=scope.value==='bone';}} } },320);
 window.addEventListener('online', updateConnectionStatus); window.addEventListener('offline', updateConnectionStatus); updateConnectionStatus(); setInterval(() => { if (document.visibilityState === 'visible') saveLocal({ notify: false }).catch(() => {}); }, 30000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveLocal({ notify: false }).catch(() => {}); });
 function reportRuntimeError(error) { console.error('Osteo3D runtime error', error); const toast=document.querySelector('#toast'); if(toast) toast.textContent='Error de interfaz · los datos locales se conservan'; }
