@@ -51,6 +51,7 @@ export function normalizeProject(project) {
     opacityScope: ['bone', 'region', 'skeleton'].includes(project.opacityScope) ? project.opacityScope : 'bone',
     wireframe: Boolean(project.wireframe),
     xray: Boolean(project.xray),
+    labelMode: ['selected', 'region', 'all', 'none'].includes(project.labelMode) ? project.labelMode : 'selected',
     tableTransforms: project.tableTransforms || {},
     lightIntensity: Number.isFinite(project.lightIntensity) ? project.lightIntensity : 1,
     changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],

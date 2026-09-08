@@ -28,6 +28,7 @@ export function createBackup(state) {
       opacityScope: state.opacityScope,
       wireframe: state.wireframe,
       xray: state.xray,
+      labelMode: state.labelMode,
       tableTransforms: state.tableTransforms,
       lightIntensity: state.lightIntensity,
       changeLog: state.changeLog,
