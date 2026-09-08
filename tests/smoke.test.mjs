@@ -167,6 +167,8 @@ assert.match(main, /const explosionPlayButton = document\.querySelector\('#explo
 assert.match(main, /runPwaDiagnostics\(\)\.catch\(\(\) => \{\}\)/);
 assert.match(main, /recordInventoryFieldChange\(key,'photos',previous,photos,'photo_remove'\)/);
 assert.match(main, /recordInventoryFieldChange\(key,'photos',previous,state\.photos\[key\],'photo_add'\)/);
+assert.match(main, /function safePhotoSource\(value\)/);
+assert.match(main, /data:image/);
 assert.match(main, /recordInventorySnapshotChanges/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);
