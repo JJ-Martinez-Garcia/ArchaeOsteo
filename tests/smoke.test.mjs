@@ -405,6 +405,8 @@ assert.match(main, /pinchDistance/);
 assert.match(main, /pointerDistance/);
 
 assert.equal(await exists('src/anatomy/catalog.js'), true);
+assert.equal(await exists('src/pwa-diagnostics.js'), true);
+assert.match(main, /installCapabilityDiagnostics/);
 assert.equal(await exists('src/anatomy/loader.js'), true);
 assert.equal(await exists('src/anatomy/custom-loader.js'), true);
 assert.match(await text('src/anatomy/custom-loader.js'), /OBJLoader/);

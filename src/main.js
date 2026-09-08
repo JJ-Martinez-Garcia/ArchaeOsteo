@@ -8,6 +8,7 @@ import './report.css';
 import './photos.css';
 import './pwa.css';
 import './extended.css';
+import { installCapabilityDiagnostics } from './pwa-diagnostics.js';
 import { listProjects, loadProject, PROJECT_SCHEMA_VERSION, saveProject } from './data/store.js';
 import { profileCatalog } from './anatomy/catalog.js';
 import { extendedBones } from './anatomy/extended-bones.js';
@@ -17,6 +18,8 @@ import { cacheCustomModelFile, downloadModelPackage, formatPackageSize, getCache
 import { initExtendedFeatures } from './ui/extended.js';
 import { calculateOsteoAnalysis } from './domain/analysis.js';
 import { createBackup } from './domain/backup.js';
+
+installCapabilityDiagnostics();
 
 const bones = [
   { id: 'skull', es: 'Cráneo', en: 'Skull', la: 'Cranium', region: 'Cráneo', side: '—', p: [0, 3.7, 0], e: [0, 4.8, 0], shape: 'sphere', size: [0.95, 1.15, 0.8] },
