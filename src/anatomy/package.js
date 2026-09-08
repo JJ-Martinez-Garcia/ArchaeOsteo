@@ -173,6 +173,7 @@ export async function cacheCustomModelFile(profileId, boneId, file, options = {}
   const body = await file.arrayBuffer();
   const cacheName = options.cacheName || CUSTOM_MODEL_CACHE;
   const cache = await caches.open(cacheName);
+  await Promise.all(['glb', 'gltf', 'obj', 'stl'].filter(item => item !== format).map(item => cache.delete(customModelUrl(profileId, boneId, item))));
   await cache.put(url, new Response(body, {
     headers: {
       'content-type': file.type || 'application/octet-stream',
