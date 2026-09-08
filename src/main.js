@@ -524,6 +524,7 @@ setTimeout(async () => {
   const savedProject = await loadProject(activeId).catch(() => null);
   if (!savedProject) return;
   applyProjectData(savedProject);
+  refreshLocalizedStaticUi();
   const scope = document.querySelector('#photo-scope');
   const target = document.querySelector('#photo-target');
   if (scope && state.photoScope) {
