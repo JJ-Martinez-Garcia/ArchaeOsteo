@@ -10,6 +10,18 @@ function normalizeDental(value) {
   return Object.fromEntries(Object.entries(value).filter(([, status]) => DENTAL_STATUSES.has(status)));
 }
 
+function normalizePhotos(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const imagePattern = /^data:image\/(?:png|jpeg|jpg|webp|gif);base64,/i;
+  return Object.fromEntries(Object.entries(value).map(([scope, photos]) => [scope, Array.isArray(photos) ? photos.filter(photo => imagePattern.test(String(photo?.dataUrl || ''))).map(photo => ({
+    name: String(photo.name || 'Fotografía'),
+    type: String(photo.type || 'image/jpeg'),
+    dataUrl: String(photo.dataUrl),
+    width: Number.isFinite(Number(photo.width)) ? Number(photo.width) : undefined,
+    height: Number.isFinite(Number(photo.height)) ? Number(photo.height) : undefined
+  })) : []]));
+}
+
 function openDatabase() {
   return new Promise((resolve, reject) => {
     if (!('indexedDB' in window)) return reject(new Error('IndexedDB no disponible'));
@@ -76,7 +88,7 @@ export function normalizeProject(project) {
     dentitionType: ['permanent', 'deciduous'].includes(project.dentitionType) ? project.dentitionType : 'permanent',
     measurements: project.measurements || {},
     landmarks: project.landmarks || {},
-    photos: project.photos || {},
+    photos: normalizePhotos(project.photos),
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
     filters: { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', ...(project.filters && typeof project.filters === 'object' ? project.filters : {}) },
     report: { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
