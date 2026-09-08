@@ -56,6 +56,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     setText('#isolate', 'isolate');
     setText('#center', 'center');
     [['#new-project', 'newProject'], ['#model-package-remove', 'removePackage'], ['#pwa-diagnostics-refresh', 'refreshPwa'], ['#mark-remaining-absent', 'markAbsent'], ['#show-table', 'showTable'], ['#export-json', 'exportJson'], ['#export-csv', 'exportCsv'], ['#save-metrics', 'saveMetrics'], ['#add-landmark', 'addLandmark'], ['#clear-filters', 'clearFilters'], ['#save-report', 'saveReport'], ['#print-report', 'printReport']].forEach(([selector, key]) => setText(selector, key));
+    [['#install-app', 'installPwa'], ['.pwa-update-label', 'newVersion'], ['#update-app', 'updateNow'], ['#dismiss-update', 'later']].forEach(([selector, key]) => setText(selector, key));
     [['[data-view="front"]', 'previous'], ['[data-view="back"]', 'next'], ['[data-view="left"]', 'left'], ['[data-view="right"]', 'right']].forEach(([selector, key]) => setText(selector, key));
   };
   updateLabels();
