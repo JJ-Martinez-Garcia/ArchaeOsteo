@@ -63,6 +63,8 @@ assert.match(packageJson.scripts.build, /generate-sw-assets\.mjs/);
 const main = await text('src/main.js');
 const styles = await text('src/styles.css');
 assert.match(main, /function renderViewerFallback\(error\)/);
+assert.match(main, /WebGL is not available in this browser/);
+assert.match(main, /regionLabel\(region\)/);
 assert.match(main, /values\?\.\[7\].*textContent=source==='custom'/);
 assert.match(main, /function profileLabel\(profileId\)/);
 assert.match(main, /function localizePwaDiagnostics\(\)/);
