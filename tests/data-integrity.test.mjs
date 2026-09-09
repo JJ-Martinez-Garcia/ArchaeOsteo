@@ -8,7 +8,7 @@ import { createOsteoArchive, readOsteoArchive } from '../src/domain/backup-archi
 import { normalizePortionRecords, portionRecordCount } from '../src/domain/portion-records.js';
 import { normalizeWeightUnit, weightToGrams } from '../src/domain/weights.js';
 import { protectSpreadsheetValue, protectSpreadsheetRows } from '../src/domain/spreadsheet.js';
-import { downloadModelPackage } from '../src/anatomy/package.js';
+import { downloadModelPackage, removeModelPackage } from '../src/anatomy/package.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
 const previousCaches = globalThis.caches;
@@ -19,6 +19,9 @@ globalThis.fetch = async url => url.endsWith('/b.glb') ? new Response('', { stat
 await assert.rejects(() => downloadModelPackage({ schema_version: 1, bone_asset_pattern: '{profile}/{bone_id}.glb', required_metadata: ['license'], profiles: { test: { root: 'test', asset_status: 'ready', asset_ids: ['a', 'b'] } } }, 'test', [{ id: 'a' }, { id: 'b' }]), /No se pudo descargar/);
 assert.equal(await (await globalThis.caches.open()).match('./models/test/a.glb').then(response => response.text()), 'old');
 assert.equal(packageEntries.has('./models/test/b.glb'), false);
+packageEntries.set('./models/custom/test/skull.glb', new Response('custom'));
+await removeModelPackage({ schema_version: 1, bone_asset_pattern: '{profile}/{bone_id}.glb', required_metadata: ['license'], profiles: { test: { root: 'test', asset_status: 'ready', asset_ids: ['a', 'b'] } } }, 'test', [{ id: 'a' }, { id: 'b' }]);
+assert.equal(packageEntries.has('./models/custom/test/skull.glb'), true);
 globalThis.caches = previousCaches;
 globalThis.fetch = previousFetch;
 assert.equal(protectSpreadsheetValue('=SUM(A1:A2)'), "'=SUM(A1:A2)");
