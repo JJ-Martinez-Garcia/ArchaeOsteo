@@ -745,6 +745,8 @@ assert.match(main, /async function exportXlsx/);
 assert.match(main, /Locked:!!state\.locked\[b\.id\]/);
 assert.match(main, /canvas\.toDataURL/);
 assert.match(await text('src/ui/extended.js'), /quiz-level/);
+assert.match(await text('src/ui/extended.js'), /close-learning/);
+assert.match(await text('src/ui/extended.js'), /details.*hidden = true/);
 assert.match(await text('src/ui/extended.js'), /optionCount/);
 assert.match(await text('src/ui/extended.js'), /advanced/);
 assert.match(await text('src/ui/extended.js'), /Identify bone/);

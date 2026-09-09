@@ -7,6 +7,7 @@
 - Porciones anatómicas independientes para huesos largos y costillas, con estado/completitud por porción, historial, persistencia y exportación compatible.
 - Buscador ampliado con normalización de acentos y sinónimos osteológicos frecuentes en español, inglés y latín.
 - El manifiesto de las copias `.osteo3d` incluye checksum por cada modelo personalizado y se verifica al restaurar.
+- El modo aprendizaje oculta la ficha durante los ejercicios para impedir que revele la respuesta y añade salida restaurable.
 - Osteometría: calibración local por la distancia real entre los dos primeros landmarks, escala mm/unidad persistente y conversión visible con límites declarados; añadidas pruebas de cero, vacío y bloqueo.
 - Añadida la copia completa `.osteo3d`: ZIP autocontenido con JSON, manifiesto y modelos personalizados disponibles offline; importación con comprobación CRC y restauración en caché.
 - Integridad de datos: CSV multilínea y validación estructural, importación parcial sin fabricar ceros/porcentajes, rechazo atómico de filas y respeto a bloqueos en la confirmación.

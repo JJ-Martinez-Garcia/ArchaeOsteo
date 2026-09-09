@@ -191,7 +191,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       const modeLabel = mode === 'locate' ? (en ? 'Locate bone' : 'Localizar hueso') : (en ? 'Identify bone' : 'Identificar hueso');
       const prompt = mode === 'locate' ? (en ? `Touch ${bone.en} in the 3D viewer.` : `Toca ${bone.es} en el visor 3D.`) : (en ? 'Select the answer for the highlighted element.' : 'Selecciona la respuesta para el elemento resaltado.');
       const answerOptions = mode === 'locate' ? '' : `<div class="quiz-options">${options.map(option => `<button data-answer="${escapeHtml(option.id)}">${escapeHtml(en ? option.en : option.es)}</button>`).join('')}</div>`;
-      show(`<div class="quiz-card"><strong>${modeLabel}</strong><label>${en ? 'Mode' : 'Modo'}<select id="quiz-mode"><option value="identify">${en ? 'Identify bone' : 'Identificar hueso'}</option><option value="locate">${en ? 'Locate bone' : 'Localizar hueso'}</option><option value="quiz">Quiz</option></select></label><label>${en ? 'Level' : 'Nivel'}<select id="quiz-level"><option value="basic">${en ? 'Basic' : 'Básico'}</option><option value="intermediate">${en ? 'Intermediate' : 'Intermedio'}</option><option value="advanced">${en ? 'Advanced' : 'Avanzado'}</option></select></label><p>${prompt}</p>${answerOptions}<p id="quiz-feedback" class="small-copy" aria-live="polite"></p><button id="next-question" class="secondary-action">${en ? 'New question' : 'Nueva pregunta'}</button></div>`);
+      show(`<div class="quiz-card"><strong>${modeLabel}</strong><label>${en ? 'Mode' : 'Modo'}<select id="quiz-mode"><option value="identify">${en ? 'Identify bone' : 'Identificar hueso'}</option><option value="locate">${en ? 'Locate bone' : 'Localizar hueso'}</option><option value="quiz">Quiz</option></select></label><label>${en ? 'Level' : 'Nivel'}<select id="quiz-level"><option value="basic">${en ? 'Basic' : 'Básico'}</option><option value="intermediate">${en ? 'Intermediate' : 'Intermedio'}</option><option value="advanced">${en ? 'Advanced' : 'Avanzado'}</option></select></label><p>${prompt}</p>${answerOptions}<p id="quiz-feedback" class="small-copy" aria-live="polite"></p><button id="next-question" class="secondary-action">${en ? 'New question' : 'Nueva pregunta'}</button><button id="close-learning" class="secondary-action">${en ? 'Exit learning' : 'Salir del aprendizaje'}</button></div>`);
       document.querySelector('#quiz-mode').value = mode;
       document.querySelector('#quiz-level').value = level;
       document.querySelector('#quiz-mode').onchange = event => { mode = event.target.value; nextQuestion(); };
@@ -199,9 +199,12 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       if (mode !== 'locate') selectBone(bone.id);
       document.querySelectorAll('[data-answer]').forEach(button => button.onclick = () => { document.querySelector('#quiz-feedback').textContent = button.dataset.answer === bone.id ? (en ? 'Correct' : 'Correcto') : `${en ? 'Correct answer' : 'Respuesta correcta'}: ${en ? bone.en : bone.es}`; });
       document.querySelector('#next-question').onclick = nextQuestion;
+      document.querySelector('#close-learning').onclick = () => { learningSession = { mode: 'identify', targetBoneId: '' }; panel.hidden = true; document.querySelector('#details').hidden = false; };
     };
+    document.querySelector('#details').hidden = true;
     nextQuestion();
   };
+  document.querySelectorAll('.tabs button').forEach(button => button.addEventListener('click', () => { learningSession = { mode: 'identify', targetBoneId: '' }; document.querySelector('#details').hidden = false; }));
 
   document.querySelector('#backup-project').onclick = async () => {
     try {

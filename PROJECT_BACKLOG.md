@@ -38,7 +38,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 19 | ETIQUETAS | Evitar colisión de etiquetas y asociar líneas guía; actualiza dinámicamente en cámara y selección. |
 | 20 | OSTEOMETRÍA | Calibración por dos landmarks y conversión a mm implementada con procedencia del usuario; falta validación/protocolo osteométrico externo y calibración global por modelo. |
 | 21 | LANDMARKS | Captura/visualización relativa, captura directa sobre superficie, edición, calibración local y revisión segura al sustituir modelos implementadas; queda una migración automática, que no es segura sin correspondencia anatómica, y versionado de modelos externos. |
-| 22 | MODO APRENDIZAJE | Niveles de aprendizaje y banco de preguntas validado; impedir que la ficha revele la respuesta. |
+| 22 | MODO APRENDIZAJE | Preguntas por niveles y modos identificar/localizar; la ficha se oculta durante el ejercicio para no revelar la respuesta y se restaura al salir. Queda validación pedagógica del banco. |
 | 23 | INVENTARIO ARQUEOLÓGICO | Completar modelo de datos para colecciones con múltiples individuos y contextos. |
 | 24 | CREACIÓN DE FICHA | Verificar persistencia/ronda de todos los campos de contexto en cada formato. |
 | 25 | ESTADOS DE LOS HUESOS | Estados definidos; cerrar pruebas de cada transición y sincronización entre vistas. |

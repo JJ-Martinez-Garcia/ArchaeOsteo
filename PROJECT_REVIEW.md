@@ -25,6 +25,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   incluye en copias y exportaciones.
 - El buscador normaliza acentos y nombres ES/EN/latín/ID y añade sinónimos osteológicos
   frecuentes; el tesauro completo sigue requiriendo curación especializada.
+- El modo aprendizaje dispone de preguntas por nivel y modos de identificar/localizar;
+  oculta la ficha del hueso mientras dura el ejercicio y permite salir restaurándola.
 - Copia `.osteo3d` autocontenida con modelos personalizados cacheados, manifiesto,
   comprobación CRC por ZIP y checksum por modelo en el manifiesto, además de restauración
   probada; JSON se mantiene como formato ligero.
