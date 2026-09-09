@@ -509,6 +509,11 @@ assert.match(await text('src/ui/extended.js'), /completeness:\s*Number\(state\.c
 assert.match(await text('src/ui/extended.js'), /taphonomy:\s*\(state\.taphonomy/);
 assert.match(await text('src/ui/extended.js'), /patolog[ií]a\/trauma/);
 assert.match(await text('src/ui/extended.js'), /diferencias frente a/);
+assert.match(await text('src/ui/extended.js'), /comparisonIdentity/);
+assert.match(await text('src/ui/extended.js'), /context: report\.context/);
+assert.match(await text('src/ui/extended.js'), /portionRecords: portionSummary/);
+assert.match(await text('src/ui/extended.js'), /Porciones independientes/);
+assert.match(await text('src/ui/extended.js'), /individuo\/UE/);
 assert.match(main, /Actualizar ahora/);
 assert.match(main, /Más tarde/);
 assert.match(main, /await saveLocal\(\{ notify:false \}\)/);

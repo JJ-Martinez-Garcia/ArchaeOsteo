@@ -153,16 +153,34 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     select.onchange = () => { document.querySelector('#compare-label').textContent = select.selectedOptions[0].textContent; if(compare3d.getAttribute('aria-pressed')==='true')window.dispatchEvent(new CustomEvent('oste3d:compare-profile',{detail:{profileId:select.value}})); };
     const projectSelect = document.querySelector('#compare-project');
     const comparison = document.querySelector('#compare-inventory');
+    const comparisonIdentity = project => {
+      const report = project?.report || {};
+      return {
+        individual: report.individual || 'IND-LOCAL',
+        context: report.context || '—',
+        ue: report.ue || '—',
+        campaign: report.campaign || '—'
+      };
+    };
+    const portionSummary = records => Object.entries(records || {}).map(([key, record]) => {
+      const details = [key, record?.status || 'not_recorded'];
+      if (record?.completeness != null) details.push(`${record.completeness}%`);
+      if (record?.fragments != null) details.push(`${record.fragments} frag.`);
+      return details.join(' · ');
+    }).join('; ');
     const renderComparison = project => {
       if (!project) { comparison.innerHTML = '<p class="small-copy">No hay otro proyecto local disponible para comparar.</p>'; return; }
+      const currentIdentity = comparisonIdentity(state);
+      const otherIdentity = comparisonIdentity(project);
       const differences = bones.map(bone => {
-        const current = { status: state.status?.[bone.id] || 'not_recorded', completeness: Number(state.completeness?.[bone.id] ?? 100), preservation: state.preservation?.[bone.id] || 'not_evaluated', fragments: Number(state.fragments?.[bone.id] || 0), taphonomy: (state.taphonomy?.[bone.id] || []).join(', '), pathology: (state.pathology?.[bone.id] || []).join(', '), portion: state.portions?.[bone.id] || 'whole' };
-        const other = { status: project.status?.[bone.id] || 'not_recorded', completeness: Number(project.completeness?.[bone.id] ?? 100), preservation: project.preservation?.[bone.id] || 'not_evaluated', fragments: Number(project.fragments?.[bone.id] || 0), taphonomy: (project.taphonomy?.[bone.id] || []).join(', '), pathology: (project.pathology?.[bone.id] || []).join(', '), portion: project.portions?.[bone.id] || 'whole' };
+        const current = { status: state.status?.[bone.id] || 'not_recorded', completeness: Number(state.completeness?.[bone.id] ?? 100), preservation: state.preservation?.[bone.id] || 'not_evaluated', fragments: Number(state.fragments?.[bone.id] || 0), taphonomy: (state.taphonomy?.[bone.id] || []).join(', '), pathology: (state.pathology?.[bone.id] || []).join(', '), portion: state.portions?.[bone.id] || 'whole', portionRecords: portionSummary(state.portionRecords?.[bone.id]), individual: state.individuals?.[bone.id] || currentIdentity.individual, ue: state.ue?.[bone.id] || currentIdentity.ue };
+        const other = { status: project.status?.[bone.id] || 'not_recorded', completeness: Number(project.completeness?.[bone.id] ?? 100), preservation: project.preservation?.[bone.id] || 'not_evaluated', fragments: Number(project.fragments?.[bone.id] || 0), taphonomy: (project.taphonomy?.[bone.id] || []).join(', '), pathology: (project.pathology?.[bone.id] || []).join(', '), portion: project.portions?.[bone.id] || 'whole', portionRecords: portionSummary(project.portionRecords?.[bone.id]), individual: project.individuals?.[bone.id] || otherIdentity.individual, ue: project.ue?.[bone.id] || otherIdentity.ue };
         const changed = Object.keys(current).some(key => current[key] !== other[key]);
         return changed ? { bone, current, other } : null;
       }).filter(Boolean);
-      const rows = differences.map(({ bone, current, other }) => `<tr><th scope="row">${escapeHtml(bone.es)}</th><td>Estado: ${escapeHtml(current.status)} · ${current.completeness}% · ${escapeHtml(current.preservation)} · ${current.fragments} frag.<br>Tafonomía: ${escapeHtml(current.taphonomy || '—')}<br>Patología: ${escapeHtml(current.pathology || '—')}</td><td>Estado: ${escapeHtml(other.status)} · ${other.completeness}% · ${escapeHtml(other.preservation)} · ${other.fragments} frag.<br>Tafonomía: ${escapeHtml(other.taphonomy || '—')}<br>Patología: ${escapeHtml(other.pathology || '—')}</td></tr>`).join('');
-      comparison.innerHTML = `<p><strong>${differences.length}</strong> de ${bones.length} elementos con diferencias frente a <strong>${escapeHtml(project.projectName || project.id)}</strong>.</p><p class="small-copy">Campos comparados: representación (estado y porcentaje), conservación, fragmentación, porción, tafonomía y patología/trauma.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Elemento</th><th>Proyecto actual</th><th>Proyecto comparado</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">No se han detectado diferencias en los campos comparados.</p>'}`;
+      const identityLabel = identity => `Individuo: ${escapeHtml(identity.individual)} · Contexto: ${escapeHtml(identity.context)} · UE: ${escapeHtml(identity.ue)} · Campaña: ${escapeHtml(identity.campaign)}`;
+      const rows = differences.map(({ bone, current, other }) => `<tr><th scope="row">${escapeHtml(bone.es)}</th><td><strong>Individuo:</strong> ${escapeHtml(current.individual)}<br><strong>UE:</strong> ${escapeHtml(current.ue)}<br>Estado: ${escapeHtml(current.status)} · ${current.completeness}% · ${escapeHtml(current.preservation)} · ${current.fragments} frag.<br>Porción: ${escapeHtml(current.portion)}${current.portionRecords ? `<br>Porciones independientes: ${escapeHtml(current.portionRecords)}` : ''}<br>Tafonomía: ${escapeHtml(current.taphonomy || '—')}<br>Patología: ${escapeHtml(current.pathology || '—')}</td><td><strong>Individuo:</strong> ${escapeHtml(other.individual)}<br><strong>UE:</strong> ${escapeHtml(other.ue)}<br>Estado: ${escapeHtml(other.status)} · ${other.completeness}% · ${escapeHtml(other.preservation)} · ${other.fragments} frag.<br>Porción: ${escapeHtml(other.portion)}${other.portionRecords ? `<br>Porciones independientes: ${escapeHtml(other.portionRecords)}` : ''}<br>Tafonomía: ${escapeHtml(other.taphonomy || '—')}<br>Patología: ${escapeHtml(other.pathology || '—')}</td></tr>`).join('');
+      comparison.innerHTML = `<p><strong>${differences.length}</strong> de ${bones.length} elementos con diferencias frente a <strong>${escapeHtml(project.projectName || project.id)}</strong>.</p><div class="compare-card"><strong>Proyecto actual:</strong> ${identityLabel(currentIdentity)}<br><strong>Proyecto comparado:</strong> ${identityLabel(otherIdentity)}</div><p class="small-copy">Campos comparados: individuo, contexto/UE/campaña, representación (estado y porcentaje), conservación, fragmentación, porción, porciones independientes, tafonomía y patología/trauma.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Elemento</th><th>Proyecto actual · individuo/UE</th><th>Proyecto comparado · individuo/UE</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">No se han detectado diferencias en los campos comparados.</p>'}`;
     };
     if (!listProjects || !loadProject) { renderComparison(null); return; }
     listProjects().then(projects => {
