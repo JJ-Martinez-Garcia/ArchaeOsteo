@@ -40,6 +40,8 @@
   «No observable» y traduce ese estado correctamente en la interfaz inglesa.
 - La vista de cámara se incluye ahora en los snapshots de Deshacer/Rehacer, evitando que
   una restauración de inventario o configuración deje un encuadre incoherente.
+- La E2E del navegador cubre explícitamente el filtrado de registros «No observable» y
+  comprueba que el resumen queda reducido al subconjunto marcado.
 
 ## Cambios recientes
 

@@ -20,6 +20,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   se pueden representar, persistir y filtrar sin depender del color.
 - Historial visual: los snapshots también restauran el encuadre 3D junto con la
   configuración visual del proyecto.
+- Cobertura E2E: el filtrado estadístico de «No observable» se verifica ahora con una
+  interacción real y una comprobación del subconjunto resultante.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

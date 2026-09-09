@@ -426,6 +426,12 @@ try {
   await waitForValue(cdp,projectReadExpression(),value=>value.filters?.side==='all'&&value.filters?.status==='all','Clear inventory filters');
   await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#show-table').click()`);
   await evaluate(cdp, `(()=>{for(const id of ['skull','mandible']){const select=document.querySelector('[data-row-status="'+id+'"]');select.value='present';select.dispatchEvent(new Event('change'));}})()`);
+  await evaluate(cdp, `(()=>{const select=document.querySelector('[data-row-status="mandible"]');select.value='not_observable';select.dispatchEvent(new Event('change'));})()`);
+  await evaluate(cdp, `(()=>{document.querySelector('#tab-stats').click();const nonObservableStatus=document.querySelector('#filter-status');nonObservableStatus.value='not_observable';nonObservableStatus.dispatchEvent(new Event('change'));})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.filters?.status==='not_observable'&&value.status?.mandible==='not_observable','Persist non-observable statistics filter');
+  assert.match(await evaluate(cdp, `document.querySelector('#stats-summary').textContent`), /1\/1/, 'Non-observable filter must isolate the marked element');
+  await evaluate(cdp, `document.querySelector('#clear-filters').click();document.querySelector('#tab-inventory').click();document.querySelector('#show-table').click()`);
+  await evaluate(cdp, `(()=>{const select=document.querySelector('[data-row-status="mandible"]');select.value='present';select.dispatchEvent(new Event('change'));})()`);
   await evaluate(cdp, `(()=>{const input=document.querySelector('[data-row-field="completeness"][data-row-id="skull"]');input.value='100';input.dispatchEvent(new Event('change'));const other=document.querySelector('[data-row-field="completeness"][data-row-id="mandible"]');other.value='';other.dispatchEvent(new Event('change'));})()`);
   await evaluate(cdp, `document.querySelector('#tab-stats').click()`);
   assert.equal(await evaluate(cdp, `document.querySelector('#stats-summary').textContent.includes('100%')`), true, 'Statistics must exclude unknown completeness from average');
