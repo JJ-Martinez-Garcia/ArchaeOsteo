@@ -165,3 +165,5 @@
 - Añadidos filtros de auditoría y exportación CSV del registro de cambios.
 - Al crear proyectos nuevos se reinician también la jerarquía, las preferencias visuales
   y todos los campos de contexto ampliados.
+- Las descargas de paquetes 3D revierten de forma transaccional tanto archivos nuevos como
+  sobrescrituras previas si falla una petición.

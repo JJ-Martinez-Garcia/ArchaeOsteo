@@ -103,7 +103,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 84 | BASE ANATÓMICA | Catálogo modular con tipos y nomenclatura curados; source de datos separado ya iniciado. |
 | 85 | INTERNACIONALIZACIÓN | ES/EN y textos principales disponibles; el informe imprimible localiza títulos y etiquetas fijas sin tocar el texto científico del investigador. Quedan algunos controles/métodos incrustados, RTL y nuevos idiomas. |
 | 86 | PWA Y OFFLINE | PWA/offline probados en Chromium; confirmar navegación y operaciones completas tras instalación. |
-| 87 | DESCARGA DE MODELOS | Paquetes de los cuatro perfiles disponibles; probar descarga/eliminación sin borrar modelos personales. |
+| 87 | DESCARGA DE MODELOS | Paquetes de los cuatro perfiles disponibles; descarga transaccional que revierte solo los recursos añadidos si falla, y eliminación separada de modelos personales; queda prueba en dispositivos reales. |
 | 88 | OPTIMIZACIÓN 3D | Liberación de geometrías/materiales, carga concurrente limitada en móviles/poca memoria y diagnóstico visible de mallas/triángulos/origen. Quedan LOD, presupuestos formales y medición en móviles reales. |
 | 89 | RENDIMIENTO | Matriz de PC/Mac/Android/iOS/iPad y métricas reproducibles en dispositivos reales. |
 | 90 | INTERFAZ DE ESCRITORIO | Panel redimensionable y formularios probados en PC; diálogos accesibles y refrescos en segundo plano optimizados. Queda comprobar zoom 125–200% y todos los tamaños. |
@@ -124,7 +124,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 105 | FASE 5 | Cerrar osteometría calibrada, landmarks, odontograma y métodos cuantitativos. |
 | 106 | FASE 6 | Cerrar anotaciones, fotos, PDF y comparación por individuo. |
 | 107 | FASE 7 | Cerrar importación/modelos propios, anotaciones y herramientas avanzadas; definir validación científica. |
-| 108 | CONTROL DE ERRORES | Validar fallos de red, modelo corrupto, cuota, migración, importación y recuperación sin falso éxito. |
+| 108 | CONTROL DE ERRORES | Validar fallos de red, modelo corrupto, cuota, migración, importación y recuperación sin falso éxito; la descarga de paquetes ya revierte parciales sin borrar entradas previas. |
 | 109 | DATOS Y VISUALIZACIÓN | Probar invariantes de inventario al cambiar modelos, posición, escala, colores y perfil. |
 | 110 | GITHUB | Repositorio con fuentes, pruebas, documentación, guía de contribución y política de seguridad; mantener changelog y ambas guías actuales. |
 | 111 | GITHUB PAGES | Despliegue Pages con pruebas y verificación de la versión publicada tras cada entrega. |

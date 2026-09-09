@@ -40,6 +40,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - Los snapshots comunes incluyen también preferencias visuales principales (aislamiento,
   explosión, opacidad, mesa, proyección, wireframe, X-Ray, etiquetas, paleta e iluminación)
   y su restauración sincroniza la escena y sus controles.
+- La descarga de un paquete GLB es transaccional: si falla una URL, revierte únicamente
+  los recursos que añadió esa operación y conserva los que ya estaban en caché; la prueba
+  de integridad cubre este rollback.
 - El registro de cambios permite filtrar por método o texto (elemento, individuo,
   investigador) y descargar el subconjunto visible en CSV; la prueba E2E verifica su
   renderizado y actualización.

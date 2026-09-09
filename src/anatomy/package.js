@@ -122,10 +122,20 @@ export async function downloadModelPackage(manifest, profileId, boneIds = [], op
   }
   if (!globalThis.caches?.open) throw new Error('Cache Storage no disponible en este navegador.');
   const cache = await caches.open(options.cacheName || MODEL_PACKAGE_CACHE);
-  for (const url of plan.urls) {
-    const response = await fetch(url, { cache: 'no-cache' });
-    if (!response.ok) throw new Error(`No se pudo descargar ${url} (${response.status}).`);
-    await cache.put(url, response.clone());
+  const addedUrls = [];
+  const replacedEntries = [];
+  try {
+    for (const url of plan.urls) {
+      const response = await fetch(url, { cache: 'no-cache' });
+      if (!response.ok) throw new Error(`No se pudo descargar ${url} (${response.status}).`);
+      const existed = await cache.match(url);
+      await cache.put(url, response.clone());
+      if (!existed) addedUrls.push(url);
+      else replacedEntries.push({ url, response: existed.clone() });
+    }
+  } catch (error) {
+    await Promise.all([addedUrls.map(url => cache.delete(url)), replacedEntries.map(entry => cache.put(entry.url, entry.response))].flat());
+    throw error;
   }
   return { ...plan, downloaded: plan.urls.length, cacheName: options.cacheName || MODEL_PACKAGE_CACHE };
 }
