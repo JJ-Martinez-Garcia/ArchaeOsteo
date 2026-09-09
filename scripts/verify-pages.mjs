@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-const target = process.argv[2] || process.env.OSTEO3D_PAGES_URL;
+const target = process.argv.slice(2).find(argument => argument !== '--') || process.env.OSTEO3D_PAGES_URL;
 if (!target) throw new Error('Indica la URL publicada como argumento o en OSTEO3D_PAGES_URL.');
 const url = new URL(target);
 const positiveInteger = (value, fallback) => {

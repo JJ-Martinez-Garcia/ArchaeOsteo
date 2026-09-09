@@ -26,6 +26,8 @@
   tabla al inglés, manteniendo intactos los valores científicos introducidos.
 - Corregido el control de luz ambiente para que 0 % desactive realmente la luz
   hemisférica, sin convertir el valor a 100 % durante la normalización.
+- El verificador de GitHub Pages acepta ahora la forma habitual `pnpm verify-pages -- URL`
+  además de la ejecución directa con Node.
 
 ## Cambios recientes
 

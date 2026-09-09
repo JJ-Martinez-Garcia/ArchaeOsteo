@@ -100,6 +100,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   inglés y conserva sin traducir el texto científico introducido por el investigador.
 - La iluminación conserva ahora correctamente el valor ambiente 0–200 %; el extremo 0 %
   ya no se transforma accidentalmente en el valor por defecto.
+- `verify-pages` descarta el separador opcional `--` de pnpm y permite repetir la
+  verificación publicada con el comando documentado.
 - Los refrescos de paneles, etiquetas, iluminación y colores del visor se omiten en segundo
   plano; el panel estadístico usa un único ciclo visible para reducir trabajo periódico.
 - NISP/MNE/MNI muestran el método y el carácter provisional; una revisión manual exige
