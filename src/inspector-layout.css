@@ -1,5 +1,6 @@
 /* Keep form content inside the panel; only genuinely wide tables scroll locally. */
-.inspector { overflow-wrap: anywhere; }
+.inspector { min-width: 0; overflow-wrap: anywhere; }
+.inspector .actions, .inspector .light-control { min-width: 0; width: 100%; max-width: 100%; }
 .inspector :where(label, fieldset, legend, dd, dt, section, .actions, .record-editor, .metric-fields, .landmark-fields) { min-width: 0; }
 .inspector :where(input, select, textarea) { min-width: 0; max-width: 100%; }
 .inspector :where(input:not([type=checkbox]):not([type=radio]), select, textarea) { width: 100%; }
@@ -28,6 +29,7 @@
 .inspector-divider { display: none; }
 @media (min-width: 901px) {
   .layout { grid-template-columns: 260px minmax(0, 1fr) 10px var(--inspector-width, 380px); }
+  .layout > .inspector { contain: inline-size; }
   .inspector-divider { display: block; position: relative; cursor: col-resize; touch-action: none; background: #edf2f7; border-inline: 1px solid #d9e2ec; }
   .inspector-divider::after { content: ''; position: absolute; top: 45%; left: 3px; width: 2px; height: 46px; border-radius: 2px; background: #829ab1; }
   .inspector-divider:hover, .inspector-divider:focus-visible { background: #bedcf7; outline: 2px solid #2f80ed; outline-offset: -2px; }

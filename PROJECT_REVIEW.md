@@ -78,7 +78,7 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 | Apartados originales | Estado comprobado / trabajo pendiente |
 | --- | --- |
 | 1, 5, 35, 84, 95–96 | Cuatro perfiles esquemáticos y créditos; faltan modelos inmaduros de referencia, segmentación completa del cráneo, dentición 3D y catálogo de centros de osificación. No existe validación morfométrica ni por especialista. |
-| 2–4, 10, 12–13, 15–19 | Motor, selección, árbol, búsqueda, vistas, transparencia, materiales, iluminación y etiquetas implementados. Selección por superficie ignora piezas ocultas. Las fichas científicas no documentadas no se inventan. |
+| 2–4, 10, 12–13, 15–19 | Motor, selección, árbol, búsqueda, vistas, transparencia, materiales, iluminación (intensidad, ambiente, presets y dirección persistente) y etiquetas implementados. Selección por superficie ignora piezas ocultas. Las fichas científicas no documentadas no se inventan. |
 | 6–9, 66 | Despliegue, slerp y mesa operativos. La disposición usa estantes compactos, no el orden regional exacto del encargo. No se certifica ausencia de colisiones durante toda la transición ni articulación exacta de los GLB externos. |
 | 11, 20–21 | Fichas y osteometría manual; landmarks relativos. Falta calibración métrica trazable, selección de landmarks por clic y biblioteca anatómica curada. |
 | 14, 22, 83 | Comparación de perfiles esquemáticos e inventarios y ejercicios básicos existentes. La comparación de inventarios identifica y filtra por individuo, contexto, UE y campaña, y coteja porciones independientes por elemento. Pendientes escala física común, sincronización avanzada de vistas, comparación por hueso más profunda y revisión pedagógica. |

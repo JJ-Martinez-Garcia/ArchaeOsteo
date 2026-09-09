@@ -29,6 +29,9 @@ export function initInspectorLayout() {
     const width = clampInspectorWidth(preferred, layout.clientWidth);
     const bounds = inspectorWidthBounds(layout.clientWidth);
     layout.style.setProperty('--inspector-width', `${width}px`);
+    layout.style.removeProperty('grid-template-columns');
+    layout.style.removeProperty('justify-content');
+    inspector.style.removeProperty('width');
     divider.setAttribute('aria-valuemin', String(bounds.min));
     divider.setAttribute('aria-valuemax', String(bounds.max));
     divider.setAttribute('aria-valuenow', String(width));
@@ -57,7 +60,10 @@ export function initInspectorLayout() {
   divider.addEventListener('pointerup', () => finish());
   divider.addEventListener('pointercancel', () => finish(true));
   divider.addEventListener('lostpointercapture', () => finish(true));
-  divider.addEventListener('dblclick', () => { finish(true); preferred = INSPECTOR_DEFAULT_WIDTH; apply(); persist(); });
+  const resetPreferredWidth = () => { if (drag) finish(true); preferred = INSPECTOR_DEFAULT_WIDTH; apply(); persist(); };
+  divider.addEventListener('dblclick', resetPreferredWidth);
+  divider.ondblclick = resetPreferredWidth;
+  document.addEventListener('dblclick', event => { if (event.target === divider) resetPreferredWidth(); }, true);
   divider.addEventListener('keydown', event => {
     if (event.key === 'Escape' && drag) { event.preventDefault(); finish(true); return; }
     if (!desktop.matches || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;

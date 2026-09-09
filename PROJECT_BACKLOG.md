@@ -33,7 +33,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 14 | COMPARACIÓN | Comparación hueso a hueso, vista/rotación/zoom sincronizados y escala real solo con calibración. |
 | 15 | TRANSPARENCIA | Verificar coherencia 0–100% por hueso/región/conjunto; control actual limita mínimo a 20%. |
 | 16 | MODOS VISUALES | Cerrar pruebas combinadas de todos los modos y de representación de inventario. |
-| 17 | ILUMINACIÓN | Añadir dirección de luz y control ambiental independiente; intensidad y presets existentes. |
+| 17 | ILUMINACIÓN | Intensidad, presets, ambiente independiente y dirección de luz mediante azimut/elevación persistentes; queda validación visual de la paleta en dispositivos y escenas complejas. |
 | 18 | COLORES POR REGIÓN | Comprobar contraste, leyenda y paleta con simulación de deficiencia cromática. |
 | 19 | ETIQUETAS | Evitar colisión de etiquetas y asociar líneas guía; actualiza dinámicamente en cámara y selección. |
 | 20 | OSTEOMETRÍA | Calibración por dos landmarks y conversión a mm implementada con procedencia del usuario; falta validación/protocolo osteométrico externo y calibración global por modelo. |
