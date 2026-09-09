@@ -36,6 +36,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   e importable; los modelos personalizados siguen requiriendo el archivo OSTEO3D.
 - La importación de esa hoja está cubierta directamente con una prueba de round-trip
   de los valores de cámara, además de la E2E general.
+- Jerarquía: el editor selecciona entidades padre existentes mediante un control accesible;
+  la E2E confirma el selector y conserva la creación de relaciones válidas.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

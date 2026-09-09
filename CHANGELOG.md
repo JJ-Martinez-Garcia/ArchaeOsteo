@@ -56,6 +56,8 @@
   la restauración, manteniendo los binarios de modelos propios en el archivo OSTEO3D.
 - Añadida una prueba directa del importador XLSX que verifica la reconstrucción del
   encuadre a partir de la hoja visual.
+- La edición de jerarquía ofrece ahora un selector de IDs padre existentes en lugar de
+  un campo libre, reduciendo referencias huérfanas y manteniendo las relaciones válidas.
 
 ## Cambios recientes
 
