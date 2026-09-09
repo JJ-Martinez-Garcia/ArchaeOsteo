@@ -13,7 +13,19 @@ Por cada perfil y paquete se deben documentar:
 - modificaciones realizadas y herramientas utilizadas;
 - número de assets incluidos y sus identificadores anatómicos.
 
-El perfil adulto masculino tiene cobertura `partial`: incluye 179 de los 192 `Bone_ID` del catálogo. Los perfiles adulto femenino, infante y neonato siguen en `placeholder`; el visor utiliza primitivas geométricas de demostración para los huesos sin asset publicado. `partial` no implica cobertura anatómica completa ni aptitud automática para medición.
+Los cuatro perfiles tienen cobertura `partial`: 179 GLB por perfil y 13 categorías de inventario sin malla. El adulto masculino conserva los recursos externos descritos abajo. Los otros tres perfiles incluyen modelos propios didácticos, no escaneos. `partial` no implica cobertura anatómica completa ni aptitud para medición.
+
+### Publicados: tres paquetes propios (femenino, infante, neonato)
+
+- Autoría: Osteo3D contributors, 2026; proyecto ArchaeOsteo.
+- Licencia: MIT, aviso completo incluido en cada GLB y en LICENSE del repositorio.
+- Fuente y generador: https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/blob/main/src/anatomy/procedural.js
+- Versión: procedural-1.1.0; fecha: 2026-09-09.
+- 179 archivos por perfil (537 nuevos). Generación: `pnpm generate-profile-models`.
+- Geometría matemática original, proporciones regionales independientes, formas craneales y pélvicas diferenciadas, diáfisis curvadas, extremos y relieves de huesos largos, componentes separados en inmaduros.
+- No se copiaron mallas del adulto masculino. Las superficies azules son envolventes cartilaginosas didácticas, no centros de osificación certificados. No se asigna una edad exacta.
+- Metadatos: ID, nombres ES/EN/latín del catálogo, lado, región, perfil, versión, autoría, licencia y advertencia de escala arbitraria. La nomenclatura del catálogo sigue pendiente de curación especializada.
+- Límites y referencias: [PROCEDURAL.md](PROCEDURAL.md). Se requiere validación especializada antes de uso científico.
 
 ### Publicado: ScatteringSkull (perfil adulto masculino)
 

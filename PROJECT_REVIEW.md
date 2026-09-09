@@ -4,7 +4,16 @@ Fecha: 2026-09-09. Referencia: texto inicial de 119 apartados aportado por el au
 Este documento distingue implementación de validación científica. No declara
 terminado el atlas profesional completo solicitado en el encargo.
 
+La lista completa de cierre, con los 119 apartados y mejoras adicionales, está en
+[PROJECT_BACKLOG.md](PROJECT_BACKLOG.md). Se mantiene abierta hasta verificar cada requisito.
+
 ## Cambios de esta revisión
+
+- Ampliación: se publican 537 GLB propios para femenino, infante y neonato,
+  con metadatos y licencia incorporados; no se han validado científicamente.
+- Panel derecho adaptable y separador accesible por ratón/teclado con persistencia.
+  Pruebas de todas las pestañas y formularios ampliados a 300 px, en PC de 1024/1440 px;
+  el visor ajusta su resolución al cambiar la separación.
 
 - 179 elementos con geometría procedural propia para los cuatro perfiles (716
   combinaciones). Código fuente reproducible y exportación individual GLB con

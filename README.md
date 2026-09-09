@@ -4,6 +4,15 @@ Base inicial de una PWA modular para atlas osteológico 3D e inventario bioarque
 
 ## Estado actual
 
+Panel derecho de PC: separador arrastrable entre visor y ficha, anchura recordada,
+flechas de teclado y doble clic para restablecer. Pestañas y formularios se adaptan
+sin desplazamiento horizontal del panel; las tablas extensas mantienen su propio scroll.
+
+Los perfiles femenino, infante y neonato incluyen ahora **537 GLB propios** (179
+por perfil) con nombres, componentes y licencia MIT, además del generador reproducible
+`pnpm generate-profile-models`. Son modelos didácticos, no reconstrucciones validadas
+de especímenes. Consultar [fuentes y límites](public/models/SOURCES.md).
+
 Actualización 2026-09-09: los cuatro perfiles cuentan con **179 representaciones 3D
 esquemáticas propias por perfil**, disponibles offline y exportables como GLB.
 Se conservan los modelos externos y sus créditos. Los esquemas no son escaneos,
@@ -11,6 +20,8 @@ no tienen escala métrica y no sirven para estimar edad o sexo. Los otros 13
 registros del catálogo son categorías agregadas/indeterminadas, no huesos ausentes.
 Consulta [la revisión del encargo y pendientes](PROJECT_REVIEW.md) y
 [el método del generador](public/models/PROCEDURAL.md).
+
+[Lista de cierre de los 119 puntos y mejoras propuestas](PROJECT_BACKLOG.md).
 
 MNE/MNI automáticos son provisionales y ya no convierten fragmentos en huesos o
 individuos. Admiten revisión manual justificada; si cambia el inventario se exige

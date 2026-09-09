@@ -1,0 +1,36 @@
+/* Keep form content inside the panel; only genuinely wide tables scroll locally. */
+.inspector { overflow-wrap: anywhere; }
+.inspector :where(label, fieldset, legend, dd, dt, section, .actions, .record-editor, .metric-fields, .landmark-fields) { min-width: 0; }
+.inspector :where(input, select, textarea) { min-width: 0; max-width: 100%; }
+.inspector :where(input:not([type=checkbox]):not([type=radio]), select, textarea) { width: 100%; }
+.inspector textarea { resize: vertical; }
+.inspector fieldset { margin-inline: 0; padding: 10px; }
+.inspector .tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; }
+.inspector .tabs button { min-width: 0; padding: 11px 3px; overflow-wrap: anywhere; }
+.inspector dl { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
+.inspector .anatomy-facts dl, .inspector .analysis-method { display: block; }
+.inspector .anatomy-facts dd, .inspector .analysis-method dd { text-align: left; }
+.inspector .metric-fields { grid-template-columns: repeat(auto-fit, minmax(min(100%, 110px), 1fr)); }
+.inspector .landmark-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.inspector .landmark-fields > label, .inspector #landmark-name { grid-column: 1 / -1; }
+.inspector .landmark-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 24px; }
+.inspector .actions { flex-wrap: wrap; }
+.inspector .actions > button { flex: 1 1 110px; min-width: 0; }
+.inspector .actions > :not(button) { flex: 1 1 100%; min-width: 0; }
+.inspector :where(.opacity-control, .label-control, .light-control, .table-controls, .lighting-modes) { display: grid; gap: 6px; }
+.inspector .analysis-summary, .inspector .quantification-values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.inspector :where(.stats-summary, .extended-buttons, .photo-list) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.inspector :where(.conservation-row, .fragmentation-row, .side-stat-row) { grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr); }
+.inspector .conservation-row small { grid-column: 1 / -1; }
+.inspector .analysis-table { width: 100%; table-layout: fixed; font-size: 11px; }
+.inspector .analysis-table :where(td, th) { overflow-wrap: anywhere; }
+.inspector .compare-inventory { min-width: 0; max-width: 100%; }
+.inspector-divider { display: none; }
+@media (min-width: 901px) {
+  .layout { grid-template-columns: 260px minmax(0, 1fr) 10px var(--inspector-width, 380px); }
+  .inspector-divider { display: block; position: relative; cursor: col-resize; touch-action: none; background: #edf2f7; border-inline: 1px solid #d9e2ec; }
+  .inspector-divider::after { content: ''; position: absolute; top: 45%; left: 3px; width: 2px; height: 46px; border-radius: 2px; background: #829ab1; }
+  .inspector-divider:hover, .inspector-divider:focus-visible { background: #bedcf7; outline: 2px solid #2f80ed; outline-offset: -2px; }
+  .resizing-inspector, .resizing-inspector * { cursor: col-resize !important; user-select: none !important; }
+}
+@media (min-width: 901px) and (max-width: 1100px) { .layout { grid-template-columns: 210px minmax(0, 1fr) 10px var(--inspector-width, 380px); } }

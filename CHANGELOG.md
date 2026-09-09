@@ -2,6 +2,13 @@
 
 ## Cambios recientes
 
+- Panel derecho de escritorio redimensionable con ratón/teclado, anchura recordada y doble clic para restablecer; visor reajustado automáticamente.
+- Formularios, acciones y pestañas adaptados a 300 px sin desplazar horizontalmente todo el panel; corregida selección simultánea de pestañas.
+- Publicados 537 GLB didácticos originales (179 por perfil femenino/infante/neonato), versión procedural-1.1.0, licencia MIT y metadatos incluidos.
+- Refinadas bóveda craneal, pelvis, arcos vertebrales inmaduros y relieves/curvatura de huesos largos; no constituyen modelos científicamente validados.
+- Pruebas de lectura de cada GLB, carga real de los tres paquetes y formularios del inspector en PC de 1024/1440 px.
+- Lista trazable de los 119 requisitos y mejoras adicionales en PROJECT_BACKLOG.md; objetivo completo todavía abierto.
+
 - Añadida prueba PWA de extremo a extremo en Chrome para manifiesto, Service Worker, modelo GLB, IndexedDB y arranque sin conexión.
 - La prueba sin conexión usa emulación específica para Service Workers, detiene su servidor local y comprueba que una petición inédita queda realmente bloqueada.
 - El modo de prueba contra una URL publicada valida la integración en línea sin atribuirle una simulación offline que Chrome no aplica de forma fiable a workers remotos.

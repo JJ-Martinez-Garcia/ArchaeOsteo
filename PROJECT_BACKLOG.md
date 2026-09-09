@@ -1,0 +1,155 @@
+# Plan de cierre del encargo completo
+
+Actualizado: 2026-09-09. Fuente: los 119 apartados del encargo original.
+
+El objetivo sigue abierto. Esta lista no sustituye ni reduce el encargo. Una función existente
+no se considera cerrada hasta verificar todo su alcance. Ningún checkbox global está marcado
+por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW.md.
+
+## Prioridad de trabajo
+
+1. Integridad de datos: porciones, bloqueos, historial, guardado y copias completas.
+2. Anatomía y registro: cráneo/dientes/componentes inmaduros, calibración y fuentes.
+3. Interoperabilidad: esquemas y round-trip con validación por campo.
+4. Comparación, aprendizaje, informes, accesibilidad y rendimiento.
+
+## Requisitos y pruebas que faltan para cerrarlos
+
+| Nº | Requisito original | Trabajo o evidencia de cierre pendiente |
+| --- | --- | --- |
+| 1 | PERFILES OSTEOLOGICOS | Validar los cuatro perfiles; segmentar huesos craneales, dentición y centros de osificación sin confundir didáctica con espécimen. |
+| 2 | MOTOR 3D | Verificar IDs y transformaciones de todas las piezas importadas; el motor Three.js y los GLB propios están operativos. |
+| 3 | VISOR 3D | Completar pruebas de interacción ratón/táctil, cámara y ocultación en todas las disposiciones. |
+| 4 | SELECCIÓN DE HUESOS | Probar selección y centrado coherentes en posición anatómica, desplegada, mesa y comparación. |
+| 5 | ESQUELETO COMPLETO | Validar articulación y proporciones de los GLB externos; el esqueleto propio está ensamblado de forma esquemática. |
+| 6 | ESQUELETO DESPLEGADO | Sustituir estantes compactos por disposición regional según el encargo; verificar transiciones sin colisiones. |
+| 7 | ANIMACIÓN DE DESPLIEGUE | Posición y slerp implementados; validar rotación, escala y orientación de todos los assets externos. |
+| 8 | SLIDER DE EXPLOSIÓN | Slider operativo; probar extremos, valores intermedios, teclado y convivencia con aislamiento. |
+| 9 | MESA OSTEOLÓGICA | Completar agrupación/ordenación de mesa y restauración por selección con persistencia. |
+| 10 | EXAMINAR HUESO | Añadir vistas anatómicas locales medial/lateral/proximal/distal por hueso, no solo ejes globales. |
+| 11 | PANEL INFORMATIVO | Curar las 12 categorías de la ficha por hueso con referencias; no sustituir huecos por inferencias. |
+| 12 | ÁRBOL OSTEOLOGICO | Verificar árbol por anatomía completa y componentes inmaduros; catálogo actual agrupa cráneo. |
+| 13 | BUSCADOR | Corregir nomenclatura ES/EN/latín y ampliar sinónimos; probar búsquedas inequívocas. |
+| 14 | COMPARACIÓN | Comparación hueso a hueso, vista/rotación/zoom sincronizados y escala real solo con calibración. |
+| 15 | TRANSPARENCIA | Verificar coherencia 0–100% por hueso/región/conjunto; control actual limita mínimo a 20%. |
+| 16 | MODOS VISUALES | Cerrar pruebas combinadas de todos los modos y de representación de inventario. |
+| 17 | ILUMINACIÓN | Añadir dirección de luz y control ambiental independiente; intensidad y presets existentes. |
+| 18 | COLORES POR REGIÓN | Comprobar contraste, leyenda y paleta con simulación de deficiencia cromática. |
+| 19 | ETIQUETAS | Evitar colisión de etiquetas y asociar líneas guía; actualiza dinámicamente en cámara y selección. |
+| 20 | OSTEOMETRÍA | Calibración trazable y selección de puntos de superficie; protocolos de osteometría normalizados. |
+| 21 | LANDMARKS | Captura directa, edición y migración/versionado de coordenadas relativas al sustituir modelos. |
+| 22 | MODO APRENDIZAJE | Niveles de aprendizaje y banco de preguntas validado; impedir que la ficha revele la respuesta. |
+| 23 | INVENTARIO ARQUEOLÓGICO | Completar modelo de datos para colecciones con múltiples individuos y contextos. |
+| 24 | CREACIÓN DE FICHA | Verificar persistencia/ronda de todos los campos de contexto en cada formato. |
+| 25 | ESTADOS DE LOS HUESOS | Estados definidos; cerrar pruebas de cada transición y sincronización entre vistas. |
+| 26 | CONSERVACIÓN | Distinguir no evaluado/no evaluable y porcentaje no registrado; validar estados y medias. |
+| 27 | FRAGMENTACIÓN | Completitud/fragmentación como campos explícitos, separados de presencia y porcentaje. |
+| 28 | HUESOS LARGOS | Varias porciones con estados independientes simultáneos; ahora se selecciona una porción por elemento. |
+| 29 | LATERALIDAD | Lateralidad indeterminada/no aplicable con validación de importación y corrección. |
+| 30 | INVENTARIO DENTAL | Verificar estados FDI permanente/deciduo y round-trip XLSX sin usar etiquetas traducidas como códigos. |
+| 31 | VÉRTEBRAS | Vértebras individualizadas; añadir contexto anatómico/fusión y pruebas de selección. |
+| 32 | COSTILLAS | Costillas individualizadas; validar orientación/lateralidad y selección de todas. |
+| 33 | MANOS | Huesos de mano individualizados; corregir nombres latinos y verificar identificación. |
+| 34 | PIES | Huesos de pie individualizados; corregir nombres latinos y verificar identificación. |
+| 35 | INFANTES Y NEONATOS | Registro independiente de epífisis/centros/componentes con relaciones de fusión y estados por edad. |
+| 36 | REPRESENTACIÓN ESQUELÉTICA | Separar denominadores anatómicos de categorías agregadas y de elementos esperados por perfil. |
+| 37 | MAPA DE CONSERVACIÓN | Mapa del propio 3D según presencia/conservación/porcentaje/alteraciones, con patrones además de colores. |
+| 38 | NISP | Modelo de especímenes por ficha y NISP real; el automático actual cuenta registros agrupados. |
+| 39 | MNE | MNE desde observaciones de porciones y solapamiento; conservar revisión manual y límites. |
+| 40 | MNI | MNI desde incompatibilidades documentadas de lado/porción/desarrollo; no contar fragmentos como individuos. |
+| 41 | FRAGMENTOS INDETERMINADOS | Validar cantidades/medidas opcionales, deshacer eliminación y vincular fragmentos a contexto. |
+| 42 | PESO | Añadir selector g/kg y pruebas de ausencia frente a peso cero y totales regionales. |
+| 43 | TAFONOMÍA | Catálogo curado y anotaciones múltiples estructuradas por hueso con evidencia. |
+| 44 | PATOLOGÍA Y TRAUMA | Anotación de trauma/patología en superficie 3D enlazada a ficha, sin diagnóstico automático. |
+| 45 | FOTOGRAFÍAS | Verificar todos los ámbitos de fotos, tamaño/cuota, edición y recuperación de binarios. |
+| 46 | PINTAR INVENTARIO | Pruebas de pintura táctil en tablet/móvil y accesos rápidos, sin arrastrar la cámara accidentalmente. |
+| 47 | BARRA DE PINTURA | Barra y estado persistente operativos; probar todos los estados con teclado/táctil. |
+| 48 | FUNCIONAMIENTO DE PINTAR INVENTARIO | Secuencia de pintar varios huesos, deshacer y recargar como E2E de inventario completo. |
+| 49 | ACTUALIZACIÓN AUTOMÁTICA | Eliminar desincronizaciones entre figura, ficha, tabla, estadísticas, guardado y análisis. |
+| 50 | PINTAR POR REGIONES | Verificar cada grupo regional, no modificar categorías fuera del alcance y respetar bloqueos. |
+| 51 | FILTRO DE LATERALIDAD | Probar filtros izquierda/derecha/ambos y su interacción con grupos anatómicos. |
+| 52 | ELEMENTOS PEQUEÑOS | Centrado/zoom adaptado al tamaño real del elemento y disposición actual, no coordenadas originales. |
+| 53 | PINTAR DENTICIÓN | E2E de pintura FDI con ambas denticiones y persistencia. |
+| 54 | PINTAR CONSERVACIÓN | E2E de conservación individual, regional y bloqueada. |
+| 55 | PINTAR PORCENTAJE | Atajos 100/75/50/25/<25 y ausencia de porcentaje no observado. |
+| 56 | PINTAR ALTERACIONES | E2E de alteraciones múltiples sin sobrescritura de detalles existentes. |
+| 57 | BORRADOR | Borrado de asignación coherente con todos los campos y recuperación por deshacer. |
+| 58 | DESHACER / REHACER | Historial transaccional común para fotos, fragmentos, importaciones y cambios masivos. |
+| 59 | BLOQUEAR REGISTROS | Aplicar bloqueos también en formularios científicos, importación y tablas, no solo pintura. |
+| 60 | MOSTRAR PENDIENTES | Resaltar pendientes sin ocultar de forma incoherente categorías o etiquetas. |
+| 61 | PROGRESO | Denominador correcto por perfil y categorías; progreso siempre revisados, no presentes. |
+| 62 | INVENTARIO RÁPIDO | Confirmación obligatoria y deshacer completo al marcar restantes como ausentes. |
+| 63 | PRESENCIA RÁPIDA | Prueba de presencia rápida y persistencia, sin modos incompatibles activos. |
+| 64 | FRAGMENTACIÓN RÁPIDA | Pruebas del ciclo opcional, posibilidad de desactivar y respeto a bloqueo. |
+| 65 | SELECCIÓN MÚLTIPLE | Aplicar acciones comunes a selección múltiple como una única transacción reversible. |
+| 66 | PINTAR EN CUALQUIER DISPOSICIÓN | Pruebas de pintura en cuatro disposiciones y en elementos pequeños. |
+| 67 | CONFIRMACIÓN VISUAL | Resaltado transitorio sin sobreescribir selección permanente o apariencia científica. |
+| 68 | LEYENDA | Leyenda persistente con texto/iconos/patrones también dentro del 3D. |
+| 69 | REGISTRO DE CAMBIOS | Registro uniforme de fecha/responsable/individuo/método/antes/después para toda mutación. |
+| 70 | NOTAS | Notas por proyecto, elemento, fragmento y alteración con import/export multilínea. |
+| 71 | TABLA DE INVENTARIO | Tabla realmente sincronizada; probar edición sin perder foco y tratamiento de celdas vacías. |
+| 72 | FILTROS | Verificar combinaciones de todos los filtros contra tabla, árbol, 3D y estadísticas. |
+| 73 | ESTADÍSTICAS | Medias basadas solo en datos observados y denominadores explícitos; pruebas con valores ausentes. |
+| 74 | INFORME AUTOMÁTICO | Informe con mapa esquelético, fuentes/métodos/límites, fotos elegidas y maquetación paginada. |
+| 75 | EXPORTACIÓN | Ronda completa de datos en CSV/JSON/XLSX/PDF, incluyendo campos nuevos y caracteres especiales. |
+| 76 | CSV/XLSX | Esquema estable y códigos canónicos, comillas/saltos de línea y defensa frente a fórmulas al abrir CSV. |
+| 77 | JSON | Esquema versionado JSON completo, migraciones y validación de campos desconocidos. |
+| 78 | IMPORTACIÓN | Vista previa con errores por fila/campo y política explícita de fusión o reemplazo reversible. |
+| 79 | BASE DE DATOS LOCAL | Modelo de entidades explícitas en IndexedDB y migraciones sin pérdida. |
+| 80 | JERARQUÍA DE PROYECTOS | Jerarquía proyecto/yacimiento/campaña/sector/contexto/individuo, no solo campos en una ficha. |
+| 81 | AUTOGUARDADO | No afirmar guardado si fallan IndexedDB y fallback; cuota visible y recuperación. |
+| 82 | COPIAS DE SEGURIDAD | Copia completa con fotografías y modelos personalizados binarios, hashes y restauración verificada. |
+| 83 | COMPARAR INVENTARIOS | Comparación por individuo/contexto/campaña con identidad y filtros, no solo dos proyectos. |
+| 84 | BASE ANATÓMICA | Catálogo modular con tipos y nomenclatura curados; source de datos separado ya iniciado. |
+| 85 | INTERNACIONALIZACIÓN | Completar ES/EN y quitar textos incrustados; preparación RTL y nuevos idiomas. |
+| 86 | PWA Y OFFLINE | PWA/offline probados en Chromium; confirmar navegación y operaciones completas tras instalación. |
+| 87 | DESCARGA DE MODELOS | Paquetes de los cuatro perfiles disponibles; probar descarga/eliminación sin borrar modelos personales. |
+| 88 | OPTIMIZACIÓN 3D | Presupuestos de geometría, LOD y liberación de recursos; medir en móviles de memoria limitada. |
+| 89 | RENDIMIENTO | Matriz de PC/Mac/Android/iOS/iPad y métricas reproducibles en dispositivos reales. |
+| 90 | INTERFAZ DE ESCRITORIO | Panel redimensionable y formularios probados en PC; comprobar zoom 125–200% y todos los tamaños. |
+| 91 | INTERFAZ MÓVIL | Cerrar flujo de paneles móviles, tamaño táctil y operación con una mano; no basta emular ancho. |
+| 92 | ACCESIBILIDAD | Auditoría de contraste, lector de pantalla, foco, teclado y tamaños táctiles. |
+| 93 | ARQUITECTURA DEL PROYECTO | Extraer controlador 3D y módulos de UI de main.js de forma incremental. |
+| 94 | MODULARIDAD | Eliminar temporizadores de inicialización y dependencias cruzadas de UI/persistencia. |
+| 95 | LICENCIAS DE MODELOS 3D | 537 GLB propios y 179 externos documentados; auditar cada licencia y mantener metadatos completos. |
+| 96 | PRECISIÓN CIENTÍFICA | Revisión anatómica por especialista y referencias trazables antes de uso científico. |
+| 97 | TRANSPARENCIA DE LOS CÁLCULOS | Métodos y revisiones visibles; rastrear cada inferencia hasta observaciones reales. |
+| 98 | PRIVACIDAD | Auditar peticiones y garantizar que datos/fotos locales no se transmiten por ningún flujo implícito. |
+| 99 | FUTURAS AMPLIACIONES | Diseñar extensiones versionadas; no presentar estimación, fotogrametría o morfometría como ya disponibles. |
+| 100 | IMPORTACIÓN DE MODELOS PROPIOS — PREPARAR ARQUITECTURA | Probar formatos/archivos auxiliares, vinculación a espécimen/contexto y exportación de metadatos. |
+| 101 | FASE 1 — MVP | Reejecutar matriz de aceptación del MVP, incluyendo fallo WebGL y recuperación local. |
+| 102 | FASE 2 | Validar fase 2 según geometría, disposición regional y mesa, no solo presencia de botones. |
+| 103 | FASE 3 | Completar morfología/registro inmaduro y comparación científica: los GLB didácticos no bastan. |
+| 104 | FASE 4 | Cerrar inventario, jerarquía, import/export, historial y pruebas de conservación. |
+| 105 | FASE 5 | Cerrar osteometría calibrada, landmarks, odontograma y métodos cuantitativos. |
+| 106 | FASE 6 | Cerrar anotaciones, fotos, PDF y comparación por individuo. |
+| 107 | FASE 7 | Cerrar importación/modelos propios, anotaciones y herramientas avanzadas; definir validación científica. |
+| 108 | CONTROL DE ERRORES | Validar fallos de red, modelo corrupto, cuota, migración, importación y recuperación sin falso éxito. |
+| 109 | DATOS Y VISUALIZACIÓN | Probar invariantes de inventario al cambiar modelos, posición, escala, colores y perfil. |
+| 110 | GITHUB | Repositorio con fuentes, pruebas y documentación; mantener changelog y guía de contribución actuales. |
+| 111 | GITHUB PAGES | Despliegue Pages con pruebas y verificación de la versión publicada tras cada entrega. |
+| 112 | INSTALACIÓN | Verificar instalación/standalone en navegadores y plataformas soportadas, no solo manifest. |
+| 113 | ACTUALIZACIONES | Verificar actualización con formulario sucio y guardado fallido; nunca perder cambios. |
+| 114 | DISEÑO | Revisión visual final de todas las pantallas y estados, no solo el visor inicial. |
+| 115 | EXPERIENCIA DE USUARIO | E2E del flujo completo crear individuo → pintar → revisar → informe con pocos pasos. |
+| 116 | PRINCIPIO DE NO DESTRUCCIÓN | Confirmación, deshacer y copia previa en todo reemplazo/eliminación masiva. |
+| 117 | RESULTADO FINAL | Auditoría final de los 30 entregables usando pruebas directas, sin declarar acabado por etapas. |
+| 118 | INSTRUCCIÓN DE DESARROLLO PARA CODEX | Seguir etapas verificadas, compatibilidad y modularidad; no degradar funciones terminadas. |
+| 119 | PRINCIPIOS PRIORITARIOS | Validación final según prioridades: rigor, utilidad, precisión, calidad, datos y accesibilidad. |
+
+## Mejoras adicionales propuestas
+
+- Preferencias de interfaz separadas del inventario (separador ya implementado).
+- Indicador de procedencia y calibración por modelo; historial de sustituciones.
+- Copias con verificación de integridad y prueba de recuperación antes de reemplazar datos.
+- Deshacer único para toda modificación; modo de revisión antes de aplicar acciones masivas.
+- Presupuesto de memoria/triángulos y diagnóstico de fallos comprensible.
+- Pruebas de accesibilidad y capturas de todas las pantallas en CI.
+- Migraciones de catálogo que preserven datos aunque se subdivida un hueso agrupado.
+
+## Criterio de finalización
+
+Revisar cada fila contra código, datos, pruebas de comportamiento y, cuando corresponda,
+validación anatómica/documental. Las verificaciones científicas no se sustituyen por tests
+JavaScript. Mantener abierto lo no verificado y registrar las dependencias externas.
+

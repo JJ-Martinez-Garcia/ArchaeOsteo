@@ -1,10 +1,13 @@
-# Geometría propia de Osteo3D · 1.0.0
+# Geometría propia de Osteo3D · 1.1.0
 
 Autoría: Osteo3D contributors, 2026. Licencia MIT (véase LICENSE del repositorio).
 Código fuente: `src/anatomy/procedural.js`. Fecha: 2026-09-09.
 
 Los 179 identificadores anatómicos del catálogo tienen una representación
 tridimensional generada en el navegador, disponible también sin conexión.
+Además, femenino, infante y neonato se distribuyen como 537 archivos GLB
+independientes en sus carpetas de perfil, con metadatos y licencia incluidos.
+No se trata de tres escaneos: son modelos propios de reconstrucción didáctica.
 Los otros 13 registros son categorías agregadas o indeterminadas, no huesos
 adicionales. Se conservan sus datos, pero no se dibujan como piezas duplicadas.
 El número 179 NO equivale a un inventario de los 206 huesos del adulto:

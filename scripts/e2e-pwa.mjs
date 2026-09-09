@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { testInspectorLayout } from '../tests/inspector-layout.e2e.mjs';
 import { spawn } from 'node:child_process';
 import { access, mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
@@ -384,6 +385,13 @@ try {
   })()`);
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
+  await testInspectorLayout(cdp,evaluate,waitForValue);
+  for(const profile of ['adult_female','infant','neonate']){
+    await evaluate(cdp,`(()=>{const mode=document.querySelector('#geometry-mode');mode.value='auto';mode.dispatchEvent(new Event('change'));const select=document.querySelector('#profile');select.value=${JSON.stringify(profile)};select.dispatchEvent(new Event('change'));})()`);
+    await waitForValue(cdp,`({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.generatedCount==='179',`Load 179 original GLBs: ${profile}`,45000);
+    await waitForValue(cdp,`document.querySelector('#details').textContent`,value=>/GLB propio|Original GLB/.test(value),`Original GLB provenance: ${profile}`);
+    assert.equal(await evaluate(cdp,`document.querySelector('#model-package-action').disabled`),false,'Original profile must be downloadable');
+  }
   // Actual WebGL profile switching, not only UI labels. Keep inventory intact.
   assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#viewer canvas'))`),true);
   for(const profile of ['adult_female','infant','neonate','adult_male']) {
