@@ -110,7 +110,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 91 | INTERFAZ MÓVIL | Flujo de paneles móviles disponible y controles principales con objetivos táctiles mínimos de 44 px; queda prueba en dispositivos reales y operación con una mano. |
 | 92 | ACCESIBILIDAD | Foco visible global, navegación semántica/teclado y soporte de movimiento reducido incorporados; queda auditoría de contraste, lector de pantalla, zoom y tamaños táctiles con dispositivos reales. |
 | 93 | ARQUITECTURA DEL PROYECTO | Extraer controlador 3D y módulos de UI de main.js de forma incremental. |
-| 94 | MODULARIDAD | Los exportadores XLSX/pesos ya no dependen de temporizadores de inicialización; quedan los temporizadores de UI restantes y la separación completa de dependencias cruzadas. |
+| 94 | MODULARIDAD | Los exportadores XLSX/pesos y los controles de fotografías ya no dependen de temporizadores de inicialización; quedan los temporizadores de UI restantes y la separación completa de dependencias cruzadas. |
 | 95 | LICENCIAS DE MODELOS 3D | 537 GLB propios y 179 externos documentados; las fuentes, autoría, licencia y advertencia didáctica están incorporadas. Sigue pendiente la auditoría especializada de cada licencia/fuente externa y validar anatómicamente los GLB procedurales antes de cualquier uso científico. |
 | 96 | PRECISIÓN CIENTÍFICA | Revisión anatómica por especialista y referencias trazables antes de uso científico. |
 | 97 | TRANSPARENCIA DE LOS CÁLCULOS | Métodos y revisiones visibles; rastrear cada inferencia hasta observaciones reales. |

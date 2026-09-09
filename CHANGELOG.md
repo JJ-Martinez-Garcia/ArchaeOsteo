@@ -2,6 +2,7 @@
 
 ## 2026-09-10
 
+- Los controles de fotografías del informe se inicializan directamente, incluyendo asociación por elemento, individuo, diente, fragmento, patología, tafonomía o landmark; ya no dependen de temporizadores de carga.
 - Los exportadores XLSX y pesos CSV se inicializan directamente al crear la interfaz, sin depender de temporizadores de carga.
 - La importación CSV/XLSX recupera también `Portion_records` (porciones independientes), con validación y normalización de estado, completitud y fragmentos.
 - La comparación 3D aplica una escala relativa didáctica al perfil comparado y expone el perfil activo en el visor para facilitar la comprobación de la interacción. La escala no representa una medida física validada.
