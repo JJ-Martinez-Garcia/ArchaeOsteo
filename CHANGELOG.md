@@ -63,6 +63,8 @@
   con ausencia observada.
 - La comparación múltiple conserva la separación entre fuentes y omite de forma segura
   proyectos que ya no estén disponibles al cargarse desde IndexedDB.
+- El selector jerárquico filtra ahora los padres por relación válida entre niveles y la
+  prueba E2E simula el cambio de nivel antes de seleccionar el padre.
 
 ## Cambios recientes
 

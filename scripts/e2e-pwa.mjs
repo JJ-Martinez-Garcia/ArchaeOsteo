@@ -455,7 +455,7 @@ try {
   await navigate(cdp, 'Page.reload', { ignoreCache: false });
   await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'Reload project application');
   await waitForValue(cdp, projectReadExpression(), value => value.report?.individual === 'IND-E2E' && value.hierarchy?.contexts?.some(entity => entity.name === 'UE-4'), 'Recover project after reload');
-  await evaluate(cdp, `document.querySelector('#hierarchy-panel-button').click();document.querySelector('#hierarchy-level').value='individuals';document.querySelector('#hierarchy-name').value='IND-MANUAL';document.querySelector('#hierarchy-parent').value='context:ue-4';document.querySelector('#add-hierarchy-entity').click()`);
+  await evaluate(cdp, `(()=>{document.querySelector('#hierarchy-panel-button').click();const level=document.querySelector('#hierarchy-level');level.value='individuals';level.dispatchEvent(new Event('change',{bubbles:true}));document.querySelector('#hierarchy-name').value='IND-MANUAL';document.querySelector('#hierarchy-parent').value='context:ue-4';document.querySelector('#add-hierarchy-entity').click();})()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.hierarchy?.individuals?.some(entity=>entity.name==='IND-MANUAL'&&entity.parentId==='context:ue-4'),'Persist manually added hierarchy entity');
   await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#undo').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>!value.hierarchy?.individuals?.some(entity=>entity.name==='IND-MANUAL'),'Undo hierarchy entity addition');
