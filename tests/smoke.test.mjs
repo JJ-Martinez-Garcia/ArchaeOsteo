@@ -176,6 +176,7 @@ assert.match(main, /id="toast" role="status" aria-live="polite"/);
 assert.match(main, /id="connection-status" class="connection-status" aria-live="polite"/);
 assert.match(main, /id="storage-status" class="storage-status" aria-live="polite"/);
 assert.match(main, /setTimeout\(\(\)=>\{URL\.revokeObjectURL\(a\.href\);a\.remove\(\);\},1000\)/);
+assert.match(main, /const saved=await saveLocal\(\{ notify:false \}\); if\(!saved\?\.ok\)/);
 assert.match(main, /filter-taphonomy/);
 assert.match(main, /filter-pathology/);
 assert.match(main, /conservation-map/);

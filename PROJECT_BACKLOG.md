@@ -129,7 +129,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 110 | GITHUB | Repositorio con fuentes, pruebas, documentación, guía de contribución y política de seguridad; mantener changelog y ambas guías actuales. |
 | 111 | GITHUB PAGES | Despliegue Pages con pruebas y verificación de la versión publicada tras cada entrega. |
 | 112 | INSTALACIÓN | Verificar instalación/standalone en navegadores y plataformas soportadas, no solo manifest. |
-| 113 | ACTUALIZACIONES | Verificar actualización con formulario sucio y guardado fallido; nunca perder cambios. |
+| 113 | ACTUALIZACIONES | La actualización aplaza la recarga si el guardado devuelve `ok: false`; queda probar la transición completa con un Service Worker esperando y formulario sucio en dispositivos reales. |
 | 114 | DISEÑO | Revisión visual final de todas las pantallas y estados, no solo el visor inicial. |
 | 115 | EXPERIENCIA DE USUARIO | E2E del flujo completo crear individuo → pintar → revisar → informe con pocos pasos. |
 | 116 | PRINCIPIO DE NO DESTRUCCIÓN | Confirmación, deshacer y copia previa en todo reemplazo/eliminación masiva. |
