@@ -3,10 +3,16 @@ import assert from 'node:assert/strict';
 const target = process.argv[2] || process.env.OSTEO3D_PAGES_URL;
 if (!target) throw new Error('Indica la URL publicada como argumento o en OSTEO3D_PAGES_URL.');
 const url = new URL(target);
+const positiveInteger = (value, fallback) => {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
+const attempts = positiveInteger(process.env.OSTEO3D_VERIFY_ATTEMPTS, 12);
+const delayMs = positiveInteger(process.env.OSTEO3D_VERIFY_DELAY_MS, 3000);
 const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 let lastError;
 
-for (let attempt = 1; attempt <= 8; attempt += 1) {
+for (let attempt = 1; attempt <= attempts; attempt += 1) {
   try {
     const response = await fetch(url, { redirect: 'follow', headers: { accept: 'text/html' } });
     const html = await response.text();
@@ -18,8 +24,8 @@ for (let attempt = 1; attempt <= 8; attempt += 1) {
     process.exit(0);
   } catch (error) {
     lastError = error;
-    if (attempt < 8) await wait(3000);
+    if (attempt < attempts) await wait(delayMs);
   }
 }
 
-throw new Error(`La URL publicada no pasó la verificación tras 8 intentos: ${lastError?.message || lastError}`);
+throw new Error(`La URL publicada no pasó la verificación tras ${attempts} intentos: ${lastError?.message || lastError}`);

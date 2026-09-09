@@ -745,6 +745,8 @@ assert.match(main, /const average=observed\.length\?Math\.round\(preserved\/obse
 assert.match(main, /average == null \? '—' : `\$\{average\}%`/);
 assert.match(main, /reportContextFields/);
 assert.match(await text('scripts/verify-pages.mjs'), /Published Pages entry point/);
+assert.match(await text('scripts/verify-pages.mjs'), /OSTEO3D_VERIFY_ATTEMPTS/);
+assert.match(await text('scripts/verify-pages.mjs'), /OSTEO3D_VERIFY_DELAY_MS/);
 assert.match(await text('.github/workflows/pages.yml'), /Verify published Pages entry point/);
 assert.match(await text('index.html'), /Content-Security-Policy/);
 assert.match(await text('index.html'), /connect-src 'self'/);
