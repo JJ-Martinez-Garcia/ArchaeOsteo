@@ -15,6 +15,8 @@
   los datos de v2 se normalizan automáticamente.
 - Normalizados los campos de informe mediante un esquema textual cerrado para tolerar
   copias antiguas o malformadas sin romper los formularios.
+- Las importaciones de jerarquía limpian referencias padre inexistentes para impedir
+  relaciones huérfanas sin eliminar entidades válidas.
 - El panel derecho oculta desbordamientos horizontales accidentales y limita también
   formularios extendidos, filtros y campos de contexto al ancho disponible.
 - La pestaña de informe hidrata todos sus campos de contexto de forma directa al abrirse,

@@ -21,6 +21,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   borrar observaciones; su contenido se incluye en la prueba de formularios estrechos.
   El cambio se identifica como esquema de proyecto 3 y los proyectos anteriores se
   normalizan al cargarse.
+  La normalización elimina referencias padre inexistentes al importar o restaurar datos,
+  conservando la entidad y evitando relaciones huérfanas.
 - Rendimiento: el visor muestra en vivo el número de mallas y triángulos de la escena,
   junto con cuántos GLB propios y esquemas están cargados, para detectar perfiles costosos
   antes de probarlos en móviles de memoria limitada. La carga de perfiles limita la

@@ -26,6 +26,8 @@ export function normalizeHierarchy(value) {
     const seen = new Set();
     result[level] = source.map(item => normalizeEntity(item, level)).filter(item => item && !seen.has(item.id) && seen.add(item.id));
   }
+  const validIds = new Set(HIERARCHY_LEVELS.flatMap(level => result[level].map(item => item.id)));
+  for (const level of HIERARCHY_LEVELS) for (const entity of result[level]) if (entity.parentId && !validIds.has(entity.parentId)) entity.parentId = '';
   return result;
 }
 
