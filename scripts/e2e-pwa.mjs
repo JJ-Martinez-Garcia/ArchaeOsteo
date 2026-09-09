@@ -417,6 +417,11 @@ try {
   assert.equal(await evaluate(cdp, `document.querySelector('#quick-fragmentary').getAttribute('aria-pressed')`), 'true', 'Quick fragmentation must activate');
   await evaluate(cdp, `document.querySelector('#quick-fragmentary').click()`);
   assert.equal(await evaluate(cdp, `document.querySelector('#quick-fragmentary').getAttribute('aria-pressed')`), 'false', 'Quick fragmentation must be reversible');
+  await evaluate(cdp, `document.querySelector('#tab-stats').click();const side=document.querySelector('#filter-side');side.value='Izquierda';side.dispatchEvent(new Event('change'));const status=document.querySelector('#filter-status');status.value='not_recorded';status.dispatchEvent(new Event('change'));`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.filters?.side==='Izquierda'&&value.filters?.status==='not_recorded','Persist combined inventory filters');
+  assert.equal(await evaluate(cdp, `document.querySelector('#stats-summary').textContent.includes('/')`), true, 'Combined filters must refresh statistics');
+  await evaluate(cdp, `document.querySelector('#clear-filters').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.filters?.side==='all'&&value.filters?.status==='all','Clear inventory filters');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
