@@ -34,6 +34,8 @@
   símbolo y su nombre accesible reflejan inmediatamente el nuevo estado.
 - Corregida la normalización analítica de pesos: los registros introducidos en kg se
   convierten a gramos en `weightGrams` antes de cualquier resumen cuantitativo.
+- La vista 3D de cada proyecto conserva ahora rotación, zoom y centro de cámara, incluidos
+  los cambios hechos con ratón, rueda, teclado, vistas rápidas y centrado.
 
 ## Cambios recientes
 
