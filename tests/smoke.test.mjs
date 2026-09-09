@@ -734,6 +734,8 @@ assert.match(main, /reviewed after filters/);
 assert.match(main, /state\.filters\.preservation='all';state\.filters\.type='all'/);
 assert.match(main, /average completeness recorded/);
 assert.match(main, /reportContextFields/);
+assert.match(await text('scripts/verify-pages.mjs'), /Published Pages entry point/);
+assert.match(await text('.github/workflows/pages.yml'), /Verify published Pages entry point/);
 assert.match(main, /ensureLongReportFields/);
 assert.match(main, /\['sources', 'method', 'limits'\]/);
 assert.match(main, /translatedProvenanceReport/);
