@@ -848,7 +848,6 @@ async function initProjectManager() {
     await saveLocal({ notify: false }); applyProjectData(state); await refreshProjectSelector();
   };
 }
-setTimeout(() => installCapabilityDiagnostics(), 0);
 const extendedUi = initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject, commitInventoryEdit, applyProjectData });
 document.querySelector('#language')?.addEventListener('change', () => { renderDental(); updateDentalCount(); renderList(); selectBone(state.selected); });
 document.querySelector('#profile')?.addEventListener('change', () => saveLocal({ notify: false }));
@@ -955,7 +954,7 @@ updateInventoryProgress();
 setInterval(updateInventoryProgress, 1000);
 setTimeout(() => { auditedStatusSnapshot={...state.status}; setInterval(() => { bones.forEach(bone => { const current=state.status[bone.id] || 'not_recorded'; const previous=auditedStatusSnapshot[bone.id] || 'not_recorded'; if (current !== previous) recordInventoryChange(bone.id, previous, current, 'inventory_action'); auditedStatusSnapshot[bone.id]=current; }); }, 500); }, 1200);
 applyPwaLaunchView();
-setTimeout(() => initProjectManager().catch(() => {}), 0);
+queueMicrotask(() => initProjectManager().catch(() => {}));
 setTimeout(() => document.querySelector('#new-project')?.addEventListener('click', () => { state.hidden = {}; state.opacity = {}; state.opacityScope = 'bone'; state.tableMode = false; state.orthographic = false; state.skeletonFilter = 'all'; state.regionFilter = 'all'; state.explosion = 0; state.explosionAnimating = false; state.isolate = false; document.querySelector('#opacity-scope').value='bone'; state.wireframe = false; state.xray = false; state.labelMode='selected'; state.colorByRegion=true; state.tableTransforms = {}; state.lightIntensity = 1; state.ambientLightIntensity = 1; state.lightingAzimuth = 30; state.lightingElevation = 55; state.lightingMode = 'neutral'; setLightingMode('neutral'); setLightIntensity(1); setAmbientIntensity(1); setLightingDirection(30,55); }), 0);
 setTimeout(() => runPwaDiagnostics().catch(() => {}), 400);
 setTimeout(async () => {
