@@ -392,6 +392,13 @@ try {
   await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'Reload after camera change');
   await waitForValue(cdp,projectReadExpression(),value=>Number.isFinite(value?.cameraView?.theta)&&value.cameraView.theta!==0,'Recover 3D camera view after reload');
 
+  const comparisonSeed = projectReadExpression();
+  await evaluate(cdp, `(async()=>{const project=await ${comparisonSeed};project.id='comparison-e2e';project.projectName='Proyecto comparación E2E';project.status={...(project.status||{}),skull:'absent'};return await new Promise((resolve,reject)=>{const request=indexedDB.open('osteo3d',3);request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result,tx=db.transaction('projects','readwrite');tx.oncomplete=()=>{db.close();resolve(true);};tx.onerror=()=>{db.close();reject(tx.error);};tx.objectStore('projects').put(project);};});})()`);
+  await evaluate(cdp, `document.querySelector('#multi-compare-panel-button').click()`);
+  await waitForValue(cdp, `Boolean(document.querySelector('#run-multi-compare'))`, value=>value===true, 'Render multi-source comparison');
+  await evaluate(cdp, `(()=>{document.querySelectorAll('[data-compare-source]').forEach(input=>input.checked=true);document.querySelector('#run-multi-compare').click();})()`);
+  await waitForValue(cdp, `document.querySelector('#multi-compare-results')?.textContent || ''`, value=>value.includes('2 fuentes')||value.includes('2 sources'), 'Compare active and local source');
+
   await testInspectorLayout(cdp,evaluate,waitForValue);
   await testDataIntegrity(cdp,evaluate,waitForValue,projectReadExpression);
   for (const [query, expected] of [['omóplato', 'escápula'], ['cúbito', 'ulna'], ['coxis', 'cóccix']]) {

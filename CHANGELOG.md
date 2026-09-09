@@ -67,6 +67,8 @@
   prueba E2E simula el cambio de nivel antes de seleccionar el padre.
 - La E2E comprueba explícitamente que los individuos solo muestran entidades de contexto
   como posibles padres.
+- La comparación múltiple incluye el proyecto activo como fuente y la E2E crea una
+  segunda fuente local para verificar el flujo completo de selección y resumen.
 
 ## Cambios recientes
 

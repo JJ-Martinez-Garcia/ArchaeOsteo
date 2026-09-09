@@ -46,6 +46,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   → contexto → individuo, evitando relaciones cruzadas inválidas.
 - La cobertura E2E verifica la restricción de nivel de los padres, no solo que el control
   sea un selector.
+- La E2E valida también la comparación múltiple con el proyecto activo y una segunda
+  fuente almacenada en IndexedDB.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

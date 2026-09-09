@@ -265,7 +265,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   document.querySelector('#multi-compare-panel-button').onclick = async () => {
     const en = state.language === 'en';
     if (!listProjects || !loadProject) { show(`<p class="small-copy">${en ? 'Local projects are unavailable.' : 'Los proyectos locales no están disponibles.'}</p>`); return; }
-    const candidates = (await listProjects()).filter(project => project.id !== state.projectId);
+    const candidates = await listProjects();
     if (!candidates.length) { show(`<h3>${en ? 'Compare multiple inventories' : 'Comparar varios inventarios'}</h3><p class="small-copy">${en ? 'Create at least two local projects to compare sources.' : 'Crea al menos dos proyectos locales para comparar fuentes.'}</p>`); return; }
     show(`<h3>${en ? 'Compare multiple inventories' : 'Comparar varios inventarios'}</h3><p class="small-copy">${en ? 'Select two or more local sources. Values are summarized per Bone_ID; unknown records remain distinct from observed absence.' : 'Selecciona dos o más fuentes locales. Los valores se resumen por Bone_ID; los registros desconocidos siguen siendo distintos de una ausencia observada.'}</p><div id="multi-compare-sources" class="record-editor">${candidates.map((project,index) => `<label><input type="checkbox" data-compare-source="${escapeHtml(project.id)}" ${index < 2 ? 'checked' : ''}> ${escapeHtml(project.projectName || project.id)}</label>`).join('')}<button id="run-multi-compare" class="secondary-action">${en ? 'Run comparison' : 'Comparar fuentes'}</button><p id="multi-compare-message" role="status"></p></div><div id="multi-compare-results"></div>`);
     document.querySelector('#run-multi-compare').onclick = async () => {
