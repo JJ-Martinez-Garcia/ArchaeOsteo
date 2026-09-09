@@ -901,6 +901,7 @@ assert.match(main, /async function exportXlsx/);
 assert.match(main, /exportWeightsCsv/);
 assert.doesNotMatch(main, /setTimeout\(\(\) => \{ const csvButton=document\.querySelector\('#export-csv'\)/);
 assert.doesNotMatch(main, /setTimeout\(\(\) => \{ const upload=document\.querySelector\('#photo-input'\)/);
+assert.doesNotMatch(main, /setTimeout\(\(\) => \{\n  const fields = document\.querySelector\('\.filter-fields'\)/);
 assert.match(main, /async function exportXlsx[\s\S]*Sources:report\.sources\|\|''[\s\S]*Method:report\.method\|\|''[\s\S]*Limits:report\.limits\|\|''/);
 assert.match(main, /function appendAuxiliaryXlsxSheets/);
 for (const sheetName of ['Jerarquía', 'Osteometría', 'Landmarks', 'Calibraciones', 'Referencias landmarks', 'Revisión análisis', 'Registro de cambios', 'Fotografías', 'Modelos propios']) assert.match(main, new RegExp(`'${sheetName}'`));

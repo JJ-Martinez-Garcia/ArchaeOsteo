@@ -2,6 +2,7 @@
 
 ## 2026-09-10
 
+- La creación de los filtros extendidos de estadísticas usa una microtarea segura en lugar de un temporizador de carga arbitrario.
 - La E2E cubre ahora los filtros de conservación y tipo de elemento, incluida su persistencia y restauración al limpiar filtros.
 - Los controles de fotografías del informe se inicializan directamente, incluyendo asociación por elemento, individuo, diente, fragmento, patología, tafonomía o landmark; ya no dependen de temporizadores de carga.
 - Los exportadores XLSX y pesos CSV se inicializan directamente al crear la interfaz, sin depender de temporizadores de carga.
