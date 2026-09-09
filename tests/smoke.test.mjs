@@ -651,6 +651,8 @@ assert.match(main, /forEachConcurrent\(loadableBones, modelLoadConcurrency/);
 assert.match(await text('src/ui/extended.js'), /hierarchy-panel-button/);
 assert.match(await text('src/ui/extended.js'), /Añade entidades sin borrar observaciones existentes/);
 assert.match(await text('src/ui/extended.js'), /El ID padre no existe/);
+assert.match(await text('src/domain/inventory-history.js'), /'hierarchy'/);
+assert.match(await text('src/ui/extended.js'), /commitInventoryEdit\('hierarchy_entity_add'/);
 assert.match(await text('src/ui/extended.js'), /Jerarquía.*normalizeHierarchy/s);
 assert.match(main, /sheet\('Jerarquía'/);
 assert.match(main, /dracoDecoderPath: '\.\/draco\/'/);
