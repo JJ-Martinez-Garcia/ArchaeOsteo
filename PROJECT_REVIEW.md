@@ -1,0 +1,77 @@
+# Revisión desde el encargo original
+
+Fecha: 2026-09-09. Referencia: texto inicial de 119 apartados aportado por el autor.
+Este documento distingue implementación de validación científica. No declara
+terminado el atlas profesional completo solicitado en el encargo.
+
+## Cambios de esta revisión
+
+- 179 elementos con geometría procedural propia para los cuatro perfiles (716
+  combinaciones). Código fuente reproducible y exportación individual GLB con
+  autoría, MIT, versión y límites. Se conservan los 179 GLB externos del adulto.
+- Se corrigen alineación esquemática de columna/pelvis, muñecas/manos y tobillos/pies,
+  lateralidad de la vista anterior y separación de falanges medias/distales.
+- Los 13 registros agregados/indeterminados dejan de duplicar piezas en el visor,
+  sin borrar inventarios. Cráneo, esternón y algunos conjuntos siguen agrupados.
+- Los perfiles inmaduros usan proporciones independientes por región y componentes
+  separados; no son reducciones uniformes. Cartílago ilustrativo señalado en azul.
+- Despliegue con empaquetado sin solapamientos de envolventes y rotaciones con slerp.
+  La mesa utiliza esa disposición inicial y conserva sus transformaciones.
+- Carga Draco compartida, límite de trabajadores y descarte de cargas obsoletas
+  al cambiar de perfil. Restauración de mallas al cambiar de proyecto.
+- Distancia de landmarks identificada como unidades locales arbitrarias, nunca mm.
+  Las mediciones físicas siguen siendo entradas manuales independientes.
+- Se elimina la conversión incorrecta de fragmentos a MNE/MNI. Revisión manual
+  con justificación, fecha y detección de cambios posteriores en el inventario.
+- Se corrige el salto de línea del CSV de pesos y el acceso al perfil/catálogo móvil.
+
+## Matriz de alcance
+
+| Apartados originales | Estado comprobado / trabajo pendiente |
+| --- | --- |
+| 1, 5, 35, 84, 95–96 | Cuatro perfiles esquemáticos y créditos; faltan modelos inmaduros de referencia, segmentación completa del cráneo, dentición 3D y catálogo de centros de osificación. No existe validación morfométrica ni por especialista. |
+| 2–4, 10, 12–13, 15–19 | Motor, selección, árbol, búsqueda, vistas, transparencia, materiales, iluminación y etiquetas implementados. Selección por superficie ignora piezas ocultas. Las fichas científicas no documentadas no se inventan. |
+| 6–9, 66 | Despliegue, slerp y mesa operativos. La disposición usa estantes compactos, no el orden regional exacto del encargo. No se certifica ausencia de colisiones durante toda la transición ni articulación exacta de los GLB externos. |
+| 11, 20–21 | Fichas y osteometría manual; landmarks relativos. Falta calibración métrica trazable, selección de landmarks por clic y biblioteca anatómica curada. |
+| 14, 22, 83 | Comparación de perfiles esquemáticos e inventarios y ejercicios básicos existentes. Pendientes escala física común, sincronización avanzada de vistas, comparación por hueso y revisión pedagógica. |
+| 23–34, 36–37, 41–57, 59–65, 67–73 | Inventario, estados, conservación, porciones, lateralidad, dientes FDI, fragmentos, peso, fotos, notas, filtros, pintura y tablas implementados. No se certifican todos los casos de cada formulario ni un mapa científico completo. |
+| 38–40, 97 | Métodos visibles y corrección del uso de fragmentos. NISP automático cuenta registros; MNE/MNI son mínimos provisionales según categorías determinadas y asociaciones introducidas. Para colecciones mezcladas se necesita análisis especializado y revisión manual documentada. |
+| 58, 69 | Deshacer/rehacer y trazabilidad existentes para inventario. No hay historial transaccional unificado para todas las operaciones (fotos, fragmentos e importaciones). |
+| 74–78 | Informe imprimible/PDF del navegador, JSON, CSV, XLSX e importación con previsualización existentes. Pendientes auditoría completa de campos/ronda XLSX, CSV multilínea y PDF de maquetación profesional. |
+| 79–82, 98 | IndexedDB, proyectos, guardado y copias de datos locales. No equivalen aún a la jerarquía relacional detallada del encargo; los binarios de modelos personalizados no van incluidos en la copia JSON. No eliminar la caché como sustituto de una copia completa. |
+| 85, 90–92, 114–115 | ES/EN y búsqueda por latín existentes; acceso móvil a catálogo/perfil corregido. Queda traducción de algunos controles/métodos nuevos y auditoría de accesibilidad con dispositivos reales. |
+| 86–89, 100, 112–113 | PWA, descarga/caché por perfil, carga diferida e importación de modelos operativas; los esquemas están en el shell offline. Faltan optimización/medición sostenida en móviles reales y validación de todos los formatos personalizados. |
+| 93–94, 108–109, 116 | Separación nueva del generador, análisis y cargador; preservación de IDs y datos. main.js conserva deuda de modularidad y temporizadores históricos. |
+| 99, 101–107, 110–111, 117–119 | GitHub/Pages y pruebas automatizadas existentes. Las siete fases y el resultado profesional completo no deben marcarse terminados mientras queden los puntos científicos y funcionales anteriores. |
+
+## Verificación reproducible
+
+- `pnpm test`: sintaxis, regresiones funcionales de dominio y 716 geometrías;
+  posiciones finitas, lateralidad, proporciones no uniformes, ausencia de
+  intersecciones de cajas en posición desplegada, metadatos y ronda exportar/leer GLB.
+- `pnpm build`, `pnpm validate-pwa`, `pnpm validate-model-assets`.
+- `pnpm test:e2e`: Chromium real con WebGL, carga GLB, cambio entre los cuatro
+  perfiles, 179 mallas esquemáticas, persistencia IndexedDB, vista móvil sin
+  desbordamiento horizontal y arranque offline con servidor detenido.
+- `OSTEO3D_CAPTURE_3D=1`: capturas locales de revisión en `.tmp-model-review/`
+  (no se publican ni contienen inventarios del usuario; se generan en un perfil de prueba).
+
+Las pruebas automatizadas no constituyen validación anatómica, antropológica,
+diagnóstica o arqueométrica. No se ha realizado una revisión manual exhaustiva
+de cada uno de los 119 apartados ni de cada malla importada.
+
+## Referencias metodológicas
+
+Marean et al., *Estimating the minimum number of skeletal elements (MNE) in
+zooarchaeology: a review and a new image-analysis GIS approach*:
+https://pubmed.ncbi.nlm.nih.gov/20043371/ (consulta 2026-09-09).
+El análisis de solapamiento no se sustituye por contar fragmentos.
+Contexto y límites del generador: `public/models/PROCEDURAL.md`.
+
+## Siguiente trabajo prioritario
+
+1. Curación y validación anatómica con especialista; aportar imágenes/mallas con
+   procedencia, escala y grupo de edad documentados.
+2. Registro independiente de componentes inmaduros y huesos craneales; dientes 3D.
+3. Calibración métrica, captura de landmarks en superficie y copia completa con binarios.
+4. Completar la revisión de importación/exportación, historial y traducciones.

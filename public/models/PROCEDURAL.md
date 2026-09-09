@@ -1,0 +1,61 @@
+# Geometría propia de Osteo3D · 1.0.0
+
+Autoría: Osteo3D contributors, 2026. Licencia MIT (véase LICENSE del repositorio).
+Código fuente: `src/anatomy/procedural.js`. Fecha: 2026-09-09.
+
+Los 179 identificadores anatómicos del catálogo tienen una representación
+tridimensional generada en el navegador, disponible también sin conexión.
+Los otros 13 registros son categorías agregadas o indeterminadas, no huesos
+adicionales. Se conservan sus datos, pero no se dibujan como piezas duplicadas.
+El número 179 NO equivale a un inventario de los 206 huesos del adulto:
+por ejemplo, el cráneo y el esternón continúan agrupados.
+
+## Método
+
+Curvas tubulares para costillas, clavículas y mandíbula; superficies de revolución
+para diáfisis; arcos vertebrales con espacio central; placas extruidas para escápula
+e ilion; arcos pélvicos con abertura; bóveda craneal segmentada y rebordes orbitarios;
+volúmenes irregulares deterministas para carpo y tarso. Los extremos articulares
+están simplificados. Cada componente tiene nombre y metadatos estables.
+
+Hay cuatro conjuntos de parámetros: adulto masculino, adulto femenino, infante y
+neonato. Tronco, cabeza, miembros y cinturas tienen factores independientes.
+En inmaduros se separan segmentos y se dibujan envolventes cartilaginosas azules.
+No se asigna una edad concreta ni un calendario de aparición/fusión. Es incorrecto
+interpretar cada envolvente como una epífisis ya osificada. Las formas infantiles
+no son simples reducciones uniformes del adulto, pero tampoco reconstrucciones
+anatómicas validadas. Las diferencias adultas no son criterios diagnósticos de sexo.
+
+El modo GLB conserva los recursos licenciados previamente incorporados, ajustados
+a envolventes esquemáticas de visualización. No se garantiza que sus orientaciones,
+proporciones relativas o articulaciones reproduzcan las del espécimen fuente.
+Para una disposición homogénea está disponible el modo esquemático completo.
+
+## Límites y referencias
+
+No se copiaron ilustraciones ni mallas de las referencias siguientes; se consultaron
+como contexto conceptual. No se han realizado validación por especialista,
+comparación contra TAC, calibración métrica ni pruebas de diagnóstico.
+
+- OpenStax, Betts et al., *Anatomy and Physiology*, 7.5: desarrollo axial,
+  separación de la bóveda y desarrollo mandibular.
+  https://openstax.org/books/anatomy-and-physiology/pages/7-5-embryonic-development-of-the-axial-skeleton
+- OpenStax, Betts et al., *Anatomy and Physiology*, 6.4: formación ósea y cartílago.
+  https://openstax.org/books/anatomy-and-physiology/pages/6-4-bone-formation-and-development
+
+Consulta: 2026-09-09. Acceso al libro:
+https://openstax.org/books/anatomy-and-physiology/pages/1-introduction
+
+No utilizar estos modelos para medición clínica, estimación de edad/sexo ni
+diagnóstico. Las coordenadas son unidades arbitrarias, no milímetros.
+Las medidas manuales del inventario son independientes de la geometría del visor.
+Faltan dientes 3D, centros de osificación individualizados y segmentación completa
+del cráneo. Las fichas sin fuentes verificadas siguen mostrando información no disponible.
+
+## Exportación y redistribución
+
+El botón «Exportar hueso esquemático GLB» genera el elemento seleccionado con
+componentes, perfil, versión, autoría, licencia y advertencia en los metadatos.
+El GLB propio no incluye ni modifica las mallas Open3Dmodel/Khronos.
+Distribuir también el aviso MIT de LICENSE. Los créditos de los modelos externos
+siguen en SOURCES.md y sources.json, con sus respectivas licencias.

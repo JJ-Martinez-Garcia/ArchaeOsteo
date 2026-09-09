@@ -46,3 +46,5 @@
 .indeterminate-list small { display: block; margin-top: 3px; color: #829ab1; }
 .indeterminate-list button { margin-top: 5px; }
 @media (max-width: 900px) { .extended-buttons { grid-template-columns: 1fr; } }
+.geometry-panel{margin:16px 10px;padding:12px;border:1px solid #b8c9d5;border-radius:10px;background:#f5f9fc;font-size:12px;line-height:1.5;color:#243b53}
+.geometry-panel h3{margin:0 0 8px}.geometry-panel select,.geometry-panel button{width:100%;margin:6px 0;padding:7px;font:inherit}.geometry-panel summary{cursor:pointer;font-weight:600}.geometry-panel a{color:#175681}

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { access, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
+import { access, mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -301,6 +301,7 @@ try {
     cdp.send('Page.enable'),
     cdp.send('Runtime.enable')
   ]);
+  await cdp.send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
 
   const runtimeErrors = [];
   cdp.on('Runtime.exceptionThrown', event => {
@@ -383,6 +384,39 @@ try {
   })()`);
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
+  // Actual WebGL profile switching, not only UI labels. Keep inventory intact.
+  assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#viewer canvas'))`),true);
+  for(const profile of ['adult_female','infant','neonate','adult_male']) {
+    await evaluate(cdp, `(()=>{const mode=document.querySelector('#geometry-mode');mode.value='schematic';mode.dispatchEvent(new Event('change'));const select=document.querySelector('#profile');select.value=${JSON.stringify(profile)};select.dispatchEvent(new Event('change'));})()`);
+    await waitForValue(cdp, `({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.schematicCount==='179',`179 schematic meshes: ${profile}`);
+    await waitForValue(cdp, `document.querySelector('#details')?.textContent||''`,value=>/3D esquemático|Schematic 3D/.test(value),`Schematic provenance: ${profile}`);
+    if(process.env.OSTEO3D_CAPTURE_3D==='1') {
+      await sleep(800);
+      const screenshot=await cdp.send('Page.captureScreenshot',{format:'png'});
+      await mkdir('.tmp-model-review',{recursive:true});
+      await writeFile(`.tmp-model-review/${profile}.png`,Buffer.from(screenshot.data,'base64'));
+    }
+  }
+  await evaluate(cdp, `(()=>{const slider=document.querySelector('#explosion');slider.value='100';slider.dispatchEvent(new Event('input'));})()`);
+  await sleep(500);
+  if(process.env.OSTEO3D_CAPTURE_3D==='1'){
+    const screenshot=await cdp.send('Page.captureScreenshot',{format:'png'});
+    await writeFile('.tmp-model-review/exploded.png',Buffer.from(screenshot.data,'base64'));
+  }
+  await evaluate(cdp, `document.querySelector('#save').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.geometryMode==='schematic','Persist schematic mode');
+  await cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+  await sleep(500);
+  assert.equal(await evaluate(cdp, `document.documentElement.scrollWidth<=window.innerWidth+1`),true,'Mobile layout must not overflow horizontally');
+  assert.equal(await evaluate(cdp, `getComputedStyle(document.querySelector('#profile').closest('label')).display!=='none'`),true,'Profile picker must be available on mobile');
+  await evaluate(cdp, `document.querySelector('#catalog-toggle').click()`);
+  assert.equal(await evaluate(cdp, `getComputedStyle(document.querySelector('.sidebar')).display!=='none'`),true,'Mobile catalogue must open');
+  await evaluate(cdp, `document.querySelector('#catalog-toggle').click()`);
+  await cdp.send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
+  await evaluate(cdp, `document.querySelector('#analysis-panel-button').click()`);
+  await evaluate(cdp, `(()=>{document.querySelector('#review-mne').value='2';document.querySelector('#review-reason-mne').value='E2E: revisión justificada de prueba';document.querySelector('#save-analysis-review').click();})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.analysisReview?.mne?.value===2,'Persist manual analysis review');
+  await waitForValue(cdp, `document.querySelector('#extended-panel').textContent`,value=>/Revisión manual/.test(value),'Refresh manual analysis result');
   let environmentSummary = 'despliegue en línea verificado';
   if (staticServer) {
     await stopStaticServer(staticServer);
@@ -398,6 +432,7 @@ try {
       'El estado offline'
     );
     assert.match(offlineState.coverage, /179\s+(?:de|of)\s+192/);
+    await waitForValue(cdp, `({...document.querySelector('#viewer').dataset})`,value=>value.geometryMode==='schematic'&&value.schematicCount==='179','Offline procedural skeleton');
     const uncachedFetchBlocked = await evaluate(cdp, `fetch('./__offline_probe__?nonce=${Date.now()}', { cache: 'no-store' }).then(() => false).catch(() => true)`);
     assert.equal(uncachedFetchBlocked, true, 'El servidor detenido debe bloquear una petición inédita.');
     assert.equal((await evaluate(cdp, projectReadExpression())).schemaVersion, 2, 'El proyecto debe seguir disponible offline.');

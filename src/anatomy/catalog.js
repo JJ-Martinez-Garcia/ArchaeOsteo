@@ -1,8 +1,8 @@
 export const PROFILE_CATALOG = {
-  adult_male: { label: 'Adulto masculino', root: './models/adult_male', status: 'placeholder' },
-  adult_female: { label: 'Adulto femenino', root: './models/adult_female', status: 'placeholder' },
-  infant: { label: 'Infante', root: './models/infant', status: 'placeholder' },
-  neonate: { label: 'Neonato', root: './models/neonate', status: 'placeholder' }
+  adult_male: { label: 'Adulto masculino', root: './models/adult_male', status: 'mixed' },
+  adult_female: { label: 'Adulto femenino', root: './models/adult_female', status: 'schematic' },
+  infant: { label: 'Infante', root: './models/infant', status: 'schematic' },
+  neonate: { label: 'Neonato', root: './models/neonate', status: 'schematic' }
 };
 
 export function profileCatalog(profileId) {

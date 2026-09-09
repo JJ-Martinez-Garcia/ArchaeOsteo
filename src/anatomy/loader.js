@@ -18,7 +18,8 @@ export async function loadModelSourceRegistry(manifest, url = './models/sources.
   return registry;
 }
 
-export async function loadBoneModel(THREE, profileId, boneId, options = {}) {
+const sharedLoaders = new Map();
+async function createSharedLoader(options) {
   const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
   const loader = new GLTFLoader(options.manager);
   const { MeshoptDecoder } = await import('three/addons/libs/meshopt_decoder.module.js');
@@ -27,8 +28,18 @@ export async function loadBoneModel(THREE, profileId, boneId, options = {}) {
     const { DRACOLoader } = await import('three/addons/loaders/DRACOLoader.js');
     const draco = new DRACOLoader(options.manager);
     draco.setDecoderPath(options.dracoDecoderPath);
+    draco.setWorkerLimit(2);
     loader.setDRACOLoader(draco);
   }
+  return loader;
+}
+
+export async function loadBoneModel(THREE, profileId, boneId, options = {}) {
+  const key = options.manager || options.dracoDecoderPath || 'default';
+  if (!sharedLoaders.has(key)) {
+    sharedLoaders.set(key, createSharedLoader(options).catch(error => { sharedLoaders.delete(key); throw error; }));
+  }
+  const loader = await sharedLoaders.get(key);
   const url = options.url || `./models/${profileId}/${boneId}.glb`;
   return new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject));
 }

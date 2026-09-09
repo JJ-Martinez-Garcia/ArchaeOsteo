@@ -44,17 +44,19 @@ export function calculateNisp(rows) {
 }
 
 export function calculateMne(rows) {
-  const identified = rows.filter(row => ['present', 'fragmentary'].includes(row.status));
+  const identified = rows.filter(row => row.boneId !== 'vertebrae' && !row.boneId.includes('indeterminate') && ['present', 'fragmentary'].includes(row.status));
   const groups = new Map();
   for (const row of identified) {
-    const key = `${row.boneId}|${row.side}|${row.portion}`;
-    const observed = Math.max(1, row.fragments || 1);
-    groups.set(key, Math.max(groups.get(key) || 0, observed));
+    const key = `${row.boneId}|${row.side}`;
+    const people=groups.get(key)||new Set();
+    if(row.individual && row.individual !== 'IND-LOCAL')people.add(row.individual);
+    groups.set(key,people);
   }
   return {
-    value: [...groups.values()].reduce((sum, value) => sum + value, 0),
-    groups: Object.fromEntries(groups),
-    method: 'Máximo de fragmentos observados por elemento, lateralidad y porción; requiere revisión manual cuando haya solapamiento anatómico.'
+    value: [...groups.values()].reduce((sum, people) => sum + Math.max(1,people.size), 0),
+    groups: Object.fromEntries([...groups].map(([key,people])=>[key,Math.max(1,people.size)])),
+    provisional: true,
+    method: 'Mínimo provisional por elemento determinado y lado, según individuos asignados. Nunca convierte fragmentos en huesos. Excluye categorías agregadas/indeterminadas; no suma porciones ni contextos. Requiere análisis de solapamiento, remontaje y revisión especializada.'
   };
 }
 
@@ -66,15 +68,16 @@ export function calculateMni(rows) {
     const entry = groups.get(key) || { explicit: new Set(), fallback: 0 };
     const individual = String(row.individual || '').trim();
     if (individual && individual !== 'IND-LOCAL') entry.explicit.add(individual);
-    else entry.fallback = Math.max(entry.fallback, Math.max(1, Number(row.fragments || 1)));
+    else entry.fallback = 1;
     groups.set(key, entry);
   }
-  const counts = [...groups.values()].map(entry => entry.explicit.size || entry.fallback || 1);
-  const value = identified.length ? Math.max(1, ...counts) : 0;
+  const explicitIds=new Set(identified.map(row=>String(row.individual||'').trim()).filter(id=>id&&id!=='IND-LOCAL'));
+  const value = identified.length ? Math.max(1, explicitIds.size) : 0;
   return {
     value,
     groups: Object.fromEntries([...groups.entries()].map(([key, entry]) => [key, entry.explicit.size || entry.fallback || 1])),
-    method: 'Máximo de individuos explícitos por elemento y lateralidad; cuando falta un ID individual se usa el máximo de fragmentos como estimación provisional. Requiere revisión tafonómica y anatómica.'
+    provisional: true,
+    method: 'Mínimo provisional según individuos explícitos asignados (IDs distintos). Sin asignación, solo indica al menos uno si hay restos identificados. Los fragmentos no incrementan el MNI. No estima duplicación anatómica, edad ni sexo; revisar las asociaciones de individuos.'
   };
 }
 
@@ -106,5 +109,17 @@ export function calculateIndividualQuantification(rows) {
 
 export function calculateOsteoAnalysis(bones, state) {
   const rows = inventoryRows(bones, state);
-  return { nisp: calculateNisp(rows), mne: calculateMne(rows), mni: calculateMni(rows), individuals: calculateIndividualQuantification(rows), rows };
+  const result={ nisp: calculateNisp(rows), mne: calculateMne(rows), mni: calculateMni(rows), individuals: calculateIndividualQuantification(rows), rows };
+  const signature=JSON.stringify(rows);
+  for(const key of ['nisp','mne','mni']){
+    const review=state.analysisReview?.[key];
+    result[key].automaticValue=result[key].value;
+    result[key].provisional=true;
+    if(review&&Number.isInteger(review.value)&&review.value>=0&&String(review.reason||'').trim()&&review.signature===signature){
+      result[key].value=review.value;result[key].provisional=false;
+      result[key].method=`Revisión manual: ${review.reason}. Valor automático previo: ${result[key].automaticValue}. ${result[key].method}`;
+      result[key].review={reason:review.reason,updatedAt:review.updatedAt};
+    }else if(review){result[key].method+=' Revisión manual pendiente de actualizar: el inventario o la justificación ha cambiado.';}
+  }
+  return result;
 }
