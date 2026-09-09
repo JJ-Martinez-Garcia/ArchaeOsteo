@@ -254,7 +254,7 @@ assert.match(main, /const matching=bones\.filter\(b=>matchesSkeletonFilter\(b\)&
 assert.match(main, /const exact=matching\.find/);
 assert.match(main, /target=exact\|\|\(matching\.length===1\?matching\[0\]:null\)/);
 assert.match(main, /if\(target&&target\.id!==state\.selected\)selectBone\(target\.id\)/);
-assert.match(main, /'dentalStatus'/);
+assert.match(main, /commitInventoryEdit\('dental'/);
 assert.match(main, /'measurements'/);
 assert.match(main, /\['length', 'width', 'height', 'diameter'\]/);
 assert.match(main, /unit: document\.querySelector\('#metric-unit'\)\?\.value === 'cm' \? 'cm' : 'mm'/);

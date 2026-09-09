@@ -420,6 +420,10 @@ try {
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#undo').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>!value.dental?.['11'],'Undo permanent tooth status');
+  await evaluate(cdp, `document.querySelector('#tab-dental').click();document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Restore permanent tooth status');
   await evaluate(cdp, `(()=>{const select=document.querySelector('#dentition-type');select.value='deciduous';select.dispatchEvent(new Event('change'));document.querySelector('[data-dental="developing"]').click();document.querySelector('[data-tooth="51"]').click();})()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.deciduousDental?.['51']==='developing','Persist deciduous tooth status');
   await evaluate(cdp, `(()=>{const select=document.querySelector('#dentition-type');select.value='permanent';select.dispatchEvent(new Event('change'));})()`);
