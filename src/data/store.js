@@ -156,7 +156,7 @@ export function normalizeProject(project) {
     photos: normalizePhotos(project.photos),
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
     filters: normalizeFilters(project.filters),
-    report: { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
+    report: { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', sources: '', method: '', limits: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
   };
 }
 

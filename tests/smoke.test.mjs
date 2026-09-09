@@ -110,6 +110,13 @@ const normalizedLegacy = normalizeProject({ profile: 'unknown', language: 'fr', 
 assert.equal(normalizedLegacy.profile, 'adult_male');
 assert.equal(normalizedLegacy.language, 'es');
 assert.equal(normalizedLegacy.report.individual, 'IND-LOCAL');
+assert.equal(normalizedLegacy.report.sources, '');
+assert.equal(normalizedLegacy.report.method, '');
+assert.equal(normalizedLegacy.report.limits, '');
+const normalizedReport = normalizeProject({ report: { sources: 'DOI: test', method: 'Comparación', limits: 'Revisión pendiente' } });
+assert.equal(normalizedReport.report.sources, 'DOI: test');
+assert.equal(normalizedReport.report.method, 'Comparación');
+assert.equal(normalizedReport.report.limits, 'Revisión pendiente');
 const normalizedViewer = normalizeProject({ skeletonFilter: 'axial', regionFilter: 'Cráneo', explosion: 140, tableMode: 1, orthographic: 1, isolate: 1, explosionAnimating: 1 });
 assert.equal(normalizedViewer.skeletonFilter, 'axial');
 assert.equal(normalizedViewer.regionFilter, 'Cráneo');
