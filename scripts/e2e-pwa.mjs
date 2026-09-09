@@ -422,6 +422,10 @@ try {
   assert.equal(await evaluate(cdp, `document.querySelector('#stats-summary').textContent.includes('/')`), true, 'Combined filters must refresh statistics');
   await evaluate(cdp, `document.querySelector('#clear-filters').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.filters?.side==='all'&&value.filters?.status==='all','Clear inventory filters');
+  await evaluate(cdp, `document.querySelector('#tab-report').click()`);
+  assert.equal(await evaluate(cdp, `['sources','method','limits'].every(key=>document.querySelector('#report-'+key)?.tagName==='TEXTAREA')`), true, 'Long report fields must be multiline controls');
+  await evaluate(cdp, `document.querySelector('#report-sources').value='DOI: E2E\\nReferencia de campo';document.querySelector('#report-method').value='Comparación osteológica';document.querySelector('#report-limits').value='Pendiente de revisión especializada';document.querySelector('#save-report').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.report?.sources?.includes('Referencia de campo')&&value.report?.method==='Comparación osteológica'&&value.report?.limits==='Pendiente de revisión especializada','Persist long report fields');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
