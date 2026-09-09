@@ -37,6 +37,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   Los detalles y límites están documentados en [DATA_INTEGRITY.md](DATA_INTEGRITY.md).
 - Fotografías y fragmentos indeterminados incorporados al snapshot común de deshacer/rehacer;
   sus rutas de edición respetan el bloqueo del elemento seleccionado.
+- Los snapshots comunes incluyen también preferencias visuales principales (aislamiento,
+  explosión, opacidad, mesa, proyección, wireframe, X-Ray, etiquetas, paleta e iluminación)
+  y su restauración sincroniza la escena y sus controles.
 - El registro de cambios permite filtrar por método o texto (elemento, individuo,
   investigador) y descargar el subconjunto visible en CSV; la prueba E2E verifica su
   renderizado y actualización.
