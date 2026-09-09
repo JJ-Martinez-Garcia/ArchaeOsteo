@@ -1,4 +1,5 @@
 import { normalizeProject } from '../data/store.js';
+export { parseCsv } from './csv.js';
 
 const BACKUP_VERSION = 1;
 
@@ -13,6 +14,12 @@ export function createBackup(state) {
       schemaVersion: state.schemaVersion,
       profile: state.profile,
       selected: state.selected,
+      skeletonFilter: state.skeletonFilter,
+      regionFilter: state.regionFilter,
+      explosion: state.explosion,
+      tableMode: state.tableMode,
+      orthographic: state.orthographic,
+      isolate: state.isolate,
       status: state.status,
       preservation: state.preservation,
       completeness: state.completeness,
@@ -41,6 +48,7 @@ export function createBackup(state) {
       analysisReview: state.analysisReview || {},
       tableTransforms: state.tableTransforms,
       lightIntensity: state.lightIntensity,
+      lightingMode: state.lightingMode,
       changeLog: state.changeLog,
       dental: state.dental,
       deciduousDental: state.deciduousDental,
@@ -60,119 +68,68 @@ export function createBackup(state) {
 export function validateBackup(value) {
   if (!value || value.format !== 'osteo3d-project-backup') throw new Error('El archivo no es una copia de Osteo3D.');
   if (value.version !== BACKUP_VERSION) throw new Error(`Versión de copia no compatible: ${value.version}.`);
-  if (!value.project || typeof value.project !== 'object') throw new Error('La copia no contiene un proyecto válido.');
-  if (value.project.status && typeof value.project.status !== 'object') throw new Error('El inventario no tiene un formato válido.');
+  if (!value.project || typeof value.project !== 'object' || Array.isArray(value.project)) throw new Error('La copia no contiene un proyecto válido.');
+  if (value.project.status && (typeof value.project.status !== 'object' || Array.isArray(value.project.status))) throw new Error('El inventario no tiene un formato válido.');
   return normalizeProject(value.project);
 }
 
-export function parseCsv(text) {
-  const lines = text.replace(/^\uFEFF/, '').split(/\r?\n/).filter(Boolean);
-  if (lines.length < 2) throw new Error('El CSV no contiene registros.');
-  const parseLine = line => {
-    const values = [];
-    let value = '', quoted = false;
-    for (let i = 0; i < line.length; i += 1) {
-      const char = line[i];
-      if (char === '"' && line[i + 1] === '"') { value += '"'; i += 1; }
-      else if (char === '"') quoted = !quoted;
-      else if (char === ',' && !quoted) { values.push(value); value = ''; }
-      else value += char;
-    }
-    values.push(value);
-    return values;
-  };
-  const headers = parseLine(lines[0]).map(header => header.trim());
-  if (!headers.includes('Bone_ID')) throw new Error('El CSV debe incluir la columna Bone_ID.');
-  if (headers.some(header => !header) || new Set(headers).size !== headers.length) throw new Error('El CSV contiene encabezados vacíos o duplicados.');
-  return lines.slice(1).map(line => Object.fromEntries(parseLine(line).map((value, index) => [headers[index], value])));
-}
+// A spreadsheet import merges non-empty cells only. Unknown is not zero and
+// blank cells do not erase existing observations. JSON restores are separate.
+const INVENTORY_FIELDS = {
+  status: ['Presence', 'Status'], preservation: ['Preservation'],
+  completeness: ['Percentage', 'Completeness'], fragments: ['Fragments'],
+  weights: ['Weight_g', 'Weight'], portions: ['Portion'],
+  individuals: ['Individual_ID', 'Individual'], ue: ['UE', 'Context_UE'],
+  taphonomy: ['Taphonomy'], pathology: ['Pathology'],
+  taphonomyDetails: ['Taphonomy_Detail'], pathologyDetails: ['Pathology_Detail'],
+  notes: ['Notes', 'Observations']
+};
+const nonempty = value => value != null && String(value).trim() !== '';
+const cell = (row, columns) => columns.map(key => row?.[key]).find(nonempty);
 
 export function applyInventoryRows(project, rows, bones) {
   const known = new Set(bones.map(bone => bone.id));
   const validStatuses = new Set(['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded']);
   const validPreservation = new Set(['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor', 'very_fragmented', 'not_evaluable']);
-  const validationErrors = [];
+  const validationErrors = [], accepted = [];
   const seen = new Set();
-  const accepted = rows.filter((row, index) => {
-    const rowNumber = index + 2;
-    const boneId = String(row?.Bone_ID || '').trim();
-    const errors = [];
+  const maps = Object.fromEntries(Object.keys(INVENTORY_FIELDS).map(key => [key, { ...(project[key] || {}) }]));
+  for (const [index, row] of rows.entries()) {
+    const boneId = String(row?.Bone_ID || '').trim(), errors = [], changes = {};
     if (!boneId) errors.push('Bone_ID vacío');
     else if (!known.has(boneId)) errors.push(`Bone_ID desconocido: ${boneId}`);
     else if (seen.has(boneId)) errors.push(`Bone_ID duplicado: ${boneId}`);
-    const status = row?.Presence ?? row?.Status;
-    if (status != null && String(status).trim() !== '' && !validStatuses.has(String(status).trim())) errors.push(`Presence no válido: ${status}`);
-    const preservation = row?.Preservation;
-    if (preservation != null && String(preservation).trim() !== '' && !validPreservation.has(String(preservation).trim())) errors.push(`Preservation no válida: ${preservation}`);
-    const percentage = row?.Percentage ?? row?.Completeness;
-    if (percentage != null && String(percentage).trim() !== '') {
-      const value = Number(percentage);
-      if (!Number.isFinite(value) || value < 0 || value > 100) errors.push('Percentage/Completeness debe estar entre 0 y 100');
-    }
-    if (row?.Fragments != null && String(row.Fragments).trim() !== '') {
-      const value = Number(row.Fragments);
-      if (!Number.isInteger(value) || value < 0) errors.push('Fragments debe ser un entero no negativo');
-    }
-    const weight = row?.Weight_g ?? row?.Weight;
-    if (weight != null && String(weight).trim() !== '') {
-      const value = Number(weight);
-      if (!Number.isFinite(value) || value < 0) errors.push('Weight_g/Weight debe ser un número no negativo');
-    }
-    if (errors.length) {
-      validationErrors.push({ row: rowNumber, boneId, errors });
-      return false;
-    }
+    else if (project.locked?.[boneId]) errors.push('Registro bloqueado: desbloquéalo antes de importar cambios');
     if (boneId) seen.add(boneId);
-    return true;
-  });
-  const status = { ...(project.status || {}) };
-  const preservation = { ...(project.preservation || {}) };
-  const completeness = { ...(project.completeness || {}) };
-  const fragments = { ...(project.fragments || {}) };
-  const weights = { ...(project.weights || {}) };
-  const portions = { ...(project.portions || {}) };
-  const individuals = { ...(project.individuals || {}) };
-  const ue = { ...(project.ue || {}) };
-  const taphonomy = { ...(project.taphonomy || {}) };
-  const pathology = { ...(project.pathology || {}) };
-  const taphonomyDetails = { ...(project.taphonomyDetails || {}) };
-  const pathologyDetails = { ...(project.pathologyDetails || {}) };
-  const notes = { ...(project.notes || {}) };
-  accepted.forEach(row => {
-    const boneId = String(row.Bone_ID).trim();
-    const importedStatus = row.Presence || row.Status || 'not_recorded';
-    const importedPreservation = row.Preservation || 'not_evaluated';
-    const importedCompleteness = Number(row.Percentage ?? row.Completeness ?? 100);
-    const importedFragments = Number(row.Fragments ?? 0);
-    const importedWeight = Number(row.Weight_g ?? row.Weight ?? '');
-    status[boneId] = ['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded'].includes(importedStatus) ? importedStatus : 'not_recorded';
-    preservation[boneId] = ['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor', 'very_fragmented', 'not_evaluable'].includes(importedPreservation) ? importedPreservation : 'not_evaluated';
-    completeness[boneId] = Number.isFinite(importedCompleteness) ? Math.max(0, Math.min(100, importedCompleteness)) : 100;
-    fragments[boneId] = Number.isFinite(importedFragments) ? Math.max(0, Math.floor(importedFragments)) : 0;
-    if (Number.isFinite(importedWeight) && importedWeight >= 0) weights[boneId] = importedWeight;
-    if (row.Portion) portions[boneId] = String(row.Portion).trim();
-    if (row.Individual_ID || row.Individual) individuals[boneId] = String(row.Individual_ID || row.Individual).trim();
-    if (row.UE || row.Context_UE) ue[boneId] = String(row.UE || row.Context_UE).trim();
-    if (row.Taphonomy) taphonomy[boneId] = String(row.Taphonomy).split(';').map(value => value.trim()).filter(Boolean);
-    if (row.Pathology) pathology[boneId] = String(row.Pathology).split(';').map(value => value.trim()).filter(Boolean);
-    if (row.Taphonomy_Detail) {
-      try {
-        const detail = JSON.parse(String(row.Taphonomy_Detail));
-        if (detail && typeof detail === 'object' && !Array.isArray(detail)) taphonomyDetails[boneId] = detail;
-      } catch {}
+    for (const [field, columns] of Object.entries(INVENTORY_FIELDS)) {
+      const raw = cell(row, columns);
+      if (!nonempty(raw)) continue;
+      let value = String(raw).trim();
+      if (field === 'status' && !validStatuses.has(value)) errors.push(`Presence no válido: ${value}`);
+      if (field === 'preservation' && !validPreservation.has(value)) errors.push(`Preservation no válida: ${value}`);
+      if (['completeness', 'fragments', 'weights'].includes(field)) {
+        value = Number(value);
+        if (!Number.isFinite(value) || value < 0 || (field === 'completeness' && value > 100) || (field === 'fragments' && !Number.isInteger(value))) errors.push(`${columns[0]} no válido: requiere ${field === 'fragments' ? 'un entero no negativo' : field === 'completeness' ? 'un número entre 0 y 100' : 'un número no negativo'}`);
+      }
+      if (field === 'taphonomy' || field === 'pathology') value = value.split(';').map(item => item.trim()).filter(Boolean);
+      if (field === 'taphonomyDetails' || field === 'pathologyDetails') {
+        try {
+          value = JSON.parse(value);
+          if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error();
+        } catch { errors.push(`${columns[0]} debe contener un objeto JSON válido`); }
+      }
+      // Retain line breaks and whitespace within free-text notes.
+      if (field === 'notes') value = String(raw);
+      changes[field] = value;
     }
-    if (row.Pathology_Detail) {
-      try {
-        const detail = JSON.parse(String(row.Pathology_Detail));
-        if (detail && typeof detail === 'object' && !Array.isArray(detail)) pathologyDetails[boneId] = detail;
-      } catch {}
-    }
-    if (row.Notes || row.Observations) notes[boneId] = String(row.Notes || row.Observations).trim();
-  });
-  const first = rows.find(row => row && typeof row === 'object') || {};
-  const reportFields = { individual: first.Individual_ID || first.Individual, burial: first.Burial, grave: first.Grave, tomb: first.Tomb, ue: first.UE, sector: first.Sector, grid: first.Grid, site: first.Site, campaign: first.Campaign, date: first.Date, context: first.Context, chronology: first.Chronology, observations: first.Observations };
-  const importedReport = Object.fromEntries(Object.entries(reportFields).filter(([, value]) => value != null && String(value).trim() !== '').map(([key, value]) => [key, String(value).trim()]));
-  return { ...project, status, preservation, completeness, fragments, weights, portions, individuals, ue, taphonomy, pathology, taphonomyDetails, pathologyDetails, notes, report: { ...(project.report || {}), ...importedReport }, importedRows: accepted.length, rejectedRows: validationErrors.length, validationErrors };
+    if (errors.length) { validationErrors.push({ row: index + 2, boneId, errors }); continue; }
+    for (const [field, value] of Object.entries(changes)) maps[field][boneId] = value;
+    accepted.push(row);
+  }
+  const first = accepted[0] || {};
+  const reportFields = { individual: cell(first, ['Individual_ID', 'Individual']), burial: first.Burial, grave: first.Grave, tomb: first.Tomb, ue: first.UE, sector: first.Sector, grid: first.Grid, site: first.Site, campaign: first.Campaign, date: first.Date, context: first.Context, chronology: first.Chronology, observations: first.Observations };
+  const importedReport = Object.fromEntries(Object.entries(reportFields).filter(([, value]) => nonempty(value)).map(([key, value]) => [key, String(value).trim()]));
+  return { ...project, ...maps, report: { ...(project.report || {}), ...importedReport }, importedRows: accepted.length, rejectedRows: validationErrors.length, validationErrors };
 }
 
 export function downloadJson(filename, value) {

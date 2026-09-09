@@ -9,6 +9,16 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 
 ## Cambios de esta revisión
 
+- Integridad de datos: CSV con notas multilínea, validación de columnas/comillas,
+  fusión sin sobrescribir celdas vacías, rechazo atómico y bloqueo revalidado al confirmar.
+- Historial ampliado a ficha científica e importación, con pesos/porciones/dentición/contexto.
+  Tabla y mediciones conservan ausencia frente a cero. Medidas y landmarks bloqueados.
+- Guardado serializado con snapshots, fallback independiente por proyecto y aviso
+  persistente de fallo. Recupera la copia más reciente del mismo ID y no abandona
+  el proyecto desde el selector si no consigue guardarlo. Pruebas con fallos inducidos.
+- XLSX dental exporta códigos canónicos y acepta etiquetas históricas con FDI validado.
+  Los detalles y límites están documentados en [DATA_INTEGRITY.md](DATA_INTEGRITY.md).
+
 - Ampliación: se publican 537 GLB propios para femenino, infante y neonato,
   con metadatos y licencia incorporados; no se han validado científicamente.
 - Panel derecho adaptable y separador accesible por ratón/teclado con persistencia.
@@ -45,8 +55,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 | 14, 22, 83 | Comparación de perfiles esquemáticos e inventarios y ejercicios básicos existentes. Pendientes escala física común, sincronización avanzada de vistas, comparación por hueso y revisión pedagógica. |
 | 23–34, 36–37, 41–57, 59–65, 67–73 | Inventario, estados, conservación, porciones, lateralidad, dientes FDI, fragmentos, peso, fotos, notas, filtros, pintura y tablas implementados. No se certifican todos los casos de cada formulario ni un mapa científico completo. |
 | 38–40, 97 | Métodos visibles y corrección del uso de fragmentos. NISP automático cuenta registros; MNE/MNI son mínimos provisionales según categorías determinadas y asociaciones introducidas. Para colecciones mezcladas se necesita análisis especializado y revisión manual documentada. |
-| 58, 69 | Deshacer/rehacer y trazabilidad existentes para inventario. No hay historial transaccional unificado para todas las operaciones (fotos, fragmentos e importaciones). |
-| 74–78 | Informe imprimible/PDF del navegador, JSON, CSV, XLSX e importación con previsualización existentes. Pendientes auditoría completa de campos/ronda XLSX, CSV multilínea y PDF de maquetación profesional. |
+| 58, 69 | Deshacer/rehacer de inventario, ficha científica e importación verificado. No hay historial transaccional unificado para todas las operaciones (fotos y altas/bajas de fragmentos, entre otras). |
+| 74–78 | Informe imprimible/PDF del navegador, JSON, CSV multilínea, XLSX e importación con previsualización existentes. Pendientes auditoría completa de campos/hojas auxiliares XLSX, fórmulas CSV y PDF de maquetación profesional. |
 | 79–82, 98 | IndexedDB, proyectos, guardado y copias de datos locales. No equivalen aún a la jerarquía relacional detallada del encargo; los binarios de modelos personalizados no van incluidos en la copia JSON. No eliminar la caché como sustituto de una copia completa. |
 | 85, 90–92, 114–115 | ES/EN y búsqueda por latín existentes; acceso móvil a catálogo/perfil corregido. Queda traducción de algunos controles/métodos nuevos y auditoría de accesibilidad con dispositivos reales. |
 | 86–89, 100, 112–113 | PWA, descarga/caché por perfil, carga diferida e importación de modelos operativas; los esquemas están en el shell offline. Faltan optimización/medición sostenida en móviles reales y validación de todos los formatos personalizados. |
@@ -62,6 +72,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - `pnpm test:e2e`: Chromium real con WebGL, carga GLB, cambio entre los cuatro
   perfiles, 179 mallas esquemáticas, persistencia IndexedDB, vista móvil sin
   desbordamiento horizontal y arranque offline con servidor detenido.
+- Integridad: se fuerzan fallos de IndexedDB y cuota, se recupera el guardado,
+  se importa CSV multilínea, se deshace/rehace y se prueba un bloqueo posterior
+  a la previsualización. Pruebas de medidas, tabla y peso desconocido frente a cero.
 - `OSTEO3D_CAPTURE_3D=1`: capturas locales de revisión en `.tmp-model-review/`
   (no se publican ni contienen inventarios del usuario; se generan en un perfil de prueba).
 

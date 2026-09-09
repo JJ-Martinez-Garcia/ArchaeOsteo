@@ -46,7 +46,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 27 | FRAGMENTACIÓN | Completitud/fragmentación como campos explícitos, separados de presencia y porcentaje. |
 | 28 | HUESOS LARGOS | Varias porciones con estados independientes simultáneos; ahora se selecciona una porción por elemento. |
 | 29 | LATERALIDAD | Lateralidad indeterminada/no aplicable con validación de importación y corrección. |
-| 30 | INVENTARIO DENTAL | Verificar estados FDI permanente/deciduo y round-trip XLSX sin usar etiquetas traducidas como códigos. |
+| 30 | INVENTARIO DENTAL | Códigos canónicos y compatibilidad ES/EN implementados; ampliar ronda XLSX a todas las hojas/estados y asociación con dientes 3D. |
 | 31 | VÉRTEBRAS | Vértebras individualizadas; añadir contexto anatómico/fusión y pruebas de selección. |
 | 32 | COSTILLAS | Costillas individualizadas; validar orientación/lateralidad y selección de todas. |
 | 33 | MANOS | Huesos de mano individualizados; corregir nombres latinos y verificar identificación. |
@@ -74,8 +74,8 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 55 | PINTAR PORCENTAJE | Atajos 100/75/50/25/<25 y ausencia de porcentaje no observado. |
 | 56 | PINTAR ALTERACIONES | E2E de alteraciones múltiples sin sobrescritura de detalles existentes. |
 | 57 | BORRADOR | Borrado de asignación coherente con todos los campos y recuperación por deshacer. |
-| 58 | DESHACER / REHACER | Historial transaccional común para fotos, fragmentos, importaciones y cambios masivos. |
-| 59 | BLOQUEAR REGISTROS | Aplicar bloqueos también en formularios científicos, importación y tablas, no solo pintura. |
+| 58 | DESHACER / REHACER | Importaciones, ficha científica y medidas ya reversibles; unificar fotos, altas/bajas de fragmentos y todas las operaciones restantes. |
+| 59 | BLOQUEAR REGISTROS | Formulario científico, importación revalidada, tablas, medidas y landmarks cubiertos; auditar fotos, modelos personalizados y todas las rutas restantes. |
 | 60 | MOSTRAR PENDIENTES | Resaltar pendientes sin ocultar de forma incoherente categorías o etiquetas. |
 | 61 | PROGRESO | Denominador correcto por perfil y categorías; progreso siempre revisados, no presentes. |
 | 62 | INVENTARIO RÁPIDO | Confirmación obligatoria y deshacer completo al marcar restantes como ausentes. |
@@ -86,18 +86,18 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 67 | CONFIRMACIÓN VISUAL | Resaltado transitorio sin sobreescribir selección permanente o apariencia científica. |
 | 68 | LEYENDA | Leyenda persistente con texto/iconos/patrones también dentro del 3D. |
 | 69 | REGISTRO DE CAMBIOS | Registro uniforme de fecha/responsable/individuo/método/antes/después para toda mutación. |
-| 70 | NOTAS | Notas por proyecto, elemento, fragmento y alteración con import/export multilínea. |
-| 71 | TABLA DE INVENTARIO | Tabla realmente sincronizada; probar edición sin perder foco y tratamiento de celdas vacías. |
+| 70 | NOTAS | CSV multilínea probado; verificar todos los ámbitos de notas y su ronda con formatos restantes. |
+| 71 | TABLA DE INVENTARIO | Vacío frente a cero probado en tabla; resolver edición continua sin perder foco y ampliar sincronización a todas las vistas. |
 | 72 | FILTROS | Verificar combinaciones de todos los filtros contra tabla, árbol, 3D y estadísticas. |
 | 73 | ESTADÍSTICAS | Medias basadas solo en datos observados y denominadores explícitos; pruebas con valores ausentes. |
 | 74 | INFORME AUTOMÁTICO | Informe con mapa esquelético, fuentes/métodos/límites, fotos elegidas y maquetación paginada. |
 | 75 | EXPORTACIÓN | Ronda completa de datos en CSV/JSON/XLSX/PDF, incluyendo campos nuevos y caracteres especiales. |
 | 76 | CSV/XLSX | Esquema estable y códigos canónicos, comillas/saltos de línea y defensa frente a fórmulas al abrir CSV. |
 | 77 | JSON | Esquema versionado JSON completo, migraciones y validación de campos desconocidos. |
-| 78 | IMPORTACIÓN | Vista previa con errores por fila/campo y política explícita de fusión o reemplazo reversible. |
+| 78 | IMPORTACIÓN | Fusión explícita, filas atómicas, bloqueo revalidado y deshacer implementados; completar esquemas de hojas auxiliares y restauración JSON integral. |
 | 79 | BASE DE DATOS LOCAL | Modelo de entidades explícitas en IndexedDB y migraciones sin pérdida. |
 | 80 | JERARQUÍA DE PROYECTOS | Jerarquía proyecto/yacimiento/campaña/sector/contexto/individuo, no solo campos en una ficha. |
-| 81 | AUTOGUARDADO | No afirmar guardado si fallan IndexedDB y fallback; cuota visible y recuperación. |
+| 81 | AUTOGUARDADO | Fallo dual y recuperación por proyecto verificados; ampliar pruebas a todos los formularios, navegación pendiente y límites/cuota con fotografías grandes. |
 | 82 | COPIAS DE SEGURIDAD | Copia completa con fotografías y modelos personalizados binarios, hashes y restauración verificada. |
 | 83 | COMPARAR INVENTARIOS | Comparación por individuo/contexto/campaña con identidad y filtros, no solo dos proyectos. |
 | 84 | BASE ANATÓMICA | Catálogo modular con tipos y nomenclatura curados; source de datos separado ya iniciado. |
@@ -152,4 +152,3 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 Revisar cada fila contra código, datos, pruebas de comportamiento y, cuando corresponda,
 validación anatómica/documental. Las verificaciones científicas no se sustituyen por tests
 JavaScript. Mantener abierto lo no verificado y registrar las dependencias externas.
-

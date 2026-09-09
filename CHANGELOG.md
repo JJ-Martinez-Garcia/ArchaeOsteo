@@ -2,6 +2,12 @@
 
 ## Cambios recientes
 
+- Integridad de datos: CSV multilínea y validación estructural, importación parcial sin fabricar ceros/porcentajes, rechazo atómico de filas y respeto a bloqueos en la confirmación.
+- Deshacer/rehacer de importación y ficha científica; tabla, pesos y mediciones distinguen valor cero de dato ausente. Mediciones y landmarks respetan el bloqueo.
+- Guardado ordenado con snapshots independientes, fallback por proyecto, recuperación de la copia más reciente y aviso persistente si fallan ambos almacenes. No se permite abandonar el proyecto desde el selector tras un fallo.
+- XLSX dental con códigos canónicos, compatibilidad con etiquetas históricas ES/EN y validación FDI. Copias JSON incluyen más opciones del visor.
+- Pruebas unitarias y en navegador con errores de cuota/IndexedDB inducidos, recuperación, CSV con saltos de línea, bloqueo posterior a la previsualización y deshacer/rehacer. Alcance y límites en DATA_INTEGRITY.md.
+
 - Panel derecho de escritorio redimensionable con ratón/teclado, anchura recordada y doble clic para restablecer; visor reajustado automáticamente.
 - Formularios, acciones y pestañas adaptados a 300 px sin desplazar horizontalmente todo el panel; corregida selección simultánea de pestañas.
 - Publicados 537 GLB didácticos originales (179 por perfil femenino/infante/neonato), versión procedural-1.1.0, licencia MIT y metadatos incluidos.

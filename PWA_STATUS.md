@@ -1,6 +1,6 @@
 # Estado de Osteo3D PWA
 
-Fecha de revisión: 2026-09-08
+Fecha de revisión: 2026-09-09
 
 ## Estado operativo verificado
 
@@ -8,7 +8,8 @@ Fecha de revisión: 2026-09-08
 - Repositorio y rama de publicación: `JJ-Martinez-Garcia/ArchaeOsteo`, `main`.
 - Manifiesto PWA con `standalone`, iconos PNG de 192 y 512 px, accesos directos a inventario e informe y rutas relativas compatibles con GitHub Pages.
 - Service Worker con precarga del shell, caché de recursos generados por Vite, recuperación offline y actualización controlada mediante `SKIP_WAITING`. El nombre de caché se calcula por versión y fingerprint de assets en cada build.
-- Datos de proyectos, inventario, informes, fotografías y modelos importados guardados localmente con IndexedDB y respaldo localStorage.
+- Datos de proyectos, inventario, informes y fotografías guardados con IndexedDB y fallback localStorage por proyecto; los binarios de modelos personalizados usan caché separada y no se incluyen en la copia JSON.
+- Guardado verificado mediante fallos inducidos de IndexedDB y cuota: aviso persistente si fallan ambos almacenes, recuperación por ID y cola de snapshots independientes. CSV multilínea, bloqueo, deshacer/rehacer y valores desconocidos también probados en navegador.
 - Visor Three.js/WebGL con controles de cámara, selección, aislamiento, transparencia, rayos X, wireframe, colores regionales, explosión y modo de mesa.
 - Interfaz en español e inglés, incluida la localización de controles y avisos después de la interacción.
 

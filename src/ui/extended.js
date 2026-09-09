@@ -1,5 +1,6 @@
 import { calculateOsteoAnalysis } from '../domain/analysis.js';
 import { applyInventoryRows, createBackup, downloadJson, parseCsv, shareJson, validateBackup } from '../domain/backup.js';
+import { importDentalRows } from '../domain/dental-import.js';
 import { translate } from '../i18n/translations.js';
 import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
 
@@ -17,7 +18,7 @@ function formatChangeValue(value) {
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
 const PATHOLOGY_TYPES = ['Normal', 'Patológico', 'Traumatizado', 'Alterado', 'Indeterminado'];
 
-export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject }) {
+export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject, commitInventoryEdit, applyProjectData }) {
   state.fragments ||= {};
   state.portions ||= {};
   state.individuals ||= {};
@@ -77,7 +78,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const portionOptions = portionOptionsForBone(bone);
     const taphonomy = (state.taphonomy[id] || []).join(', ');
     const pathology = (state.pathology[id] || []).join(', ');
-    show(`<div class="record-editor"><strong>${escapeHtml(bone.es || id)}</strong><label>Número de fragmentos<input id="record-fragments" type="number" min="0" step="1" value="${state.fragments[id] || 0}"></label><label>Peso (g)<input id="record-weight" type="number" min="0" step="0.01" value="${state.weights[id] ?? ''}"></label><label>Porción anatómica<select id="record-portion">${portionOptions.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label><label>Individuo<input id="record-individual" value="${escapeHtml(state.individuals[id] || state.report?.individual || 'IND-LOCAL')}" placeholder="IND-01"></label><label>Tafonomía<input id="record-taphonomy" list="taphonomy-options" value="${escapeHtml(taphonomy)}" placeholder="erosión, raíces…"><datalist id="taphonomy-options">${TAPHONOMY_OPTIONS.map(value => `<option value="${value}">`).join('')}</datalist></label><label>Patología / trauma<input id="record-pathology" value="${escapeHtml(pathology)}" placeholder="fractura, caries…"></label><label>Nota científica<textarea id="record-note" rows="3">${escapeHtml(state.notes[id] || '')}</textarea></label><button id="save-record" class="secondary-action">Guardar registro</button></div>`);
+    show(`<div class="record-editor"><strong>${escapeHtml(bone.es || id)}</strong><label>Número de fragmentos<input id="record-fragments" type="number" min="0" step="1" value="${state.fragments[id] ?? ''}"></label><label>Peso (g)<input id="record-weight" type="number" min="0" step="0.01" value="${state.weights[id] ?? ''}"></label><label>Porción anatómica<select id="record-portion">${portionOptions.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label><label>Individuo<input id="record-individual" value="${escapeHtml(state.individuals[id] || state.report?.individual || 'IND-LOCAL')}" placeholder="IND-01"></label><label>Tafonomía<input id="record-taphonomy" list="taphonomy-options" value="${escapeHtml(taphonomy)}" placeholder="erosión, raíces…"><datalist id="taphonomy-options">${TAPHONOMY_OPTIONS.map(value => `<option value="${value}">`).join('')}</datalist></label><label>Patología / trauma<input id="record-pathology" value="${escapeHtml(pathology)}" placeholder="fractura, caries…"></label><label>Nota científica<textarea id="record-note" rows="3">${escapeHtml(state.notes[id] || '')}</textarea></label><button id="save-record" class="secondary-action">Guardar registro</button></div>`);
     const pathologyDetails = state.pathologyDetails[id] || {};
     const taphonomyDetails = state.taphonomyDetails[id] || {};
     document.querySelector('#record-taphonomy').insertAdjacentHTML('afterend', `<fieldset class="structured-observation"><legend>Detalle tafonómico</legend><label>Tipo<select id="record-taphonomy-type">${TAPHONOMY_OPTIONS.map(value => `<option value="${value}">${value}</option>`).join('')}</select></label><label>Descripción<textarea id="record-taphonomy-description" rows="2">${escapeHtml(taphonomyDetails.description || '')}</textarea></label><label>Posición<input id="record-taphonomy-position" value="${escapeHtml(taphonomyDetails.position || '')}" placeholder="proximal, cara anterior…"></label><label>Extensión<input id="record-taphonomy-extent" value="${escapeHtml(taphonomyDetails.extent || '')}" placeholder="localizada, 20 mm…"></label><label>Observaciones<textarea id="record-taphonomy-observations" rows="2">${escapeHtml(taphonomyDetails.observations || '')}</textarea></label></fieldset>`);
@@ -85,9 +86,18 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     document.querySelector('#record-pathology').insertAdjacentHTML('afterend', `<fieldset class="structured-observation"><legend>Detalle patología / trauma</legend><label>Estado<select id="record-pathology-type">${PATHOLOGY_TYPES.map(value => `<option value="${value}">${value}</option>`).join('')}</select></label><label>Descripción<textarea id="record-pathology-description" rows="2">${escapeHtml(pathologyDetails.description || '')}</textarea></label><label>Posición<input id="record-pathology-position" value="${escapeHtml(pathologyDetails.position || '')}" placeholder="proximal, cara anterior…"></label><label>Extensión<input id="record-pathology-extent" value="${escapeHtml(pathologyDetails.extent || '')}" placeholder="localizada, 20 mm…"></label><label>Observaciones<textarea id="record-pathology-observations" rows="2">${escapeHtml(pathologyDetails.observations || '')}</textarea></label></fieldset>`);
     document.querySelector('#record-pathology-type').value = pathologyDetails.type || 'Indeterminado';
     document.querySelector('#record-portion').value = state.portions[id] || 'whole';
+    if (state.locked?.[id]) {
+      document.querySelectorAll('.record-editor input, .record-editor select, .record-editor textarea, #save-record').forEach(control => { control.disabled = true; });
+      document.querySelector('.record-editor').insertAdjacentHTML('afterbegin', '<p role="status">Registro bloqueado. Desbloquéalo desde Inventario para editarlo.</p>');
+    }
     document.querySelector('#save-record').onclick = async () => {
-      state.fragments[id] = Math.max(0, Number(document.querySelector('#record-fragments').value || 0));
-      const weight = Number(document.querySelector('#record-weight').value);
+      if (state.locked?.[id]) { document.querySelector('#toast').textContent = 'Registro bloqueado'; return; }
+      for (const input of document.querySelectorAll('.record-editor input')) if (!input.reportValidity()) return;
+      commitInventoryEdit('scientific_record', () => {
+      const fragmentText = document.querySelector('#record-fragments').value.trim();
+      if (fragmentText) state.fragments[id] = Number(fragmentText); else delete state.fragments[id];
+      const weightText = document.querySelector('#record-weight').value.trim();
+      const weight = weightText === '' ? NaN : Number(weightText);
       if (Number.isFinite(weight) && weight >= 0) state.weights[id] = weight;
       else delete state.weights[id];
       state.portions[id] = document.querySelector('#record-portion').value;
@@ -101,8 +111,10 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       if (hasTaphonomyDetail) state.taphonomyDetails[id] = taphonomyDetail; else delete state.taphonomyDetails[id];
       if (hasPathologyDetail) state.pathologyDetails[id] = pathologyDetail; else delete state.pathologyDetails[id];
       state.notes[id] = document.querySelector('#record-note').value.trim();
-      await saveLocal();
-      document.querySelector('#toast').textContent = 'Registro científico guardado';
+      });
+      renderStats?.(); selectBone(state.selected);
+      const saved = await saveLocal();
+      if (saved.ok) document.querySelector('#toast').textContent = 'Registro científico guardado';
     };
   };
 
@@ -200,25 +212,31 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     if (!file) return;
     try {
       let imported;
+      let mergeRows = null, mergeExtra = value => value;
+      const targetProjectId = state.projectId;
       let previewRows = [];
       if (file.name.toLowerCase().endsWith('.csv')) {
         const rows = parseCsv(await file.text());
-        previewRows = rows;
+        previewRows = rows; mergeRows = rows;
         imported = applyInventoryRows(state, rows, bones);
       } else if (file.name.toLowerCase().endsWith('.xlsx')) {
         const XLSX = await import('xlsx');
         const workbook = XLSX.read(await file.arrayBuffer());
         const rows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-        previewRows = rows;
+        previewRows = rows; mergeRows = rows;
         imported = applyInventoryRows(state, rows, bones);
         const contextRows = workbook.Sheets['Ficha contexto'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Ficha contexto']) : [];
         const fragmentRows = workbook.Sheets['Fragmentos indeterminados'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Fragmentos indeterminados']) : [];
         const dentalRows = workbook.Sheets['Odontograma permanente'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Odontograma permanente']) : [];
         const deciduousRows = workbook.Sheets['Odontograma deciduo'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Odontograma deciduo']) : [];
-        if (contextRows[0]) imported.report = { ...(imported.report || {}), ...contextRows[0] };
-        if (fragmentRows.length) imported.indeterminateFragments = fragmentRows;
-        if (dentalRows.length) imported.dental = Object.fromEntries(dentalRows.filter(row => row.Tooth_FDI).map(row => [String(row.Tooth_FDI), row.Status || 'not_recorded']));
-        if (deciduousRows.length) imported.deciduousDental = Object.fromEntries(deciduousRows.filter(row => row.Tooth_FDI).map(row => [String(row.Tooth_FDI), row.Status || 'not_recorded']));
+        mergeExtra = value => ({
+          ...value,
+          report: { ...(value.report || {}), ...(contextRows[0] || {}) },
+          indeterminateFragments: fragmentRows.length ? fragmentRows : value.indeterminateFragments,
+          dental: importDentalRows(value.dental, dentalRows, { locked: value.locked }),
+          deciduousDental: importDentalRows(value.deciduousDental, deciduousRows, { deciduous: true, locked: value.locked })
+        });
+        imported = mergeExtra(imported);
       } else {
         imported = validateBackup(JSON.parse(await file.text()));
         previewRows = Object.entries(imported.status || {}).map(([boneId, status]) => ({ Bone_ID: boneId, Presence: status, Preservation: imported.preservation?.[boneId] || 'not_evaluated', Fragments: imported.fragments?.[boneId] || 0 }));
@@ -227,17 +245,34 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       const validationSummary = imported.validationErrors?.length ? `<ul class="small-copy import-validation-errors">${imported.validationErrors.slice(0, 5).map(item => `<li>Fila ${item.row}: ${escapeHtml(item.errors.join('; '))}</li>`).join('')}</ul>` : '';
       const sample = previewRows.slice(0, 5).map(row => `<tr>${['Bone_ID', 'Presence', 'Preservation', 'Fragments'].map(field => `<td>${escapeHtml(row[field] ?? '')}</td>`).join('')}</tr>`).join('');
       show(`<h3>Vista previa de importación</h3><p class="small-copy"><strong>${escapeHtml(file.name)}</strong> · ${totalRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} se ignorarán por errores, duplicados o IDs desconocidos` : ''}.</p>${validationSummary}${sample ? `<table class="analysis-table"><thead><tr><th>Bone_ID</th><th>Presencia</th><th>Conservación</th><th>Fragmentos</th></tr></thead><tbody>${sample}</tbody></table>` : '<p class="small-copy">La copia no contiene registros de inventario visibles en la previsualización.</p>'}<div class="actions"><button id="confirm-import" class="secondary-action">Confirmar importación</button><button id="cancel-import" class="secondary-action">Cancelar</button></div>`);
+      document.querySelector('#confirm-import').closest('.actions').insertAdjacentHTML('beforebegin', `<p class="info-box">${mergeRows ? 'Fusión: solo se aplican celdas no vacías. Los campos vacíos o las columnas omitidas conservan el valor anterior; los registros bloqueados no cambian. Puedes deshacer la importación desde Inventario. Las hojas auxiliares XLSX de contexto y fragmentos reemplazan esos apartados si contienen datos.' : 'Restauración: se sustituirán los datos de la ficha indicada por la copia, incluidos sus bloqueos. Primero se intentará guardar el proyecto abierto. Los archivos 3D personalizados no están incluidos en esta copia JSON.'}</p>`);
       document.querySelector('#cancel-import').onclick = () => { document.querySelector('#extended-panel').hidden = true; };
       document.querySelector('#confirm-import').onclick = async () => {
-        Object.assign(state, imported);
-        if (imported.id) state.projectId = imported.id;
-        if (imported.projectName) state.projectName = imported.projectName;
-        language.value = state.language || 'es';
-        document.documentElement.lang = state.language || 'es';
-        updateLabels();
-        renderList(); renderStats?.(); selectBone(state.selected); await saveLocal();
-        document.querySelector('#extended-panel').hidden = true;
-        document.querySelector('#toast').textContent = imported.importedRows == null ? 'Importación completada · copia completa' : `Importación completada · ${imported.importedRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} ignorados` : ''}`;
+        try {
+          if (targetProjectId !== state.projectId) throw new Error('El proyecto abierto ha cambiado. Vuelve a abrir el archivo para revisar la importación.');
+          document.querySelector('#confirm-import').disabled = true;
+          if (mergeRows) {
+            // Re-evaluate against current data/locks, never a stale preview snapshot.
+            imported = mergeExtra(applyInventoryRows(state, mergeRows, bones));
+            const { importedRows, rejectedRows, validationErrors, ...projectData } = imported;
+            commitInventoryEdit('spreadsheet_import', () => Object.assign(state, projectData));
+          } else {
+            if (!(await saveLocal({ notify: false })).ok) { document.querySelector('#confirm-import').disabled = false; return; }
+            applyProjectData(imported);
+          }
+          if (imported.id) state.projectId = imported.id;
+          if (imported.projectName) state.projectName = imported.projectName;
+          language.value = state.language || 'es';
+          document.documentElement.lang = state.language || 'es';
+          updateLabels();
+          renderList(); renderStats?.(); selectBone(state.selected);
+          const saved = await saveLocal();
+          document.querySelector('#extended-panel').hidden = true;
+          if (saved.ok) document.querySelector('#toast').textContent = imported.importedRows == null ? 'Importación completada · copia JSON' : `Importación completada · ${imported.importedRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} ignorados` : ''} · disponible Deshacer`;
+        } catch (error) {
+          document.querySelector('#toast').textContent = `Importación rechazada: ${error.message}`;
+          const confirm = document.querySelector('#confirm-import'); if (confirm) confirm.disabled = false;
+        }
       };
     } catch (error) { document.querySelector('#toast').textContent = `Importación rechazada: ${error.message}`; }
     event.target.value = '';

@@ -4,6 +4,10 @@ Base inicial de una PWA modular para atlas osteológico 3D e inventario bioarque
 
 ## Estado actual
 
+Importación CSV multilínea con fusión explícita, bloqueos y deshacer/rehacer.
+Los campos vacíos no se convierten en cero; el guardado avisa si falla y conserva
+copias de recuperación por proyecto. [Garantías y límites de datos](DATA_INTEGRITY.md).
+
 Panel derecho de PC: separador arrastrable entre visor y ficha, anchura recordada,
 flechas de teclado y doble clic para restablecer. Pestañas y formularios se adaptan
 sin desplazamiento horizontal del panel; las tablas extensas mantienen su propio scroll.

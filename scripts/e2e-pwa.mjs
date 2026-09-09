@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { testInspectorLayout } from '../tests/inspector-layout.e2e.mjs';
+import { testDataIntegrity } from '../tests/data-integrity.e2e.mjs';
 import { spawn } from 'node:child_process';
 import { access, mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
@@ -386,6 +387,7 @@ try {
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
   await testInspectorLayout(cdp,evaluate,waitForValue);
+  await testDataIntegrity(cdp,evaluate,waitForValue,projectReadExpression);
   for(const profile of ['adult_female','infant','neonate']){
     await evaluate(cdp,`(()=>{const mode=document.querySelector('#geometry-mode');mode.value='auto';mode.dispatchEvent(new Event('change'));const select=document.querySelector('#profile');select.value=${JSON.stringify(profile)};select.dispatchEvent(new Event('change'));})()`);
     await waitForValue(cdp,`({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.generatedCount==='179',`Load 179 original GLBs: ${profile}`,45000);

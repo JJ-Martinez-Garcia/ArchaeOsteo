@@ -10,7 +10,7 @@ const REGION_VALUES = new Set(['all', 'Cráneo', 'Columna', 'Tórax', 'Cintura e
 
 function objectEntries(value) { return value && typeof value === 'object' && !Array.isArray(value) ? Object.entries(value) : []; }
 function normalizeEnumMap(value, allowed) { return Object.fromEntries(objectEntries(value).filter(([, item]) => allowed.has(item))); }
-function normalizeNumberMap(value, { min = 0, max = Number.POSITIVE_INFINITY, integer = false, rejectBelowMin = false } = {}) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, Number(item)]).filter(([, item]) => Number.isFinite(item) && (!rejectBelowMin || item >= min)).map(([key, item]) => [key, Math.max(min, Math.min(max, integer ? Math.floor(item) : item))])); }
+function normalizeNumberMap(value, { min = 0, max = Number.POSITIVE_INFINITY, integer = false, rejectBelowMin = false } = {}) { return Object.fromEntries(objectEntries(value).filter(([, item]) => (typeof item === 'number' || typeof item === 'string') && String(item).trim() !== '').map(([key, item]) => [key, Number(item)]).filter(([, item]) => Number.isFinite(item) && (!rejectBelowMin || item >= min)).map(([key, item]) => [key, Math.max(min, Math.min(max, integer ? Math.floor(item) : item))])); }
 function normalizeStringMap(value) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, String(item ?? '').trim()]).filter(([, item]) => item)); }
 function normalizeCustomModels(value) {
   const profiles = objectEntries(value).map(([profileId, models]) => {
@@ -57,25 +57,48 @@ function openDatabase() {
   return new Promise((resolve, reject) => {
     if (!('indexedDB' in window)) return reject(new Error('IndexedDB no disponible'));
     const request = indexedDB.open(DB_NAME, DB_VERSION);
+    let settled = false;
+    const fail = error => { if (!settled) { settled = true; clearTimeout(timer); reject(error); } };
+    const timer = setTimeout(() => fail(new Error('IndexedDB no responde')), 15000);
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: 'id' });
     };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      if (settled) { request.result.close(); return; }
+      settled = true; clearTimeout(timer);
+      request.result.onversionchange = () => request.result.close();
+      resolve(request.result);
+    };
+    request.onerror = () => fail(request.error);
+    request.onblocked = () => fail(new Error('IndexedDB bloqueado por otra pestaña'));
   });
 }
 
-function readFallbackProject() {
+export const fallbackProjectKey = id => `osteo3d-project-fallback:${encodeURIComponent(id)}`;
+
+function readFallbackProjects() {
   try {
-    return normalizeProject(JSON.parse(localStorage.getItem('osteo3d-mvp') || 'null'));
-  } catch {
-    return null;
+    const keys = Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index)).filter(key => key?.startsWith('osteo3d-project-fallback:'));
+    keys.unshift('osteo3d-mvp'); // Recover legacy copies without applying one project's data to another.
+    return keys.flatMap(key => {
+      try { const project = normalizeProject(JSON.parse(localStorage.getItem(key) || 'null')); return project ? [project] : []; }
+      catch { return []; }
+    });
+  } catch { return []; }
+}
+
+function newestProjects(projects) {
+  const byId = new Map();
+  for (const project of projects) {
+    const previous = byId.get(project.id);
+    if (!previous || String(project.updatedAt || '') >= String(previous.updatedAt || '')) byId.set(project.id, project);
   }
+  return [...byId.values()];
 }
 
 export function normalizeProject(project) {
-  if (!project || typeof project !== 'object') return null;
+  if (!project || typeof project !== 'object' || Array.isArray(project)) return null;
   return {
     ...project,
     id: project.id || 'default',
@@ -132,43 +155,39 @@ export function normalizeProject(project) {
 
 export async function saveProject(project) {
   const db = await openDatabase();
-  await new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).put(normalizeProject(project));
-    tx.oncomplete = resolve;
-    tx.onerror = () => reject(tx.error);
-  });
-  db.close();
+  try {
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error || new Error('Error de escritura IndexedDB'));
+      tx.onabort = () => reject(tx.error || new Error('Transacción IndexedDB cancelada'));
+      tx.objectStore(STORE).put(normalizeProject(project));
+    });
+  } finally { db.close(); }
 }
 
 export async function loadProject(id) {
+  let result = null, db;
   try {
-    const db = await openDatabase();
-    const result = await new Promise((resolve, reject) => {
+    db = await openDatabase();
+    result = await new Promise((resolve, reject) => {
       const request = db.transaction(STORE).objectStore(STORE).get(id);
-      request.onsuccess = () => resolve(request.result);
+      request.onsuccess = () => resolve(normalizeProject(request.result));
       request.onerror = () => reject(request.error);
     });
-    db.close();
-    return normalizeProject(result) || readFallbackProject();
-  } catch {
-    return readFallbackProject();
-  }
+  } catch {} finally { db?.close(); }
+  return newestProjects([...(result ? [result] : []), ...readFallbackProjects().filter(project => project.id === id)])[0] || null;
 }
 
 export async function listProjects() {
+  let projects = [], db;
   try {
-    const db = await openDatabase();
-    const result = await new Promise((resolve, reject) => {
+    db = await openDatabase();
+    projects = await new Promise((resolve, reject) => {
       const request = db.transaction(STORE).objectStore(STORE).getAll();
-      request.onsuccess = () => resolve(request.result || []);
+      request.onsuccess = () => resolve((request.result || []).map(normalizeProject).filter(Boolean));
       request.onerror = () => reject(request.error);
     });
-    db.close();
-    const projects = result.map(normalizeProject).filter(Boolean).sort((a, b) => String(a.projectName || a.id).localeCompare(String(b.projectName || b.id), 'es'));
-    return projects.length ? projects : (readFallbackProject() ? [readFallbackProject()] : []);
-  } catch {
-    const fallback = readFallbackProject();
-    return fallback ? [fallback] : [];
-  }
+  } catch {} finally { db?.close(); }
+  return newestProjects([...projects, ...readFallbackProjects()]).sort((a, b) => String(a.projectName || a.id).localeCompare(String(b.projectName || b.id), 'es'));
 }
