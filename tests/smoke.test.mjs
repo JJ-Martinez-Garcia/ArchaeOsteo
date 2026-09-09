@@ -218,6 +218,8 @@ assert.match(main, /storage-status/);
 assert.match(main, /pwa-diagnostics/);
 assert.match(main, /inspector-toggle/);
 assert.match(main, /document\.querySelector\('#tab-report'\)\.onclick=.*populateReportFields\(\)/);
+assert.match(main, /state\.hierarchy=deriveHierarchy\(state\)/);
+assert.match(main, /Jerarquía normalizada/);
 assert.match(main, /mobile-open/);
 assert.match(main, /runPwaDiagnostics/);
 assert.match(main, /tableTransforms: \{\}/);

@@ -13,7 +13,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   fusión sin sobrescribir celdas vacías, rechazo atómico y bloqueo revalidado al confirmar.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
-  la estructura se conserva en el modelo local y en las copias.
+  la estructura se conserva en el modelo local y en las copias, y la ficha muestra un
+  resumen de los niveles reconocidos al guardar.
 - Historial ampliado a ficha científica e importación, con pesos/porciones/dentición/contexto.
   Tabla y mediciones conservan ausencia frente a cero. Medidas y landmarks bloqueados.
 - Guardado serializado con snapshots, fallback independiente por proyecto y aviso
