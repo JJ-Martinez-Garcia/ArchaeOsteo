@@ -57,6 +57,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   esqueleto, y el restablecimiento devuelve también ambiente y dirección de la luz.
 - El visor incorpora vistas locales medial, lateral, proximal y distal centradas en el
   elemento seleccionado, con lateralidad aplicada a las vistas medial/lateral.
+- El informe admite campos explícitos de fuentes consultadas, método y alcance, y
+  limitaciones/revisión pendiente; se conservan como texto introducido por el investigador.
 
 - 179 elementos con geometría procedural propia para los cuatro perfiles (716
   combinaciones). Código fuente reproducible y exportación individual GLB con
