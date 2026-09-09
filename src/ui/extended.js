@@ -272,7 +272,8 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       const ids = [...document.querySelectorAll('[data-compare-source]:checked')].map(input => input.dataset.compareSource);
       const message = document.querySelector('#multi-compare-message');
       if (ids.length < 2) { message.textContent = en ? 'Select at least two sources.' : 'Selecciona al menos dos fuentes.'; return; }
-      const projects = await Promise.all(ids.map(id => loadProject(id)));
+      const projects = (await Promise.all(ids.map(id => loadProject(id)))).filter(Boolean);
+      if (projects.length < 2) { message.textContent = en ? 'At least two selected projects must still be available.' : 'Al menos dos proyectos seleccionados deben seguir disponibles.'; return; }
       const statuses = ['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded'];
       const rows = bones.map(bone => { const counts = Object.fromEntries(statuses.map(status => [status, 0])); projects.forEach(project => { counts[project.status?.[bone.id] || 'not_recorded'] += 1; }); return { bone, counts }; }).filter(row => Object.values(row.counts).some(count => count > 0 && count < projects.length));
       const statusLabels = en ? { present: 'present', absent: 'absent', fragmentary: 'fragmentary', indeterminate: 'indeterminate', not_observable: 'not observable', not_recorded: 'not recorded' } : { present: 'presente', absent: 'ausente', fragmentary: 'fragmentario', indeterminate: 'indeterminado', not_observable: 'no observable', not_recorded: 'no registrado' };

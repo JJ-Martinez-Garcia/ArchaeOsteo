@@ -61,6 +61,8 @@
 - Añadida una comparación agregada de múltiples inventarios locales: permite seleccionar
   dos o más fuentes y resume por `Bone_ID` los estados divergentes sin mezclar desconocido
   con ausencia observada.
+- La comparación múltiple conserva la separación entre fuentes y omite de forma segura
+  proyectos que ya no estén disponibles al cargarse desde IndexedDB.
 
 ## Cambios recientes
 
