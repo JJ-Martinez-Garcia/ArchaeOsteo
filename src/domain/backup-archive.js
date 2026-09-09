@@ -23,7 +23,8 @@ export function createStoredZip(entries) {
 }
 
 export function createOsteoArchive(projectBackup, models = []) {
-  const entries = [{ name: 'project.json', data: encoder.encode(JSON.stringify(projectBackup, null, 2)) }, { name: 'MANIFEST.json', data: encoder.encode(JSON.stringify({ format: 'osteo3d-archive', version: 1, createdAt: new Date().toISOString(), models: models.map(model => model.name) }, null, 2)) }];
+  const checksums = Object.fromEntries(models.map(model => [model.name, crc32(model.data).toString(16).padStart(8, '0')]));
+  const entries = [{ name: 'project.json', data: encoder.encode(JSON.stringify(projectBackup, null, 2)) }, { name: 'MANIFEST.json', data: encoder.encode(JSON.stringify({ format: 'osteo3d-archive', version: 1, createdAt: new Date().toISOString(), models: models.map(model => model.name), checksums }, null, 2)) }];
   for (const model of models) entries.push({ name: model.name, data: model.data });
   return createStoredZip(entries);
 }
@@ -34,6 +35,8 @@ export function readOsteoArchive(buffer) {
     const method = bytes[offset + 8] | (bytes[offset + 9] << 8); const expectedCrc = readU32(bytes, offset + 14); const compressedSize = readU32(bytes, offset + 18); const uncompressedSize = readU32(bytes, offset + 22); const nameSize = bytes[offset + 26] | (bytes[offset + 27] << 8); const extraSize = bytes[offset + 28] | (bytes[offset + 29] << 8); const name = decoder.decode(bytes.slice(offset + 30, offset + 30 + nameSize)); const start = offset + 30 + nameSize + extraSize; if (method !== 0 || compressedSize !== uncompressedSize || start + compressedSize > bytes.length) throw new Error('Archivo Osteo3D no compatible o dañado.'); const data = bytes.slice(start, start + compressedSize); if (crc32(data) !== expectedCrc) throw new Error(`Archivo Osteo3D dañado: ${name}.`); entries.set(name, data); offset = start + compressedSize;
   }
   if (!entries.has('project.json')) throw new Error('La copia Osteo3D no contiene project.json.');
-  let project; try { project = JSON.parse(decoder.decode(entries.get('project.json'))); } catch { throw new Error('project.json no es JSON válido.'); }
-  return { project, models: [...entries.entries()].filter(([name]) => name.startsWith('models/custom/')).map(([name, data]) => ({ name, data })) };
+  let project, manifest = { format: 'osteo3d-archive', version: 1, models: [] }; try { project = JSON.parse(decoder.decode(entries.get('project.json'))); if (entries.has('MANIFEST.json')) manifest = JSON.parse(decoder.decode(entries.get('MANIFEST.json'))); } catch { throw new Error('project.json o MANIFEST.json no es JSON válido.'); }
+  const models = [...entries.entries()].filter(([name]) => name.startsWith('models/custom/')).map(([name, data]) => ({ name, data }));
+  for (const model of models) { const expected = manifest.checksums?.[model.name]; if (expected && expected !== crc32(model.data).toString(16).padStart(8, '0')) throw new Error(`Archivo Osteo3D dañado: ${model.name}.`); }
+  return { project, manifest, models };
 }

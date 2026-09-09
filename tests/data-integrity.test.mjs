@@ -13,6 +13,7 @@ const archive = readOsteoArchive(archiveBytes);
 assert.equal(archive.project.project.projectName, 'Copia con GLB');
 assert.equal(archive.models[0].name, 'models/custom/infant/left_femur.glb');
 assert.deepEqual([...archive.models[0].data], [0, 1, 2, 255]);
+assert.match(archive.manifest.checksums[archive.models[0].name], /^[0-9a-f]{8}$/);
 assert.throws(() => readOsteoArchive(new Uint8Array([1, 2, 3])));
 const corruptedArchive = new Uint8Array(archiveBytes); corruptedArchive[corruptedArchive.indexOf(255)] = 254;
 assert.throws(() => readOsteoArchive(corruptedArchive), /dañado|damaged/i);
