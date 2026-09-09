@@ -107,6 +107,7 @@ photoState.photos.skull.push({ name: 'b', dataUrl: 'data:image/png;base64,BB' })
 applyInventorySnapshot(photoState, photoSnapshot);
 assert.equal(photoState.photos.skull.length, 1, 'Photo additions are undoable as part of the common snapshot');
 assert.equal(photoState.indeterminateFragments.length, 1, 'Indeterminate-fragment changes are undoable as part of the common snapshot');
+assert.ok(takeInventorySnapshot(photoState).photos.skull[0].dataUrl.startsWith('data:image/'), 'Photo data remains in the undo snapshot');
 
 class MemoryStorage {
   values = new Map();

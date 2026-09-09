@@ -74,7 +74,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 55 | PINTAR PORCENTAJE | Atajos 100/75/50/25/<25 y ausencia de porcentaje no observado. |
 | 56 | PINTAR ALTERACIONES | E2E de alteraciones múltiples sin sobrescritura de detalles existentes. |
 | 57 | BORRADOR | Borrado de asignación coherente con todos los campos y recuperación por deshacer. |
-| 58 | DESHACER / REHACER | Importaciones, ficha científica y medidas ya reversibles; unificar fotos, altas/bajas de fragmentos y todas las operaciones restantes. |
+| 58 | DESHACER / REHACER | Importaciones, ficha científica, medidas, fotografías y altas/bajas de fragmentos indeterminados usan snapshots comunes reversibles; queda ampliar la auditoría a operaciones visuales y configuración. |
 | 59 | BLOQUEAR REGISTROS | Formulario científico, importación revalidada, tablas, medidas, landmarks, fotos y modelos personalizados cubiertos; queda auditar nuevas rutas futuras. |
 | 60 | MOSTRAR PENDIENTES | Resaltar pendientes sin ocultar de forma incoherente categorías o etiquetas. |
 | 61 | PROGRESO | Denominador correcto por perfil y categorías; progreso siempre revisados, no presentes. |
@@ -85,7 +85,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 66 | PINTAR EN CUALQUIER DISPOSICIÓN | Pruebas de pintura en cuatro disposiciones y en elementos pequeños. |
 | 67 | CONFIRMACIÓN VISUAL | Resaltado transitorio sin sobreescribir selección permanente o apariencia científica. |
 | 68 | LEYENDA | Leyenda persistente con texto/iconos/patrones también dentro del 3D. |
-| 69 | REGISTRO DE CAMBIOS | Registro uniforme de fecha/responsable/individuo/método/antes/después para toda mutación. |
+| 69 | REGISTRO DE CAMBIOS | Snapshots comunes registran también cambios de fotografías, fragmentos indeterminados, odontogramas, contexto, medidas, landmarks y calibraciones; queda cubrir operaciones visuales/configuración y mejorar la vista de auditoría. |
 | 70 | NOTAS | CSV multilínea probado; verificar todos los ámbitos de notas y su ronda con formatos restantes. |
 | 71 | TABLA DE INVENTARIO | Vacío frente a cero probado en tabla; resolver edición continua sin perder foco y ampliar sincronización a todas las vistas. |
 | 72 | FILTROS | Verificar combinaciones de todos los filtros contra tabla, árbol, 3D y estadísticas. |
