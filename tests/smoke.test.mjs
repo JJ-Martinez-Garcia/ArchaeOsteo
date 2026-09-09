@@ -478,6 +478,8 @@ assert.match(main, /Tafonomía y patología \/ trauma/);
 assert.match(main, /taphonomyDetails:state\.taphonomyDetails/);
 assert.match(main, /state\.taphonomyDetails = saved\.taphonomyDetails/);
 assert.match(main, /taphonomyDetails: \{\}, pathologyDetails: \{\}, notes:/);
+assert.match(main, /hierarchy: \{ sites: \[\], campaigns: \[\], sectors: \[\], contexts: \[\], individuals: \[\] \}/);
+assert.match(main, /lightIntensity: 1, ambientLightIntensity: 1, lightingAzimuth: 30, lightingElevation: 55/);
 assert.match(main, /observationsReportHtml\(\)/);
 assert.match(main, /Muy fragmentado/);
 assert.match(main, /No evaluable/);
