@@ -81,6 +81,8 @@
   inmaduros, completando el round-trip entre CSV, JSON y XLSX.
 - El diagnóstico PWA muestra, cuando el navegador lo permite, el uso y la cuota
   estimada de almacenamiento para anticipar problemas de IndexedDB/caché.
+- El registro transaccional incluye ahora también componentes inmaduros, filtros de
+  esqueleto/región y todos los ajustes visuales principales en snapshots auditables.
 - La prueba PWA comprueba esa fila solo cuando el navegador devuelve una cuota
   numérica válida, evitando falsos fallos en perfiles efímeros o restringidos.
 

@@ -117,11 +117,11 @@ assert.deepEqual(importDentalRows({ 11: 'present' }, [{ Tooth_FDI: 11, Status: '
 assert.throws(() => importDentalRows({}, [{ Tooth_FDI: 51, Status: 'present' }]));
 assert.throws(() => importDentalRows({}, [{ Tooth_FDI: 11, Status: 'unexpected' }]));
 assert.throws(() => importDentalRows({}, [{ Tooth_FDI: 11, Status: 'present' }, { Tooth_FDI: 11, Status: 'wear' }]));
-const state = { ...original, pathologyDetails: { skull: { description: 'antes' } }, dental: { 11: 'wear' } };
+const state = { ...original, pathologyDetails: { skull: { description: 'antes' } }, dental: { 11: 'wear' }, developmentRecords: { left_femur: { shaft: { status: 'present', fusion: 'unfused' } } }, skeletonFilter: 'axial', regionFilter: 'Cráneo' };
 const snapshot = takeInventorySnapshot(state);
-state.weights.skull = 99; state.pathologyDetails.skull.description = 'después'; state.dental[11] = 'caries';
+state.weights.skull = 99; state.pathologyDetails.skull.description = 'después'; state.dental[11] = 'caries'; state.developmentRecords.left_femur.shaft.fusion = 'fused'; state.skeletonFilter = 'appendicular'; state.regionFilter = 'Pelvis';
 applyInventorySnapshot(state, snapshot);
-assert.equal(state.weights.skull, 12); assert.equal(state.pathologyDetails.skull.description, 'antes'); assert.equal(state.dental[11], 'wear');
+assert.equal(state.weights.skull, 12); assert.equal(state.pathologyDetails.skull.description, 'antes'); assert.equal(state.dental[11], 'wear'); assert.equal(state.developmentRecords.left_femur.shaft.fusion, 'unfused'); assert.equal(state.skeletonFilter, 'axial'); assert.equal(state.regionFilter, 'Cráneo');
 state.pathologyDetails.skull.description = 'nueva';
 assert.equal(snapshot.pathologyDetails.skull.description, 'antes', 'Undo snapshots cannot be mutated by later edits');
 const modelReferenceState = { landmarkModelRefs: modelReference };

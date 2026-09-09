@@ -85,7 +85,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 66 | PINTAR EN CUALQUIER DISPOSICIÓN | Pruebas de pintura en cuatro disposiciones y en elementos pequeños. |
 | 67 | CONFIRMACIÓN VISUAL | Resaltado transitorio sin sobreescribir selección permanente o apariencia científica. |
 | 68 | LEYENDA | Leyenda persistente con texto/iconos/patrones también dentro del 3D. |
-| 69 | REGISTRO DE CAMBIOS | Snapshots comunes registran también cambios de fotografías, fragmentos indeterminados, odontogramas, contexto, jerarquía, medidas, landmarks, calibraciones, preferencias visuales y cámara 3D; la auditoría permite filtrar y exportar CSV, pero queda configuración restante y una auditoría transaccional más completa. |
+| 69 | REGISTRO DE CAMBIOS | Snapshots comunes registran cambios de fotografías, fragmentos indeterminados, componentes inmaduros, odontogramas, contexto, jerarquía, medidas, landmarks, calibraciones, filtros, preferencias visuales y cámara 3D; la auditoría permite filtrar y exportar CSV. Queda revisión transaccional especializada de operaciones futuras. |
 | 70 | NOTAS | CSV multilínea probado; verificar todos los ámbitos de notas y su ronda con formatos restantes. |
 | 71 | TABLA DE INVENTARIO | Vacío frente a cero probado en tabla; resolver edición continua sin perder foco y ampliar sincronización a todas las vistas. |
 | 72 | FILTROS | Verificar combinaciones de todos los filtros contra tabla, árbol, 3D y estadísticas. |
