@@ -30,7 +30,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 11 | PANEL INFORMATIVO | Curar las 12 categorías de la ficha por hueso con referencias; no sustituir huecos por inferencias. |
 | 12 | ÁRBOL OSTEOLOGICO | Verificar árbol por anatomía completa y componentes inmaduros; catálogo actual agrupa cráneo. |
 | 13 | BUSCADOR | Búsqueda normalizada ES/EN/latín/ID con sinónimos osteológicos frecuentes (escápula/omóplato, peroné/fíbula, rótula/patela, etc.); queda curación completa del tesauro. |
-| 14 | COMPARACIÓN | Comparación hueso a hueso, vista/rotación/zoom sincronizados y escala real solo con calibración. |
+| 14 | COMPARACIÓN | Comparación hueso a hueso con cámara común y escala relativa didáctica por perfil; la escala física queda pendiente de calibración y validación. |
 | 15 | TRANSPARENCIA | Control 0–100% por hueso/región/conjunto, persistente y con X-Ray limitado independientemente; queda verificación visual de contraste en todas las escenas. |
 | 16 | MODOS VISUALES | Cerrar pruebas combinadas de todos los modos y de representación de inventario. |
 | 17 | ILUMINACIÓN | Intensidad, presets, ambiente independiente y dirección de luz mediante azimut/elevación persistentes; queda validación visual de la paleta en dispositivos y escenas complejas. |

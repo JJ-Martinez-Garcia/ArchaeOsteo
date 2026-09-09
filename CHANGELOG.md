@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-09-10
+
+- La comparación 3D aplica una escala relativa didáctica al perfil comparado y expone el perfil activo en el visor para facilitar la comprobación de la interacción. La escala no representa una medida física validada.
+
 ## 2026-09-09
 
 - Los proyectos normalizan ahora una jerarquía explícita de yacimiento, campaña, sector,

@@ -219,11 +219,14 @@ function setComparisonProfile(profileId) {
   if (!THREE || !scene) return;
   if (comparisonGroup) { scene.remove(comparisonGroup); disposeObject(comparisonGroup); comparisonGroup = null; }
   comparisonProfile = profileId || '';
+  const viewer = document.querySelector('#viewer');
+  if (viewer) viewer.dataset.comparisonProfile = comparisonProfile;
   if (!comparisonProfile || comparisonProfile === state.profile) return;
   comparisonGroup = new THREE.Group(); comparisonGroup.name = `comparison-${comparisonProfile}`;
+  const comparisonScale = profileComparisonScale(comparisonProfile);
   bones.filter(isAnatomicalBone).forEach(bone => {
     const mesh=createProceduralBone(THREE,bone,comparisonProfile,0x4299e1);
-    mesh.name=`comparison-${bone.id}`; mesh.position.x+=4;
+    mesh.name=`comparison-${bone.id}`; mesh.scale.multiplyScalar(comparisonScale); mesh.position.x+=4;
     comparisonGroup.add(mesh);
   });
   scene.add(comparisonGroup);

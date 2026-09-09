@@ -226,6 +226,8 @@ assert.match(main, /storage-status/);
 assert.match(main, /pwa-diagnostics/);
 assert.match(main, /reportHierarchyHtml/);
 assert.match(main, /reportDevelopmentHtml/);
+assert.match(main, /const comparisonScale = profileComparisonScale/);
+assert.match(main, /dataset\.comparisonProfile/);
 assert.match(main, /appendStorageQuotaDiagnostic/);
 assert.match(main, /inspector-toggle/);
 assert.match(main, /document\.querySelector\('#tab-report'\)\.onclick=.*populateReportFields\(\)/);

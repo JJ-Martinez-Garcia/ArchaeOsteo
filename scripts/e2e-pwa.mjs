@@ -516,6 +516,10 @@ try {
       await writeFile(`.tmp-model-review/${profile}.png`,Buffer.from(screenshot.data,'base64'));
     }
   }
+  await evaluate(cdp, `document.querySelector('#compare-panel-button').click()`);
+  await waitForValue(cdp, `Boolean(document.querySelector('#compare-3d-toggle'))`, value => value === true, 'Render 3D profile comparison');
+  await evaluate(cdp, `(()=>{const select=document.querySelector('#compare-profile');select.value='infant';document.querySelector('#compare-3d-toggle').click();})()`);
+  await waitForValue(cdp, `document.querySelector('#viewer').dataset.comparisonProfile`, value => value === 'infant', 'Activate scaled 3D comparison profile');
   await evaluate(cdp, `(()=>{const slider=document.querySelector('#explosion');slider.value='100';slider.dispatchEvent(new Event('input'));})()`);
   await sleep(500);
   if(process.env.OSTEO3D_CAPTURE_3D==='1'){
