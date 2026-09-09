@@ -36,6 +36,8 @@
   convierten a gramos en `weightGrams` antes de cualquier resumen cuantitativo.
 - La vista 3D de cada proyecto conserva ahora rotación, zoom y centro de cámara, incluidos
   los cambios hechos con ratón, rueda, teclado, vistas rápidas y centrado.
+- El filtro de estadísticas permite ahora aislar también los elementos marcados como
+  «No observable» y traduce ese estado correctamente en la interfaz inglesa.
 
 ## Cambios recientes
 

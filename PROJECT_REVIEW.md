@@ -16,6 +16,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - Experiencia 3D: la orientación, distancia y centro de la cámara pasan a formar parte
   del proyecto y se restauran al cargarlo; los límites de radio y elevación impiden estados
   inválidos en copias antiguas.
+- Inventario y estadísticas: todos los estados operativos, incluido «No observable»,
+  se pueden representar, persistir y filtrar sin depender del color.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un
