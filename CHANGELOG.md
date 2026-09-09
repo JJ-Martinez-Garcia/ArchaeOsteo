@@ -3,6 +3,7 @@
 ## 2026-09-10
 
 - La comparación 3D aplica una escala relativa didáctica al perfil comparado y expone el perfil activo en el visor para facilitar la comprobación de la interacción. La escala no representa una medida física validada.
+- El perfil comparado sigue ahora el despliegue, la disposición de mesa y los filtros de región/esqueleto del visor principal, manteniendo la cámara compartida.
 
 ## 2026-09-09
 

@@ -224,9 +224,13 @@ function setComparisonProfile(profileId) {
   if (!comparisonProfile || comparisonProfile === state.profile) return;
   comparisonGroup = new THREE.Group(); comparisonGroup.name = `comparison-${comparisonProfile}`;
   const comparisonScale = profileComparisonScale(comparisonProfile);
+  const comparisonBones = bones.map(bone => ({ ...bone, p: [...bone.p], size: [...bone.size] }));
+  applyProfileLayout(comparisonBones, comparisonProfile);
+  const comparisonLayouts = new Map(comparisonBones.map(bone => [bone.id, bone]));
   bones.filter(isAnatomicalBone).forEach(bone => {
     const mesh=createProceduralBone(THREE,bone,comparisonProfile,0x4299e1);
-    mesh.name=`comparison-${bone.id}`; mesh.scale.multiplyScalar(comparisonScale); mesh.position.x+=4;
+    const layout = comparisonLayouts.get(bone.id);
+    mesh.name=`comparison-${bone.id}`; mesh.scale.multiplyScalar(comparisonScale); mesh.userData.comparisonLayout=layout; mesh.userData.comparisonBaseScale=mesh.scale.clone(); mesh.position.x+=4;
     comparisonGroup.add(mesh);
   });
   scene.add(comparisonGroup);
@@ -356,6 +360,19 @@ function animate() {
     m.visible=isAnatomicalBone(b)&&!state.hidden[b.id]&&matchesSkeletonFilter(b)&&matchesRegionFilter(b)&&(!state.isolate||b.id===state.selected)&&!pendingHidden&&matchesFilters(b);
     const line=guideLines.get(b.id);
     if(line){const positions=line.geometry.attributes.position.array;positions.set(b.p,0);positions.set(m.position.toArray(),3);line.geometry.attributes.position.needsUpdate=true;line.visible=state.explosion>0&&!state.tableMode&&m.visible;}
+  });
+  if (comparisonGroup) comparisonGroup.children.forEach(mesh => {
+    const layout = mesh.userData.comparisonLayout;
+    if (!layout) return;
+    const t = state.explosion / 100;
+    const target = new THREE.Vector3(...(state.tableMode ? layout.e : new THREE.Vector3().lerpVectors(new THREE.Vector3(...layout.p), new THREE.Vector3(...layout.e), t).toArray()));
+    target.x += 4;
+    mesh.position.lerp(target, .18);
+    const start = new THREE.Quaternion().setFromEuler(new THREE.Euler(...(layout.rotation || [0, 0, 0])));
+    const end = new THREE.Quaternion().setFromEuler(new THREE.Euler(...(layout.expandedRotation || [0, 0, 0])));
+    mesh.quaternion.copy(start).slerp(end, state.tableMode ? 1 : t);
+    if (mesh.userData.comparisonBaseScale) mesh.scale.copy(mesh.userData.comparisonBaseScale);
+    mesh.visible = !state.hidden[layout.id] && matchesSkeletonFilter(layout) && matchesRegionFilter(layout);
   });
   renderer.render(scene,camera);
 }
