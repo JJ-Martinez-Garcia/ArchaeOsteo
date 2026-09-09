@@ -479,6 +479,8 @@ assert.match(main, /Tafonomía y patología \/ trauma/);
 assert.match(main, /taphonomyDetails:state\.taphonomyDetails/);
 assert.match(main, /state\.taphonomyDetails = saved\.taphonomyDetails/);
 assert.match(main, /refreshVisualStateAfterHistory/);
+assert.match(main, /MAX_PROJECT_PHOTO_BYTES = 64 \* 1024 \* 1024/);
+assert.match(main, /event\.target\?\.id !== 'photo-input'/);
 assert.match(main, /taphonomyDetails: \{\}, pathologyDetails: \{\}, notes:/);
 assert.match(main, /hierarchy: \{ sites: \[\], campaigns: \[\], sectors: \[\], contexts: \[\], individuals: \[\] \}/);
 assert.match(main, /lightIntensity: 1, ambientLightIntensity: 1, lightingAzimuth: 30, lightingElevation: 55/);

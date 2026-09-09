@@ -61,7 +61,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 42 | PESO | Selector g/kg por registro identificado y fragmento indeterminado, almacenamiento canónico en gramos, exportación/totales compatibles y pruebas de ausencia frente a peso cero. |
 | 43 | TAFONOMÍA | Catálogo curado y anotaciones múltiples estructuradas por hueso con evidencia. |
 | 44 | PATOLOGÍA Y TRAUMA | Anotación de trauma/patología en superficie 3D enlazada a ficha, sin diagnóstico automático. |
-| 45 | FOTOGRAFÍAS | Verificar todos los ámbitos de fotos, tamaño/cuota, edición y recuperación de binarios. |
+| 45 | FOTOGRAFÍAS | Límite por archivo de 12 MB y guardia acumulada de 64 MB antes de leer nuevas imágenes; queda verificar edición y recuperación de binarios en cuotas reales. |
 | 46 | PINTAR INVENTARIO | Pruebas de pintura táctil en tablet/móvil y accesos rápidos, sin arrastrar la cámara accidentalmente. |
 | 47 | BARRA DE PINTURA | Barra y estado persistente operativos; probar todos los estados con teclado/táctil. |
 | 48 | FUNCIONAMIENTO DE PINTAR INVENTARIO | Secuencia de pintar varios huesos, deshacer y recargar como E2E de inventario completo; la selección múltiple y acciones masivas confirmadas ya tienen cobertura E2E. |

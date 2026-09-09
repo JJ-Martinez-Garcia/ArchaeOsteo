@@ -167,3 +167,5 @@
   y todos los campos de contexto ampliados.
 - Las descargas de paquetes 3D revierten de forma transaccional tanto archivos nuevos como
   sobrescrituras previas si falla una petición.
+- La selección de fotografías comprueba también un presupuesto acumulado estimado de 64 MB
+  antes de iniciar lecturas, reduciendo el riesgo de agotar la cuota local.

@@ -1078,3 +1078,6 @@ const reportHtmlWithPrintLayout = reportHtml;
 reportHtml = function printableReportHtml() {
   return reportHtmlWithPrintLayout().replace('</style>', '@page{size:A4;margin:12mm}h1,h2,figure,table{break-after:auto;break-inside:avoid}tr{break-inside:avoid;break-after:auto}.report-photos{break-inside:auto}', '</style>');
 };
+const MAX_PROJECT_PHOTO_BYTES = 64 * 1024 * 1024;
+const photoStorageBytes = () => Object.values(state.photos || {}).flatMap(items => Array.isArray(items) ? items : []).reduce((sum, photo) => sum + Math.ceil(String(photo?.dataUrl || '').length * 0.75), 0);
+document.addEventListener('change', event => { if (event.target?.id !== 'photo-input') return; const selectedBytes = [...event.target.files || []].reduce((sum, file) => sum + Number(file.size || 0), 0); if (photoStorageBytes() + selectedBytes > MAX_PROJECT_PHOTO_BYTES) { event.stopImmediatePropagation(); event.target.value = ''; document.querySelector('#toast').textContent = 'Fotos rechazadas: el proyecto superaría el límite total de 64 MB'; } }, true);
