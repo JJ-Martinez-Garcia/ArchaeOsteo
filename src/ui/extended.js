@@ -140,8 +140,8 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
         if(!Number.isInteger(value)||value<0||!reason){document.querySelector('#review-message').textContent='Cada valor requiere un entero no negativo y una justificación.';return;}
         next[key]={value,reason,updatedAt:new Date().toISOString(),signature:JSON.stringify(calculateOsteoAnalysis(bones,state).rows)};
       }
-      state.changeLog||=[];state.changeLog.push({date:new Date().toISOString(),method:'manual_analysis_review',previous:state.analysisReview||{},next});
-      state.analysisReview=next;await saveLocal();document.querySelector('#analysis-panel-button').click();
+       commitInventoryEdit('manual_analysis_review',()=>{ state.analysisReview=next; });
+       await saveLocal();document.querySelector('#analysis-panel-button').click();
     };
   };
 
