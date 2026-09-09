@@ -30,6 +30,8 @@
   además de la ejecución directa con Node.
 - El árbol osteológico muestra símbolos de estado y etiquetas accesibles, y sincroniza
   ambos al pintar o editar inventario sin depender del color.
+- Corregida la actualización en vivo de esos indicadores: al cambiar una fila, el
+  símbolo y su nombre accesible reflejan inmediatamente el nuevo estado.
 
 ## Cambios recientes
 
