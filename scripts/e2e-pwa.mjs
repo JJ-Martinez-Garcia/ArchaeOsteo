@@ -422,6 +422,11 @@ try {
   assert.equal(await evaluate(cdp, `document.querySelector('#stats-summary').textContent.includes('/')`), true, 'Combined filters must refresh statistics');
   await evaluate(cdp, `document.querySelector('#clear-filters').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.filters?.side==='all'&&value.filters?.status==='all','Clear inventory filters');
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#show-table').click()`);
+  await evaluate(cdp, `(()=>{for(const id of ['skull','mandible']){const select=document.querySelector('[data-row-status="'+id+'"]');select.value='present';select.dispatchEvent(new Event('change'));}})()`);
+  await evaluate(cdp, `(()=>{const input=document.querySelector('[data-row-field="completeness"][data-row-id="skull"]');input.value='100';input.dispatchEvent(new Event('change'));const other=document.querySelector('[data-row-field="completeness"][data-row-id="mandible"]');other.value='';other.dispatchEvent(new Event('change'));})()`);
+  await evaluate(cdp, `document.querySelector('#tab-stats').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#stats-summary').textContent.includes('100%')`), true, 'Statistics must exclude unknown completeness from average');
   await evaluate(cdp, `document.querySelector('#tab-report').click()`);
   assert.equal(await evaluate(cdp, `['sources','method','limits'].every(key=>document.querySelector('#report-'+key)?.tagName==='TEXTAREA')`), true, 'Long report fields must be multiline controls');
   await evaluate(cdp, `document.querySelector('#report-sources').value='DOI: E2E\\nReferencia de campo';document.querySelector('#report-method').value='Comparación osteológica';document.querySelector('#report-limits').value='Pendiente de revisión especializada';document.querySelector('#save-report').click()`);
