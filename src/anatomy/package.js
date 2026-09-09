@@ -129,9 +129,9 @@ export async function downloadModelPackage(manifest, profileId, boneIds = [], op
       const response = await fetch(url, { cache: 'no-cache' });
       if (!response.ok) throw new Error(`No se pudo descargar ${url} (${response.status}).`);
       const existed = await cache.match(url);
-      await cache.put(url, response.clone());
       if (!existed) addedUrls.push(url);
       else replacedEntries.push({ url, response: existed.clone() });
+      await cache.put(url, response.clone());
     }
   } catch (error) {
     await Promise.all([addedUrls.map(url => cache.delete(url)), replacedEntries.map(entry => cache.put(entry.url, entry.response))].flat());

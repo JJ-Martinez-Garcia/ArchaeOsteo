@@ -660,6 +660,7 @@ assert.match(await text('src/domain/inventory-history.js'), /'hidden'.*'lighting
 assert.match(await text('src/domain/inventory-history.js'), /SNAPSHOT_DEFAULTS/);
 assert.match(await text('src/anatomy/package.js'), /const addedUrls = \[\];/);
 assert.match(await text('src/anatomy/package.js'), /const replacedEntries = \[\];/);
+assert.match(await text('src/anatomy/package.js'), /replacedEntries\.push\(\{ url, response: existed\.clone\(\) \}\);\s+await cache\.put/s);
 assert.match(await text('src/anatomy/package.js'), /Promise\.all\(\[addedUrls\.map/);
 assert.match(await text('src/ui/extended.js'), /commitInventoryEdit\('hierarchy_entity_add'/);
 assert.match(await text('src/ui/extended.js'), /export-change-log/);
