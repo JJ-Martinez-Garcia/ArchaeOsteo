@@ -184,6 +184,8 @@ assert.match(main, /async function saveReportData/);
 assert.match(main, /async function printReport\(\) \{ await saveReportData\(\)/);
 assert.match(main, /function trapDialogFocus/);
 assert.match(main, /previous\?\.isConnected/);
+assert.match(main, /aria-describedby="project-name-description"/);
+assert.match(main, /aria-describedby="confirm-action-description"/);
 assert.match(main, /if\(document\.visibilityState==='visible'\)syncInventoryVisualColors\(\)/);
 assert.match(main, /if\(document\.visibilityState==='visible'\)renderLabels\(\)/);
 assert.match(main, /quantification-summary/);

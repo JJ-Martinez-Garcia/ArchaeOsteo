@@ -733,7 +733,7 @@ function requestProjectName() {
     const en = state.language === 'en';
     const overlay = document.createElement('div');
     overlay.className = 'project-name-modal';
-    overlay.innerHTML = `<div class="project-name-dialog" role="dialog" aria-modal="true" aria-labelledby="project-name-title"><h2 id="project-name-title">${en ? 'New project' : 'Nuevo proyecto'}</h2><p>${en ? 'Choose a name for the local project.' : 'Elige un nombre para el proyecto local.'}</p><form id="project-name-form"><label for="project-name-input">${en ? 'Project name' : 'Nombre del proyecto'}<input id="project-name-input" required maxlength="120" value="${en ? 'Osteology project' : 'Proyecto osteológico'}"></label><div class="project-name-actions"><button type="button" id="project-name-cancel" class="secondary-action">${en ? 'Cancel' : 'Cancelar'}</button><button type="submit" class="secondary-action">${en ? 'Create project' : 'Crear proyecto'}</button></div></form></div>`;
+    overlay.innerHTML = `<div class="project-name-dialog" role="dialog" aria-modal="true" aria-labelledby="project-name-title" aria-describedby="project-name-description"><h2 id="project-name-title">${en ? 'New project' : 'Nuevo proyecto'}</h2><p id="project-name-description">${en ? 'Choose a name for the local project.' : 'Elige un nombre para el proyecto local.'}</p><form id="project-name-form"><label for="project-name-input">${en ? 'Project name' : 'Nombre del proyecto'}<input id="project-name-input" required maxlength="120" value="${en ? 'Osteology project' : 'Proyecto osteológico'}"></label><div class="project-name-actions"><button type="button" id="project-name-cancel" class="secondary-action">${en ? 'Cancel' : 'Cancelar'}</button><button type="submit" class="secondary-action">${en ? 'Create project' : 'Crear proyecto'}</button></div></form></div>`;
     document.body.appendChild(overlay);
     const input = overlay.querySelector('#project-name-input');
     const restoreFocus = trapDialogFocus(overlay.querySelector('[role="dialog"]'), input);
@@ -750,7 +750,7 @@ function requestConfirmation(message) {
     const en = state.language === 'en';
     const overlay = document.createElement('div');
     overlay.className = 'project-name-modal';
-    overlay.innerHTML = `<div class="project-name-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-action-title"><h2 id="confirm-action-title">${en ? 'Confirm action' : 'Confirmar acción'}</h2><p>${escapeHtml(message)}</p><div class="project-name-actions"><button type="button" id="confirm-action-cancel" class="secondary-action">${en ? 'Cancel' : 'Cancelar'}</button><button type="button" id="confirm-action-accept" class="secondary-action">${en ? 'Continue' : 'Continuar'}</button></div></div>`;
+    overlay.innerHTML = `<div class="project-name-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-action-title" aria-describedby="confirm-action-description"><h2 id="confirm-action-title">${en ? 'Confirm action' : 'Confirmar acción'}</h2><p id="confirm-action-description">${escapeHtml(message)}</p><div class="project-name-actions"><button type="button" id="confirm-action-cancel" class="secondary-action">${en ? 'Cancel' : 'Cancelar'}</button><button type="button" id="confirm-action-accept" class="secondary-action">${en ? 'Continue' : 'Continuar'}</button></div></div>`;
     document.body.appendChild(overlay);
     const accept = overlay.querySelector('#confirm-action-accept');
     const restoreFocus = trapDialogFocus(overlay.querySelector('[role="dialog"]'), accept);
