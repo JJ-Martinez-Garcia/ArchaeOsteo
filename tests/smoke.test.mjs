@@ -723,6 +723,7 @@ assert.match(main, /searchableBoneTerms/);
 assert.match(main, /portionRecords:state\.portionRecords/);
 assert.match(main, /weightUnits:state\.weightUnits/);
 assert.match(await text('src/ui/extended.js'), /record-weight-unit/);
+assert.match(await text('src/ui/extended.js'), /indeterminate-weight-unit/);
 assert.match(await text('src/domain/weights.js'), /weightToGrams/);
 assert.match(main, /Independent portions/);
 assert.match(main, /portion_records/);

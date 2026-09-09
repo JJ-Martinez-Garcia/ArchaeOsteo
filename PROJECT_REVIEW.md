@@ -29,6 +29,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   oculta la ficha del hueso mientras dura el ejercicio y permite salir restaurándola.
 - Los pesos identificados admiten g/kg por registro; se guardan canónicamente en gramos,
   conservan la unidad introducida para la ficha y mantienen exportaciones/totales anteriores.
+- Los fragmentos indeterminados aceptan la misma unidad y convierten a gramos para sus
+  totales, manteniendo la unidad original visible.
 - Copia `.osteo3d` autocontenida con modelos personalizados cacheados, manifiesto,
   comprobación CRC por ZIP y checksum por modelo en el manifiesto, además de restauración
   probada; JSON se mantiene como formato ligero.
