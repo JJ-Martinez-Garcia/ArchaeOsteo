@@ -44,7 +44,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 25 | ESTADOS DE LOS HUESOS | Estados definidos; cerrar pruebas de cada transición y sincronización entre vistas. |
 | 26 | CONSERVACIÓN | Distinguir no evaluado/no evaluable y porcentaje no registrado; validar estados y medias. |
 | 27 | FRAGMENTACIÓN | Completitud/fragmentación como campos explícitos, separados de presencia y porcentaje. |
-| 28 | HUESOS LARGOS | Varias porciones con estados independientes simultáneos; ahora se selecciona una porción por elemento. |
+| 28 | HUESOS LARGOS | Varias porciones con estado y completitud independientes simultáneos; se conserva además el campo `Portion` antiguo para compatibilidad. |
 | 29 | LATERALIDAD | Lateralidad indeterminada/no aplicable con validación de importación y corrección. |
 | 30 | INVENTARIO DENTAL | Códigos canónicos y compatibilidad ES/EN implementados; ampliar ronda XLSX a todas las hojas/estados y asociación con dientes 3D. |
 | 31 | VÉRTEBRAS | Vértebras individualizadas; añadir contexto anatómico/fusión y pruebas de selección. |

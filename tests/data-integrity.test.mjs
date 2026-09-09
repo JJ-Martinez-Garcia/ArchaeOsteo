@@ -5,6 +5,7 @@ import { takeInventorySnapshot, applyInventorySnapshot } from '../src/domain/inv
 import { normalizeProject, fallbackProjectKey, loadProject, listProjects, saveProject } from '../src/data/store.js';
 import { createProjectWriter } from '../src/data/persistence.js';
 import { createOsteoArchive, readOsteoArchive } from '../src/domain/backup-archive.js';
+import { normalizePortionRecords, portionRecordCount } from '../src/domain/portion-records.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
 const archiveBytes = createOsteoArchive(createBackup({ projectId: 'archive-1', projectName: 'Copia con GLB' }), [{ name: 'models/custom/infant/left_femur.glb', data: new Uint8Array([0, 1, 2, 255]) }]);
@@ -62,6 +63,11 @@ assert.deepEqual(calibrationBackup.calibrations.skull, { referenceMm: 50, localD
 const modelReference = { skull: { profile: 'adult_male', source: 'custom', geometryVersion: 'external', customUpdatedAt: '2026-09-09T12:00:00Z', needsReview: true } };
 const modelReferenceBackup = validateBackup(createBackup({ landmarkModelRefs: modelReference }));
 assert.deepEqual(modelReferenceBackup.landmarkModelRefs, modelReference);
+const portions = normalizePortionRecords({ left_femur: { epiphysis_proximal: { status: 'present', completeness: 80 }, shaft_mid: { status: 'fragmentary', fragments: 2 }, invalid: { status: 'bad' } } });
+assert.equal(portions.left_femur.epiphysis_proximal.completeness, 80);
+assert.equal(portions.left_femur.shaft_mid.fragments, 2);
+assert.equal(portionRecordCount(portions), 2);
+assert.deepEqual(normalizeProject({ portionRecords: portions }).portionRecords, portions);
 assert.equal(validateBackup(createBackup({ weights: { skull: 0 }, notes: { skull: rows[0].Notes } })).notes.skull, rows[0].Notes);
 
 assert.deepEqual(importDentalRows({ 12: 'caries' }, [{ Tooth_FDI: 11, Status: 'Presente' }, { Tooth_FDI: 12, Status: '' }]), { 11: 'present', 12: 'caries' });

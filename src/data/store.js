@@ -112,6 +112,7 @@ export function normalizeProject(project) {
     fragments: normalizeNumberMap(project.fragments, { min: 0, integer: true }),
     weights: normalizeNumberMap(project.weights, { rejectBelowMin: true }),
     portions: project.portions || {},
+    portionRecords: project.portionRecords || {},
     individuals: normalizeStringMap(project.individuals),
     ue: normalizeStringMap(project.ue),
     taphonomy: Object.fromEntries(objectEntries(project.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
