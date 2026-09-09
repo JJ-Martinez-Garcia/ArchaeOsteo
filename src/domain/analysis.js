@@ -3,8 +3,11 @@
  * These functions deliberately expose their inputs and method instead of
  * hiding scientific assumptions inside the UI.
  */
+import { weightToGrams } from './weights.js';
 export function inventoryRows(bones, state) {
-  return bones.map(bone => ({
+  return bones.map(bone => {
+    const weightUnit = state.weightUnits?.[bone.id] === 'kg' ? 'kg' : 'g';
+    return {
     boneId: bone.id,
     name: bone.es,
     region: bone.region,
@@ -12,15 +15,16 @@ export function inventoryRows(bones, state) {
     status: state.status?.[bone.id] || 'not_recorded',
     fragments: state.fragments?.[bone.id] == null || !Number.isFinite(Number(state.fragments[bone.id])) ? null : Math.max(0, Number(state.fragments[bone.id])),
     weight: Number.isFinite(Number(state.weights?.[bone.id])) ? Math.max(0, Number(state.weights[bone.id])) : null,
-    weightUnit: state.weightUnits?.[bone.id] === 'kg' ? 'kg' : 'g',
-    weightGrams: Number.isFinite(Number(state.weights?.[bone.id])) ? Math.max(0, Number(state.weights[bone.id])) : null,
+    weightUnit,
+    weightGrams: weightToGrams(state.weights?.[bone.id], weightUnit),
     portion: state.portions?.[bone.id] || 'whole',
     individual: state.individuals?.[bone.id] || state.report?.individual || 'IND-LOCAL',
     context: state.ue?.[bone.id] || state.report?.context || 'Sin contexto',
     taphonomy: state.taphonomy?.[bone.id] || [],
     pathology: state.pathology?.[bone.id] || [],
     completeness: state.completeness?.[bone.id] == null || !Number.isFinite(Number(state.completeness[bone.id])) ? null : Number(state.completeness[bone.id])
-  }));
+    };
+  });
 }
 
 export function calculateNisp(rows) {

@@ -105,6 +105,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - Las filas del árbol exponen el estado mediante símbolos (`✓`, `✕`, `◐`, `?`, `—`, `○`)
   y `aria-label`; la prueba E2E comprueba que el indicador se actualiza tras una acción
   de inventario.
+- El análisis normaliza ahora explícitamente `weightGrams` con la unidad almacenada,
+  de modo que los pesos en kg no se interpretan como gramos.
 - Los refrescos de paneles, etiquetas, iluminación y colores del visor se omiten en segundo
   plano; el panel estadístico usa un único ciclo visible para reducir trabajo periódico.
 - NISP/MNE/MNI muestran el método y el carácter provisional; una revisión manual exige

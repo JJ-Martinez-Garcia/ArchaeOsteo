@@ -32,6 +32,8 @@
   ambos al pintar o editar inventario sin depender del color.
 - Corregida la actualización en vivo de esos indicadores: al cambiar una fila, el
   símbolo y su nombre accesible reflejan inmediatamente el nuevo estado.
+- Corregida la normalización analítica de pesos: los registros introducidos en kg se
+  convierten a gramos en `weightGrams` antes de cualquier resumen cuantitativo.
 
 ## Cambios recientes
 

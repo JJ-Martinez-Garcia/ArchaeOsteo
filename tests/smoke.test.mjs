@@ -984,6 +984,8 @@ assert.match(mniWithIndividuals.mni.method, /individuos explícitos/);
 assert.equal(analysis.individuals.value, 1);
 assert.equal(analysis.individuals.rows[0].individual, 'IND-A');
 assert.equal(analysis.rows[0].weight, 123.45);
+const kilogramAnalysis = calculateOsteoAnalysis(testBones, { status: { left_femur: 'present' }, weights: { left_femur: 1.25 }, weightUnits: { left_femur: 'kg' }, report: { individual: 'IND-LOCAL' } });
+assert.equal(kilogramAnalysis.rows[0].weightGrams, 1250, 'Analysis must normalize kilogram weights to grams');
 assert.ok(portionOptionsForBone({ type: 'long_bone' }).some(([key]) => key === 'epiphysis_proximal'));
 assert.ok(!portionOptionsForBone({ type: 'rib' }).some(([key]) => key === 'epiphysis_proximal'));
 assert.equal(parseCsv('Bone_ID,Presence\nleft_femur,present')[0].Bone_ID, 'left_femur');
