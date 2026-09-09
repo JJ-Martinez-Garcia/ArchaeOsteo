@@ -477,6 +477,8 @@ try {
   await waitForValue(cdp,projectReadExpression(),value=>value.hierarchy?.individuals?.some(entity=>entity.name==='IND-MANUAL'&&entity.parentId==='context:ue-4'),'Persist manually added hierarchy entity');
   await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#undo').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>!value.hierarchy?.individuals?.some(entity=>entity.name==='IND-MANUAL'),'Undo hierarchy entity addition');
+  await evaluate(cdp, `(()=>{document.querySelector('#record-panel-button').click();const context=document.querySelector('[data-hierarchy-ref="contextId"]');if(!context)throw new Error('Hierarchy record selector missing');context.value='context:ue-4';document.querySelector('#save-record').click();})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.hierarchyRefs?.[value.selected]?.contextId==='context:ue-4','Persist hierarchy association on selected bone record');
   await evaluate(cdp, `document.querySelector('#changes-panel-button').click()`);
   await waitForValue(cdp, `Boolean(document.querySelector('#change-method')&&document.querySelector('#change-query')&&document.querySelector('#export-change-log'))`, value=>value === true, 'Render change log filters');
   await evaluate(cdp, `(()=>{const input=document.querySelector('#change-query');input.value='hierarchy';input.dispatchEvent(new Event('input',{bubbles:true}));})()`);

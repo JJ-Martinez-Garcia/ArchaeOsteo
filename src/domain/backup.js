@@ -31,6 +31,7 @@ export function createBackup(state) {
       portions: state.portions,
       portionRecords: state.portionRecords,
       developmentRecords: state.developmentRecords,
+      hierarchyRefs: state.hierarchyRefs,
       individuals: state.individuals,
       ue: state.ue,
       taphonomy: state.taphonomy,
@@ -94,7 +95,7 @@ const INVENTORY_FIELDS = {
   individuals: ['Individual_ID', 'Individual'], ue: ['UE', 'Context_UE'],
   taphonomy: ['Taphonomy'], pathology: ['Pathology'],
   taphonomyDetails: ['Taphonomy_Detail'], pathologyDetails: ['Pathology_Detail'],
-  notes: ['Notes', 'Observations'], developmentRecords: ['Development_records', 'Development']
+  notes: ['Notes', 'Observations'], developmentRecords: ['Development_records', 'Development'], hierarchyRefs: ['Hierarchy_refs', 'HierarchyRefs']
 };
 const nonempty = value => value != null && String(value).trim() !== '';
 const cell = (row, columns) => columns.map(key => row?.[key]).find(nonempty);
@@ -131,6 +132,10 @@ export function applyInventoryRows(project, rows, bones) {
         } catch { errors.push(`${columns[0]} debe contener un objeto JSON válido`); }
       }
       if (field === 'portionRecords' || field === 'developmentRecords') {
+        try { value = JSON.parse(value); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); }
+        catch { errors.push(`${columns[0]} debe contener un objeto JSON válido`); }
+      }
+      if (field === 'hierarchyRefs') {
         try { value = JSON.parse(value); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); }
         catch { errors.push(`${columns[0]} debe contener un objeto JSON válido`); }
       }

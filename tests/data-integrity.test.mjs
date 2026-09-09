@@ -20,6 +20,8 @@ assert.deepEqual(developmentComponentsForBone({ id: 'left_femur' }), ['shaft', '
 assert.deepEqual(normalizeDevelopmentRecords({ left_femur: { proximal_epiphysis: { status: 'present', fusion: 'partial', completeness: 80, observation: 'visible' }, invalid: { status: 'present' } } }), { left_femur: { proximal_epiphysis: { status: 'present', fusion: 'partial', completeness: 80, observation: 'visible' } } });
 const xlsxDevelopment = mergeAuxiliaryXlsx({}, { Sheets: { 'Desarrollo inmaduro': { rows: [{ Bone_ID: 'left_femur', Component_ID: 'shaft', Status: 'fragmentary', Fusion: 'unfused', Completeness: 60, Observation: 'diáfisis conservada' }] } } }, xlsxMock, bones);
 assert.equal(xlsxDevelopment.developmentRecords.left_femur.shaft.fusion, 'unfused');
+const xlsxHierarchyRefs = mergeAuxiliaryXlsx({}, { Sheets: { 'Asociaciones jerárquicas': { rows: [{ Bone_ID: 'skull', siteId: 'site:norte', contextId: 'context:ue-4', individualId: 'individual:ind-7' }] } } }, xlsxMock, bones);
+assert.deepEqual(xlsxHierarchyRefs.hierarchyRefs.skull, { siteId: 'site:norte', contextId: 'context:ue-4', individualId: 'individual:ind-7' });
 const previousCaches = globalThis.caches;
 const previousFetch = globalThis.fetch;
 const packageEntries = new Map([['./models/test/a.glb', new Response('old')]]);
@@ -96,6 +98,8 @@ assert.deepEqual(validateBackup(createBackup({ cameraView })).cameraView, camera
 assert.deepEqual(normalizeProject({ cameraView: { theta: 2, phi: 99, radius: 999, target: [1, 2, 3] } }).cameraView, { theta: 2, phi: Math.PI - 0.12, radius: 40, target: [1, 2, 3] });
 const calibrationBackup = validateBackup(createBackup({ calibrations: { skull: { referenceMm: 50, localDistance: 2 } } }));
 assert.deepEqual(calibrationBackup.calibrations.skull, { referenceMm: 50, localDistance: 2 });
+const hierarchyRefs = { skull: { siteId: 'site:norte', campaignId: 'campaign:2026', contextId: 'context:ue-4', invalid: 'ignored-by-normalizer' } };
+assert.deepEqual(validateBackup(createBackup({ hierarchyRefs })).hierarchyRefs, { skull: { siteId: 'site:norte', campaignId: 'campaign:2026', contextId: 'context:ue-4' } });
 const modelReference = { skull: { profile: 'adult_male', source: 'custom', geometryVersion: 'external', customUpdatedAt: '2026-09-09T12:00:00Z', needsReview: true } };
 const modelReferenceBackup = validateBackup(createBackup({ landmarkModelRefs: modelReference }));
 assert.deepEqual(modelReferenceBackup.landmarkModelRefs, modelReference);
@@ -117,11 +121,12 @@ assert.deepEqual(importDentalRows({ 11: 'present' }, [{ Tooth_FDI: 11, Status: '
 assert.throws(() => importDentalRows({}, [{ Tooth_FDI: 51, Status: 'present' }]));
 assert.throws(() => importDentalRows({}, [{ Tooth_FDI: 11, Status: 'unexpected' }]));
 assert.throws(() => importDentalRows({}, [{ Tooth_FDI: 11, Status: 'present' }, { Tooth_FDI: 11, Status: 'wear' }]));
-const state = { ...original, pathologyDetails: { skull: { description: 'antes' } }, dental: { 11: 'wear' }, developmentRecords: { left_femur: { shaft: { status: 'present', fusion: 'unfused' } } }, skeletonFilter: 'axial', regionFilter: 'Cráneo' };
+const state = { ...original, hierarchyRefs: { skull: { contextId: 'context:ue-4' } }, pathologyDetails: { skull: { description: 'antes' } }, dental: { 11: 'wear' }, developmentRecords: { left_femur: { shaft: { status: 'present', fusion: 'unfused' } } }, skeletonFilter: 'axial', regionFilter: 'Cráneo' };
 const snapshot = takeInventorySnapshot(state);
 state.weights.skull = 99; state.pathologyDetails.skull.description = 'después'; state.dental[11] = 'caries'; state.developmentRecords.left_femur.shaft.fusion = 'fused'; state.skeletonFilter = 'appendicular'; state.regionFilter = 'Pelvis';
 applyInventorySnapshot(state, snapshot);
 assert.equal(state.weights.skull, 12); assert.equal(state.pathologyDetails.skull.description, 'antes'); assert.equal(state.dental[11], 'wear'); assert.equal(state.developmentRecords.left_femur.shaft.fusion, 'unfused'); assert.equal(state.skeletonFilter, 'axial'); assert.equal(state.regionFilter, 'Cráneo');
+assert.equal(state.hierarchyRefs.skull.contextId, 'context:ue-4');
 state.pathologyDetails.skull.description = 'nueva';
 assert.equal(snapshot.pathologyDetails.skull.description, 'antes', 'Undo snapshots cannot be mutated by later edits');
 const modelReferenceState = { landmarkModelRefs: modelReference };

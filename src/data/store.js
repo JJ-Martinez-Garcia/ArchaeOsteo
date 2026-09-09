@@ -13,6 +13,13 @@ const REGION_VALUES = new Set(['all', 'Cráneo', 'Columna', 'Tórax', 'Cintura e
 const REPORT_FIELDS = ['individual', 'burial', 'grave', 'tomb', 'ue', 'sector', 'grid', 'site', 'campaign', 'date', 'context', 'chronology', 'investigator', 'observations', 'sources', 'method', 'limits'];
 
 function objectEntries(value) { return value && typeof value === 'object' && !Array.isArray(value) ? Object.entries(value) : []; }
+const HIERARCHY_REF_FIELDS = ['siteId', 'campaignId', 'sectorId', 'contextId', 'individualId'];
+function normalizeHierarchyRefs(value) {
+  return Object.fromEntries(objectEntries(value).map(([boneId, refs]) => {
+    const normalized = Object.fromEntries(HIERARCHY_REF_FIELDS.map(field => [field, String(refs?.[field] || '').trim()]).filter(([, item]) => item));
+    return [String(boneId), normalized];
+  }).filter(([, refs]) => Object.keys(refs).length));
+}
 function normalizeEnumMap(value, allowed) { return Object.fromEntries(objectEntries(value).filter(([, item]) => allowed.has(item))); }
 function normalizeNumberMap(value, { min = 0, max = Number.POSITIVE_INFINITY, integer = false, rejectBelowMin = false } = {}) { return Object.fromEntries(objectEntries(value).filter(([, item]) => (typeof item === 'number' || typeof item === 'string') && String(item).trim() !== '').map(([key, item]) => [key, Number(item)]).filter(([, item]) => Number.isFinite(item) && (!rejectBelowMin || item >= min)).map(([key, item]) => [key, Math.max(min, Math.min(max, integer ? Math.floor(item) : item))])); }
 function normalizeStringMap(value) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, String(item ?? '').trim()]).filter(([, item]) => item)); }
@@ -132,6 +139,7 @@ export function normalizeProject(project) {
     portions: project.portions || {},
     portionRecords: project.portionRecords || {},
     developmentRecords: normalizeDevelopmentRecords(project.developmentRecords),
+    hierarchyRefs: normalizeHierarchyRefs(project.hierarchyRefs),
     individuals: normalizeStringMap(project.individuals),
     ue: normalizeStringMap(project.ue),
     taphonomy: Object.fromEntries(objectEntries(project.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
