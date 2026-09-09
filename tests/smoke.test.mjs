@@ -738,6 +738,8 @@ assert.match(main, /reportContextFields/);
 assert.match(await text('scripts/verify-pages.mjs'), /Published Pages entry point/);
 assert.match(await text('.github/workflows/pages.yml'), /Verify published Pages entry point/);
 assert.match(main, /ensureLongReportFields/);
+assert.match(main, /printableReportHtml/);
+assert.match(main, /@page\{size:A4;margin:12mm\}/);
 assert.match(main, /\['sources', 'method', 'limits'\]/);
 assert.match(main, /translatedProvenanceReport/);
 assert.match(main, /Sources consulted.*Method and scope.*Limitations \/ review pending/);

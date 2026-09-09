@@ -980,3 +980,7 @@ ensureReportContextFields = function ensureLongReportFields() {
     input.replaceWith(textarea);
   });
 };
+const reportHtmlWithPrintLayout = reportHtml;
+reportHtml = function printableReportHtml() {
+  return reportHtmlWithPrintLayout().replace('</style>', '@page{size:A4;margin:12mm}h1,h2,figure,table{break-after:auto;break-inside:avoid}tr{break-inside:avoid;break-after:auto}.report-photos{break-inside:auto}', '</style>');
+};
