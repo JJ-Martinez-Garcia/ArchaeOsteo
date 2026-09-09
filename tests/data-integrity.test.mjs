@@ -57,6 +57,8 @@ assert.equal(normalizeProject([]), null);
 assert.throws(() => validateBackup({ format: 'osteo3d-project-backup', version: 1, project: [] }));
 const visualBackup = validateBackup(createBackup({ skeletonFilter: 'axial', regionFilter: 'Cráneo', explosion: 70, tableMode: true, orthographic: true, isolate: true, lightingMode: 'laboratory' }));
 assert.equal(visualBackup.explosion, 70); assert.equal(visualBackup.tableMode, true); assert.equal(visualBackup.lightingMode, 'laboratory');
+const calibrationBackup = validateBackup(createBackup({ calibrations: { skull: { referenceMm: 50, localDistance: 2 } } }));
+assert.deepEqual(calibrationBackup.calibrations.skull, { referenceMm: 50, localDistance: 2 });
 assert.equal(validateBackup(createBackup({ weights: { skull: 0 }, notes: { skull: rows[0].Notes } })).notes.skull, rows[0].Notes);
 
 assert.deepEqual(importDentalRows({ 12: 'caries' }, [{ Tooth_FDI: 11, Status: 'Presente' }, { Tooth_FDI: 12, Status: '' }]), { 11: 'present', 12: 'caries' });

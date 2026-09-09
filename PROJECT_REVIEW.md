@@ -22,6 +22,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   sus rutas de edición respetan el bloqueo del elemento seleccionado.
 - Copia `.osteo3d` autocontenida con modelos personalizados cacheados, manifiesto,
   comprobación CRC y restauración probada; JSON se mantiene como formato ligero.
+- Osteometría: calibración por dos landmarks y distancia convertida a milímetros,
+  con escala por elemento, fecha y procedencia del dato introducido por el usuario;
+  no se presenta como calibración científica global.
 
 - Ampliación: se publican 537 GLB propios para femenino, infante y neonato,
   con metadatos y licencia incorporados; no se han validado científicamente.

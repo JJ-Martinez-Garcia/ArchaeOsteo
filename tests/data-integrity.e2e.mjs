@@ -14,6 +14,10 @@ export async function testDataIntegrity(cdp, evaluate, waitForValue, projectRead
   await waitForValue(cdp, projectReadExpression(), p => p.measurements?.skull?.length === 0 && p.measurements.skull.diameter === null, 'Manual measurements preserve zero and unknown');
   await run(`document.querySelector('#landmark-name').value='incomplete';document.querySelector('#add-landmark').click()`);
   assert.match(await run(`document.querySelector('#toast').textContent`), /tres coordenadas/);
+  await run(`(()=>{for(const [name,x] of [['A',0],['B',2]]){document.querySelector('#landmark-name').value=name;document.querySelector('#landmark-x').value=x;document.querySelector('#landmark-y').value='0';document.querySelector('#landmark-z').value='0';document.querySelector('#add-landmark').click();}})()`);
+  await run(`document.querySelector('#landmark-reference-mm').value='50';document.querySelector('#calibrate-landmarks').click()`);
+  await waitForValue(cdp, projectReadExpression(), p => p.calibrations?.skull?.referenceMm === 50, 'Persist user landmark calibration');
+  assert.match(await run(`document.querySelector('#landmark-distance').textContent`), /Distancia calibrada|Calibrated distance/);
   await click('#tab-inventory'); await click('#show-table');
   await run(`(()=>{const input=document.querySelector('[data-row-field="completeness"][data-row-id="skull"]');input.value='0';input.dispatchEvent(new Event('change'));})()`);
   await waitForValue(cdp, projectReadExpression(), p => p.completeness?.skull === 0, 'Table saves observed zero percent');

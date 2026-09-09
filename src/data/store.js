@@ -146,6 +146,7 @@ export function normalizeProject(project) {
     dentitionType: ['permanent', 'deciduous'].includes(project.dentitionType) ? project.dentitionType : 'permanent',
     measurements: project.measurements || {},
     landmarks: project.landmarks || {},
+    calibrations: project.calibrations || {},
     photos: normalizePhotos(project.photos),
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
     filters: normalizeFilters(project.filters),

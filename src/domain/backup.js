@@ -55,6 +55,7 @@ export function createBackup(state) {
       dentitionType: state.dentitionType,
       measurements: state.measurements,
       landmarks: state.landmarks,
+      calibrations: state.calibrations,
       photos: state.photos,
       photoScope: state.photoScope || 'bone',
       photoTargetId: state.photoTargetId || '',

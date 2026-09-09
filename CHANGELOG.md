@@ -2,6 +2,7 @@
 
 ## Cambios recientes
 
+- Osteometría: calibración local por la distancia real entre los dos primeros landmarks, escala mm/unidad persistente y conversión visible con límites declarados; añadidas pruebas de cero, vacío y bloqueo.
 - Añadida la copia completa `.osteo3d`: ZIP autocontenido con JSON, manifiesto y modelos personalizados disponibles offline; importación con comprobación CRC y restauración en caché.
 - Integridad de datos: CSV multilínea y validación estructural, importación parcial sin fabricar ceros/porcentajes, rechazo atómico de filas y respeto a bloqueos en la confirmación.
 - Deshacer/rehacer de importación y ficha científica; tabla, pesos y mediciones distinguen valor cero de dato ausente. Mediciones y landmarks respetan el bloqueo.
