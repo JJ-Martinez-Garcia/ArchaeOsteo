@@ -748,6 +748,7 @@ assert.match(await text('scripts/verify-pages.mjs'), /Published Pages entry poin
 assert.match(await text('.github/workflows/pages.yml'), /Verify published Pages entry point/);
 assert.match(await text('index.html'), /Content-Security-Policy/);
 assert.match(await text('index.html'), /connect-src 'self'/);
+assert.match(await text('index.html'), /name="referrer" content="no-referrer"/);
 assert.match(await text('scripts/validate-privacy.mjs'), /Privacy validation: no implicit external data transport/);
 assert.match(await text('package.json'), /"validate-privacy": "node scripts\/validate-privacy\.mjs"/);
 assert.match(main, /ensureLongReportFields/);
