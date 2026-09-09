@@ -178,6 +178,8 @@ assert.match(main, /Representación por lateralidad/);
 assert.match(main, /function updateQuantificationSummary/);
 assert.match(main, /function skeletonMapReportHtml/);
 assert.match(main, /Mapa esquelético esquemático/);
+assert.match(main, /@page\{size:A4;margin:12mm\}/);
+assert.match(main, /thead\{display:table-header-group\}/);
 assert.match(main, /quantification-summary/);
 assert.match(main, /analysis\.nisp\.value/);
 assert.match(main, /analysis\.mne\.value/);
