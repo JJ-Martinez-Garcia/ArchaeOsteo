@@ -27,6 +27,8 @@
 .inspector .analysis-table :where(td, th) { overflow-wrap: anywhere; }
 .inspector .compare-inventory { min-width: 0; max-width: 100%; }
 .inspector-divider { display: none; }
+.inspector .bone-icon { display: inline-grid; place-items: center; width: 16px; min-width: 16px; height: 16px; border-radius: 50%; color: #fff; font-size: 10px; font-weight: 800; line-height: 1; }
+.inspector .bone-row { grid-template-columns: 16px minmax(0, 1fr); align-items: center; }
 @media (min-width: 901px) {
   .layout { grid-template-columns: 260px minmax(0, 1fr) 10px minmax(300px, min(720px, var(--inspector-width, 380px))); justify-content: start; }
   .layout > .inspector { contain: inline-size; }
