@@ -2,6 +2,7 @@
 
 ## Cambios recientes
 
+- Añadida la copia completa `.osteo3d`: ZIP autocontenido con JSON, manifiesto y modelos personalizados disponibles offline; importación con comprobación CRC y restauración en caché.
 - Integridad de datos: CSV multilínea y validación estructural, importación parcial sin fabricar ceros/porcentajes, rechazo atómico de filas y respeto a bloqueos en la confirmación.
 - Deshacer/rehacer de importación y ficha científica; tabla, pesos y mediciones distinguen valor cero de dato ausente. Mediciones y landmarks respetan el bloqueo.
 - Guardado ordenado con snapshots independientes, fallback por proyecto, recuperación de la copia más reciente y aviso persistente si fallan ambos almacenes. No se permite abandonar el proyecto desde el selector tras un fallo.

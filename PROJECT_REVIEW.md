@@ -20,6 +20,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   Los detalles y límites están documentados en [DATA_INTEGRITY.md](DATA_INTEGRITY.md).
 - Fotografías y fragmentos indeterminados incorporados al snapshot común de deshacer/rehacer;
   sus rutas de edición respetan el bloqueo del elemento seleccionado.
+- Copia `.osteo3d` autocontenida con modelos personalizados cacheados, manifiesto,
+  comprobación CRC y restauración probada; JSON se mantiene como formato ligero.
 
 - Ampliación: se publican 537 GLB propios para femenino, infante y neonato,
   con metadatos y licencia incorporados; no se han validado científicamente.

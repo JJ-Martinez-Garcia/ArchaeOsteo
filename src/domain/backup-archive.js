@@ -7,6 +7,7 @@ function join(parts) { const result = new Uint8Array(parts.reduce((sum, part) =>
 
 const CRC_TABLE = Array.from({ length: 256 }, (_, index) => { let value = index; for (let bit = 0; bit < 8; bit += 1) value = value & 1 ? (value >>> 1) ^ 0xedb88320 : value >>> 1; return value >>> 0; });
 function crc32(bytes) { let value = 0xffffffff; for (const byte of bytes) value = CRC_TABLE[(value ^ byte) & 255] ^ (value >>> 8); return (value ^ 0xffffffff) >>> 0; }
+function readU32(bytes, offset) { return (bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24)) >>> 0; }
 
 export function createStoredZip(entries) {
   const locals = [], centrals = []; let offset = 0;
@@ -30,7 +31,7 @@ export function createOsteoArchive(projectBackup, models = []) {
 export function readOsteoArchive(buffer) {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer); const entries = new Map(); let offset = 0;
   while (offset + 4 <= bytes.length && bytes[offset] === 0x50 && bytes[offset + 1] === 0x4b && bytes[offset + 2] === 0x03 && bytes[offset + 3] === 0x04) {
-    const method = bytes[offset + 8] | (bytes[offset + 9] << 8); const compressedSize = bytes[offset + 18] | (bytes[offset + 19] << 8) | (bytes[offset + 20] << 16) | (bytes[offset + 21] << 24); const nameSize = bytes[offset + 26] | (bytes[offset + 27] << 8); const extraSize = bytes[offset + 28] | (bytes[offset + 29] << 8); const name = decoder.decode(bytes.slice(offset + 30, offset + 30 + nameSize)); const start = offset + 30 + nameSize + extraSize; if (method !== 0 || start + compressedSize > bytes.length) throw new Error('Archivo Osteo3D no compatible o dañado.'); entries.set(name, bytes.slice(start, start + compressedSize)); offset = start + compressedSize;
+    const method = bytes[offset + 8] | (bytes[offset + 9] << 8); const expectedCrc = readU32(bytes, offset + 14); const compressedSize = readU32(bytes, offset + 18); const uncompressedSize = readU32(bytes, offset + 22); const nameSize = bytes[offset + 26] | (bytes[offset + 27] << 8); const extraSize = bytes[offset + 28] | (bytes[offset + 29] << 8); const name = decoder.decode(bytes.slice(offset + 30, offset + 30 + nameSize)); const start = offset + 30 + nameSize + extraSize; if (method !== 0 || compressedSize !== uncompressedSize || start + compressedSize > bytes.length) throw new Error('Archivo Osteo3D no compatible o dañado.'); const data = bytes.slice(start, start + compressedSize); if (crc32(data) !== expectedCrc) throw new Error(`Archivo Osteo3D dañado: ${name}.`); entries.set(name, data); offset = start + compressedSize;
   }
   if (!entries.has('project.json')) throw new Error('La copia Osteo3D no contiene project.json.');
   let project; try { project = JSON.parse(decoder.decode(entries.get('project.json'))); } catch { throw new Error('project.json no es JSON válido.'); }
