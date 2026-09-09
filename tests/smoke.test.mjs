@@ -713,6 +713,8 @@ assert.match(main, /La importación reemplazará los modelos GLB locales/);
 assert.match(await text('src/ui/extended.js'), /Vista previa de importación/);
 assert.match(await text('src/ui/extended.js'), /function mergeAuxiliaryXlsx/);
 assert.match(await text('src/ui/extended.js'), /Osteometría.*Landmarks.*Calibraciones/s);
+assert.match(await text('src/ui/extended.js'), /Licencia del código/);
+assert.match(await text('src/ui/extended.js'), /Licencias de terceros/);
 assert.match(await text('src/ui/extended.js'), /#new-project.*newProject/);
 assert.match(await text('src/ui/extended.js'), /\.pwa-update-label.*newVersion/);
 assert.match(await text('src/ui/extended.js'), /Confirmar importación/);
@@ -751,6 +753,8 @@ assert.match(extendedUi, /Ficha contexto.*Fragmentos indeterminados.*Odontograma
 assert.match(extendedUi, /dental: importDentalRows\(value.dental/);
 assert.match(extendedUi, /deciduousDental: importDentalRows\(value.deciduousDental/);
 assert.match(main, /Método MNI/);
+assert.match(await text('public/sw.js'), /'\.\/LICENSE'/);
+assert.match(await text('public/sw.js'), /'\.\/THIRD_PARTY_LICENSES\.md'/);
 assert.match(main, /reviewed after filters/);
 assert.match(main, /state\.filters\.preservation='all';state\.filters\.type='all'/);
 assert.match(main, /average completeness recorded/);
