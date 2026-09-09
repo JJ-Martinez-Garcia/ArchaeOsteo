@@ -6,6 +6,7 @@ import { portionOptionsForBone } from '../src/domain/portions.js';
 import { cacheCustomModelFile, customModelUrl, downloadModelPackage, formatPackageSize, getCachedModelBoneIds, glbContainsBoneId, importModelPackageFiles, modelPackageDownloadPlan, modelPackageSummary, validateModelManifest, validateModelSourceRegistry } from '../src/anatomy/package.js';
 import { applyInventoryRows, createBackup, parseCsv, validateBackup } from '../src/domain/backup.js';
 import { normalizeProject } from '../src/data/store.js';
+import { mergeAuxiliaryXlsx } from '../src/ui/extended.js';
 
 const text = async path => readFile(path, 'utf8');
 const exists = async path => { try { await access(path); return true; } catch { return false; } };
@@ -696,6 +697,8 @@ assert.match(main, /Importar GLB locales/);
 assert.match(main, /importLocalModelFiles/);
 assert.match(main, /La importación reemplazará los modelos GLB locales/);
 assert.match(await text('src/ui/extended.js'), /Vista previa de importación/);
+assert.match(await text('src/ui/extended.js'), /function mergeAuxiliaryXlsx/);
+assert.match(await text('src/ui/extended.js'), /Osteometría.*Landmarks.*Calibraciones/s);
 assert.match(await text('src/ui/extended.js'), /#new-project.*newProject/);
 assert.match(await text('src/ui/extended.js'), /\.pwa-update-label.*newVersion/);
 assert.match(await text('src/ui/extended.js'), /Confirmar importación/);
@@ -879,6 +882,19 @@ const testBones = [
   { id: 'left_femur', es: 'Fémur izquierdo', region: 'Extremidad inferior', side: 'Izquierda' },
   { id: 'right_femur', es: 'Fémur derecho', region: 'Extremidad inferior', side: 'Derecha' }
 ];
+const auxiliaryWorkbook = { Sheets: {
+  'Osteometría': [{ Bone_ID: 'left_femur', length: 42.5, width: 11, unit: 'mm' }],
+  'Landmarks': [{ Bone_ID: 'left_femur', name: 'Punto A', category: 'osteometric', x: 1, y: 2, z: 3 }],
+  'Calibraciones': [{ Bone_ID: 'left_femur', referenceMm: 42.5, localDistance: 3.5 }],
+  'Revisión análisis': [{ Metric: 'MNE', value: 2, reason: 'Revisión docente' }],
+  'Registro de cambios': [{ Bone_ID: 'left_femur', Previous: '"present"', New: '"fragmentary"' }]
+} };
+const auxiliaryXlsx = mergeAuxiliaryXlsx({ measurements: {}, landmarks: {}, calibrations: {}, analysisReview: {}, changeLog: {} }, auxiliaryWorkbook, { utils: { sheet_to_json: sheet => sheet } }, testBones);
+assert.equal(auxiliaryXlsx.measurements.left_femur.length, 42.5);
+assert.equal(auxiliaryXlsx.landmarks.left_femur[0].name, 'Punto A');
+assert.equal(auxiliaryXlsx.calibrations.left_femur.referenceMm, 42.5);
+assert.equal(auxiliaryXlsx.analysisReview.mne.value, 2);
+assert.equal(auxiliaryXlsx.changeLog[0].newValue, 'fragmentary');
 const testState = { status: { left_femur: 'fragmentary', right_femur: 'not_recorded' }, fragments: { left_femur: 2 }, weights: { left_femur: 123.45 }, portions: { left_femur: 'epiphysis_proximal' }, individuals: { left_femur: 'IND-A' }, report: { individual: 'IND-TEST' } };
 const analysis = calculateOsteoAnalysis(testBones, testState);
 assert.equal(analysis.nisp.value, 1);

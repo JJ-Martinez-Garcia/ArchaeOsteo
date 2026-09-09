@@ -18,6 +18,38 @@ function formatChangeValue(value) {
   return String(value);
 }
 
+export function mergeAuxiliaryXlsx(value, workbook, XLSX, bones) {
+  const rows = name => workbook.Sheets[name] ? XLSX.utils.sheet_to_json(workbook.Sheets[name]) : [];
+  const validIds = new Set(bones.map(bone => bone.id));
+  const number = value => { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : null; };
+  const measurements = { ...(value.measurements || {}) };
+  for (const row of rows('Osteometría')) if (validIds.has(row.Bone_ID)) {
+    const next = { unit: row.unit === 'cm' ? 'cm' : 'mm' };
+    for (const field of ['length', 'width', 'height', 'diameter']) next[field] = number(row[field]);
+    measurements[row.Bone_ID] = next;
+  }
+  const landmarks = { ...(value.landmarks || {}) };
+  for (const row of rows('Landmarks')) if (validIds.has(row.Bone_ID) && (row.Name ?? row.name) != null && ['X', 'Y', 'Z'].every(axis => number(row[axis] ?? row[axis.toLowerCase()]) != null)) {
+    (landmarks[row.Bone_ID] ||= []).push({ name: String(row.Name ?? row.name), category: String(row.Category ?? row.category ?? 'osteometric'), x: number(row.X ?? row.x), y: number(row.Y ?? row.y), z: number(row.Z ?? row.z), source: String(row.Source ?? row.source ?? 'xlsx'), createdAt: String(row.CreatedAt ?? row.createdAt ?? '') });
+  }
+  const calibrations = { ...(value.calibrations || {}) };
+  for (const row of rows('Calibraciones')) if (validIds.has(row.Bone_ID) && number(row.referenceMm ?? row.Reference_mm) != null && number(row.localDistance ?? row.Local_distance) != null) calibrations[row.Bone_ID] = { referenceMm: number(row.referenceMm ?? row.Reference_mm), localDistance: number(row.localDistance ?? row.Local_distance), updatedAt: String(row.updatedAt ?? row.Updated_at ?? '') };
+  const landmarkModelRefs = { ...(value.landmarkModelRefs || {}) };
+  for (const row of rows('Referencias landmarks')) if (validIds.has(row.Bone_ID)) {
+    const { Bone_ID, ...reference } = row;
+    landmarkModelRefs[Bone_ID] = { ...reference, needsReview: row.needsReview === true || row.needsReview === 'true' };
+  }
+  const analysisReview = { ...(value.analysisReview || {}) };
+  for (const row of rows('Revisión análisis')) if (row.Metric) analysisReview[String(row.Metric).toLowerCase()] = { value: number(row.value), reason: String(row.reason || ''), signature: String(row.signature || '') };
+  const changeRows = rows('Registro de cambios');
+  const changeLog = changeRows.length ? changeRows.map(row => {
+    const parse = raw => { try { return JSON.parse(raw); } catch { return raw; } };
+    const { Previous, New, ...entry } = row;
+    return { ...entry, previousValue: parse(Previous), newValue: parse(New) };
+  }) : value.changeLog;
+  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog };
+}
+
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
 const PATHOLOGY_TYPES = ['Normal', 'Patológico', 'Traumatizado', 'Alterado', 'Indeterminado'];
 
@@ -307,7 +339,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
           dental: importDentalRows(value.dental, dentalRows, { locked: value.locked }),
           deciduousDental: importDentalRows(value.deciduousDental, deciduousRows, { deciduous: true, locked: value.locked })
         });
-        imported = mergeExtra(imported);
+        imported = mergeAuxiliaryXlsx(mergeExtra(imported), workbook, XLSX, bones);
       } else {
         imported = validateBackup(JSON.parse(await file.text()));
         previewRows = Object.entries(imported.status || {}).map(([boneId, status]) => ({ Bone_ID: boneId, Presence: status, Preservation: imported.preservation?.[boneId] || 'not_evaluated', Fragments: imported.fragments?.[boneId] ?? '' }));
