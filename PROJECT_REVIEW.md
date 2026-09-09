@@ -38,6 +38,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   de los valores de cámara, además de la E2E general.
 - Jerarquía: el editor selecciona entidades padre existentes mediante un control accesible;
   la E2E confirma el selector y conserva la creación de relaciones válidas.
+- Comparación: además del cotejo detallado de dos proyectos, existe una vista agregada
+  para dos o más inventarios locales, con selección explícita y recuento por estado.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

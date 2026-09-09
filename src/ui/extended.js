@@ -77,7 +77,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
 
   const inspector = document.querySelector('.inspector');
   inspector.insertAdjacentHTML('beforeend', `<div class="extended-tools"><div class="paint-title">ANÁLISIS Y APRENDIZAJE</div><div class="extended-buttons"><button id="record-panel-button" class="secondary-action">Registro científico</button><button id="analysis-panel-button" class="secondary-action">NISP · MNE · MNI</button><button id="compare-panel-button" class="secondary-action">Comparar perfiles</button><button id="learning-panel-button" class="secondary-action">Aprendizaje</button><button id="sources-panel-button" class="secondary-action">Fuentes y licencias</button></div><div id="extended-panel" hidden></div></div>`);
-  inspector.querySelector('.extended-buttons').insertAdjacentHTML('beforeend', '<button id="hierarchy-panel-button" class="secondary-action">Jerarquía del proyecto</button><button id="changes-panel-button" class="secondary-action">Registro de cambios</button><button id="indeterminate-fragments-button" class="secondary-action">Fragmentos indeterminados</button>');
+  inspector.querySelector('.extended-buttons').insertAdjacentHTML('beforeend', '<button id="hierarchy-panel-button" class="secondary-action">Jerarquía del proyecto</button><button id="changes-panel-button" class="secondary-action">Registro de cambios</button><button id="indeterminate-fragments-button" class="secondary-action">Fragmentos indeterminados</button><button id="multi-compare-panel-button" class="secondary-action">Comparar varios inventarios</button>');
 
   const language = document.querySelector('#language');
   language.value = state.language;
@@ -101,6 +101,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     setText('#indeterminate-fragments-button', 'indeterminateFragments');
     setText('#sources-panel-button', 'sources');
     setText('#hierarchy-panel-button', state.language === 'en' ? 'Project hierarchy' : 'Jerarquía del proyecto');
+    setText('#multi-compare-panel-button', state.language === 'en' ? 'Compare multiple inventories' : 'Comparar varios inventarios');
     setText('#reset', 'reset');
     setText('#isolate', 'isolate');
     setText('#center', 'center');
@@ -259,6 +260,25 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       scopeSelect.onchange = () => renderComparison(candidates.find(project => project.id === projectSelect.value) || null);
       projectSelect.onchange = async () => { const project = await loadProject(projectSelect.value); populateComparisonScopes(project); renderComparison(project); };
     }).catch(() => { projectSelect.innerHTML = '<option value="">No disponible</option>'; renderComparison(null); });
+  };
+
+  document.querySelector('#multi-compare-panel-button').onclick = async () => {
+    const en = state.language === 'en';
+    if (!listProjects || !loadProject) { show(`<p class="small-copy">${en ? 'Local projects are unavailable.' : 'Los proyectos locales no están disponibles.'}</p>`); return; }
+    const candidates = (await listProjects()).filter(project => project.id !== state.projectId);
+    if (!candidates.length) { show(`<h3>${en ? 'Compare multiple inventories' : 'Comparar varios inventarios'}</h3><p class="small-copy">${en ? 'Create at least two local projects to compare sources.' : 'Crea al menos dos proyectos locales para comparar fuentes.'}</p>`); return; }
+    show(`<h3>${en ? 'Compare multiple inventories' : 'Comparar varios inventarios'}</h3><p class="small-copy">${en ? 'Select two or more local sources. Values are summarized per Bone_ID; unknown records remain distinct from observed absence.' : 'Selecciona dos o más fuentes locales. Los valores se resumen por Bone_ID; los registros desconocidos siguen siendo distintos de una ausencia observada.'}</p><div id="multi-compare-sources" class="record-editor">${candidates.map((project,index) => `<label><input type="checkbox" data-compare-source="${escapeHtml(project.id)}" ${index < 2 ? 'checked' : ''}> ${escapeHtml(project.projectName || project.id)}</label>`).join('')}<button id="run-multi-compare" class="secondary-action">${en ? 'Run comparison' : 'Comparar fuentes'}</button><p id="multi-compare-message" role="status"></p></div><div id="multi-compare-results"></div>`);
+    document.querySelector('#run-multi-compare').onclick = async () => {
+      const ids = [...document.querySelectorAll('[data-compare-source]:checked')].map(input => input.dataset.compareSource);
+      const message = document.querySelector('#multi-compare-message');
+      if (ids.length < 2) { message.textContent = en ? 'Select at least two sources.' : 'Selecciona al menos dos fuentes.'; return; }
+      const projects = await Promise.all(ids.map(id => loadProject(id)));
+      const statuses = ['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded'];
+      const rows = bones.map(bone => { const counts = Object.fromEntries(statuses.map(status => [status, 0])); projects.forEach(project => { counts[project.status?.[bone.id] || 'not_recorded'] += 1; }); return { bone, counts }; }).filter(row => Object.values(row.counts).some(count => count > 0 && count < projects.length));
+      const statusLabels = en ? { present: 'present', absent: 'absent', fragmentary: 'fragmentary', indeterminate: 'indeterminate', not_observable: 'not observable', not_recorded: 'not recorded' } : { present: 'presente', absent: 'ausente', fragmentary: 'fragmentario', indeterminate: 'indeterminado', not_observable: 'no observable', not_recorded: 'no registrado' };
+      const result = document.querySelector('#multi-compare-results');
+      result.innerHTML = `<p><strong>${rows.length}</strong> ${en ? `of ${bones.length} elements differ across ${projects.length} sources.` : `de ${bones.length} elementos difieren entre ${projects.length} fuentes.`}</p>${rows.length ? `<table class="analysis-table"><thead><tr><th>Bone_ID</th>${statuses.map(status => `<th>${statusLabels[status]}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr><th scope="row">${escapeHtml(row.bone.id)}</th>${statuses.map(status => `<td>${row.counts[status]}</td>`).join('')}</tr>`).join('')}</tbody></table>` : `<p class="small-copy">${en ? 'No differences found.' : 'No se han encontrado diferencias.'}</p>`}`;
+    };
   };
 
   let learningSession = { mode: 'identify', targetBoneId: '' };

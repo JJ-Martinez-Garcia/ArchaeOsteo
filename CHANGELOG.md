@@ -58,6 +58,9 @@
   encuadre a partir de la hoja visual.
 - La edición de jerarquía ofrece ahora un selector de IDs padre existentes en lugar de
   un campo libre, reduciendo referencias huérfanas y manteniendo las relaciones válidas.
+- Añadida una comparación agregada de múltiples inventarios locales: permite seleccionar
+  dos o más fuentes y resume por `Bone_ID` los estados divergentes sin mezclar desconocido
+  con ausencia observada.
 
 ## Cambios recientes
 
