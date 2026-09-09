@@ -427,6 +427,13 @@ try {
   await evaluate(cdp, `(()=>{const input=document.querySelector('[data-row-field="completeness"][data-row-id="skull"]');input.value='100';input.dispatchEvent(new Event('change'));const other=document.querySelector('[data-row-field="completeness"][data-row-id="mandible"]');other.value='';other.dispatchEvent(new Event('change'));})()`);
   await evaluate(cdp, `document.querySelector('#tab-stats').click()`);
   assert.equal(await evaluate(cdp, `document.querySelector('#stats-summary').textContent.includes('100%')`), true, 'Statistics must exclude unknown completeness from average');
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#show-table').click();`);
+  await evaluate(cdp, `(()=>{const input=document.querySelector('[data-row-field="fragments"][data-row-id="skull"]');input.value='4';input.dispatchEvent(new Event('change'));const other=document.querySelector('[data-row-field="fragments"][data-row-id="mandible"]');other.value='';other.dispatchEvent(new Event('change'));})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.fragments?.skull===4&&!Object.hasOwn(value.fragments||{},'mandible'),'Persist observed and unknown fragment counts');
+  await evaluate(cdp, `document.querySelector('#tab-stats').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#fragmentation-map').textContent.includes('1/2')`), true, 'Fragmentation average must exclude unknown fragment counts');
+  await new Promise(resolve=>setTimeout(resolve,1100));
+  assert.equal(await evaluate(cdp, `document.querySelector('#fragmentation-map').textContent.includes('4.00')`), true, 'Fragmentation average must use observed fragment counts');
   await evaluate(cdp, `document.querySelector('#tab-report').click()`);
   assert.equal(await evaluate(cdp, `['sources','method','limits'].every(key=>document.querySelector('#report-'+key)?.tagName==='TEXTAREA')`), true, 'Long report fields must be multiline controls');
   await evaluate(cdp, `document.querySelector('#report-sources').value='DOI: E2E\\nReferencia de campo';document.querySelector('#report-method').value='Comparación osteológica';document.querySelector('#report-limits').value='Pendiente de revisión especializada';document.querySelector('#save-report').click()`);

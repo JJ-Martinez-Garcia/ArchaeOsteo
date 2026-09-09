@@ -43,7 +43,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 24 | CREACIÓN DE FICHA | Verificar persistencia/ronda de todos los campos de contexto en cada formato. |
 | 25 | ESTADOS DE LOS HUESOS | Estados definidos; cerrar pruebas de cada transición y sincronización entre vistas. |
 | 26 | CONSERVACIÓN | Distinguir no evaluado/no evaluable y porcentaje no registrado; validar estados y medias. |
-| 27 | FRAGMENTACIÓN | Completitud/fragmentación como campos explícitos, separados de presencia y porcentaje. |
+| 27 | FRAGMENTACIÓN | Completitud/fragmentación como campos explícitos, separados de presencia y porcentaje. El resumen regional distingue recuentos observados de valores desconocidos y no los convierte en cero. |
 | 28 | HUESOS LARGOS | Varias porciones con estado y completitud independientes simultáneos; se conserva además el campo `Portion` antiguo para compatibilidad. |
 | 29 | LATERALIDAD | Lateralidad indeterminada/no aplicable con validación de importación y corrección. |
 | 30 | INVENTARIO DENTAL | Códigos canónicos y compatibilidad ES/EN implementados; ampliar ronda XLSX a todas las hojas/estados y asociación con dientes 3D. |
