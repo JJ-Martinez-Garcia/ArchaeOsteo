@@ -176,6 +176,8 @@ assert.match(main, /function updateSideStats/);
 assert.match(main, /side-stats/);
 assert.match(main, /Representación por lateralidad/);
 assert.match(main, /function updateQuantificationSummary/);
+assert.match(main, /function skeletonMapReportHtml/);
+assert.match(main, /Mapa esquelético esquemático/);
 assert.match(main, /quantification-summary/);
 assert.match(main, /analysis\.nisp\.value/);
 assert.match(main, /analysis\.mne\.value/);

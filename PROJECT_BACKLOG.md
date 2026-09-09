@@ -90,7 +90,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 71 | TABLA DE INVENTARIO | Vacío frente a cero probado en tabla; resolver edición continua sin perder foco y ampliar sincronización a todas las vistas. |
 | 72 | FILTROS | Verificar combinaciones de todos los filtros contra tabla, árbol, 3D y estadísticas. |
 | 73 | ESTADÍSTICAS | Medias basadas solo en datos observados y denominadores explícitos en resumen, mapa regional y mapa de conservación; se verificó en E2E que un porcentaje desconocido no se cuenta como cero. Queda ampliar combinaciones y revisión visual. |
-| 74 | INFORME AUTOMÁTICO | Informe con fuentes/métodos/límites, fotos elegidas y reglas de impresión A4 para evitar cortes; queda mapa esquelético y maquetación PDF profesional. |
+| 74 | INFORME AUTOMÁTICO | Informe con fuentes/métodos/límites, fotos elegidas, mapa esquelético esquemático y reglas de impresión A4 para evitar cortes; queda cartografía anatómica profesional y maquetación PDF avanzada. |
 | 75 | EXPORTACIÓN | JSON conserva la copia completa; CSV contiene el inventario tabular; XLSX incluye e importa inventario, contexto, odontogramas, fragmentos, osteometría, landmarks, calibraciones, referencias, revisión, cambios y metadatos de fotos/modelos. Falta verificar round-trip con casos reales y decidir un formato tabular para binarios. |
 | 76 | CSV/XLSX | Esquema estable y códigos canónicos, comillas/saltos de línea, trazabilidad de fuentes/método/límites en CSV y protección de texto introducido frente a fórmulas al abrir CSV/XLSX. La cobertura de hojas auxiliares está implementada; queda auditoría con casos reales. |
 | 77 | JSON | Esquema versionado JSON completo, migraciones y validación de campos desconocidos. |
