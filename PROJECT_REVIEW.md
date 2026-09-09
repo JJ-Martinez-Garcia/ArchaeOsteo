@@ -15,6 +15,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un
   resumen de los niveles reconocidos al guardar.
+  Además, el panel “Jerarquía del proyecto” permite añadir entidades y sus IDs padre sin
+  borrar observaciones; su contenido se incluye en la prueba de formularios estrechos.
 - Rendimiento: el visor muestra en vivo el número de mallas y triángulos de la escena,
   junto con cuántos GLB propios y esquemas están cargados, para detectar perfiles costosos
   antes de probarlos en móviles de memoria limitada. La carga de perfiles limita la

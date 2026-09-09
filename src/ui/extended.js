@@ -6,6 +6,7 @@ import { importDentalRows } from '../domain/dental-import.js';
 import { translate } from '../i18n/translations.js';
 import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
 import { normalizeWeightUnit } from '../domain/weights.js';
+import { HIERARCHY_LEVELS, hierarchyId, normalizeHierarchy } from '../domain/hierarchy.js';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -70,7 +71,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
 
   const inspector = document.querySelector('.inspector');
   inspector.insertAdjacentHTML('beforeend', `<div class="extended-tools"><div class="paint-title">ANÁLISIS Y APRENDIZAJE</div><div class="extended-buttons"><button id="record-panel-button" class="secondary-action">Registro científico</button><button id="analysis-panel-button" class="secondary-action">NISP · MNE · MNI</button><button id="compare-panel-button" class="secondary-action">Comparar perfiles</button><button id="learning-panel-button" class="secondary-action">Aprendizaje</button><button id="sources-panel-button" class="secondary-action">Fuentes y licencias</button></div><div id="extended-panel" hidden></div></div>`);
-  inspector.querySelector('.extended-buttons').insertAdjacentHTML('beforeend', '<button id="changes-panel-button" class="secondary-action">Registro de cambios</button><button id="indeterminate-fragments-button" class="secondary-action">Fragmentos indeterminados</button>');
+  inspector.querySelector('.extended-buttons').insertAdjacentHTML('beforeend', '<button id="hierarchy-panel-button" class="secondary-action">Jerarquía del proyecto</button><button id="changes-panel-button" class="secondary-action">Registro de cambios</button><button id="indeterminate-fragments-button" class="secondary-action">Fragmentos indeterminados</button>');
 
   const language = document.querySelector('#language');
   language.value = state.language;
@@ -93,6 +94,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     setText('#changes-panel-button', 'changes');
     setText('#indeterminate-fragments-button', 'indeterminateFragments');
     setText('#sources-panel-button', 'sources');
+    setText('#hierarchy-panel-button', state.language === 'en' ? 'Project hierarchy' : 'Jerarquía del proyecto');
     setText('#reset', 'reset');
     setText('#isolate', 'isolate');
     setText('#center', 'center');
@@ -394,6 +396,19 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const entries = [...(state.changeLog || [])].reverse();
     const rows = entries.slice(0, 100).map(entry => { const change = entry.field ? `${entry.field}: ${formatChangeValue(entry.previousValue)} → ${formatChangeValue(entry.newValue)}` : `${formatChangeValue(entry.previousStatus)} → ${formatChangeValue(entry.newStatus)}`; return `<tr><td>${escapeHtml(new Date(entry.changedAt).toLocaleString('es-ES'))}</td><td>${escapeHtml(entry.boneId)}</td><td>${escapeHtml(change)}</td><td>${escapeHtml(entry.individualId)}</td><td>${escapeHtml(entry.investigator || '—')}</td><td>${escapeHtml(entry.method)}</td></tr>`; }).join('');
     show(`<p class="small-copy">Se muestran las últimas ${Math.min(entries.length, 100)} acciones. El registro se conserva en IndexedDB y en las copias de seguridad.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Fecha</th><th>Bone_ID</th><th>Cambio</th><th>Individuo</th><th>Investigador</th><th>Método</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">Todavía no hay cambios registrados.</p>'}`);
+  };
+  document.querySelector('#hierarchy-panel-button').onclick = () => {
+    const levelLabels = state.language === 'en' ? { sites: 'Sites', campaigns: 'Campaigns', sectors: 'Sectors', contexts: 'Contexts', individuals: 'Individuals' } : { sites: 'Yacimientos', campaigns: 'Campañas', sectors: 'Sectores', contexts: 'Contextos', individuals: 'Individuos' };
+    const hierarchy = normalizeHierarchy(state.hierarchy);
+    const options = HIERARCHY_LEVELS.map(level => `<option value="${level}">${levelLabels[level]}</option>`).join('');
+    const rows = HIERARCHY_LEVELS.map(level => `<section><h4>${levelLabels[level]} <span class="muted">${hierarchy[level].length}</span></h4>${hierarchy[level].length ? `<ul>${hierarchy[level].map(entity => `<li><strong>${escapeHtml(entity.name)}</strong><small>${escapeHtml(entity.id)}${entity.parentId ? ` · ${escapeHtml(entity.parentId)}` : ''}</small></li>`).join('')}</ul>` : `<p class="small-copy">${state.language === 'en' ? 'No entities registered.' : 'Sin entidades registradas.'}</p>`}</section>`).join('');
+    show(`<h3>${state.language === 'en' ? 'Project hierarchy' : 'Jerarquía del proyecto'}</h3><p class="small-copy">${state.language === 'en' ? 'Add entities without deleting existing observations. IDs are stable and can be used by imports and comparisons.' : 'Añade entidades sin borrar observaciones existentes. Los IDs son estables y sirven para importaciones y comparaciones.'}</p><div class="record-editor"><label>${state.language === 'en' ? 'Level' : 'Nivel'}<select id="hierarchy-level">${options}</select></label><label>${state.language === 'en' ? 'Name' : 'Nombre'}<input id="hierarchy-name" placeholder="${state.language === 'en' ? 'e.g. Site North' : 'p. ej. Yacimiento Norte'}"></label><label>${state.language === 'en' ? 'Parent ID (optional)' : 'ID padre (opcional)'}<input id="hierarchy-parent" placeholder="site:yacimiento-norte"></label><button id="add-hierarchy-entity" class="secondary-action">${state.language === 'en' ? 'Add entity' : 'Añadir entidad'}</button><p id="hierarchy-message" role="status"></p></div><div class="hierarchy-grid">${rows}</div>`);
+    document.querySelector('#add-hierarchy-entity').onclick = async () => {
+      const level = document.querySelector('#hierarchy-level').value, name = document.querySelector('#hierarchy-name').value.trim(), parentId = document.querySelector('#hierarchy-parent').value.trim(), id = hierarchyId(level, name), message = document.querySelector('#hierarchy-message');
+      if (!id) { message.textContent = state.language === 'en' ? 'Enter a name.' : 'Introduce un nombre.'; return; }
+      if (hierarchy[level].some(entity => entity.id === id)) { message.textContent = state.language === 'en' ? 'That entity already exists.' : 'Esa entidad ya existe.'; return; }
+      hierarchy[level].push({ id, name, parentId, updatedAt: new Date().toISOString() }); state.hierarchy = normalizeHierarchy(hierarchy); await saveLocal({ notify: false }); document.querySelector('#hierarchy-panel-button').click();
+    };
   };
   document.querySelector('#sources-panel-button').onclick = () => show('<h3>Fuentes y licencias</h3><p>El perfil adulto masculino publica 179 de 192 elementos GLB. Los 13 marcadores restantes son categorías agregadas o indeterminadas y no representan modelos anatómicos aptos para medición o diagnóstico.</p><p><code>skull.glb</code>: Vladimir Petkovic, Khronos glTF Sample Assets, CC0 1.0 Universal.</p><p>Otros 178 elementos: Open3Dmodel contributors / Open Anatomy lineage, Open3Dmodel / AnatomyTOOL; preparación web por yamz8. Las adaptaciones se distribuyen bajo <a href="./licenses/CC-BY-SA-4.0.txt" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>.</p><p>Adulto femenino, infante y neonato: 179 GLB propios por perfil (537 archivos), Osteo3D contributors, MIT, procedural-1.1.0. Modelos didácticos originales, sin escala métrica ni validación anatómica; no son escaneos.</p><p class="small-copy">Registro completo: <a href="./models/SOURCES.md" target="_blank" rel="noreferrer">Fuentes de modelos</a> · <a href="./LICENSE" target="_blank" rel="noreferrer">Licencia del código</a> · <a href="./THIRD_PARTY_LICENSES.md" target="_blank" rel="noreferrer">Licencias de terceros</a>.</p>');
   document.querySelector('#indeterminate-fragments-button').onclick = () => {

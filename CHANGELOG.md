@@ -9,6 +9,8 @@
   los recursos) para apoyar la revisión de rendimiento en dispositivos limitados.
 - La carga de modelos reduce su concurrencia en móviles y dispositivos con poca memoria
   para evitar picos innecesarios durante el cambio de perfil.
+- Añadido un editor no destructivo de la jerarquía del proyecto para registrar entidades
+  y relaciones padre desde la interfaz.
 - El panel derecho oculta desbordamientos horizontales accidentales y limita también
   formularios extendidos, filtros y campos de contexto al ancho disponible.
 - La pestaña de informe hidrata todos sus campos de contexto de forma directa al abrirse,

@@ -12,7 +12,7 @@ export async function testInspectorLayout(cdp,evaluate,waitForValue){
     await waitForValue(cdp,`Math.abs(document.querySelector('#viewer').clientWidth-parseFloat(document.querySelector('#viewer canvas').style.width))`,n=>n<2,'Canvas follows panel resize');
   };
   const tabs=['tab-sheet','tab-inventory','tab-dental','tab-metrics','tab-stats','tab-report'];
-  const extras=['record-panel-button','analysis-panel-button','compare-panel-button','learning-panel-button','sources-panel-button'];
+  const extras=['record-panel-button','analysis-panel-button','compare-panel-button','learning-panel-button','sources-panel-button','hierarchy-panel-button'];
   for(const viewport of [1440,1024]){
     await cdp.send('Emulation.setDeviceMetricsOverride',{width:viewport,height:1000,deviceScaleFactor:1,mobile:false});
     await evaluate(cdp,`document.querySelector('#inspector-divider').dispatchEvent(new KeyboardEvent('keydown',{key:'Home',bubbles:true}))`);

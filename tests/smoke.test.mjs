@@ -641,6 +641,8 @@ assert.match(main, /function forEachConcurrent\(items, concurrency, callback\)/)
 assert.match(main, /const orderedBones = \[bones\.find\(bone => bone\.id === state\.selected\)/);
 assert.match(main, /const modelLoadConcurrency = lowMemory \? 3 : 8/);
 assert.match(main, /forEachConcurrent\(loadableBones, modelLoadConcurrency/);
+assert.match(await text('src/ui/extended.js'), /hierarchy-panel-button/);
+assert.match(await text('src/ui/extended.js'), /Añade entidades sin borrar observaciones existentes/);
 assert.match(main, /dracoDecoderPath: '\.\/draco\/'/);
 assert.match(await text('src/data/store.js'), /normalizeCustomModels/);
 assert.match(await text('src/domain/backup.js'), /customModels: state\.customModels/);
