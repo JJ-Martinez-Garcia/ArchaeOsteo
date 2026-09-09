@@ -542,6 +542,7 @@ assert.match(main, /function setLightingDirection\(azimuth,elevation\)/);
 assert.match(main, /ambientLightIntensity/);
 assert.match(main, /lightingAzimuth/);
 assert.match(main, /lightingElevation/);
+assert.match(main, /Number\.isFinite\(numeric\)\?numeric:1/);
 assert.match(main, /id="ambient-slider"/);
 assert.match(main, /id="opacity-slider" type="range" min="0" max="100"/);
 assert.match(main, /data-local-view="medial"/);

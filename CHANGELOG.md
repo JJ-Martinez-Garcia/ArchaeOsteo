@@ -24,6 +24,8 @@
   separador redimensionable y de los formularios a 300 px.
 - El registro de cambios localiza también su título, filtros, mensajes y cabeceras de
   tabla al inglés, manteniendo intactos los valores científicos introducidos.
+- Corregido el control de luz ambiente para que 0 % desactive realmente la luz
+  hemisférica, sin convertir el valor a 100 % durante la normalización.
 
 ## Cambios recientes
 
