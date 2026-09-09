@@ -2,6 +2,12 @@
 
 ## Cambios recientes
 
+- Licencias del código y de terceros enlazadas desde la interfaz y disponibles en el shell offline.
+- Exportación XLSX autodocumentada mediante hoja `Esquema`, con importación de registros auxiliares.
+- Informe imprimible con mapa esquelético esquemático, localización ES/EN y paginación A4 reforzada.
+- Diálogos accesibles con foco modal y refrescos de interfaz omitidos en segundo plano.
+- Verificador de GitHub Pages con reintentos, delay y timeout configurables.
+
 - Landmarks editables: nombre, categoría y coordenadas locales corregibles desde el panel, con guardado, historial, bloqueo y actualización visual.
 - Landmarks protegidos ante sustitución de malla: se registra el perfil/procedencia/versión, se avisa si las coordenadas pueden haber quedado obsoletas y se exige confirmación antes de recalibrar.
 - Porciones anatómicas independientes para huesos largos y costillas, con estado/completitud por porción, historial, persistencia y exportación compatible.

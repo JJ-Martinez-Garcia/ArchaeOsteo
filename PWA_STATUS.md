@@ -4,7 +4,7 @@ Fecha de revisión: 2026-09-09
 
 ## Estado operativo verificado
 
-- Aplicación publicada en GitHub Pages: https://jj-martinez-garcia.github.io/ArchaeOsteo/
+- Destino configurado de GitHub Pages: https://jj-martinez-garcia.github.io/ArchaeOsteo/ (la verificación externa depende de la red y de la propagación del despliegue).
 - Repositorio y rama de publicación: `JJ-Martinez-Garcia/ArchaeOsteo`, `main`.
 - Manifiesto PWA con `standalone`, iconos PNG de 192 y 512 px, accesos directos a inventario e informe y rutas relativas compatibles con GitHub Pages.
 - Service Worker con precarga del shell, caché de recursos generados por Vite, recuperación offline y actualización controlada mediante `SKIP_WAITING`. El nombre de caché se calcula por versión y fingerprint de assets en cada build.
@@ -12,21 +12,25 @@ Fecha de revisión: 2026-09-09
 - Guardado verificado mediante fallos inducidos de IndexedDB y cuota: aviso persistente si fallan ambos almacenes, recuperación por ID y cola de snapshots independientes. CSV multilínea, bloqueo, deshacer/rehacer y valores desconocidos también probados en navegador.
 - Visor Three.js/WebGL con controles de cámara, selección, aislamiento, transparencia, rayos X, wireframe, colores regionales, explosión y modo de mesa.
 - Interfaz en español e inglés, incluida la localización de controles y avisos después de la interacción.
+- Créditos y licencias de código, terceros y modelos visibles desde la aplicación y precacheados
+  para consulta offline.
+- Informe imprimible con mapa regional esquemático, etiquetas ES/EN, paginación A4 y tablas con
+  cabeceras repetibles; XLSX incluye una hoja `Esquema` y hojas auxiliares importables.
 
 ## Comprobaciones reproducibles
 
 Desde la raíz del repositorio:
 
 ```text
-node tests/smoke.test.mjs
-node scripts/check-js-syntax.mjs
-node scripts/validate-pwa.mjs
-node scripts/validate-model-assets.mjs
-node scripts/e2e-pwa.mjs
+pnpm test
+pnpm validate-pwa
+pnpm validate-model-assets
+pnpm test:e2e
+pnpm verify-pages -- https://jj-martinez-garcia.github.io/ArchaeOsteo/
 git diff --check
 ```
 
-La prueba E2E abre la compilación en un perfil temporal de Chrome, comprueba el manifiesto detectado por el navegador, el registro y control del Service Worker, la cobertura publicada, la carga GLB y la persistencia IndexedDB. En la prueba local detiene además el servidor HTTP, reinicia la aplicación sin red y exige que una petición inédita falle, evitando confundir la recuperación de caché con una respuesta todavía servida por la red. El modo `OSTEO3D_E2E_URL` verifica la integración en línea del despliegue; la garantía offline se obtiene sobre el artefacto local idéntico que después publica el workflow.
+La prueba E2E abre la compilación en un perfil temporal de Chrome, comprueba el manifiesto detectado por el navegador, el registro y control del Service Worker, la cobertura publicada, la carga GLB y la persistencia IndexedDB. En la prueba local detiene además el servidor HTTP, reinicia la aplicación sin red y exige que una petición inédita falle, evitando confundir la recuperación de caché con una respuesta todavía servida por la red. El modo `OSTEO3D_E2E_URL` verifica la integración en línea del despliegue; `verify-pages` comprueba la entrada HTML publicada con reintentos y timeout configurables. La garantía offline se obtiene sobre el artefacto local idéntico que después publica el workflow.
 
 El workflow `.github/workflows/pages.yml` ejecuta además la instalación reproducible, la compilación Vite, la verificación de sintaxis, las pruebas smoke, las validaciones PWA y de modelos, la prueba E2E en Chrome y el despliegue a Pages. El estado actualizado se consulta en [GitHub Actions](https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/actions), evitando fijar aquí un número de ejecución que quede obsoleto.
 
