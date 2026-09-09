@@ -46,6 +46,8 @@
   después de recargar la aplicación.
 - Las copias JSON y OSTEO3D incluyen ahora la vista de cámara, con prueba de round-trip
   para no perder el encuadre al restaurar un proyecto.
+- Corregida la normalización de proyectos: `cameraView` ya no se descarta al guardar o
+  cargar desde IndexedDB y sus valores se recortan a límites válidos.
 
 ## Cambios recientes
 

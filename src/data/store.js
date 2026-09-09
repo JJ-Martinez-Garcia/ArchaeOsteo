@@ -104,6 +104,14 @@ function newestProjects(projects) {
   return [...byId.values()];
 }
 
+function normalizeCameraView(value) {
+  if (!value || typeof value !== 'object') return null;
+  const target = Array.isArray(value.target) && value.target.length === 3 ? value.target.map(Number) : [0, 0, 0];
+  const values = [value.theta, value.phi, value.radius, ...target].map(Number);
+  if (!values.every(Number.isFinite)) return null;
+  return { theta: values[0], phi: Math.max(0.12, Math.min(Math.PI - 0.12, values[1])), radius: Math.max(0.35, Math.min(40, values[2])), target };
+}
+
 export function normalizeProject(project) {
   if (!project || typeof project !== 'object' || Array.isArray(project)) return null;
   const report = normalizeReport(project.report);
@@ -153,6 +161,7 @@ export function normalizeProject(project) {
     lightingAzimuth: Number.isFinite(project.lightingAzimuth) ? project.lightingAzimuth : 30,
     lightingElevation: Number.isFinite(project.lightingElevation) ? project.lightingElevation : 55,
     lightingMode: ['neutral', 'laboratory', 'high_contrast'].includes(project.lightingMode) ? project.lightingMode : 'neutral',
+    cameraView: normalizeCameraView(project.cameraView),
     changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],
     dental: normalizeDental(project.dental),
     deciduousDental: normalizeDental(project.deciduousDental),
