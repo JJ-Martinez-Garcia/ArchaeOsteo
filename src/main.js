@@ -964,3 +964,19 @@ reportHtml = function translatedProvenanceReport() {
   if (state.language !== 'en') return html;
   return html.replaceAll('Fuentes consultadas', 'Sources consulted').replaceAll('Método y alcance', 'Method and scope').replaceAll('Limitaciones / revisión pendiente', 'Limitations / review pending');
 };
+const ensureReportContextFieldsSource = ensureReportContextFields;
+ensureReportContextFields = function ensureLongReportFields() {
+  ensureReportContextFieldsSource();
+  ['sources', 'method', 'limits'].forEach(key => {
+    const input = document.querySelector(`#report-${key}`);
+    if (!input || input.tagName === 'TEXTAREA') return;
+    const textarea = document.createElement('textarea');
+    textarea.id = input.id;
+    textarea.name = input.name || input.id;
+    textarea.rows = 3;
+    textarea.value = input.value;
+    textarea.placeholder = input.placeholder;
+    textarea.setAttribute('aria-label', input.closest('label')?.firstChild?.textContent?.trim() || key);
+    input.replaceWith(textarea);
+  });
+};

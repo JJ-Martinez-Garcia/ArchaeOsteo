@@ -733,6 +733,8 @@ assert.match(main, /reviewed after filters/);
 assert.match(main, /state\.filters\.preservation='all';state\.filters\.type='all'/);
 assert.match(main, /average completeness recorded/);
 assert.match(main, /reportContextFields/);
+assert.match(main, /ensureLongReportFields/);
+assert.match(main, /\['sources', 'method', 'limits'\]/);
 assert.match(main, /translatedProvenanceReport/);
 assert.match(main, /Sources consulted.*Method and scope.*Limitations \/ review pending/);
 assert.match(main, /Ficha de contexto/);
