@@ -160,3 +160,8 @@
 - Añadidas hojas XLSX independientes para dentición permanente y decidua.
 - Ampliada la tabla de inventario con fragmentos, porción, tafonomía y patología.
 - Persistido el tipo de dentición activo y sus estados en copias y proyectos locales.
+## 2026-09-09
+
+- Añadidos filtros de auditoría y exportación CSV del registro de cambios.
+- Al crear proyectos nuevos se reinician también la jerarquía, las preferencias visuales
+  y todos los campos de contexto ampliados.
