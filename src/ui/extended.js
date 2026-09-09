@@ -6,6 +6,7 @@ import { importDentalRows } from '../domain/dental-import.js';
 import { translate } from '../i18n/translations.js';
 import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
 import { normalizeWeightUnit } from '../domain/weights.js';
+import { normalizeDevelopmentRecords } from '../domain/development.js';
 import { HIERARCHY_LEVELS, hierarchyId, normalizeHierarchy } from '../domain/hierarchy.js';
 
 function escapeHtml(value) {
@@ -54,7 +55,12 @@ export function mergeAuxiliaryXlsx(value, workbook, XLSX, bones) {
   const visual = visualRows[0];
   const cameraValues = visual ? [visual.Theta, visual.Phi, visual.Radius, visual.Target_X, visual.Target_Y, visual.Target_Z].map(Number) : [];
   const cameraView = cameraValues.length === 6 && cameraValues.every(Number.isFinite) ? { theta: cameraValues[0], phi: cameraValues[1], radius: cameraValues[2], target: cameraValues.slice(3) } : value.cameraView;
-  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy, cameraView };
+  const developmentRecords = { ...(value.developmentRecords || {}) };
+  for (const row of rows('Desarrollo inmaduro')) if (validIds.has(row.Bone_ID) && row.Component_ID) {
+    const component = String(row.Component_ID), status = String(row.Status || 'not_recorded'), fusion = String(row.Fusion || 'not_recorded'), observation = String(row.Observation || '').trim(), completeness = number(row.Completeness);
+    (developmentRecords[row.Bone_ID] ||= {})[component] = { status, fusion, observation, ...(completeness == null ? {} : { completeness }) };
+  }
+  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy, cameraView, developmentRecords: normalizeDevelopmentRecords(developmentRecords) };
 }
 
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];

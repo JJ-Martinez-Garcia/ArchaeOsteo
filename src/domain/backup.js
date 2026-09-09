@@ -28,6 +28,7 @@ export function createBackup(state) {
       weightUnits: state.weightUnits,
       portions: state.portions,
       portionRecords: state.portionRecords,
+      developmentRecords: state.developmentRecords,
       individuals: state.individuals,
       ue: state.ue,
       taphonomy: state.taphonomy,

@@ -74,6 +74,9 @@
 - El CSV de comparación múltiple añade ahora una columna por cada proyecto fuente,
   con su nombre y el estado individual de cada `Bone_ID`, para que los recuentos
   agregados puedan auditarse sin perder la procedencia.
+- Los perfiles infante y neonato incorporan un registro didáctico separado de
+  componentes inmaduros: estado, fusión, completitud y observación por pieza, con
+  deshacer, persistencia y hoja XLSX importable; no infiere edades ni osificación.
 
 ## Cambios recientes
 

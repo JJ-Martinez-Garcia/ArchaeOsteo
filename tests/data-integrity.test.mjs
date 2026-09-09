@@ -10,11 +10,16 @@ import { normalizeWeightUnit, weightToGrams } from '../src/domain/weights.js';
 import { protectSpreadsheetValue, protectSpreadsheetRows } from '../src/domain/spreadsheet.js';
 import { downloadModelPackage, removeModelPackage } from '../src/anatomy/package.js';
 import { mergeAuxiliaryXlsx } from '../src/ui/extended.js';
+import { developmentComponentsForBone, normalizeDevelopmentRecords } from '../src/domain/development.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
 const xlsxMock = { utils: { sheet_to_json: sheet => sheet.rows || [] } };
 const xlsxVisual = mergeAuxiliaryXlsx({}, { Sheets: { 'Configuración visual': { rows: [{ Theta: 1.2, Phi: 0.8, Radius: 9, Target_X: 1, Target_Y: 2, Target_Z: 3 }] } } }, xlsxMock, bones);
 assert.deepEqual(xlsxVisual.cameraView, { theta: 1.2, phi: 0.8, radius: 9, target: [1, 2, 3] });
+assert.deepEqual(developmentComponentsForBone({ id: 'left_femur' }), ['shaft', 'proximal_epiphysis', 'distal_epiphysis']);
+assert.deepEqual(normalizeDevelopmentRecords({ left_femur: { proximal_epiphysis: { status: 'present', fusion: 'partial', completeness: 80, observation: 'visible' }, invalid: { status: 'present' } } }), { left_femur: { proximal_epiphysis: { status: 'present', fusion: 'partial', completeness: 80, observation: 'visible' } } });
+const xlsxDevelopment = mergeAuxiliaryXlsx({}, { Sheets: { 'Desarrollo inmaduro': { rows: [{ Bone_ID: 'left_femur', Component_ID: 'shaft', Status: 'fragmentary', Fusion: 'unfused', Completeness: 60, Observation: 'diáfisis conservada' }] } } }, xlsxMock, bones);
+assert.equal(xlsxDevelopment.developmentRecords.left_femur.shaft.fusion, 'unfused');
 const previousCaches = globalThis.caches;
 const previousFetch = globalThis.fetch;
 const packageEntries = new Map([['./models/test/a.glb', new Response('old')]]);

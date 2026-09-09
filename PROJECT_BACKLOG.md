@@ -51,7 +51,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 32 | COSTILLAS | Costillas individualizadas; validar orientación/lateralidad y selección de todas. |
 | 33 | MANOS | Huesos de mano individualizados; corregir nombres latinos y verificar identificación. |
 | 34 | PIES | Huesos de pie individualizados; corregir nombres latinos y verificar identificación. |
-| 35 | INFANTES Y NEONATOS | Registro independiente de epífisis/centros/componentes con relaciones de fusión y estados por edad. |
+| 35 | INFANTES Y NEONATOS | Registro independiente de epífisis/centros/componentes con relaciones de fusión y estados observados por componente, persistencia, deshacer y XLSX importable; queda validación osteológica especializada y un catálogo de centros de osificación con edades de referencia. |
 | 36 | REPRESENTACIÓN ESQUELÉTICA | Separar denominadores anatómicos de categorías agregadas y de elementos esperados por perfil. |
 | 37 | MAPA DE CONSERVACIÓN | Mapa del propio 3D según presencia/conservación/porcentaje/alteraciones, con patrones además de colores. |
 | 38 | NISP | Modelo de especímenes por ficha y NISP real; el automático actual cuenta registros agrupados. |

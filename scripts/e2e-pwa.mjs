@@ -495,6 +495,12 @@ try {
     await waitForValue(cdp,`document.querySelector('#details').textContent`,value=>/GLB propio|Original GLB/.test(value),`Original GLB provenance: ${profile}`);
     assert.equal(await evaluate(cdp,`document.querySelector('#model-package-action').disabled`),false,'Original profile must be downloadable');
   }
+  await evaluate(cdp, `(()=>{const select=document.querySelector('#profile');select.value='infant';select.dispatchEvent(new Event('change'));document.querySelector('[data-bone="left_femur"]').click();})()`);
+  await waitForValue(cdp, `Boolean(document.querySelector('#save-development-records'))`, value=>value===true, 'Render immature component register');
+  await evaluate(cdp, `(()=>{const row=document.querySelector('[data-development-row="proximal_epiphysis"]');row.querySelector('[data-development-status]').value='present';row.querySelector('[data-development-fusion]').value='partial';row.querySelector('[data-development-completeness]').value='80';row.querySelector('[data-development-observation]').value='E2E';document.querySelector('#save-development-records').click();})()`);
+  await waitForValue(cdp, projectReadExpression(), value=>value.developmentRecords?.left_femur?.proximal_epiphysis?.fusion==='partial'&&value.developmentRecords.left_femur.proximal_epiphysis.completeness===80, 'Persist immature component observation');
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#undo').click()`);
+  await waitForValue(cdp, projectReadExpression(), value=>!value.developmentRecords?.left_femur, 'Undo immature component observation');
   // Actual WebGL profile switching, not only UI labels. Keep inventory intact.
   assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#viewer canvas'))`),true);
   for(const profile of ['adult_female','infant','neonate','adult_male']) {

@@ -1,4 +1,5 @@
 import { deriveHierarchy } from '../domain/hierarchy.js';
+import { normalizeDevelopmentRecords } from '../domain/development.js';
 
 const DB_NAME = 'osteo3d';
 export const PROJECT_SCHEMA_VERSION = 3;
@@ -130,6 +131,7 @@ export function normalizeProject(project) {
     weightUnits: Object.fromEntries(objectEntries(project.weightUnits).filter(([, unit]) => ['g', 'kg'].includes(String(unit).toLowerCase())).map(([key, unit]) => [key, String(unit).toLowerCase()])),
     portions: project.portions || {},
     portionRecords: project.portionRecords || {},
+    developmentRecords: normalizeDevelopmentRecords(project.developmentRecords),
     individuals: normalizeStringMap(project.individuals),
     ue: normalizeStringMap(project.ue),
     taphonomy: Object.fromEntries(objectEntries(project.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
