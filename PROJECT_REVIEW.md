@@ -59,6 +59,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   elemento seleccionado, con lateralidad aplicada a las vistas medial/lateral.
 - El informe admite campos explícitos de fuentes consultadas, método y alcance, y
   limitaciones/revisión pendiente; se conservan como texto introducido por el investigador.
+- NISP/MNE/MNI muestran el método y el carácter provisional; una revisión manual exige
+  valor entero, justificación y firma del inventario actual, y queda incluida en el
+  historial reversible para evitar que un cambio posterior conserve un valor obsoleto.
 
 - 179 elementos con geometría procedural propia para los cuatro perfiles (716
   combinaciones). Código fuente reproducible y exportación individual GLB con

@@ -55,8 +55,8 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 36 | REPRESENTACIÓN ESQUELÉTICA | Separar denominadores anatómicos de categorías agregadas y de elementos esperados por perfil. |
 | 37 | MAPA DE CONSERVACIÓN | Mapa del propio 3D según presencia/conservación/porcentaje/alteraciones, con patrones además de colores. |
 | 38 | NISP | Modelo de especímenes por ficha y NISP real; el automático actual cuenta registros agrupados. |
-| 39 | MNE | MNE desde observaciones de porciones y solapamiento; conservar revisión manual y límites. |
-| 40 | MNI | MNI desde incompatibilidades documentadas de lado/porción/desarrollo; no contar fragmentos como individuos. |
+| 39 | MNE | Cálculo automático provisional y revisión manual con entero, justificación y firma del inventario filtrado; conserva límites sobre porciones/solapamiento y exige revisión especializada. |
+| 40 | MNI | Cálculo automático provisional y revisión manual con entero, justificación y firma del inventario filtrado; no cuenta fragmentos como individuos y conserva los límites de asociación. |
 | 41 | FRAGMENTOS INDETERMINADOS | Validar cantidades/medidas opcionales, deshacer eliminación y vincular fragmentos a contexto. |
 | 42 | PESO | Selector g/kg por registro identificado y fragmento indeterminado, almacenamiento canónico en gramos, exportación/totales compatibles y pruebas de ausencia frente a peso cero. |
 | 43 | TAFONOMÍA | Catálogo curado y anotaciones múltiples estructuradas por hueso con evidencia. |
