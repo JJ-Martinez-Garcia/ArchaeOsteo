@@ -394,6 +394,12 @@ try {
     assert.equal(await evaluate(cdp, `document.querySelector('#bone-list [data-bone]')?.getAttribute('aria-label')?.toLowerCase().includes(${JSON.stringify(expected)})`), true, `Search synonym must identify expected bone: ${query}`);
   }
   await evaluate(cdp, `(()=>{const input=document.querySelector('#search');input.value='';input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+  await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
+  await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
+  await evaluate(cdp, `(()=>{const select=document.querySelector('#dentition-type');select.value='deciduous';select.dispatchEvent(new Event('change'));document.querySelector('[data-dental="developing"]').click();document.querySelector('[data-tooth="51"]').click();})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.deciduousDental?.['51']==='developing','Persist deciduous tooth status');
+  await evaluate(cdp, `(()=>{const select=document.querySelector('#dentition-type');select.value='permanent';select.dispatchEvent(new Event('change'));})()`);
   for(const profile of ['adult_female','infant','neonate']){
     await evaluate(cdp,`(()=>{const mode=document.querySelector('#geometry-mode');mode.value='auto';mode.dispatchEvent(new Event('change'));const select=document.querySelector('#profile');select.value=${JSON.stringify(profile)};select.dispatchEvent(new Event('change'));})()`);
     await waitForValue(cdp,`({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.generatedCount==='179',`Load 179 original GLBs: ${profile}`,45000);
