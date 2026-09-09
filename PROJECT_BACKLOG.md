@@ -75,7 +75,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 56 | PINTAR ALTERACIONES | E2E de alteraciones múltiples sin sobrescritura de detalles existentes. |
 | 57 | BORRADOR | Borrado de asignación coherente con todos los campos y recuperación por deshacer. |
 | 58 | DESHACER / REHACER | Importaciones, ficha científica y medidas ya reversibles; unificar fotos, altas/bajas de fragmentos y todas las operaciones restantes. |
-| 59 | BLOQUEAR REGISTROS | Formulario científico, importación revalidada, tablas, medidas y landmarks cubiertos; auditar fotos, modelos personalizados y todas las rutas restantes. |
+| 59 | BLOQUEAR REGISTROS | Formulario científico, importación revalidada, tablas, medidas, landmarks, fotos y modelos personalizados cubiertos; queda auditar nuevas rutas futuras. |
 | 60 | MOSTRAR PENDIENTES | Resaltar pendientes sin ocultar de forma incoherente categorías o etiquetas. |
 | 61 | PROGRESO | Denominador correcto por perfil y categorías; progreso siempre revisados, no presentes. |
 | 62 | INVENTARIO RÁPIDO | Confirmación obligatoria y deshacer completo al marcar restantes como ausentes. |

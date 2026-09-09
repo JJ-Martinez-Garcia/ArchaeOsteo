@@ -31,6 +31,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   conservan la unidad introducida para la ficha y mantienen exportaciones/totales anteriores.
 - Los fragmentos indeterminados aceptan la misma unidad y convierten a gramos para sus
   totales, manteniendo la unidad original visible.
+- La importación de un modelo personalizado respeta el bloqueo del registro seleccionado
+  y no reemplaza su malla mientras el registro esté bloqueado.
 - Copia `.osteo3d` autocontenida con modelos personalizados cacheados, manifiesto,
   comprobación CRC por ZIP y checksum por modelo en el manifiesto, además de restauración
   probada; JSON se mantiene como formato ligero.
