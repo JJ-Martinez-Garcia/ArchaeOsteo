@@ -4,6 +4,7 @@
 
 - La prueba procedural verifica explícitamente que la disposición desplegada del catálogo completo conserva el orden de bandas anatómicas regionales.
 - Se elimina una inicialización duplicada del diagnóstico de capacidades y el gestor de proyectos arranca mediante una microtarea segura.
+- El modo de aprendizaje ofrece ahora feedback inmediato y puntuación de intentos en identificación y localización; el flujo queda cubierto por E2E.
 - El reset de pesos, fragmentos indeterminados y destino fotográfico al crear un proyecto se enlaza directamente, sin temporizador de inicialización.
 - El CSV específico de pesos aplica ahora la misma protección contra inyección de fórmulas que el resto de exportaciones tabulares.
 - La disposición desplegada organiza las piezas en bandas regionales con separación y conserva una banda de compatibilidad para registros sin región.

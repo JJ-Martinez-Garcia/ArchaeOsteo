@@ -401,6 +401,12 @@ try {
   await evaluate(cdp, `(()=>{document.querySelectorAll('[data-compare-source]').forEach(input=>input.checked=true);document.querySelector('#run-multi-compare').click();})()`);
   await waitForValue(cdp, `document.querySelector('#multi-compare-results')?.textContent || ''`, value=>value.includes('2 fuentes')||value.includes('2 sources'), 'Compare active and local source');
 
+  await evaluate(cdp, `document.querySelector('#learning-panel-button').click()`);
+  await waitForValue(cdp, `Boolean(document.querySelector('#quiz-progress') && document.querySelector('[data-answer]'))`, value=>value===true, 'Render learning session');
+  await evaluate(cdp, `document.querySelector('[data-answer]').click()`);
+  await waitForValue(cdp, `document.querySelector('#quiz-progress')?.textContent || ''`, value=>/[01]\/1/.test(value), 'Track learning answer score');
+  assert.match(await evaluate(cdp, `document.querySelector('#quiz-feedback')?.textContent || ''`), /Correcto|Correct|Incorrecto|Incorrect/,'Learning answer must provide feedback');
+
   await testInspectorLayout(cdp,evaluate,waitForValue);
   await testDataIntegrity(cdp,evaluate,waitForValue,projectReadExpression);
   for (const [query, expected] of [['omóplato', 'escápula'], ['cúbito', 'ulna'], ['coxis', 'cóccix']]) {

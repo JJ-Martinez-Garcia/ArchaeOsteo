@@ -675,6 +675,8 @@ assert.match(main, /const orderedBones = \[bones\.find\(bone => bone\.id === sta
 assert.match(main, /const modelLoadConcurrency = lowMemory \? 3 : 8/);
 assert.match(main, /forEachConcurrent\(loadableBones, modelLoadConcurrency/);
 assert.match(await text('src/ui/extended.js'), /hierarchy-panel-button/);
+assert.match(await text('src/ui/extended.js'), /Correct location/);
+assert.match(await text('src/ui/extended.js'), /learningScore/);
 assert.match(await text('src/ui/extended.js'), /Añade entidades sin borrar observaciones existentes/);
 assert.match(await text('src/ui/extended.js'), /El ID padre no existe/);
 assert.match(await text('src/domain/inventory-history.js'), /'hierarchy'/);
