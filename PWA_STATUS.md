@@ -25,7 +25,7 @@ node scripts/e2e-pwa.mjs
 git diff --check
 ```
 
-La prueba E2E abre la compilación en un perfil temporal de Chrome, comprueba el manifiesto detectado por el navegador, el registro y control del Service Worker, la cobertura publicada, la carga GLB, la persistencia IndexedDB y un segundo arranque con la red desactivada tanto para la página como para el propio Service Worker. En la prueba local detiene además el servidor HTTP y exige que una petición inédita falle, evitando confundir la recuperación de caché con una respuesta todavía servida por la red.
+La prueba E2E abre la compilación en un perfil temporal de Chrome, comprueba el manifiesto detectado por el navegador, el registro y control del Service Worker, la cobertura publicada, la carga GLB y la persistencia IndexedDB. En la prueba local detiene además el servidor HTTP, reinicia la aplicación sin red y exige que una petición inédita falle, evitando confundir la recuperación de caché con una respuesta todavía servida por la red. El modo `OSTEO3D_E2E_URL` verifica la integración en línea del despliegue; la garantía offline se obtiene sobre el artefacto local idéntico que después publica el workflow.
 
 El workflow `.github/workflows/pages.yml` ejecuta además la instalación reproducible, la compilación Vite, la verificación de sintaxis, las pruebas smoke, las validaciones PWA y de modelos, la prueba E2E en Chrome y el despliegue a Pages. El estado actualizado se consulta en [GitHub Actions](https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/actions), evitando fijar aquí un número de ejecución que quede obsoleto.
 

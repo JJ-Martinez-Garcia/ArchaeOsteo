@@ -81,7 +81,7 @@ npm run test:e2e
 
 `npm test` comienza verificando la sintaxis de todos los archivos JavaScript de `src`, `scripts` y `tests`, y después ejecuta las pruebas de humo. El mismo control se ejecuta en GitHub Actions antes del despliegue.
 
-`npm run test:e2e` necesita una compilación previa en `dist` y Chrome, Edge o Chromium. También puede comprobar un despliegue existente mediante `OSTEO3D_E2E_URL=https://.../ npm run test:e2e`. La prueba abre un perfil de navegador temporal, valida la carga de un GLB y la persistencia, activa el modo sin red y exige que la aplicación vuelva a arrancar desde el Service Worker.
+`npm run test:e2e` necesita una compilación previa en `dist` y Chrome, Edge o Chromium. La prueba local abre un perfil de navegador temporal, valida la carga de un GLB y la persistencia, detiene el servidor, activa el modo sin red y exige que la aplicación vuelva a arrancar desde el Service Worker. También puede comprobar la integración en línea de un despliegue existente mediante `OSTEO3D_E2E_URL=https://.../ npm run test:e2e`; la garantía offline se mantiene en la prueba local determinista del mismo artefacto.
 
 ## Probar la PWA publicada
 

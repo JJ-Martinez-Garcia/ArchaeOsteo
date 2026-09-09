@@ -383,28 +383,29 @@ try {
   })()`);
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
+  let environmentSummary = 'despliegue en línea verificado';
   if (staticServer) {
     await stopStaticServer(staticServer);
     staticServer = null;
+    const offlineMode = await setOfflineState(cdp, true);
+    const offlineUrl = new URL(`?e2e-offline=${Date.now()}`, baseUrl).href;
+    await navigate(cdp, 'Page.navigate', { url: offlineUrl });
+    await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'El arranque offline');
+    const offlineState = await waitForValue(
+      cdp,
+      `({ title: document.title, coverage: document.querySelector('#model-package-status')?.textContent || '' })`,
+      value => value?.title.startsWith('Osteo3D') && /179\s+(?:de|of)\s+192/.test(value.coverage),
+      'El estado offline'
+    );
+    assert.match(offlineState.coverage, /179\s+(?:de|of)\s+192/);
+    const uncachedFetchBlocked = await evaluate(cdp, `fetch('./__offline_probe__?nonce=${Date.now()}', { cache: 'no-store' }).then(() => false).catch(() => true)`);
+    assert.equal(uncachedFetchBlocked, true, 'El servidor detenido debe bloquear una petición inédita.');
+    assert.equal((await evaluate(cdp, projectReadExpression())).schemaVersion, 2, 'El proyecto debe seguir disponible offline.');
+    await setOfflineState(cdp, false);
+    environmentSummary = `IndexedDB y arranque offline verificados (${offlineMode})`;
   }
-  const offlineMode = await setOfflineState(cdp, true);
-  const offlineUrl = new URL(`?e2e-offline=${Date.now()}`, baseUrl).href;
-  await navigate(cdp, 'Page.navigate', { url: offlineUrl });
-  await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'El arranque offline');
-  const offlineState = await waitForValue(
-    cdp,
-    `({ title: document.title, coverage: document.querySelector('#model-package-status')?.textContent || '' })`,
-    value => value?.title.startsWith('Osteo3D') && /179\s+(?:de|of)\s+192/.test(value.coverage),
-    'El estado offline'
-  );
-  assert.match(offlineState.coverage, /179\s+(?:de|of)\s+192/);
-  const uncachedFetchBlocked = await evaluate(cdp, `fetch('./__offline_probe__?nonce=${Date.now()}', { cache: 'no-store' }).then(() => false).catch(() => true)`);
-  assert.equal(uncachedFetchBlocked, true, 'La red simulada debe bloquear una petición inédita.');
-  assert.equal((await evaluate(cdp, projectReadExpression())).schemaVersion, 2, 'El proyecto debe seguir disponible offline.');
-
-  await setOfflineState(cdp, false);
   assert.deepEqual(runtimeErrors, [], `La consola del navegador contiene errores: ${runtimeErrors.join(' | ')}`);
-  console.log(`PWA browser E2E: OK · ${coverage.trim()} · ${shellCache} · IndexedDB y arranque offline verificados (${offlineMode}).`);
+  console.log(`PWA browser E2E: OK · ${coverage.trim()} · ${shellCache} · ${environmentSummary}.`);
 } catch (error) {
   if (stderr.trim()) console.error(`Navegador (últimas líneas):\n${stderr.trim()}`);
   throw error;
