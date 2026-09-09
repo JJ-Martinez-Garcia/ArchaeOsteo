@@ -755,6 +755,8 @@ assert.match(main, /12\*1024\*1024/);
 assert.match(main, /updateRegionalStats/);
 assert.match(main, /regional-stats/);
 assert.match(main, /async function exportXlsx/);
+assert.match(main, /protectSpreadsheetRows/);
+assert.match(await text('src/domain/spreadsheet.js'), /FORMULA_PREFIX/);
 assert.match(main, /Locked:!!state\.locked\[b\.id\]/);
 assert.match(main, /canvas\.toDataURL/);
 assert.match(await text('src/ui/extended.js'), /quiz-level/);

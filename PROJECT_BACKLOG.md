@@ -92,7 +92,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 73 | ESTADÍSTICAS | Medias basadas solo en datos observados y denominadores explícitos; pruebas con valores ausentes. |
 | 74 | INFORME AUTOMÁTICO | Informe con mapa esquelético, fuentes/métodos/límites, fotos elegidas y maquetación paginada. |
 | 75 | EXPORTACIÓN | Ronda completa de datos en CSV/JSON/XLSX/PDF, incluyendo campos nuevos y caracteres especiales. |
-| 76 | CSV/XLSX | Esquema estable y códigos canónicos, comillas/saltos de línea y defensa frente a fórmulas al abrir CSV. |
+| 76 | CSV/XLSX | Esquema estable y códigos canónicos, comillas/saltos de línea y protección de texto introducido por el usuario frente a fórmulas al abrir CSV/XLSX. Queda una auditoría completa de rondas con todos los campos y hojas auxiliares. |
 | 77 | JSON | Esquema versionado JSON completo, migraciones y validación de campos desconocidos. |
 | 78 | IMPORTACIÓN | Fusión explícita, filas atómicas, bloqueo revalidado y deshacer implementados; completar esquemas de hojas auxiliares y restauración JSON integral. |
 | 79 | BASE DE DATOS LOCAL | Modelo de entidades explícitas en IndexedDB y migraciones sin pérdida. |

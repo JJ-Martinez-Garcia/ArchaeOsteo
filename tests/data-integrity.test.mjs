@@ -7,8 +7,14 @@ import { createProjectWriter } from '../src/data/persistence.js';
 import { createOsteoArchive, readOsteoArchive } from '../src/domain/backup-archive.js';
 import { normalizePortionRecords, portionRecordCount } from '../src/domain/portion-records.js';
 import { normalizeWeightUnit, weightToGrams } from '../src/domain/weights.js';
+import { protectSpreadsheetValue, protectSpreadsheetRows } from '../src/domain/spreadsheet.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
+assert.equal(protectSpreadsheetValue('=SUM(A1:A2)'), "'=SUM(A1:A2)");
+assert.equal(protectSpreadsheetValue('+cmd'), "'+cmd");
+assert.equal(protectSpreadsheetValue('-10'), "'-10");
+assert.equal(protectSpreadsheetValue('texto normal'), 'texto normal');
+assert.deepEqual(protectSpreadsheetRows([{ Notes: '@usuario', Fragments: 0 }]), [{ Notes: "'@usuario", Fragments: 0 }]);
 const archiveBytes = createOsteoArchive(createBackup({ projectId: 'archive-1', projectName: 'Copia con GLB' }), [{ name: 'models/custom/infant/left_femur.glb', data: new Uint8Array([0, 1, 2, 255]) }]);
 const archive = readOsteoArchive(archiveBytes);
 assert.equal(archive.project.project.projectName, 'Copia con GLB');
