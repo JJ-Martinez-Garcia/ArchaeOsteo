@@ -230,6 +230,7 @@ assert.match(main, /const comparisonScale = profileComparisonScale/);
 assert.match(main, /dataset\.comparisonProfile/);
 assert.match(main, /comparisonLayout/);
 assert.match(main, /comparisonGroup\.children\.forEach/);
+assert.match(main, /matchesFilters\(layout\).*pendingHidden/);
 assert.match(main, /appendStorageQuotaDiagnostic/);
 assert.match(main, /inspector-toggle/);
 assert.match(main, /document\.querySelector\('#tab-report'\)\.onclick=.*populateReportFields\(\)/);

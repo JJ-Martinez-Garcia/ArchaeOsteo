@@ -381,7 +381,8 @@ function animate() {
     const end = new THREE.Quaternion().setFromEuler(new THREE.Euler(...(layout.expandedRotation || [0, 0, 0])));
     mesh.quaternion.copy(start).slerp(end, state.tableMode ? 1 : t);
     if (mesh.userData.comparisonBaseScale) mesh.scale.copy(mesh.userData.comparisonBaseScale);
-    mesh.visible = !state.hidden[layout.id] && matchesSkeletonFilter(layout) && matchesRegionFilter(layout);
+    const pendingHidden = state.pendingOnly && (state.status[layout.id] || 'not_recorded') !== 'not_recorded';
+    mesh.visible = !state.hidden[layout.id] && matchesSkeletonFilter(layout) && matchesRegionFilter(layout) && matchesFilters(layout) && !pendingHidden && (!state.isolate || layout.id === state.selected);
   });
   renderer.render(scene,camera);
 }
