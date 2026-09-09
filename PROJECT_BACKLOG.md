@@ -99,7 +99,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 80 | JERARQUÍA DE PROYECTOS | Jerarquía proyecto/yacimiento/campaña/sector/contexto/individuo, no solo campos en una ficha. |
 | 81 | AUTOGUARDADO | Fallo dual y recuperación por proyecto verificados; ampliar pruebas a todos los formularios, navegación pendiente y límites/cuota con fotografías grandes. |
 | 82 | COPIAS DE SEGURIDAD | Copia completa con fotografías y modelos personalizados binarios, checksum CRC por entrada en manifiesto y restauración verificada; queda hash criptográfico si se requiere evidencia contra manipulación maliciosa. |
-| 83 | COMPARAR INVENTARIOS | Comparación de dos proyectos locales con identidad visible de individuo/contexto/UE/campaña, filtro por esos valores y porciones independientes por elemento. Quedan comparación de más de dos fuentes y sincronización avanzada. |
+| 83 | COMPARAR INVENTARIOS | Comparación de dos proyectos locales con identidad visible de individuo/contexto/UE/campaña, filtro por esos valores y porciones independientes por elemento; los valores desconocidos se muestran como `—` y los ceros observados se conservan. Quedan comparación de más de dos fuentes y sincronización avanzada. |
 | 84 | BASE ANATÓMICA | Catálogo modular con tipos y nomenclatura curados; source de datos separado ya iniciado. |
 | 85 | INTERNACIONALIZACIÓN | Completar ES/EN y quitar textos incrustados; preparación RTL y nuevos idiomas. |
 | 86 | PWA Y OFFLINE | PWA/offline probados en Chromium; confirmar navegación y operaciones completas tras instalación. |
