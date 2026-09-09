@@ -2,6 +2,7 @@
 
 ## 2026-09-10
 
+- El reset de pesos, fragmentos indeterminados y destino fotográfico al crear un proyecto se enlaza directamente, sin temporizador de inicialización.
 - El CSV específico de pesos aplica ahora la misma protección contra inyección de fórmulas que el resto de exportaciones tabulares.
 - La disposición desplegada organiza las piezas en bandas regionales con separación y conserva una banda de compatibilidad para registros sin región.
 - La comparación 3D respeta también los filtros científicos de estado, pendientes y aislamiento, evitando discrepancias visuales con el esqueleto principal.
