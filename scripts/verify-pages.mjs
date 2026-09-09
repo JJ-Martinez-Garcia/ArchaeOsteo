@@ -9,12 +9,13 @@ const positiveInteger = (value, fallback) => {
 };
 const attempts = positiveInteger(process.env.OSTEO3D_VERIFY_ATTEMPTS, 12);
 const delayMs = positiveInteger(process.env.OSTEO3D_VERIFY_DELAY_MS, 3000);
+const timeoutMs = positiveInteger(process.env.OSTEO3D_VERIFY_TIMEOUT_MS, 10000);
 const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 let lastError;
 
 for (let attempt = 1; attempt <= attempts; attempt += 1) {
   try {
-    const response = await fetch(url, { redirect: 'follow', headers: { accept: 'text/html' } });
+    const response = await fetch(url, { redirect: 'follow', signal: AbortSignal.timeout(timeoutMs), headers: { accept: 'text/html' } });
     const html = await response.text();
     assert.equal(response.ok, true, `HTTP ${response.status}`);
     assert.match(html, /<title>Osteo3D/);

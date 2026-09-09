@@ -123,8 +123,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   (no se publican ni contienen inventarios del usuario; se generan en un perfil de prueba).
 - GitHub Actions ejecuta build, pruebas, validadores y E2E antes de Pages; tras el despliegue,
   `scripts/verify-pages.mjs` comprueba que la entrada pública responde y contiene manifest/assets.
-  El verificador admite `OSTEO3D_VERIFY_ATTEMPTS` y `OSTEO3D_VERIFY_DELAY_MS` para dar margen
-  a la propagación de Pages sin ocultar un fallo final.
+  El verificador admite `OSTEO3D_VERIFY_ATTEMPTS`, `OSTEO3D_VERIFY_DELAY_MS` y
+  `OSTEO3D_VERIFY_TIMEOUT_MS` para dar margen a la propagación de Pages sin dejar colgado
+  el job ni ocultar un fallo final.
 
 Las pruebas automatizadas no constituyen validación anatómica, antropológica,
 diagnóstica o arqueométrica. No se ha realizado una revisión manual exhaustiva
