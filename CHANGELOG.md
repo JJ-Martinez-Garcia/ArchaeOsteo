@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-09
+
+- El panel derecho oculta desbordamientos horizontales accidentales y limita también
+  formularios extendidos, filtros y campos de contexto al ancho disponible.
+- La pestaña de informe hidrata todos sus campos de contexto de forma directa al abrirse,
+  sin depender de temporizadores de inicialización; se mantiene la cobertura E2E del
+  separador redimensionable y de los formularios a 300 px.
+
 ## Cambios recientes
 
 - Licencias del código y de terceros enlazadas desde la interfaz y disponibles en el shell offline.

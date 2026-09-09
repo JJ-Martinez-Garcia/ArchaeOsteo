@@ -52,7 +52,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   con metadatos y licencia incorporados; no se han validado científicamente.
 - Panel derecho adaptable y separador accesible por ratón/teclado con persistencia.
   Pruebas de todas las pestañas y formularios ampliados a 300 px, en PC de 1024/1440 px;
-  el visor ajusta su resolución al cambiar la separación.
+  el visor ajusta su resolución al cambiar la separación. Los formularios extendidos
+  limitan su ancho y la pestaña de informe rellena todos sus campos al abrirse sin
+  depender de temporizadores.
 - La transparencia visual admite ahora el rango completo 0–100% por hueso, región o
   esqueleto, y el restablecimiento devuelve también ambiente y dirección de la luz.
 - El visor incorpora vistas locales medial, lateral, proximal y distal centradas en el
@@ -112,7 +114,7 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - `pnpm test`: sintaxis, regresiones funcionales de dominio y 716 geometrías;
   posiciones finitas, lateralidad, proporciones no uniformes, ausencia de
   intersecciones de cajas en posición desplegada, metadatos y ronda exportar/leer GLB.
-- `pnpm build`, `pnpm validate-pwa`, `pnpm validate-model-assets`.
+- `pnpm build`, `pnpm validate-pwa`, `pnpm validate-shell`, `pnpm validate-model-assets`.
 - `pnpm test:e2e`: Chromium real con WebGL, carga GLB, cambio entre los cuatro
   perfiles, 179 mallas esquemáticas, persistencia IndexedDB, vista móvil sin
   desbordamiento horizontal y arranque offline con servidor detenido.
