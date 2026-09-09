@@ -744,6 +744,8 @@ assert.match(main, /function syncSelectedCompletenessDisplay/);
 assert.match(main, /const average=observed\.length\?Math\.round\(preserved\/observed\.length\):null/);
 assert.match(main, /average == null \? '—' : `\$\{average\}%`/);
 assert.match(main, /reportContextFields/);
+assert.match(main, /const refreshDashboards=\(\)=>/);
+assert.doesNotMatch(main, /setInterval\(update(?:ConservationMap|FragmentationMap|RegionalStats|SideStats|QuantificationSummary|WeightSummary),1000\)/);
 assert.match(await text('scripts/verify-pages.mjs'), /Published Pages entry point/);
 assert.match(await text('scripts/verify-pages.mjs'), /OSTEO3D_VERIFY_ATTEMPTS/);
 assert.match(await text('scripts/verify-pages.mjs'), /OSTEO3D_VERIFY_DELAY_MS/);
