@@ -22,6 +22,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   configuración visual del proyecto.
 - Cobertura E2E: el filtrado estadístico de «No observable» se verifica ahora con una
   interacción real y una comprobación del subconjunto resultante.
+- Persistencia E2E: el encuadre 3D se cambia, se verifica en IndexedDB y se recupera
+  tras una recarga real del navegador.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

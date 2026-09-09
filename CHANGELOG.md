@@ -42,6 +42,8 @@
   una restauración de inventario o configuración deje un encuadre incoherente.
 - La E2E del navegador cubre explícitamente el filtrado de registros «No observable» y
   comprueba que el resumen queda reducido al subconjunto marcado.
+- La E2E verifica también que un cambio de cámara se persiste en IndexedDB y se recupera
+  después de recargar la aplicación.
 
 ## Cambios recientes
 

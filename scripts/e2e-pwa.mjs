@@ -386,6 +386,12 @@ try {
   })()`);
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
+  await evaluate(cdp, `(()=>{const canvas=document.querySelector('#viewer canvas');canvas?.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>Number.isFinite(value?.cameraView?.theta)&&value.cameraView.theta!==0,'Persist 3D camera view');
+  await navigate(cdp, 'Page.reload', { ignoreCache: false });
+  await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'Reload after camera change');
+  await waitForValue(cdp,projectReadExpression(),value=>Number.isFinite(value?.cameraView?.theta)&&value.cameraView.theta!==0,'Recover 3D camera view after reload');
+
   await testInspectorLayout(cdp,evaluate,waitForValue);
   await testDataIntegrity(cdp,evaluate,waitForValue,projectReadExpression);
   for (const [query, expected] of [['omóplato', 'escápula'], ['cúbito', 'ulna'], ['coxis', 'cóccix']]) {
