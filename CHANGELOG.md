@@ -48,6 +48,8 @@
   para no perder el encuadre al restaurar un proyecto.
 - Corregida la normalización de proyectos: `cameraView` ya no se descarta al guardar o
   cargar desde IndexedDB y sus valores se recortan a límites válidos.
+- Los gestos de cámara generan ahora snapshots reversibles y entradas auditables, por lo
+  que Deshacer/Rehacer también cubre rotación, zoom y desplazamiento del encuadre.
 
 ## Cambios recientes
 

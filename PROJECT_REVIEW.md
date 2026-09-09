@@ -28,6 +28,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   su round-trip se valida junto con el resto de la configuración visual.
 - Migración y almacenamiento: la normalización conserva `cameraView` y sanea radios,
   elevación y coordenadas inválidas de proyectos antiguos o importados.
+- Historial de interacción: los cambios de cámara crean entradas reversibles y auditables,
+  y la E2E PWA continúa validando la persistencia tras recarga.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un
