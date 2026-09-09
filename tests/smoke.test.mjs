@@ -711,6 +711,8 @@ assert.match(main, /Distancia entre landmarks/);
 assert.match(main, /updateLandmarkVisuals/);
 assert.match(main, /landmark-visuals/);
 assert.match(main, /landmark-reference-mm/);
+assert.match(main, /capture-surface-landmark/);
+assert.match(main, /surface_pick/);
 assert.match(main, /landmark_calibration/);
 assert.match(main, /landmarks:state\.landmarks,calibrations:state\.calibrations/);
 assert.match(main, /explosion-guides/);

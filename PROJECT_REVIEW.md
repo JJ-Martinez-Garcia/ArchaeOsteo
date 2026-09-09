@@ -25,6 +25,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - Osteometría: calibración por dos landmarks y distancia convertida a milímetros,
   con escala por elemento, fecha y procedencia del dato introducido por el usuario;
   no se presenta como calibración científica global.
+- Landmarks: captura directa sobre la superficie de la malla seleccionada, guardando
+  coordenadas locales, origen `surface_pick`, fecha y operación reversible; se mantiene
+  la distinción entre coordenada relativa y medición física.
 
 - Ampliación: se publican 537 GLB propios para femenino, infante y neonato,
   con metadatos y licencia incorporados; no se han validado científicamente.

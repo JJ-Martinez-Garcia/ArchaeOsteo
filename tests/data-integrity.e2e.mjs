@@ -18,6 +18,10 @@ export async function testDataIntegrity(cdp, evaluate, waitForValue, projectRead
   await run(`document.querySelector('#landmark-reference-mm').value='50';document.querySelector('#calibrate-landmarks').click()`);
   await waitForValue(cdp, projectReadExpression(), p => p.calibrations?.skull?.referenceMm === 50, 'Persist user landmark calibration');
   assert.match(await run(`document.querySelector('#landmark-distance').textContent`), /Distancia calibrada|Calibrated distance/);
+  await run(`document.querySelector('#capture-surface-landmark').click()`);
+  assert.equal(await run(`document.querySelector('#capture-surface-landmark').getAttribute('aria-pressed')`), 'true');
+  await run(`document.querySelector('#capture-surface-landmark').click()`);
+  assert.equal(await run(`document.querySelector('#capture-surface-landmark').getAttribute('aria-pressed')`), 'false');
   await click('#tab-inventory'); await click('#show-table');
   await run(`(()=>{const input=document.querySelector('[data-row-field="completeness"][data-row-id="skull"]');input.value='0';input.dispatchEvent(new Event('change'));})()`);
   await waitForValue(cdp, projectReadExpression(), p => p.completeness?.skull === 0, 'Table saves observed zero percent');
