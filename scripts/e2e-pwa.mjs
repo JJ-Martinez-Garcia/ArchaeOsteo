@@ -394,6 +394,12 @@ try {
     assert.equal(await evaluate(cdp, `document.querySelector('#bone-list [data-bone]')?.getAttribute('aria-label')?.toLowerCase().includes(${JSON.stringify(expected)})`), true, `Search synonym must identify expected bone: ${query}`);
   }
   await evaluate(cdp, `(()=>{const input=document.querySelector('#search');input.value='';input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#mark-remaining-absent').click()`);
+  assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#confirm-action-accept'))`), true, 'Mass absent action must require confirmation');
+  await evaluate(cdp, `document.querySelector('#confirm-action-accept').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>Object.values(value.status||{}).filter(status=>status==='absent').length>0,'Persist mass absent action');
+  await evaluate(cdp, `document.querySelector('#undo').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>Object.values(value.status||{}).every(status=>status!=='absent'),'Undo mass absent action');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
