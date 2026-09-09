@@ -591,6 +591,8 @@ assert.match(await text('src/ui/extended.js'), /populateComparisonScopes/);
 assert.match(await text('src/ui/extended.js'), /multi-compare-panel-button/);
 assert.match(await text('src/ui/extended.js'), /data-compare-source/);
 assert.match(await text('src/ui/extended.js'), /Select at least two sources/);
+assert.match(await text('src/ui/extended.js'), /export-multi-compare/);
+assert.match(await text('src/ui/extended.js'), /osteo3d-multi-comparison\.csv/);
 assert.match(main, /Actualizar ahora/);
 assert.match(main, /Más tarde/);
 assert.match(main, /await saveLocal\(\{ notify:false \}\)/);

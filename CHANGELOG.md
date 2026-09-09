@@ -69,6 +69,8 @@
   como posibles padres.
 - La comparación múltiple incluye el proyecto activo como fuente y la E2E crea una
   segunda fuente local para verificar el flujo completo de selección y resumen.
+- El resumen agregado de comparación múltiple se puede descargar ahora como CSV,
+  conservando los recuentos canónicos por estado y `Bone_ID`.
 
 ## Cambios recientes
 
