@@ -748,6 +748,7 @@ assert.match(await text('index.html'), /Content-Security-Policy/);
 assert.match(await text('index.html'), /connect-src 'self'/);
 assert.match(main, /ensureLongReportFields/);
 assert.match(main, /printableReportHtml/);
+assert.match(main, /window\.open\('','_blank','noopener,noreferrer'\)/);
 assert.match(main, /@page\{size:A4;margin:12mm\}/);
 assert.match(main, /\['sources', 'method', 'limits'\]/);
 assert.match(main, /translatedProvenanceReport/);
