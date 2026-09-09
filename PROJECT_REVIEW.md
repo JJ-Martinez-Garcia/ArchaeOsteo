@@ -18,6 +18,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   inválidos en copias antiguas.
 - Inventario y estadísticas: todos los estados operativos, incluido «No observable»,
   se pueden representar, persistir y filtrar sin depender del color.
+- Historial visual: los snapshots también restauran el encuadre 3D junto con la
+  configuración visual del proyecto.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

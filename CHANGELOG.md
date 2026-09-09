@@ -38,6 +38,8 @@
   los cambios hechos con ratón, rueda, teclado, vistas rápidas y centrado.
 - El filtro de estadísticas permite ahora aislar también los elementos marcados como
   «No observable» y traduce ese estado correctamente en la interfaz inglesa.
+- La vista de cámara se incluye ahora en los snapshots de Deshacer/Rehacer, evitando que
+  una restauración de inventario o configuración deje un encuadre incoherente.
 
 ## Cambios recientes
 
