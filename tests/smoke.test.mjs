@@ -507,6 +507,8 @@ assert.match(main, /Sources:report.sources/);
 assert.match(main, /data-analysis-review="mne"/);
 assert.match(main, /function saveAnalysisReview\(\)/);
 assert.match(await text('src/domain/inventory-history.js'), /'analysisReview'/);
+assert.match(main, /setInspectorMobileOpen/);
+assert.match(main, /event.key==='Escape'.*mobile-open/);
 assert.match(await text('src/adaptive.css'), /min-height: 44px/);
 assert.match(main, /Los datos científicos no se infieren a partir de la geometría/);
 assert.match(main, /anatomy-facts/);

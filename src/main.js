@@ -733,7 +733,10 @@ document.querySelector('.tree')?.insertAdjacentHTML('afterbegin','<button id="sk
 document.querySelector('#skeleton-complete').onclick=()=>{state.skeletonFilter='all';renderList();document.querySelector('#toast').textContent='Esqueleto completo';};
 const inspectorToggle=document.querySelector('#inspector-toggle');
 const inspector=document.querySelector('#inspector');
-inspectorToggle?.addEventListener('click',()=>{const open=inspector?.classList.toggle('mobile-open')||false; inspectorToggle.setAttribute('aria-expanded',String(open)); inspectorToggle.textContent=open?'Cerrar panel':'Panel';});
+const setInspectorMobileOpen=open=>{if(!inspector||!inspectorToggle)return;inspector.classList.toggle('mobile-open',open);inspectorToggle.setAttribute('aria-expanded',String(open));inspectorToggle.textContent=open?'Cerrar panel':'Panel';};
+inspectorToggle?.addEventListener('click',()=>setInspectorMobileOpen(!inspector?.classList.contains('mobile-open')));
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&inspector?.classList.contains('mobile-open')&&matchMedia('(max-width: 900px)').matches){event.preventDefault();setInspectorMobileOpen(false);inspectorToggle.focus();}});
+document.querySelector('.viewer-wrap')?.addEventListener('pointerdown',event=>{if(event.target.closest('.viewer-toolbar,.viewer-lighting-controls'))return;if(inspector?.classList.contains('mobile-open')&&matchMedia('(max-width: 900px)').matches)setInspectorMobileOpen(false);});
 const skeletonGroups=document.querySelectorAll('.tree-group');
 skeletonGroups[1]?.addEventListener('click',()=>{state.skeletonFilter=state.skeletonFilter==='axial'?'all':'axial';renderList();document.querySelector('#toast').textContent=state.skeletonFilter==='axial'?'Esqueleto axial':'Esqueleto completo';});
 skeletonGroups[2]?.addEventListener('click',()=>{state.skeletonFilter=state.skeletonFilter==='appendicular'?'all':'appendicular';renderList();document.querySelector('#toast').textContent=state.skeletonFilter==='appendicular'?'Esqueleto apendicular':'Esqueleto completo';});
