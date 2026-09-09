@@ -63,6 +63,12 @@ applyInventorySnapshot(state, snapshot);
 assert.equal(state.weights.skull, 12); assert.equal(state.pathologyDetails.skull.description, 'antes'); assert.equal(state.dental[11], 'wear');
 state.pathologyDetails.skull.description = 'nueva';
 assert.equal(snapshot.pathologyDetails.skull.description, 'antes', 'Undo snapshots cannot be mutated by later edits');
+const photoState = { photos: { skull: [{ name: 'a', dataUrl: 'data:image/png;base64,AA' }] }, indeterminateFragments: [{ type: 'astilla' }] };
+const photoSnapshot = takeInventorySnapshot(photoState);
+photoState.photos.skull.push({ name: 'b', dataUrl: 'data:image/png;base64,BB' }); photoState.indeterminateFragments.splice(0, 1);
+applyInventorySnapshot(photoState, photoSnapshot);
+assert.equal(photoState.photos.skull.length, 1, 'Photo additions are undoable as part of the common snapshot');
+assert.equal(photoState.indeterminateFragments.length, 1, 'Indeterminate-fragment changes are undoable as part of the common snapshot');
 
 class MemoryStorage {
   values = new Map();

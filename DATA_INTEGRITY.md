@@ -19,6 +19,9 @@ y `tests/data-integrity.e2e.mjs`; no equivalen al cierre de todos los requisitos
 - Deshacer / rehacer desde Inventario recupera la importación como una sola operación,
   incluidos pesos, porciones, notas, detalles, dentición y contexto. El historial de
   deshacer es de sesión y se reinicia al cambiar de proyecto o restaurar una copia.
+- Las altas y bajas de fotografías y de fragmentos indeterminados también generan
+  snapshots del historial común. Las fotografías y fragmentos asociados a un registro
+  bloqueado no se pueden modificar desde esas rutas.
 - XLSX exporta códigos dentales canónicos en `Status` y etiquetas en `Status_Label`.
   El importador admite también las etiquetas ES/EN de archivos históricos y valida
   los FDI de cada dentición. Las hojas auxiliares de contexto y fragmentos se explican
