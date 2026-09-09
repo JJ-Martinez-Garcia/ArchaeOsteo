@@ -61,6 +61,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   limitaciones/revisión pendiente; se conservan como texto introducido por el investigador.
 - Los diálogos de creación y confirmación tienen foco inicial, ciclo de Tab/Mayús+Tab,
   Escape, restauración del foco y relaciones `aria-labelledby`/`aria-describedby`.
+- El informe imprimible localiza sus etiquetas fijas al inglés cuando el proyecto está en
+  inglés y conserva sin traducir el texto científico introducido por el investigador.
 - Los refrescos de paneles, etiquetas, iluminación y colores del visor se omiten en segundo
   plano; el panel estadístico usa un único ciclo visible para reducir trabajo periódico.
 - NISP/MNE/MNI muestran el método y el carácter provisional; una revisión manual exige

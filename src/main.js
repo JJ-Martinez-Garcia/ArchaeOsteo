@@ -513,7 +513,26 @@ function photosReportHtml() { const photos=Object.entries(state.photos||{}).flat
 function observationsReportHtml() { const ids=new Set([...Object.keys(state.taphonomy||{}), ...Object.keys(state.pathology||{}), ...Object.keys(state.taphonomyDetails||{}), ...Object.keys(state.pathologyDetails||{})]); const rows=[...ids].map(boneId=>{const bone=bones.find(item=>item.id===boneId); const taphonomy=state.taphonomyDetails?.[boneId]||{}; const pathology=state.pathologyDetails?.[boneId]||{}; const legacyTaphonomy=Array.isArray(state.taphonomy?.[boneId])?state.taphonomy[boneId].join('; '):''; const legacyPathology=Array.isArray(state.pathology?.[boneId])?state.pathology[boneId].join('; '):''; const taphonomyText=[taphonomy.type,taphonomy.description,taphonomy.position,taphonomy.extent,taphonomy.observations,legacyTaphonomy].filter(Boolean).join(' · '); const pathologyText=[pathology.type,pathology.description,pathology.position,pathology.extent,pathology.observations,legacyPathology].filter(Boolean).join(' · '); return `<tr><td>${escapeHtml(bone?.es||boneId)}</td><td>${escapeHtml(taphonomyText||'—')}</td><td>${escapeHtml(pathologyText||'—')}</td></tr>`; }).join(''); return `<h2>Tafonomía y patología / trauma</h2><table><thead><tr><th>Elemento</th><th>Alteraciones tafonómicas</th><th>Patología / trauma</th></tr></thead><tbody>${rows||'<tr><td colspan="3">Sin observaciones registradas</td></tr>'}</tbody></table>`; }
 function reportContextHtml() { const report=state.report||{}; const fields=reportContextFields.filter(([key])=>report[key]).map(([key,label])=>`<dt>${label}</dt><dd>${escapeHtml(report[key])}</dd>`).join(''); return fields?`<h2>Ficha de contexto</h2><dl>${fields}</dl>`:''; }
 const reportHtmlBase = reportHtml;
-reportHtml = (...args) => reportHtmlBase(...args).replace('</body>', `${reportContextHtml()}${skeletonMapReportHtml()}${dentalReportHtml()}${analysisReportHtml()}${observationsReportHtml()}${photosReportHtml()}</body>`);
+function localizePrintableReport(html) {
+  if (state.language !== 'en') return html;
+  const labels = new Map([
+    ['<html lang="es">', '<html lang="en">'], ['<title>Informe osteoarqueológico ·', '<title>Osteoarchaeological report ·'],
+    ['<h1>Informe osteoarqueológico</h1>', '<h1>Osteoarchaeological report</h1>'], ['<h2>Resumen</h2>', '<h2>Summary</h2>'],
+    ['<h2>Inventario esquelético</h2>', '<h2>Skeletal inventory</h2>'], ['<h2>Mediciones y landmarks</h2>', '<h2>Measurements and landmarks</h2>'],
+    ['<h2>Mapa esquelético esquemático</h2>', '<h2>Schematic skeletal map</h2>'], ['<h2>Odontograma permanente</h2>', '<h2>Permanent odontogram</h2>'],
+    ['<h2>Odontograma deciduo</h2>', '<h2>Deciduous odontogram</h2>'], ['<h2>Análisis cuantitativo</h2>', '<h2>Quantitative analysis</h2>'],
+    ['<h2>Detalle osteométrico</h2>', '<h2>Osteometric detail</h2>'], ['<h2>Tafonomía y patología / trauma</h2>', '<h2>Taphonomy and pathology / trauma</h2>'],
+    ['<h2>Fotografías locales</h2>', '<h2>Local photographs</h2>'], ['<h2>Ficha de contexto</h2>', '<h2>Context record</h2>'],
+    ['<dt>Individuo</dt>', '<dt>Individual</dt>'], ['<dt>Yacimiento</dt>', '<dt>Site</dt>'], ['<dt>Contexto</dt>', '<dt>Context</dt>'],
+    ['<dt>Investigador</dt>', '<dt>Investigator</dt>'], ['<dt>Fecha de generación</dt>', '<dt>Generated</dt>'], ['<th>Elemento</th>', '<th>Element</th>'],
+    ['<th>Lado</th>', '<th>Side</th>'], ['<th>Estado</th>', '<th>Status</th>'], ['<th>Conservación</th>', '<th>Preservation</th>'],
+    ['<th>Porcentaje</th>', '<th>Percentage</th>'], ['<th>Región</th>', '<th>Region</th>'], ['<th>Revisados</th>', '<th>Reviewed</th>'],
+    ['<th>Conservación media</th>', '<th>Average preservation</th>'], ['Sin observaciones registradas</td>', 'No observations recorded</td>'],
+    ['Sin fotografías locales seleccionadas.</p>', 'No local photographs selected.</p>']
+  ]);
+  return [...labels.entries()].reduce((result, [from, to]) => result.replaceAll(from, to), html);
+}
+reportHtml = (...args) => localizePrintableReport(reportHtmlBase(...args).replace('</body>', `${reportContextHtml()}${skeletonMapReportHtml()}${dentalReportHtml()}${analysisReportHtml()}${observationsReportHtml()}${photosReportHtml()}</body>`));
 function previewReport() { document.querySelector('#report-preview').innerHTML=`<strong>${state.report.individual||'IND-LOCAL'}</strong> · ${bones.filter(b=>(state.status[b.id]||'not_recorded')!=='not_recorded').length}/${bones.length} elementos revisados`; }
 const reportContextFields = [['burial','Enterramiento'],['grave','Sepultura'],['tomb','Tumba'],['ue','UE'],['sector','Sector'],['grid','Cuadrícula'],['campaign','Campaña'],['date','Fecha'],['chronology','Cronología'],['observations','Observaciones'],['sources','Fuentes consultadas'],['method','Método y alcance'],['limits','Limitaciones / revisión pendiente']];
 function ensureReportContextFields() { const fields=document.querySelector('.report-fields'); if(!fields||document.querySelector('#report-burial'))return; const markup=reportContextFields.map(([key,label])=>`<label>${label}${key==='observations'?`<textarea id="report-${key}" rows="2"></textarea>`:`<input id="report-${key}"${key==='date'?' type="date"':''}/>`}</label>`).join(''); document.querySelector('#report-individual')?.insertAdjacentHTML('afterend',markup); }

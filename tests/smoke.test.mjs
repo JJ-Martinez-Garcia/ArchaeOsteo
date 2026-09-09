@@ -186,6 +186,8 @@ assert.match(main, /function trapDialogFocus/);
 assert.match(main, /previous\?\.isConnected/);
 assert.match(main, /aria-describedby="project-name-description"/);
 assert.match(main, /aria-describedby="confirm-action-description"/);
+assert.match(main, /function localizePrintableReport/);
+assert.match(main, /Osteoarchaeological report/);
 assert.match(main, /if\(document\.visibilityState==='visible'\)syncInventoryVisualColors\(\)/);
 assert.match(main, /if\(document\.visibilityState==='visible'\)renderLabels\(\)/);
 assert.match(main, /quantification-summary/);

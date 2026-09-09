@@ -101,7 +101,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 82 | COPIAS DE SEGURIDAD | Copia completa con fotografías y modelos personalizados binarios, checksum CRC y SHA-256 por entrada en manifiesto y restauración verificada. Sigue pendiente una auditoría de límites/cuota y escenarios extremos de recuperación. |
 | 83 | COMPARAR INVENTARIOS | Comparación de dos proyectos locales con identidad visible de individuo/contexto/UE/campaña, filtro por esos valores y porciones independientes por elemento; los valores desconocidos se muestran como `—` y los ceros observados se conservan. Quedan comparación de más de dos fuentes y sincronización avanzada. |
 | 84 | BASE ANATÓMICA | Catálogo modular con tipos y nomenclatura curados; source de datos separado ya iniciado. |
-| 85 | INTERNACIONALIZACIÓN | ES/EN y textos principales disponibles; quedan algunos controles/métodos incrustados, RTL y nuevos idiomas. |
+| 85 | INTERNACIONALIZACIÓN | ES/EN y textos principales disponibles; el informe imprimible localiza títulos y etiquetas fijas sin tocar el texto científico del investigador. Quedan algunos controles/métodos incrustados, RTL y nuevos idiomas. |
 | 86 | PWA Y OFFLINE | PWA/offline probados en Chromium; confirmar navegación y operaciones completas tras instalación. |
 | 87 | DESCARGA DE MODELOS | Paquetes de los cuatro perfiles disponibles; probar descarga/eliminación sin borrar modelos personales. |
 | 88 | OPTIMIZACIÓN 3D | Presupuestos de geometría, LOD y liberación de recursos; medir en móviles de memoria limitada. |
