@@ -82,6 +82,8 @@ assert.equal(normalizeProject([]), null);
 assert.throws(() => validateBackup({ format: 'osteo3d-project-backup', version: 1, project: [] }));
 const visualBackup = validateBackup(createBackup({ skeletonFilter: 'axial', regionFilter: 'Cráneo', explosion: 70, tableMode: true, orthographic: true, isolate: true, lightingMode: 'laboratory' }));
 assert.equal(visualBackup.explosion, 70); assert.equal(visualBackup.tableMode, true); assert.equal(visualBackup.lightingMode, 'laboratory');
+const cameraView = { theta: 1.2, phi: 0.8, radius: 9, target: [1, 2, 3] };
+assert.deepEqual(validateBackup(createBackup({ cameraView })).cameraView, cameraView);
 const calibrationBackup = validateBackup(createBackup({ calibrations: { skull: { referenceMm: 50, localDistance: 2 } } }));
 assert.deepEqual(calibrationBackup.calibrations.skull, { referenceMm: 50, localDistance: 2 });
 const modelReference = { skull: { profile: 'adult_male', source: 'custom', geometryVersion: 'external', customUpdatedAt: '2026-09-09T12:00:00Z', needsReview: true } };

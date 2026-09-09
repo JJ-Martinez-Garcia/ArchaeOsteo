@@ -54,6 +54,7 @@ export function createBackup(state) {
       lightingAzimuth: state.lightingAzimuth,
       lightingElevation: state.lightingElevation,
       lightingMode: state.lightingMode,
+      cameraView: state.cameraView || null,
       changeLog: state.changeLog,
       dental: state.dental,
       deciduousDental: state.deciduousDental,

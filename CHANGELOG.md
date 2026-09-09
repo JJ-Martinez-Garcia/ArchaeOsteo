@@ -44,6 +44,8 @@
   comprueba que el resumen queda reducido al subconjunto marcado.
 - La E2E verifica también que un cambio de cámara se persiste en IndexedDB y se recupera
   después de recargar la aplicación.
+- Las copias JSON y OSTEO3D incluyen ahora la vista de cámara, con prueba de round-trip
+  para no perder el encuadre al restaurar un proyecto.
 
 ## Cambios recientes
 

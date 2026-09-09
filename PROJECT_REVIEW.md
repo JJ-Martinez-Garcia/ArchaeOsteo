@@ -24,6 +24,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   interacción real y una comprobación del subconjunto resultante.
 - Persistencia E2E: el encuadre 3D se cambia, se verifica en IndexedDB y se recupera
   tras una recarga real del navegador.
+- Interoperabilidad: las copias completas conservan también el encuadre de cámara y
+  su round-trip se valida junto con el resto de la configuración visual.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un
