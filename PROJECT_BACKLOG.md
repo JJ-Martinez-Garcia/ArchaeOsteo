@@ -101,12 +101,12 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 82 | COPIAS DE SEGURIDAD | Copia completa con fotografías y modelos personalizados binarios, checksum CRC y SHA-256 por entrada en manifiesto y restauración verificada. Sigue pendiente una auditoría de límites/cuota y escenarios extremos de recuperación. |
 | 83 | COMPARAR INVENTARIOS | Comparación de dos proyectos locales con identidad visible de individuo/contexto/UE/campaña, filtro por esos valores y porciones independientes por elemento; los valores desconocidos se muestran como `—` y los ceros observados se conservan. Quedan comparación de más de dos fuentes y sincronización avanzada. |
 | 84 | BASE ANATÓMICA | Catálogo modular con tipos y nomenclatura curados; source de datos separado ya iniciado. |
-| 85 | INTERNACIONALIZACIÓN | Completar ES/EN y quitar textos incrustados; preparación RTL y nuevos idiomas. |
+| 85 | INTERNACIONALIZACIÓN | ES/EN y textos principales disponibles; quedan algunos controles/métodos incrustados, RTL y nuevos idiomas. |
 | 86 | PWA Y OFFLINE | PWA/offline probados en Chromium; confirmar navegación y operaciones completas tras instalación. |
 | 87 | DESCARGA DE MODELOS | Paquetes de los cuatro perfiles disponibles; probar descarga/eliminación sin borrar modelos personales. |
 | 88 | OPTIMIZACIÓN 3D | Presupuestos de geometría, LOD y liberación de recursos; medir en móviles de memoria limitada. |
 | 89 | RENDIMIENTO | Matriz de PC/Mac/Android/iOS/iPad y métricas reproducibles en dispositivos reales. |
-| 90 | INTERFAZ DE ESCRITORIO | Panel redimensionable y formularios probados en PC; comprobar zoom 125–200% y todos los tamaños. |
+| 90 | INTERFAZ DE ESCRITORIO | Panel redimensionable y formularios probados en PC; diálogos accesibles y refrescos en segundo plano optimizados. Queda comprobar zoom 125–200% y todos los tamaños. |
 | 91 | INTERFAZ MÓVIL | Flujo de paneles móviles disponible y controles principales con objetivos táctiles mínimos de 44 px; queda prueba en dispositivos reales y operación con una mano. |
 | 92 | ACCESIBILIDAD | Foco visible global, navegación semántica/teclado y soporte de movimiento reducido incorporados; queda auditoría de contraste, lector de pantalla, zoom y tamaños táctiles con dispositivos reales. |
 | 93 | ARQUITECTURA DEL PROYECTO | Extraer controlador 3D y módulos de UI de main.js de forma incremental. |

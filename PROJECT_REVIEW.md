@@ -59,6 +59,10 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   elemento seleccionado, con lateralidad aplicada a las vistas medial/lateral.
 - El informe admite campos explícitos de fuentes consultadas, método y alcance, y
   limitaciones/revisión pendiente; se conservan como texto introducido por el investigador.
+- Los diálogos de creación y confirmación tienen foco inicial, ciclo de Tab/Mayús+Tab,
+  Escape, restauración del foco y relaciones `aria-labelledby`/`aria-describedby`.
+- Los refrescos de paneles, etiquetas, iluminación y colores del visor se omiten en segundo
+  plano; el panel estadístico usa un único ciclo visible para reducir trabajo periódico.
 - NISP/MNE/MNI muestran el método y el carácter provisional; una revisión manual exige
   valor entero, justificación y firma del inventario actual, y queda incluida en el
   historial reversible para evitar que un cambio posterior conserve un valor obsoleto.
@@ -96,9 +100,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 | 58, 69 | Deshacer/rehacer y registro de cambios mediante snapshots comunes para inventario, ficha científica, importación, fotografías, fragmentos indeterminados, odontogramas, contexto, medidas, landmarks y calibraciones; quedan operaciones visuales/configuración y una auditoría transaccional más completa. |
 | 74–78 | Informe imprimible/PDF del navegador con reglas A4 para paginación, JSON, CSV multilínea, XLSX e importación con previsualización existentes. CSV/XLSX protegen ahora texto introducido con prefijos de fórmula. XLSX incluye una hoja `Esquema` autodocumentada e importa hojas auxiliares de osteometría, landmarks, calibraciones, referencias, revisión, cambios y metadatos; el informe añade un mapa regional SVG esquemático, y siguen pendientes cartografía anatómica profesional, round-trip con casos reales y PDF de maquetación avanzada. |
 | 79–82, 98 | IndexedDB, proyectos, guardado y copias de datos locales. Las copias `.osteo3d` incluyen binarios, CRC y SHA-256; la CSP y `no-referrer` limitan salidas implícitas, y `validate-privacy` audita el código fuente en CI. No equivalen aún a la jerarquía relacional detallada del encargo; los binarios de modelos personalizados no van incluidos en la copia JSON. No eliminar la caché como sustituto de una copia completa. |
-| 85, 90–92, 114–115 | ES/EN y búsqueda por latín existentes; acceso móvil a catálogo/perfil corregido; foco visible y movimiento reducido incorporados. Queda traducción de algunos controles/métodos nuevos y auditoría de contraste, lector de pantalla, zoom y tamaños táctiles con dispositivos reales. |
+| 85, 90–92, 114–115 | ES/EN y búsqueda por latín existentes; acceso móvil a catálogo/perfil corregido; foco visible, diálogos con foco modal y movimiento reducido incorporados. Queda traducción de algunos controles/métodos nuevos y auditoría de contraste, lector de pantalla, zoom y tamaños táctiles con dispositivos reales. |
 | 86–89, 100, 112–113 | PWA, descarga/caché por perfil, carga diferida e importación de modelos operativas; los esquemas están en el shell offline. Faltan optimización/medición sostenida en móviles reales y validación de todos los formatos personalizados. |
-| 93–94, 108–109, 116 | Separación nueva del generador, análisis y cargador; preservación de IDs y datos. main.js conserva deuda de modularidad y temporizadores históricos. |
+| 93–94, 108–109, 116 | Separación nueva del generador, análisis y cargador; preservación de IDs y datos. Los ciclos periódicos de UI se omiten en segundo plano, pero `main.js` conserva deuda de modularidad y algunos temporizadores históricos. |
 | 99, 101–107, 110–111, 117–119 | GitHub/Pages y pruebas automatizadas existentes. Las siete fases y el resultado profesional completo no deben marcarse terminados mientras queden los puntos científicos y funcionales anteriores. |
 
 ## Verificación reproducible
