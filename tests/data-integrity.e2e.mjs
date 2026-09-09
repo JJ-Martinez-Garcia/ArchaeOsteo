@@ -18,6 +18,8 @@ export async function testDataIntegrity(cdp, evaluate, waitForValue, projectRead
   await run(`document.querySelector('#landmark-reference-mm').value='50';document.querySelector('#calibrate-landmarks').click()`);
   await waitForValue(cdp, projectReadExpression(), p => p.calibrations?.skull?.referenceMm === 50, 'Persist user landmark calibration');
   assert.match(await run(`document.querySelector('#landmark-distance').textContent`), /Distancia calibrada|Calibrated distance/);
+  await run(`(()=>{const row=document.querySelector('[data-landmark-row="0"]');row.querySelector('[data-landmark-field="name"]').value='A-editado';row.querySelector('[data-landmark-field="category"]').value='craniometric';row.querySelector('[data-save-landmark]').click();})()`);
+  await waitForValue(cdp, projectReadExpression(), p => p.landmarks?.skull?.[0]?.name === 'A-editado' && p.landmarks.skull[0].category === 'craniometric', 'Edit persisted landmark');
   await run(`document.querySelector('#capture-surface-landmark').click()`);
   assert.equal(await run(`document.querySelector('#capture-surface-landmark').getAttribute('aria-pressed')`), 'true');
   await run(`document.querySelector('#capture-surface-landmark').click()`);

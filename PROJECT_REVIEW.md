@@ -28,6 +28,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - Landmarks: captura directa sobre la superficie de la malla seleccionada, guardando
   coordenadas locales, origen `surface_pick`, fecha y operación reversible; se mantiene
   la distinción entre coordenada relativa y medición física.
+- Landmarks editables desde la ficha (nombre, categoría y coordenadas), con actualización
+  visual y pruebas E2E; queda la migración de coordenadas/versiones al sustituir modelos.
 
 - Ampliación: se publican 537 GLB propios para femenino, infante y neonato,
   con metadatos y licencia incorporados; no se han validado científicamente.
