@@ -406,6 +406,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     document.querySelector('#add-hierarchy-entity').onclick = async () => {
       const level = document.querySelector('#hierarchy-level').value, name = document.querySelector('#hierarchy-name').value.trim(), parentId = document.querySelector('#hierarchy-parent').value.trim(), id = hierarchyId(level, name), message = document.querySelector('#hierarchy-message');
       if (!id) { message.textContent = state.language === 'en' ? 'Enter a name.' : 'Introduce un nombre.'; return; }
+      if (parentId && !HIERARCHY_LEVELS.some(candidate => hierarchy[candidate].some(entity => entity.id === parentId))) { message.textContent = state.language === 'en' ? 'The parent ID does not exist.' : 'El ID padre no existe.'; return; }
       if (hierarchy[level].some(entity => entity.id === id)) { message.textContent = state.language === 'en' ? 'That entity already exists.' : 'Esa entidad ya existe.'; return; }
       hierarchy[level].push({ id, name, parentId, updatedAt: new Date().toISOString() }); state.hierarchy = normalizeHierarchy(hierarchy); await saveLocal({ notify: false }); document.querySelector('#hierarchy-panel-button').click();
     };
