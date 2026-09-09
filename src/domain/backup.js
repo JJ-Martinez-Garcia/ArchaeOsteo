@@ -134,7 +134,7 @@ export function applyInventoryRows(project, rows, bones) {
     accepted.push(row);
   }
   const first = accepted[0] || {};
-  const reportFields = { individual: cell(first, ['Individual_ID', 'Individual']), burial: first.Burial, grave: first.Grave, tomb: first.Tomb, ue: first.UE, sector: first.Sector, grid: first.Grid, site: first.Site, campaign: first.Campaign, date: first.Date, context: first.Context, chronology: first.Chronology, observations: first.Observations };
+  const reportFields = { individual: cell(first, ['Individual_ID', 'Individual']), burial: first.Burial, grave: first.Grave, tomb: first.Tomb, ue: first.UE, sector: first.Sector, grid: first.Grid, site: first.Site, campaign: first.Campaign, date: first.Date, context: first.Context, chronology: first.Chronology, observations: first.Observations, sources: first.Sources, method: first.Method, limits: first.Limits };
   const importedReport = Object.fromEntries(Object.entries(reportFields).filter(([, value]) => nonempty(value)).map(([key, value]) => [key, String(value).trim()]));
   return { ...project, ...maps, report: { ...(project.report || {}), ...importedReport }, importedRows: accepted.length, rejectedRows: validationErrors.length, validationErrors };
 }
