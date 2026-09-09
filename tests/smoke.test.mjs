@@ -759,6 +759,9 @@ assert.match(main, /landmarks:state\.landmarks,calibrations:state\.calibrations/
 assert.match(main, /landmarkModelRefs:state\.landmarkModelRefs/);
 assert.match(main, /osteologySearchAliases/);
 assert.match(main, /searchableBoneTerms/);
+assert.match(main, /cubito: \['ulna'\].*ulna: \['cubito'\]/);
+assert.match(main, /coxis: \['coccix', 'coccyx'\]/);
+assert.match(main, /term\.startsWith\(`\$\{key\} `\)/);
 assert.match(main, /portionRecords:state\.portionRecords/);
 assert.match(main, /weightUnits:state\.weightUnits/);
 assert.match(await text('src/ui/extended.js'), /record-weight-unit/);

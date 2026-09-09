@@ -388,6 +388,12 @@ try {
 
   await testInspectorLayout(cdp,evaluate,waitForValue);
   await testDataIntegrity(cdp,evaluate,waitForValue,projectReadExpression);
+  for (const [query, expected] of [['omóplato', 'escápula'], ['cúbito', 'ulna'], ['coxis', 'cóccix']]) {
+    await evaluate(cdp, `(()=>{const input=document.querySelector('#search');input.value=${JSON.stringify(query)};input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+    assert.equal(await evaluate(cdp, `document.querySelectorAll('#bone-list [data-bone]').length>0`), true, `Search synonym must return results: ${query}`);
+    assert.equal(await evaluate(cdp, `document.querySelector('#bone-list [data-bone]')?.getAttribute('aria-label')?.toLowerCase().includes(${JSON.stringify(expected)})`), true, `Search synonym must identify expected bone: ${query}`);
+  }
+  await evaluate(cdp, `(()=>{const input=document.querySelector('#search');input.value='';input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
   for(const profile of ['adult_female','infant','neonate']){
     await evaluate(cdp,`(()=>{const mode=document.querySelector('#geometry-mode');mode.value='auto';mode.dispatchEvent(new Event('change'));const select=document.querySelector('#profile');select.value=${JSON.stringify(profile)};select.dispatchEvent(new Event('change'));})()`);
     await waitForValue(cdp,`({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.generatedCount==='179',`Load 179 original GLBs: ${profile}`,45000);
