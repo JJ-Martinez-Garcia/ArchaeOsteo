@@ -89,7 +89,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 70 | NOTAS | CSV multilínea probado; verificar todos los ámbitos de notas y su ronda con formatos restantes. |
 | 71 | TABLA DE INVENTARIO | Vacío frente a cero probado en tabla; resolver edición continua sin perder foco y ampliar sincronización a todas las vistas. |
 | 72 | FILTROS | Verificar combinaciones de todos los filtros contra tabla, árbol, 3D y estadísticas. |
-| 73 | ESTADÍSTICAS | Medias basadas solo en datos observados y denominadores explícitos; se verificó en E2E que un porcentaje desconocido no se cuenta como cero. Queda ampliar combinaciones y revisión visual. |
+| 73 | ESTADÍSTICAS | Medias basadas solo en datos observados y denominadores explícitos en resumen, mapa regional y mapa de conservación; se verificó en E2E que un porcentaje desconocido no se cuenta como cero. Queda ampliar combinaciones y revisión visual. |
 | 74 | INFORME AUTOMÁTICO | Informe con mapa esquelético, fuentes/métodos/límites, fotos elegidas y maquetación paginada. |
 | 75 | EXPORTACIÓN | Ronda completa de datos en CSV/JSON/XLSX/PDF, incluyendo campos nuevos y caracteres especiales. |
 | 76 | CSV/XLSX | Esquema estable y códigos canónicos, comillas/saltos de línea, trazabilidad de fuentes/método/límites en CSV y protección de texto introducido frente a fórmulas al abrir CSV/XLSX. Queda una auditoría completa de rondas con todos los campos y hojas auxiliares. |
