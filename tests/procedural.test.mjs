@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { extendedBones } from '../src/anatomy/extended-bones.js';
+import { baseBones } from '../src/anatomy/base-bones.js';
 import { applyProfileLayout, boneLayout, createProceduralBone, isAnatomicalBone, PROFILE_SHAPES } from '../src/anatomy/procedural.js';
 
 const manifest=JSON.parse(await readFile('public/models/manifest.json','utf8'));
@@ -43,6 +44,12 @@ for (const bone of bones.filter(isAnatomicalBone)) {
 }
 assert.ok(regionBands.size >= 5, 'Expanded layout must keep regional bands');
 assert.ok([...regionBands.values()].every(values => values.every(Number.isFinite)), 'Regional band positions must be finite');
+const completeLayout = structuredClone([...baseBones, ...extendedBones]);
+applyProfileLayout(completeLayout, 'adult_male');
+const regionMins = new Map();
+for (const bone of completeLayout.filter(isAnatomicalBone)) regionMins.set(bone.region, Math.min(regionMins.get(bone.region) ?? Infinity, bone.e[1]));
+const regionalOrder = ['Cráneo','Columna','Tórax','Cintura escapular','Pelvis','Extremidad superior','Manos','Extremidad inferior','Pies'].filter(region => regionMins.has(region));
+for (let index = 1; index < regionalOrder.length; index++) assert.ok(regionMins.get(regionalOrder[index]) < regionMins.get(regionalOrder[index - 1]), 'Expanded regional bands must progress in anatomical order');
 const skull=bones.find(b=>b.id==='skull'), femur=bones.find(b=>b.id==='left_femur');
 assert.notEqual(boneLayout(skull,'neonate').size[1]/boneLayout(skull,'adult_male').size[1],boneLayout(femur,'neonate').size[1]/boneLayout(femur,'adult_male').size[1]);
 for(const profile of Object.keys(PROFILE_SHAPES)){
