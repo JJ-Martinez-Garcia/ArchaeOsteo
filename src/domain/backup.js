@@ -1,5 +1,6 @@
 import { normalizeProject } from '../data/store.js';
 import { normalizeDevelopmentRecords } from './development.js';
+import { normalizePortionRecords } from './portion-records.js';
 export { parseCsv } from './csv.js';
 
 const BACKUP_VERSION = 1;
@@ -89,7 +90,7 @@ export function validateBackup(value) {
 const INVENTORY_FIELDS = {
   status: ['Presence', 'Status'], preservation: ['Preservation'],
   completeness: ['Percentage', 'Completeness'], fragments: ['Fragments'],
-  weights: ['Weight_g', 'Weight'], portions: ['Portion'],
+  weights: ['Weight_g', 'Weight'], portions: ['Portion'], portionRecords: ['Portion_records', 'PortionRecords'],
   individuals: ['Individual_ID', 'Individual'], ue: ['UE', 'Context_UE'],
   taphonomy: ['Taphonomy'], pathology: ['Pathology'],
   taphonomyDetails: ['Taphonomy_Detail'], pathologyDetails: ['Pathology_Detail'],
@@ -129,7 +130,7 @@ export function applyInventoryRows(project, rows, bones) {
           if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error();
         } catch { errors.push(`${columns[0]} debe contener un objeto JSON válido`); }
       }
-      if (field === 'developmentRecords') {
+      if (field === 'portionRecords' || field === 'developmentRecords') {
         try { value = JSON.parse(value); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); }
         catch { errors.push(`${columns[0]} debe contener un objeto JSON válido`); }
       }
@@ -145,6 +146,7 @@ export function applyInventoryRows(project, rows, bones) {
   const reportFields = { individual: cell(first, ['Individual_ID', 'Individual']), burial: first.Burial, grave: first.Grave, tomb: first.Tomb, ue: first.UE, sector: first.Sector, grid: first.Grid, site: first.Site, campaign: first.Campaign, date: first.Date, context: first.Context, chronology: first.Chronology, observations: first.Observations, sources: first.Sources, method: first.Method, limits: first.Limits };
   const importedReport = Object.fromEntries(Object.entries(reportFields).filter(([, value]) => nonempty(value)).map(([key, value]) => [key, String(value).trim()]));
   maps.developmentRecords = normalizeDevelopmentRecords(maps.developmentRecords);
+  maps.portionRecords = normalizePortionRecords(maps.portionRecords);
   return { ...project, ...maps, report: { ...(project.report || {}), ...importedReport }, importedRows: accepted.length, rejectedRows: validationErrors.length, validationErrors };
 }
 
