@@ -111,7 +111,7 @@ document.querySelector('#reviewed')?.replaceChildren(`0/${bones.length}`);
 document.querySelector('#inventory-progress-count')?.replaceChildren(`0/${bones.length} elementos revisados`);
 document.querySelector('.sidebar .tree')?.insertAdjacentHTML('beforebegin', `<section class="geometry-panel" aria-label="Geometría y procedencia">
   <h3>Modelos 3D</h3><label>Visualización<select id="geometry-mode"><option value="auto">GLB disponibles + esquemas propios</option><option value="schematic">Esqueleto esquemático completo</option></select></label>
-  <p id="geometry-notice" role="status"></p><button id="export-schematic" type="button">Exportar hueso esquemático GLB</button>
+  <p id="geometry-notice" role="status"></p><p id="geometry-stats" class="package-meta" role="status">Diagnóstico: esperando visor 3D…</p><button id="export-schematic" type="button">Exportar hueso esquemático GLB</button>
   <details><summary>Créditos y límites</summary><p>Geometría procedural original: Osteo3D contributors, 2026 · MIT · v${PROCEDURAL_VERSION}. Generación matemática, no escaneo ni reconstrucción clínica. Los perfiles son ilustrativos, sin edad concreta ni diagnóstico de sexo.</p>
   <p>Azul: envolvente cartilaginosa esquemática, no núcleo de osificación demostrado. Las piezas agrupadas no representan todos los centros de osificación. Cráneo: bóveda y cara simplificadas; dentición en el odontograma, no en la malla.</p>
   <p>GLB adulto: Open3Dmodel (CC BY-SA 4.0), adaptación desde yamz8/human-body-simulator; cráneo: Vladimir Petkovic / Khronos (CC0). La adscripción al perfil adulto masculino no verifica el sexo del espécimen.</p>
@@ -149,6 +149,10 @@ function updateSceneDiagnostics(){
   viewer.dataset.geometryMode=state.geometryMode||'auto';
   viewer.dataset.schematicCount=String(group.children.filter(item=>item.userData.modelSource==='procedural').length);
   viewer.dataset.generatedCount=String(group.children.filter(item=>item.userData.modelSource==='generated').length);
+  let meshes=0, triangles=0;
+  group.traverse(object=>{if(!object.isMesh||!object.geometry)return;meshes+=1;const index=object.geometry.index;const positions=object.geometry.attributes?.position;triangles+=index?index.count/3:positions?positions.count/3:0;});
+  const stats=document.querySelector('#geometry-stats');
+  if(stats){const en=state.language==='en';stats.textContent=en?`Scene cost: ${meshes} meshes · ${Math.round(triangles).toLocaleString('en-US')} triangles · ${viewer.dataset.generatedCount} own GLB · ${viewer.dataset.schematicCount} schematic.`:`Coste de escena: ${meshes} mallas · ${Math.round(triangles).toLocaleString('es-ES')} triángulos · ${viewer.dataset.generatedCount} GLB propios · ${viewer.dataset.schematicCount} esquemas.`;}
 }
 function fitSkeletonView(){
   if(!group?.isGroup||!camera||!THREE)return;
