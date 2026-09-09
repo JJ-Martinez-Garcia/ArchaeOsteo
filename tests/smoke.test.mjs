@@ -429,6 +429,7 @@ assert.match(main, /state\.hidden = saved\.hidden/);
 assert.match(main, /state\.tableTransforms = saved\.tableTransforms/);
 assert.match(main, /cameraViewSnapshot/);
 assert.match(main, /restoreCameraView\(state\.cameraView\)/);
+assert.match(main, /if \(!view \|\| typeof view !== 'object'\) \{ orbit\.theta=0/);
 assert.match(main, /cameraView:state\.cameraView/);
 assert.match(main, /Object\.assign\(state, saved, \{ projectId:/);
 assert.match(extendedUi, /record-weight/);

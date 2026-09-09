@@ -50,6 +50,8 @@
   cargar desde IndexedDB y sus valores se recortan a límites válidos.
 - Los gestos de cámara generan ahora snapshots reversibles y entradas auditables, por lo
   que Deshacer/Rehacer también cubre rotación, zoom y desplazamiento del encuadre.
+- Restaurar una cámara ausente (por ejemplo, en un proyecto antiguo) vuelve ahora al
+  encuadre inicial en lugar de dejar la posición visual anterior.
 
 ## Cambios recientes
 

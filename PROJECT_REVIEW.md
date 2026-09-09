@@ -30,6 +30,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   elevación y coordenadas inválidas de proyectos antiguos o importados.
 - Historial de interacción: los cambios de cámara crean entradas reversibles y auditables,
   y la E2E PWA continúa validando la persistencia tras recarga.
+- Compatibilidad histórica: si un snapshot antiguo no contiene cámara, su restauración
+  reinicia explícitamente el encuadre para evitar discrepancias entre datos y visor.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un
