@@ -9,11 +9,16 @@ const DENTAL_STATUSES = new Set(['present', 'absent_am', 'absent_pm', 'unerupted
 const STATUS_VALUES = new Set(['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded']);
 const PRESERVATION_VALUES = new Set(['not_evaluated', 'excellent', 'good', 'regular', 'poor', 'very_poor', 'very_fragmented', 'not_evaluable']);
 const REGION_VALUES = new Set(['all', 'Cráneo', 'Columna', 'Tórax', 'Cintura escapular', 'Extremidad superior', 'Extremidad inferior', 'Manos', 'Pies', 'Pelvis']);
+const REPORT_FIELDS = ['individual', 'burial', 'grave', 'tomb', 'ue', 'sector', 'grid', 'site', 'campaign', 'date', 'context', 'chronology', 'investigator', 'observations', 'sources', 'method', 'limits'];
 
 function objectEntries(value) { return value && typeof value === 'object' && !Array.isArray(value) ? Object.entries(value) : []; }
 function normalizeEnumMap(value, allowed) { return Object.fromEntries(objectEntries(value).filter(([, item]) => allowed.has(item))); }
 function normalizeNumberMap(value, { min = 0, max = Number.POSITIVE_INFINITY, integer = false, rejectBelowMin = false } = {}) { return Object.fromEntries(objectEntries(value).filter(([, item]) => (typeof item === 'number' || typeof item === 'string') && String(item).trim() !== '').map(([key, item]) => [key, Number(item)]).filter(([, item]) => Number.isFinite(item) && (!rejectBelowMin || item >= min)).map(([key, item]) => [key, Math.max(min, Math.min(max, integer ? Math.floor(item) : item))])); }
 function normalizeStringMap(value) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, String(item ?? '').trim()]).filter(([, item]) => item)); }
+function normalizeReport(value) {
+  const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  return Object.fromEntries(REPORT_FIELDS.map(key => [key, String(source[key] ?? (key === 'individual' ? 'IND-LOCAL' : '')).trim()]));
+}
 function normalizeCustomModels(value) {
   const profiles = objectEntries(value).map(([profileId, models]) => {
     const normalized = Object.fromEntries(objectEntries(models).map(([boneId, model]) => {
@@ -101,7 +106,7 @@ function newestProjects(projects) {
 
 export function normalizeProject(project) {
   if (!project || typeof project !== 'object' || Array.isArray(project)) return null;
-  const report = { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', sources: '', method: '', limits: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) };
+  const report = normalizeReport(project.report);
   return {
     ...project,
     id: project.id || 'default',
