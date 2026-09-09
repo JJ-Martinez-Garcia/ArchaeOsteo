@@ -44,6 +44,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   proyecto seleccionado desaparezca antes de completar la carga.
 - El editor de jerarquía restringe los padres a la cadena yacimiento → campaña → sector
   → contexto → individuo, evitando relaciones cruzadas inválidas.
+- La cobertura E2E verifica la restricción de nivel de los padres, no solo que el control
+  sea un selector.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

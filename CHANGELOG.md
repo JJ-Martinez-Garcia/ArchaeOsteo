@@ -65,6 +65,8 @@
   proyectos que ya no estén disponibles al cargarse desde IndexedDB.
 - El selector jerárquico filtra ahora los padres por relación válida entre niveles y la
   prueba E2E simula el cambio de nivel antes de seleccionar el padre.
+- La E2E comprueba explícitamente que los individuos solo muestran entidades de contexto
+  como posibles padres.
 
 ## Cambios recientes
 
