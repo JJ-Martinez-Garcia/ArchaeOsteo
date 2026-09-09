@@ -2,6 +2,7 @@
 
 ## 2026-09-10
 
+- La disposición desplegada organiza las piezas en bandas regionales con separación y conserva una banda de compatibilidad para registros sin región.
 - La comparación 3D respeta también los filtros científicos de estado, pendientes y aislamiento, evitando discrepancias visuales con el esqueleto principal.
 - La creación de los filtros extendidos de estadísticas usa una microtarea segura en lugar de un temporizador de carga arbitrario.
 - La E2E cubre ahora los filtros de conservación y tipo de elemento, incluida su persistencia y restauración al limpiar filtros.

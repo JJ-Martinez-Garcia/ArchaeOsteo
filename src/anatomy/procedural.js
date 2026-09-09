@@ -67,19 +67,26 @@ export function boneLayout(bone, profileId = 'adult_male') {
 }
 
 export function applyProfileLayout(bones, profileId) {
-  let x=0, y=0, rowHeight=0;
-  for(const bone of bones) {
-    const layout=boneLayout(bone,profileId);
-    Object.assign(bone,layout,{recordOnly:!isAnatomicalBone(bone)});
-    if(bone.recordOnly) continue;
-    const horizontal=bone.size[1]>bone.size[0]*2;
-    const width=horizontal?bone.size[1]:bone.size[0], height=horizontal?bone.size[0]:bone.size[1];
-    if(x+width>11){x=0;y+=rowHeight+.3;rowHeight=0;}
-    bone.e=[x+width/2-5.5,-y-height/2,0];
-    bone.expandedRotation=[0,0,horizontal?Math.PI/2:0];
-    x+=width+.25;rowHeight=Math.max(rowHeight,height);
+  const order=['Cráneo','Columna','Tórax','Cintura escapular','Pelvis','Extremidad superior','Manos','Extremidad inferior','Pies'];
+  const regions=[...new Set([...order,...bones.map(bone=>bone.region).filter(Boolean)])];
+  if (bones.some(bone => !bone.region)) regions.push('__ungrouped');
+  let y=0;
+  for(const region of regions) {
+    let x=0, rowHeight=0, placed=false;
+    for(const bone of bones.filter(item=>(item.region || '__ungrouped')===region)) {
+      const layout=boneLayout(bone,profileId);
+      Object.assign(bone,layout,{recordOnly:!isAnatomicalBone(bone)});
+      if(bone.recordOnly) continue;
+      const horizontal=bone.size[1]>bone.size[0]*2;
+      const width=horizontal?bone.size[1]:bone.size[0], height=horizontal?bone.size[0]:bone.size[1];
+      if(x+width>11 && x>0){x=0;y+=rowHeight+.3;rowHeight=0;}
+      bone.e=[x+width/2-5.5,-y-height/2,0];
+      bone.expandedRotation=[0,0,horizontal?Math.PI/2:0];
+      x+=width+.25;rowHeight=Math.max(rowHeight,height);placed=true;
+    }
+    if(placed) y+=rowHeight+.75;
   }
-  const middle=(y+rowHeight)/2;
+  const middle=Math.max(0,(y-.75)/2);
   bones.filter(isAnatomicalBone).forEach(bone=>{bone.e[1]+=middle;});
 }
 

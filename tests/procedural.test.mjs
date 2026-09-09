@@ -35,6 +35,14 @@ for(const id of ['vertebrae','rib_indeterminate','carpal_indeterminate']){
   assert.equal(isAnatomicalBone({id}),false);
   assert.equal(countMeshes(createProceduralBone(THREE,{id},'neonate')),0);
 }
+const regionBands = new Map();
+for (const bone of bones.filter(isAnatomicalBone)) {
+  const values = regionBands.get(bone.region) || [];
+  values.push(bone.e[1]);
+  regionBands.set(bone.region, values);
+}
+assert.ok(regionBands.size >= 5, 'Expanded layout must keep regional bands');
+assert.ok([...regionBands.values()].every(values => values.every(Number.isFinite)), 'Regional band positions must be finite');
 const skull=bones.find(b=>b.id==='skull'), femur=bones.find(b=>b.id==='left_femur');
 assert.notEqual(boneLayout(skull,'neonate').size[1]/boneLayout(skull,'adult_male').size[1],boneLayout(femur,'neonate').size[1]/boneLayout(femur,'adult_male').size[1]);
 for(const profile of Object.keys(PROFILE_SHAPES)){

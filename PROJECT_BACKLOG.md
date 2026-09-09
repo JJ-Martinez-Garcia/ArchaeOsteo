@@ -22,7 +22,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 3 | VISOR 3D | Completar pruebas de interacción ratón/táctil, cámara y ocultación en todas las disposiciones. |
 | 4 | SELECCIÓN DE HUESOS | Probar selección y centrado coherentes en posición anatómica, desplegada, mesa y comparación. |
 | 5 | ESQUELETO COMPLETO | Validar articulación y proporciones de los GLB externos; el esqueleto propio está ensamblado de forma esquemática. |
-| 6 | ESQUELETO DESPLEGADO | Sustituir estantes compactos por disposición regional según el encargo; verificar transiciones sin colisiones. |
+| 6 | ESQUELETO DESPLEGADO | Disposición regional por bandas implementada; verificar transiciones sin colisiones durante animación y validar orden anatómico con especialista. |
 | 7 | ANIMACIÓN DE DESPLIEGUE | Posición y slerp implementados; validar rotación, escala y orientación de todos los assets externos. |
 | 8 | SLIDER DE EXPLOSIÓN | Slider operativo; probar extremos, valores intermedios, teclado y convivencia con aislamiento. |
 | 9 | MESA OSTEOLÓGICA | Completar agrupación/ordenación de mesa y restauración por selección con persistencia. |
