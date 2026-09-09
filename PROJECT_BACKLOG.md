@@ -64,12 +64,12 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 45 | FOTOGRAFÍAS | Verificar todos los ámbitos de fotos, tamaño/cuota, edición y recuperación de binarios. |
 | 46 | PINTAR INVENTARIO | Pruebas de pintura táctil en tablet/móvil y accesos rápidos, sin arrastrar la cámara accidentalmente. |
 | 47 | BARRA DE PINTURA | Barra y estado persistente operativos; probar todos los estados con teclado/táctil. |
-| 48 | FUNCIONAMIENTO DE PINTAR INVENTARIO | Secuencia de pintar varios huesos, deshacer y recargar como E2E de inventario completo. |
+| 48 | FUNCIONAMIENTO DE PINTAR INVENTARIO | Secuencia de pintar varios huesos, deshacer y recargar como E2E de inventario completo; la selección múltiple y acciones masivas confirmadas ya tienen cobertura E2E. |
 | 49 | ACTUALIZACIÓN AUTOMÁTICA | Eliminar desincronizaciones entre figura, ficha, tabla, estadísticas, guardado y análisis. |
 | 50 | PINTAR POR REGIONES | Verificar cada grupo regional, no modificar categorías fuera del alcance y respetar bloqueos. |
 | 51 | FILTRO DE LATERALIDAD | Probar filtros izquierda/derecha/ambos y su interacción con grupos anatómicos. |
 | 52 | ELEMENTOS PEQUEÑOS | Centrado/zoom adaptado al tamaño real del elemento y disposición actual, no coordenadas originales. |
-| 53 | PINTAR DENTICIÓN | E2E de pintura FDI con ambas denticiones y persistencia. |
+| 53 | PINTAR DENTICIÓN | E2E de pintura FDI con dentición permanente y decidua, persistencia y deshacer verificadas; queda ampliar estados y bloqueo en dispositivos reales. |
 | 54 | PINTAR CONSERVACIÓN | E2E de conservación individual, regional y bloqueada. |
 | 55 | PINTAR PORCENTAJE | Atajos 100/75/50/25/<25 y ausencia de porcentaje no observado. |
 | 56 | PINTAR ALTERACIONES | E2E de alteraciones múltiples sin sobrescritura de detalles existentes. |
@@ -78,10 +78,10 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 59 | BLOQUEAR REGISTROS | Formulario científico, importación revalidada, tablas, medidas, landmarks, fotos y modelos personalizados cubiertos; queda auditar nuevas rutas futuras. |
 | 60 | MOSTRAR PENDIENTES | Resaltar pendientes sin ocultar de forma incoherente categorías o etiquetas. |
 | 61 | PROGRESO | Denominador correcto por perfil y categorías; progreso siempre revisados, no presentes. |
-| 62 | INVENTARIO RÁPIDO | Confirmación obligatoria y deshacer completo al marcar restantes como ausentes. |
+| 62 | INVENTARIO RÁPIDO | Confirmación obligatoria y deshacer completo al marcar restantes como ausentes verificados en E2E; queda prueba de recuperación tras recarga. |
 | 63 | PRESENCIA RÁPIDA | Prueba de presencia rápida y persistencia, sin modos incompatibles activos. |
-| 64 | FRAGMENTACIÓN RÁPIDA | Pruebas del ciclo opcional, posibilidad de desactivar y respeto a bloqueo. |
-| 65 | SELECCIÓN MÚLTIPLE | Aplicar acciones comunes a selección múltiple como una única transacción reversible. |
+| 64 | FRAGMENTACIÓN RÁPIDA | Ciclo de activación/desactivación y no solapamiento con presencia rápida verificados en E2E; queda respeto a bloqueo en dispositivo táctil. |
+| 65 | SELECCIÓN MÚLTIPLE | Aplicar acciones comunes a selección múltiple como una única transacción reversible verificado en E2E; queda cobertura de combinaciones con filtros regionales. |
 | 66 | PINTAR EN CUALQUIER DISPOSICIÓN | Pruebas de pintura en cuatro disposiciones y en elementos pequeños. |
 | 67 | CONFIRMACIÓN VISUAL | Resaltado transitorio sin sobreescribir selección permanente o apariencia científica. |
 | 68 | LEYENDA | Leyenda persistente con texto/iconos/patrones también dentro del 3D. |

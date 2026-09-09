@@ -91,7 +91,7 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 | 6–9, 66 | Despliegue, slerp y mesa operativos. La disposición usa estantes compactos, no el orden regional exacto del encargo. No se certifica ausencia de colisiones durante toda la transición ni articulación exacta de los GLB externos. |
 | 11, 20–21 | Fichas y osteometría manual; landmarks relativos. Falta calibración métrica trazable, selección de landmarks por clic y biblioteca anatómica curada. |
 | 14, 22, 83 | Comparación de perfiles esquemáticos e inventarios y ejercicios básicos existentes. La comparación de inventarios identifica y filtra por individuo, contexto, UE y campaña, y coteja porciones independientes por elemento. Pendientes escala física común, sincronización avanzada de vistas, comparación por hueso más profunda y revisión pedagógica. |
-| 23–34, 36–37, 41–57, 59–65, 67–73 | Inventario, estados, conservación, porciones, lateralidad, dientes FDI, fragmentos, peso, fotos, notas, filtros, pintura y tablas implementados. No se certifican todos los casos de cada formulario ni un mapa científico completo. |
+| 23–34, 36–37, 41–57, 59–65, 67–73 | Inventario, estados, conservación, porciones, lateralidad, dientes FDI, fragmentos, peso, fotos, notas, filtros, pintura y tablas implementados. E2E cubre odontograma permanente/deciduo, acciones masivas confirmadas, selección múltiple reversible, modos rápidos y sinónimos del buscador. No se certifican todos los casos de cada formulario ni un mapa científico completo. |
 | 38–40, 97 | Métodos visibles y corrección del uso de fragmentos. NISP automático cuenta registros; MNE/MNI son mínimos provisionales según categorías determinadas y asociaciones introducidas. Para colecciones mezcladas se necesita análisis especializado y revisión manual documentada. |
 | 58, 69 | Deshacer/rehacer y registro de cambios mediante snapshots comunes para inventario, ficha científica, importación, fotografías, fragmentos indeterminados, odontogramas, contexto, medidas, landmarks y calibraciones; quedan operaciones visuales/configuración y una auditoría transaccional más completa. |
 | 74–78 | Informe imprimible/PDF del navegador, JSON, CSV multilínea, XLSX e importación con previsualización existentes. CSV/XLSX protegen ahora texto introducido con prefijos de fórmula; pendientes auditoría completa de campos/hojas auxiliares y PDF de maquetación profesional. |
@@ -115,6 +115,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   a la previsualización. Pruebas de medidas, tabla y peso desconocido frente a cero.
 - `OSTEO3D_CAPTURE_3D=1`: capturas locales de revisión en `.tmp-model-review/`
   (no se publican ni contienen inventarios del usuario; se generan en un perfil de prueba).
+- GitHub Actions ejecuta build, pruebas, validadores y E2E antes de Pages; tras el despliegue,
+  `scripts/verify-pages.mjs` comprueba que la entrada pública responde y contiene manifest/assets.
 
 Las pruebas automatizadas no constituyen validación anatómica, antropológica,
 diagnóstica o arqueométrica. No se ha realizado una revisión manual exhaustiva
