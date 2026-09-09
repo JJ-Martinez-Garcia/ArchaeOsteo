@@ -59,6 +59,9 @@ const visualBackup = validateBackup(createBackup({ skeletonFilter: 'axial', regi
 assert.equal(visualBackup.explosion, 70); assert.equal(visualBackup.tableMode, true); assert.equal(visualBackup.lightingMode, 'laboratory');
 const calibrationBackup = validateBackup(createBackup({ calibrations: { skull: { referenceMm: 50, localDistance: 2 } } }));
 assert.deepEqual(calibrationBackup.calibrations.skull, { referenceMm: 50, localDistance: 2 });
+const modelReference = { skull: { profile: 'adult_male', source: 'custom', geometryVersion: 'external', customUpdatedAt: '2026-09-09T12:00:00Z', needsReview: true } };
+const modelReferenceBackup = validateBackup(createBackup({ landmarkModelRefs: modelReference }));
+assert.deepEqual(modelReferenceBackup.landmarkModelRefs, modelReference);
 assert.equal(validateBackup(createBackup({ weights: { skull: 0 }, notes: { skull: rows[0].Notes } })).notes.skull, rows[0].Notes);
 
 assert.deepEqual(importDentalRows({ 12: 'caries' }, [{ Tooth_FDI: 11, Status: 'Presente' }, { Tooth_FDI: 12, Status: '' }]), { 11: 'present', 12: 'caries' });
@@ -74,6 +77,11 @@ applyInventorySnapshot(state, snapshot);
 assert.equal(state.weights.skull, 12); assert.equal(state.pathologyDetails.skull.description, 'antes'); assert.equal(state.dental[11], 'wear');
 state.pathologyDetails.skull.description = 'nueva';
 assert.equal(snapshot.pathologyDetails.skull.description, 'antes', 'Undo snapshots cannot be mutated by later edits');
+const modelReferenceState = { landmarkModelRefs: modelReference };
+const modelReferenceSnapshot = takeInventorySnapshot(modelReferenceState);
+modelReferenceState.landmarkModelRefs.skull.needsReview = false;
+applyInventorySnapshot(modelReferenceState, modelReferenceSnapshot);
+assert.equal(modelReferenceState.landmarkModelRefs.skull.needsReview, true, 'Model review flags are undoable');
 const photoState = { photos: { skull: [{ name: 'a', dataUrl: 'data:image/png;base64,AA' }] }, indeterminateFragments: [{ type: 'astilla' }] };
 const photoSnapshot = takeInventorySnapshot(photoState);
 photoState.photos.skull.push({ name: 'b', dataUrl: 'data:image/png;base64,BB' }); photoState.indeterminateFragments.splice(0, 1);

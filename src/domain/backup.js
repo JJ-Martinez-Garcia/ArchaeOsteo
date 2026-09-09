@@ -56,6 +56,7 @@ export function createBackup(state) {
       measurements: state.measurements,
       landmarks: state.landmarks,
       calibrations: state.calibrations,
+      landmarkModelRefs: state.landmarkModelRefs,
       photos: state.photos,
       photoScope: state.photoScope || 'bone',
       photoTargetId: state.photoTargetId || '',

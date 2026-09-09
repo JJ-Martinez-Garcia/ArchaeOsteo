@@ -29,7 +29,10 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   coordenadas locales, origen `surface_pick`, fecha y operación reversible; se mantiene
   la distinción entre coordenada relativa y medición física.
 - Landmarks editables desde la ficha (nombre, categoría y coordenadas), con actualización
-  visual y pruebas E2E; queda la migración de coordenadas/versiones al sustituir modelos.
+  visual y pruebas E2E. Cada landmark conserva la referencia del perfil, procedencia y
+  versión de la malla; si cambia una malla con landmarks o calibración, la interfaz lo
+  marca, bloquea una nueva calibración y exige confirmación explícita. No se transforma
+  automáticamente una coordenada local sin correspondencia anatómica verificable.
 
 - Ampliación: se publican 537 GLB propios para femenino, infante y neonato,
   con metadatos y licencia incorporados; no se han validado científicamente.
@@ -107,5 +110,6 @@ Contexto y límites del generador: `public/models/PROCEDURAL.md`.
 1. Curación y validación anatómica con especialista; aportar imágenes/mallas con
    procedencia, escala y grupo de edad documentados.
 2. Registro independiente de componentes inmaduros y huesos craneales; dientes 3D.
-3. Calibración métrica, captura de landmarks en superficie y copia completa con binarios.
+3. Calibración métrica, captura de landmarks en superficie, revisión ante sustitución de
+   malla y copia completa con binarios.
 4. Completar la revisión de importación/exportación, historial y traducciones.

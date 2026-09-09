@@ -3,6 +3,7 @@
 ## Cambios recientes
 
 - Landmarks editables: nombre, categoría y coordenadas locales corregibles desde el panel, con guardado, historial, bloqueo y actualización visual.
+- Landmarks protegidos ante sustitución de malla: se registra el perfil/procedencia/versión, se avisa si las coordenadas pueden haber quedado obsoletas y se exige confirmación antes de recalibrar.
 - Osteometría: calibración local por la distancia real entre los dos primeros landmarks, escala mm/unidad persistente y conversión visible con límites declarados; añadidas pruebas de cero, vacío y bloqueo.
 - Añadida la copia completa `.osteo3d`: ZIP autocontenido con JSON, manifiesto y modelos personalizados disponibles offline; importación con comprobación CRC y restauración en caché.
 - Integridad de datos: CSV multilínea y validación estructural, importación parcial sin fabricar ceros/porcentajes, rechazo atómico de filas y respeto a bloqueos en la confirmación.

@@ -147,6 +147,7 @@ export function normalizeProject(project) {
     measurements: project.measurements || {},
     landmarks: project.landmarks || {},
     calibrations: project.calibrations || {},
+    landmarkModelRefs: project.landmarkModelRefs || {},
     photos: normalizePhotos(project.photos),
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
     filters: normalizeFilters(project.filters),
