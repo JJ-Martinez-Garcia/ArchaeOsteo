@@ -409,6 +409,14 @@ try {
   await waitForValue(cdp,projectReadExpression(),value=>value.status?.skull==='present'&&value.status?.mandible==='present','Persist multi-selection action');
   await evaluate(cdp, `document.querySelector('#undo').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>!value.status?.skull&&!value.status?.mandible,'Undo multi-selection action');
+  await evaluate(cdp, `(()=>{const multi=document.querySelector('#multi-select-toggle');if(multi.getAttribute('aria-pressed')==='true')multi.click();document.querySelector('#quick-present').click();})()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#quick-present').getAttribute('aria-pressed')`), 'true', 'Quick presence must activate');
+  assert.equal(await evaluate(cdp, `document.querySelector('#quick-fragmentary').getAttribute('aria-pressed')`), 'false', 'Quick modes must not overlap');
+  await evaluate(cdp, `document.querySelector('#quick-fragmentary').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#quick-present').getAttribute('aria-pressed')`), 'false', 'Quick fragmentation must deactivate quick presence');
+  assert.equal(await evaluate(cdp, `document.querySelector('#quick-fragmentary').getAttribute('aria-pressed')`), 'true', 'Quick fragmentation must activate');
+  await evaluate(cdp, `document.querySelector('#quick-fragmentary').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#quick-fragmentary').getAttribute('aria-pressed')`), 'false', 'Quick fragmentation must be reversible');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
