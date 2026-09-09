@@ -107,7 +107,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 88 | OPTIMIZACIÓN 3D | Presupuestos de geometría, LOD y liberación de recursos; medir en móviles de memoria limitada. |
 | 89 | RENDIMIENTO | Matriz de PC/Mac/Android/iOS/iPad y métricas reproducibles en dispositivos reales. |
 | 90 | INTERFAZ DE ESCRITORIO | Panel redimensionable y formularios probados en PC; comprobar zoom 125–200% y todos los tamaños. |
-| 91 | INTERFAZ MÓVIL | Cerrar flujo de paneles móviles, tamaño táctil y operación con una mano; no basta emular ancho. |
+| 91 | INTERFAZ MÓVIL | Flujo de paneles móviles disponible y controles principales con objetivos táctiles mínimos de 44 px; queda prueba en dispositivos reales y operación con una mano. |
 | 92 | ACCESIBILIDAD | Foco visible global, navegación semántica/teclado y soporte de movimiento reducido incorporados; queda auditoría de contraste, lector de pantalla, zoom y tamaños táctiles con dispositivos reales. |
 | 93 | ARQUITECTURA DEL PROYECTO | Extraer controlador 3D y módulos de UI de main.js de forma incremental. |
 | 94 | MODULARIDAD | Eliminar temporizadores de inicialización y dependencias cruzadas de UI/persistencia. |
