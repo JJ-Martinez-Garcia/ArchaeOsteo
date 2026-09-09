@@ -182,6 +182,8 @@ assert.match(main, /@page\{size:A4;margin:12mm\}/);
 assert.match(main, /thead\{display:table-header-group\}/);
 assert.match(main, /async function saveReportData/);
 assert.match(main, /async function printReport\(\) \{ await saveReportData\(\)/);
+assert.match(main, /function trapDialogFocus/);
+assert.match(main, /previous\?\.isConnected/);
 assert.match(main, /quantification-summary/);
 assert.match(main, /analysis\.nisp\.value/);
 assert.match(main, /analysis\.mne\.value/);

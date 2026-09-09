@@ -699,6 +699,20 @@ async function refreshProjectSelector() {
   selector.innerHTML = projects.map(project => `<option value="${escapeMarkup(project.id)}">${escapeMarkup(project.projectName || project.id)}</option>`).join('');
   selector.value = state.projectId;
 }
+function trapDialogFocus(dialog, initial) {
+  const previous = document.activeElement;
+  const focusable = () => [...dialog.querySelectorAll('button, input, textarea, select, [tabindex="0"]')].filter(element => !element.disabled && !element.hidden);
+  const onKeydown = event => {
+    if (event.key !== 'Tab') return;
+    const elements = focusable(); if (!elements.length) return;
+    const first = elements[0], last = elements[elements.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  };
+  dialog.addEventListener('keydown', onKeydown);
+  initial?.focus();
+  return () => { dialog.removeEventListener('keydown', onKeydown); if (previous?.isConnected) previous.focus(); };
+}
 function requestProjectName() {
   return new Promise(resolve => {
     const en = state.language === 'en';
@@ -707,12 +721,13 @@ function requestProjectName() {
     overlay.innerHTML = `<div class="project-name-dialog" role="dialog" aria-modal="true" aria-labelledby="project-name-title"><h2 id="project-name-title">${en ? 'New project' : 'Nuevo proyecto'}</h2><p>${en ? 'Choose a name for the local project.' : 'Elige un nombre para el proyecto local.'}</p><form id="project-name-form"><label for="project-name-input">${en ? 'Project name' : 'Nombre del proyecto'}<input id="project-name-input" required maxlength="120" value="${en ? 'Osteology project' : 'Proyecto osteológico'}"></label><div class="project-name-actions"><button type="button" id="project-name-cancel" class="secondary-action">${en ? 'Cancel' : 'Cancelar'}</button><button type="submit" class="secondary-action">${en ? 'Create project' : 'Crear proyecto'}</button></div></form></div>`;
     document.body.appendChild(overlay);
     const input = overlay.querySelector('#project-name-input');
-    const finish = value => { overlay.remove(); resolve(value); };
+    const restoreFocus = trapDialogFocus(overlay.querySelector('[role="dialog"]'), input);
+    const finish = value => { overlay.remove(); restoreFocus(); resolve(value); };
     overlay.querySelector('#project-name-form').addEventListener('submit', event => { event.preventDefault(); finish(input.value.trim()); });
     overlay.querySelector('#project-name-cancel').addEventListener('click', () => finish(''));
     overlay.addEventListener('click', event => { if (event.target === overlay) finish(''); });
     overlay.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); finish(''); } });
-    input.focus(); input.select();
+    input.select();
   });
 }
 function requestConfirmation(message) {
@@ -722,12 +737,13 @@ function requestConfirmation(message) {
     overlay.className = 'project-name-modal';
     overlay.innerHTML = `<div class="project-name-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-action-title"><h2 id="confirm-action-title">${en ? 'Confirm action' : 'Confirmar acción'}</h2><p>${escapeHtml(message)}</p><div class="project-name-actions"><button type="button" id="confirm-action-cancel" class="secondary-action">${en ? 'Cancel' : 'Cancelar'}</button><button type="button" id="confirm-action-accept" class="secondary-action">${en ? 'Continue' : 'Continuar'}</button></div></div>`;
     document.body.appendChild(overlay);
-    const finish = value => { overlay.remove(); resolve(value); };
+    const accept = overlay.querySelector('#confirm-action-accept');
+    const restoreFocus = trapDialogFocus(overlay.querySelector('[role="dialog"]'), accept);
+    const finish = value => { overlay.remove(); restoreFocus(); resolve(value); };
     overlay.querySelector('#confirm-action-cancel').addEventListener('click', () => finish(false));
     overlay.querySelector('#confirm-action-accept').addEventListener('click', () => finish(true));
     overlay.addEventListener('click', event => { if (event.target === overlay) finish(false); });
     overlay.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); finish(false); } });
-    overlay.querySelector('#confirm-action-accept').focus();
   });
 }
 async function initProjectManager() {
