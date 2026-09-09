@@ -644,6 +644,8 @@ assert.match(main, /forEachConcurrent\(loadableBones, modelLoadConcurrency/);
 assert.match(await text('src/ui/extended.js'), /hierarchy-panel-button/);
 assert.match(await text('src/ui/extended.js'), /Añade entidades sin borrar observaciones existentes/);
 assert.match(await text('src/ui/extended.js'), /El ID padre no existe/);
+assert.match(await text('src/ui/extended.js'), /Jerarquía.*normalizeHierarchy/s);
+assert.match(main, /sheet\('Jerarquía'/);
 assert.match(main, /dracoDecoderPath: '\.\/draco\/'/);
 assert.match(await text('src/data/store.js'), /normalizeCustomModels/);
 assert.match(await text('src/domain/backup.js'), /customModels: state\.customModels/);
@@ -852,7 +854,7 @@ assert.match(main, /regional-stats/);
 assert.match(main, /async function exportXlsx/);
 assert.match(main, /async function exportXlsx[\s\S]*Sources:report\.sources\|\|''[\s\S]*Method:report\.method\|\|''[\s\S]*Limits:report\.limits\|\|''/);
 assert.match(main, /function appendAuxiliaryXlsxSheets/);
-for (const sheetName of ['Osteometría', 'Landmarks', 'Calibraciones', 'Referencias landmarks', 'Revisión análisis', 'Registro de cambios', 'Fotografías', 'Modelos propios']) assert.match(main, new RegExp(`'${sheetName}'`));
+for (const sheetName of ['Jerarquía', 'Osteometría', 'Landmarks', 'Calibraciones', 'Referencias landmarks', 'Revisión análisis', 'Registro de cambios', 'Fotografías', 'Modelos propios']) assert.match(main, new RegExp(`'${sheetName}'`));
 assert.match(main, /sheet\('Esquema'/);
 assert.match(main, /protectSpreadsheetRows/);
 assert.match(await text('src/domain/spreadsheet.js'), /FORMULA_PREFIX/);
@@ -923,7 +925,8 @@ const auxiliaryWorkbook = { Sheets: {
   'Landmarks': [{ Bone_ID: 'left_femur', name: 'Punto A', category: 'osteometric', x: 1, y: 2, z: 3 }],
   'Calibraciones': [{ Bone_ID: 'left_femur', referenceMm: 42.5, localDistance: 3.5 }],
   'Revisión análisis': [{ Metric: 'MNE', value: 2, reason: 'Revisión docente' }],
-  'Registro de cambios': [{ Bone_ID: 'left_femur', Previous: '"present"', New: '"fragmentary"' }]
+  'Registro de cambios': [{ Bone_ID: 'left_femur', Previous: '"present"', New: '"fragmentary"' }],
+  'Jerarquía': [{ Level: 'sites', ID: 'site:yacimiento-prueba', Name: 'Yacimiento prueba', Parent_ID: '' }, { Level: 'campaigns', ID: 'campaign:2026', Name: '2026', Parent_ID: 'site:yacimiento-prueba' }]
 } };
 const auxiliaryXlsx = mergeAuxiliaryXlsx({ measurements: {}, landmarks: {}, calibrations: {}, analysisReview: {}, changeLog: {} }, auxiliaryWorkbook, { utils: { sheet_to_json: sheet => sheet } }, testBones);
 assert.equal(auxiliaryXlsx.measurements.left_femur.length, 42.5);
@@ -931,6 +934,8 @@ assert.equal(auxiliaryXlsx.landmarks.left_femur[0].name, 'Punto A');
 assert.equal(auxiliaryXlsx.calibrations.left_femur.referenceMm, 42.5);
 assert.equal(auxiliaryXlsx.analysisReview.mne.value, 2);
 assert.equal(auxiliaryXlsx.changeLog[0].newValue, 'fragmentary');
+assert.equal(auxiliaryXlsx.hierarchy.sites[0].id, 'site:yacimiento-prueba');
+assert.equal(auxiliaryXlsx.hierarchy.campaigns[0].parentId, 'site:yacimiento-prueba');
 const testState = { status: { left_femur: 'fragmentary', right_femur: 'not_recorded' }, fragments: { left_femur: 2 }, weights: { left_femur: 123.45 }, portions: { left_femur: 'epiphysis_proximal' }, individuals: { left_femur: 'IND-A' }, report: { individual: 'IND-TEST' } };
 const analysis = calculateOsteoAnalysis(testBones, testState);
 assert.equal(analysis.nisp.value, 1);

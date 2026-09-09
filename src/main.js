@@ -598,6 +598,7 @@ function appendAuxiliaryXlsxSheets(XLSX, book) {
   sheet('Esquema', [
     { Sheet: 'Inventario', Purpose: 'Registros por Bone_ID y campos de inventario', Importable: true },
     { Sheet: 'Ficha contexto', Purpose: 'Identidad, contexto y trazabilidad del proyecto', Importable: true },
+    { Sheet: 'Jerarquía', Purpose: 'Entidades y relaciones padre del proyecto', Importable: true },
     { Sheet: 'Fragmentos indeterminados', Purpose: 'Fragmentos sin elemento asignado', Importable: true },
     { Sheet: 'Odontograma permanente', Purpose: 'Estados dentales FDI permanentes', Importable: true },
     { Sheet: 'Odontograma deciduo', Purpose: 'Estados dentales FDI deciduos', Importable: true },
@@ -611,6 +612,7 @@ function appendAuxiliaryXlsxSheets(XLSX, book) {
     { Sheet: 'Modelos propios', Purpose: 'Metadatos; los binarios requieren copia .osteo3d', Importable: false }
   ]);
   sheet('Osteometría', bones.map(bone => ({ Bone_ID: bone.id, Bone_Name: bone.es, ...(state.measurements?.[bone.id] || {}) })));
+  sheet('Jerarquía', ['sites', 'campaigns', 'sectors', 'contexts', 'individuals'].flatMap(level => (state.hierarchy?.[level] || []).map(entity => ({ Level: level, ID: entity.id, Name: entity.name, Parent_ID: entity.parentId || '', Updated_at: entity.updatedAt || '' }))));
   sheet('Landmarks', Object.entries(state.landmarks || {}).flatMap(([boneId, points]) => (Array.isArray(points) ? points : []).map(point => ({ Bone_ID: boneId, ...point }))));
   sheet('Calibraciones', Object.entries(state.calibrations || {}).map(([boneId, calibration]) => ({ Bone_ID: boneId, ...calibration })));
   sheet('Referencias landmarks', Object.entries(state.landmarkModelRefs || {}).map(([boneId, reference]) => ({ Bone_ID: boneId, ...reference })));

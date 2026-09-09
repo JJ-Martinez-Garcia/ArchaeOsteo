@@ -48,7 +48,9 @@ export function mergeAuxiliaryXlsx(value, workbook, XLSX, bones) {
     const { Previous, New, ...entry } = row;
     return { ...entry, previousValue: parse(Previous), newValue: parse(New) };
   }) : value.changeLog;
-  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog };
+  const hierarchyRows = rows('Jerarquía');
+  const hierarchy = hierarchyRows.length ? normalizeHierarchy(Object.fromEntries(HIERARCHY_LEVELS.map(level => [level, hierarchyRows.filter(row => row.Level === level).map(row => ({ id: row.ID, name: row.Name, parentId: row.Parent_ID, updatedAt: row.Updated_at }))]))) : normalizeHierarchy(value.hierarchy);
+  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy };
 }
 
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
@@ -333,13 +335,15 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
         const contextRows = workbook.Sheets['Ficha contexto'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Ficha contexto']) : [];
         const fragmentRows = workbook.Sheets['Fragmentos indeterminados'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Fragmentos indeterminados']) : [];
         const dentalRows = workbook.Sheets['Odontograma permanente'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Odontograma permanente']) : [];
+        const hierarchyRows = workbook.Sheets['Jerarquía'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Jerarquía']) : [];
         const deciduousRows = workbook.Sheets['Odontograma deciduo'] ? XLSX.utils.sheet_to_json(workbook.Sheets['Odontograma deciduo']) : [];
         mergeExtra = value => ({
           ...value,
           report: { ...(value.report || {}), ...(contextRows[0] || {}) },
           indeterminateFragments: fragmentRows.length ? fragmentRows : value.indeterminateFragments,
           dental: importDentalRows(value.dental, dentalRows, { locked: value.locked }),
-          deciduousDental: importDentalRows(value.deciduousDental, deciduousRows, { deciduous: true, locked: value.locked })
+          deciduousDental: importDentalRows(value.deciduousDental, deciduousRows, { deciduous: true, locked: value.locked }),
+          hierarchy: hierarchyRows.length ? normalizeHierarchy(Object.fromEntries(HIERARCHY_LEVELS.map(level => [level, hierarchyRows.filter(row => row.Level === level).map(row => ({ id: row.ID, name: row.Name, parentId: row.Parent_ID, updatedAt: row.Updated_at }))])) ) : value.hierarchy
         });
         imported = mergeAuxiliaryXlsx(mergeExtra(imported), workbook, XLSX, bones);
       } else {
