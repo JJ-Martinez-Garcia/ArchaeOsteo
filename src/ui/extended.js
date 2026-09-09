@@ -146,12 +146,13 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   };
 
   document.querySelector('#compare-panel-button').onclick = () => {
-    show(`<label>Perfil anatómico de referencia<select id="compare-profile"><option value="adult_male">Adulto masculino</option><option value="adult_female">Adulto femenino</option><option value="infant">Infante</option><option value="neonate">Neonato</option></select></label><button id="compare-3d-toggle" class="secondary-action" aria-pressed="false">Mostrar comparación 3D</button><label>Inventario local a comparar<select id="compare-project"><option value="">Cargando proyectos…</option></select></label><div class="compare-card"><strong>Perfil actual:</strong> ${escapeHtml(document.querySelector('#profile').selectedOptions[0].textContent)}<br><strong>Perfil comparado:</strong> <span id="compare-label">Adulto masculino</span><p>La referencia 3D es geométrica hasta incorporar GLB anatómicos documentados. La comparación conserva IDs osteológicos y separa los datos científicos de la visualización.</p></div><div id="compare-inventory" class="compare-inventory" aria-live="polite"></div>`);
+    show(`<label>Perfil anatómico de referencia<select id="compare-profile"><option value="adult_male">Adulto masculino</option><option value="adult_female">Adulto femenino</option><option value="infant">Infante</option><option value="neonate">Neonato</option></select></label><button id="compare-3d-toggle" class="secondary-action" aria-pressed="false">Mostrar comparación 3D</button><label>Inventario local a comparar<select id="compare-project"><option value="">Cargando proyectos…</option></select></label><label>Filtrar comparación por individuo/contexto/UE/campaña<select id="compare-scope"><option value="">Todos los registros</option></select></label><div class="compare-card"><strong>Perfil actual:</strong> ${escapeHtml(document.querySelector('#profile').selectedOptions[0].textContent)}<br><strong>Perfil comparado:</strong> <span id="compare-label">Adulto masculino</span><p>La referencia 3D es geométrica hasta incorporar GLB anatómicos documentados. La comparación conserva IDs osteológicos y separa los datos científicos de la visualización.</p></div><div id="compare-inventory" class="compare-inventory" aria-live="polite"></div>`);
     const select = document.querySelector('#compare-profile');
     const compare3d=document.querySelector('#compare-3d-toggle');
     compare3d.onclick=()=>{const active=compare3d.getAttribute('aria-pressed')!=='true';compare3d.setAttribute('aria-pressed',String(active));compare3d.textContent=active?'Ocultar comparación 3D':'Mostrar comparación 3D';window.dispatchEvent(new CustomEvent('oste3d:compare-profile',{detail:{profileId:active?select.value:''}}));};
     select.onchange = () => { document.querySelector('#compare-label').textContent = select.selectedOptions[0].textContent; if(compare3d.getAttribute('aria-pressed')==='true')window.dispatchEvent(new CustomEvent('oste3d:compare-profile',{detail:{profileId:select.value}})); };
     const projectSelect = document.querySelector('#compare-project');
+    const scopeSelect = document.querySelector('#compare-scope');
     const comparison = document.querySelector('#compare-inventory');
     const comparisonIdentity = project => {
       const report = project?.report || {};
@@ -168,11 +169,35 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       if (record?.fragments != null) details.push(`${record.fragments} frag.`);
       return details.join(' · ');
     }).join('; ');
+    const comparisonScopeMatches = (scope, current, other, currentIdentity, otherIdentity) => {
+      if (!scope) return true;
+      let parsed;
+      try { parsed = JSON.parse(scope); } catch { return true; }
+      const [field, value] = parsed;
+      if (field === 'individual' || field === 'ue') return current[field] === value || other[field] === value;
+      if (field === 'context' || field === 'campaign') return currentIdentity[field] === value || otherIdentity[field] === value;
+      return true;
+    };
+    const populateComparisonScopes = project => {
+      const values = new Map();
+      const add = (field, value) => { const normalized = String(value || '').trim(); if (normalized && normalized !== '—') values.set(JSON.stringify([field, normalized]), `${field === 'individual' ? 'Individuo' : field === 'ue' ? 'UE' : field === 'context' ? 'Contexto' : 'Campaña'}: ${normalized}`); };
+      const currentIdentity = comparisonIdentity(state), otherIdentity = comparisonIdentity(project);
+      add('individual', currentIdentity.individual); add('individual', otherIdentity.individual); add('context', currentIdentity.context); add('context', otherIdentity.context); add('campaign', currentIdentity.campaign); add('campaign', otherIdentity.campaign); add('ue', currentIdentity.ue); add('ue', otherIdentity.ue);
+      bones.forEach(bone => { add('individual', state.individuals?.[bone.id]); add('individual', project?.individuals?.[bone.id]); add('ue', state.ue?.[bone.id]); add('ue', project?.ue?.[bone.id]); });
+      const selected = scopeSelect.value;
+      scopeSelect.innerHTML = '<option value="">Todos los registros</option>' + [...values.entries()].sort((a, b) => a[1].localeCompare(b[1], 'es')).map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join('');
+      if ([...scopeSelect.options].some(option => option.value === selected)) scopeSelect.value = selected;
+    };
     const renderComparison = project => {
       if (!project) { comparison.innerHTML = '<p class="small-copy">No hay otro proyecto local disponible para comparar.</p>'; return; }
       const currentIdentity = comparisonIdentity(state);
       const otherIdentity = comparisonIdentity(project);
-      const differences = bones.map(bone => {
+      const scopedBones = bones.filter(bone => {
+        const current = { individual: state.individuals?.[bone.id] || currentIdentity.individual, ue: state.ue?.[bone.id] || currentIdentity.ue };
+        const other = { individual: project.individuals?.[bone.id] || otherIdentity.individual, ue: project.ue?.[bone.id] || otherIdentity.ue };
+        return comparisonScopeMatches(scopeSelect.value, current, other, currentIdentity, otherIdentity);
+      });
+      const differences = scopedBones.map(bone => {
         const current = { status: state.status?.[bone.id] || 'not_recorded', completeness: Number(state.completeness?.[bone.id] ?? 100), preservation: state.preservation?.[bone.id] || 'not_evaluated', fragments: Number(state.fragments?.[bone.id] || 0), taphonomy: (state.taphonomy?.[bone.id] || []).join(', '), pathology: (state.pathology?.[bone.id] || []).join(', '), portion: state.portions?.[bone.id] || 'whole', portionRecords: portionSummary(state.portionRecords?.[bone.id]), individual: state.individuals?.[bone.id] || currentIdentity.individual, ue: state.ue?.[bone.id] || currentIdentity.ue };
         const other = { status: project.status?.[bone.id] || 'not_recorded', completeness: Number(project.completeness?.[bone.id] ?? 100), preservation: project.preservation?.[bone.id] || 'not_evaluated', fragments: Number(project.fragments?.[bone.id] || 0), taphonomy: (project.taphonomy?.[bone.id] || []).join(', '), pathology: (project.pathology?.[bone.id] || []).join(', '), portion: project.portions?.[bone.id] || 'whole', portionRecords: portionSummary(project.portionRecords?.[bone.id]), individual: project.individuals?.[bone.id] || otherIdentity.individual, ue: project.ue?.[bone.id] || otherIdentity.ue };
         const changed = Object.keys(current).some(key => current[key] !== other[key]);
@@ -180,15 +205,17 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       }).filter(Boolean);
       const identityLabel = identity => `Individuo: ${escapeHtml(identity.individual)} · Contexto: ${escapeHtml(identity.context)} · UE: ${escapeHtml(identity.ue)} · Campaña: ${escapeHtml(identity.campaign)}`;
       const rows = differences.map(({ bone, current, other }) => `<tr><th scope="row">${escapeHtml(bone.es)}</th><td><strong>Individuo:</strong> ${escapeHtml(current.individual)}<br><strong>UE:</strong> ${escapeHtml(current.ue)}<br>Estado: ${escapeHtml(current.status)} · ${current.completeness}% · ${escapeHtml(current.preservation)} · ${current.fragments} frag.<br>Porción: ${escapeHtml(current.portion)}${current.portionRecords ? `<br>Porciones independientes: ${escapeHtml(current.portionRecords)}` : ''}<br>Tafonomía: ${escapeHtml(current.taphonomy || '—')}<br>Patología: ${escapeHtml(current.pathology || '—')}</td><td><strong>Individuo:</strong> ${escapeHtml(other.individual)}<br><strong>UE:</strong> ${escapeHtml(other.ue)}<br>Estado: ${escapeHtml(other.status)} · ${other.completeness}% · ${escapeHtml(other.preservation)} · ${other.fragments} frag.<br>Porción: ${escapeHtml(other.portion)}${other.portionRecords ? `<br>Porciones independientes: ${escapeHtml(other.portionRecords)}` : ''}<br>Tafonomía: ${escapeHtml(other.taphonomy || '—')}<br>Patología: ${escapeHtml(other.pathology || '—')}</td></tr>`).join('');
-      comparison.innerHTML = `<p><strong>${differences.length}</strong> de ${bones.length} elementos con diferencias frente a <strong>${escapeHtml(project.projectName || project.id)}</strong>.</p><div class="compare-card"><strong>Proyecto actual:</strong> ${identityLabel(currentIdentity)}<br><strong>Proyecto comparado:</strong> ${identityLabel(otherIdentity)}</div><p class="small-copy">Campos comparados: individuo, contexto/UE/campaña, representación (estado y porcentaje), conservación, fragmentación, porción, porciones independientes, tafonomía y patología/trauma.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Elemento</th><th>Proyecto actual · individuo/UE</th><th>Proyecto comparado · individuo/UE</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">No se han detectado diferencias en los campos comparados.</p>'}`;
+      comparison.innerHTML = `<p><strong>${differences.length}</strong> de ${scopedBones.length} elementos filtrados con diferencias frente a <strong>${escapeHtml(project.projectName || project.id)}</strong>.</p><div class="compare-card"><strong>Proyecto actual:</strong> ${identityLabel(currentIdentity)}<br><strong>Proyecto comparado:</strong> ${identityLabel(otherIdentity)}</div><p class="small-copy">Campos comparados: individuo, contexto/UE/campaña, representación (estado y porcentaje), conservación, fragmentación, porción, porciones independientes, tafonomía y patología/trauma.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Elemento</th><th>Proyecto actual · individuo/UE</th><th>Proyecto comparado · individuo/UE</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">No se han detectado diferencias en los campos comparados.</p>'}`;
     };
     if (!listProjects || !loadProject) { renderComparison(null); return; }
     listProjects().then(projects => {
       const candidates = projects.filter(project => project.id !== state.projectId);
       projectSelect.innerHTML = candidates.length ? candidates.map(project => `<option value="${escapeHtml(project.id)}">${escapeHtml(project.projectName || project.id)}</option>`).join('') : '<option value="">Sin otro proyecto</option>';
       const first = candidates[0];
+      populateComparisonScopes(first);
       renderComparison(first);
-      projectSelect.onchange = async () => renderComparison(await loadProject(projectSelect.value));
+      scopeSelect.onchange = () => renderComparison(candidates.find(project => project.id === projectSelect.value) || null);
+      projectSelect.onchange = async () => { const project = await loadProject(projectSelect.value); populateComparisonScopes(project); renderComparison(project); };
     }).catch(() => { projectSelect.innerHTML = '<option value="">No disponible</option>'; renderComparison(null); });
   };
 
