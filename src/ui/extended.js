@@ -5,6 +5,7 @@ import { getCachedCustomModelFile, cacheCustomModelFile } from '../anatomy/packa
 import { importDentalRows } from '../domain/dental-import.js';
 import { translate } from '../i18n/translations.js';
 import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
+import { normalizeWeightUnit } from '../domain/weights.js';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -81,6 +82,9 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const taphonomy = (state.taphonomy[id] || []).join(', ');
     const pathology = (state.pathology[id] || []).join(', ');
     show(`<div class="record-editor"><strong>${escapeHtml(bone.es || id)}</strong><label>Número de fragmentos<input id="record-fragments" type="number" min="0" step="1" value="${state.fragments[id] ?? ''}"></label><label>Peso (g)<input id="record-weight" type="number" min="0" step="0.01" value="${state.weights[id] ?? ''}"></label><label>Porción anatómica<select id="record-portion">${portionOptions.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label><label>Individuo<input id="record-individual" value="${escapeHtml(state.individuals[id] || state.report?.individual || 'IND-LOCAL')}" placeholder="IND-01"></label><label>Tafonomía<input id="record-taphonomy" list="taphonomy-options" value="${escapeHtml(taphonomy)}" placeholder="erosión, raíces…"><datalist id="taphonomy-options">${TAPHONOMY_OPTIONS.map(value => `<option value="${value}">`).join('')}</datalist></label><label>Patología / trauma<input id="record-pathology" value="${escapeHtml(pathology)}" placeholder="fractura, caries…"></label><label>Nota científica<textarea id="record-note" rows="3">${escapeHtml(state.notes[id] || '')}</textarea></label><button id="save-record" class="secondary-action">Guardar registro</button></div>`);
+    document.querySelector('#record-weight').insertAdjacentHTML('afterend', `<select id="record-weight-unit" aria-label="Unidad del peso"><option value="g">g</option><option value="kg">kg</option></select>`);
+    document.querySelector('#record-weight-unit').value = state.weightUnits?.[id] === 'kg' ? 'kg' : 'g';
+    document.querySelector('#record-weight').value = state.weights[id] == null ? '' : state.weights[id] / (state.weightUnits?.[id] === 'kg' ? 1000 : 1);
     const pathologyDetails = state.pathologyDetails[id] || {};
     const taphonomyDetails = state.taphonomyDetails[id] || {};
     document.querySelector('#record-taphonomy').insertAdjacentHTML('afterend', `<fieldset class="structured-observation"><legend>Detalle tafonómico</legend><label>Tipo<select id="record-taphonomy-type">${TAPHONOMY_OPTIONS.map(value => `<option value="${value}">${value}</option>`).join('')}</select></label><label>Descripción<textarea id="record-taphonomy-description" rows="2">${escapeHtml(taphonomyDetails.description || '')}</textarea></label><label>Posición<input id="record-taphonomy-position" value="${escapeHtml(taphonomyDetails.position || '')}" placeholder="proximal, cara anterior…"></label><label>Extensión<input id="record-taphonomy-extent" value="${escapeHtml(taphonomyDetails.extent || '')}" placeholder="localizada, 20 mm…"></label><label>Observaciones<textarea id="record-taphonomy-observations" rows="2">${escapeHtml(taphonomyDetails.observations || '')}</textarea></label></fieldset>`);
@@ -100,8 +104,8 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       if (fragmentText) state.fragments[id] = Number(fragmentText); else delete state.fragments[id];
       const weightText = document.querySelector('#record-weight').value.trim();
       const weight = weightText === '' ? NaN : Number(weightText);
-      if (Number.isFinite(weight) && weight >= 0) state.weights[id] = weight;
-      else delete state.weights[id];
+      if (Number.isFinite(weight) && weight >= 0) { const unit = normalizeWeightUnit(document.querySelector('#record-weight-unit').value); state.weights[id] = weight * (unit === 'kg' ? 1000 : 1); state.weightUnits[id] = unit; }
+      else { delete state.weights[id]; delete state.weightUnits[id]; }
       state.portions[id] = document.querySelector('#record-portion').value;
       state.individuals[id] = document.querySelector('#record-individual').value.trim() || 'IND-LOCAL';
       state.taphonomy[id] = document.querySelector('#record-taphonomy').value.split(',').map(value => value.trim()).filter(Boolean);

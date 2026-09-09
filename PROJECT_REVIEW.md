@@ -27,6 +27,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   frecuentes; el tesauro completo sigue requiriendo curación especializada.
 - El modo aprendizaje dispone de preguntas por nivel y modos de identificar/localizar;
   oculta la ficha del hueso mientras dura el ejercicio y permite salir restaurándola.
+- Los pesos identificados admiten g/kg por registro; se guardan canónicamente en gramos,
+  conservan la unidad introducida para la ficha y mantienen exportaciones/totales anteriores.
 - Copia `.osteo3d` autocontenida con modelos personalizados cacheados, manifiesto,
   comprobación CRC por ZIP y checksum por modelo en el manifiesto, además de restauración
   probada; JSON se mantiene como formato ligero.

@@ -25,6 +25,7 @@ export function createBackup(state) {
       completeness: state.completeness,
       fragments: state.fragments,
       weights: state.weights,
+      weightUnits: state.weightUnits,
       portions: state.portions,
       portionRecords: state.portionRecords,
       individuals: state.individuals,

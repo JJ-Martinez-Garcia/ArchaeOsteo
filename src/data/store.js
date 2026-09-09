@@ -111,6 +111,7 @@ export function normalizeProject(project) {
     completeness: normalizeNumberMap(project.completeness, { min: 0, max: 100 }),
     fragments: normalizeNumberMap(project.fragments, { min: 0, integer: true }),
     weights: normalizeNumberMap(project.weights, { rejectBelowMin: true }),
+    weightUnits: Object.fromEntries(objectEntries(project.weightUnits).filter(([, unit]) => ['g', 'kg'].includes(String(unit).toLowerCase())).map(([key, unit]) => [key, String(unit).toLowerCase()])),
     portions: project.portions || {},
     portionRecords: project.portionRecords || {},
     individuals: normalizeStringMap(project.individuals),

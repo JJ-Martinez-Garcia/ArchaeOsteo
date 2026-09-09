@@ -58,7 +58,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 39 | MNE | MNE desde observaciones de porciones y solapamiento; conservar revisión manual y límites. |
 | 40 | MNI | MNI desde incompatibilidades documentadas de lado/porción/desarrollo; no contar fragmentos como individuos. |
 | 41 | FRAGMENTOS INDETERMINADOS | Validar cantidades/medidas opcionales, deshacer eliminación y vincular fragmentos a contexto. |
-| 42 | PESO | Añadir selector g/kg y pruebas de ausencia frente a peso cero y totales regionales. |
+| 42 | PESO | Selector g/kg por registro, almacenamiento canónico en gramos, exportación/totales compatibles y pruebas de ausencia frente a peso cero; queda ampliar la unidad a fragmentos indeterminados. |
 | 43 | TAFONOMÍA | Catálogo curado y anotaciones múltiples estructuradas por hueso con evidencia. |
 | 44 | PATOLOGÍA Y TRAUMA | Anotación de trauma/patología en superficie 3D enlazada a ficha, sin diagnóstico automático. |
 | 45 | FOTOGRAFÍAS | Verificar todos los ámbitos de fotos, tamaño/cuota, edición y recuperación de binarios. |

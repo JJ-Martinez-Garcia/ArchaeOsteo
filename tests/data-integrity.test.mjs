@@ -6,6 +6,7 @@ import { normalizeProject, fallbackProjectKey, loadProject, listProjects, savePr
 import { createProjectWriter } from '../src/data/persistence.js';
 import { createOsteoArchive, readOsteoArchive } from '../src/domain/backup-archive.js';
 import { normalizePortionRecords, portionRecordCount } from '../src/domain/portion-records.js';
+import { normalizeWeightUnit, weightToGrams } from '../src/domain/weights.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
 const archiveBytes = createOsteoArchive(createBackup({ projectId: 'archive-1', projectName: 'Copia con GLB' }), [{ name: 'models/custom/infant/left_femur.glb', data: new Uint8Array([0, 1, 2, 255]) }]);
@@ -69,6 +70,11 @@ assert.equal(portions.left_femur.epiphysis_proximal.completeness, 80);
 assert.equal(portions.left_femur.shaft_mid.fragments, 2);
 assert.equal(portionRecordCount(portions), 2);
 assert.deepEqual(normalizeProject({ portionRecords: portions }).portionRecords, portions);
+assert.equal(normalizeWeightUnit('KG'), 'kg');
+assert.equal(weightToGrams(1.25, 'kg'), 1250);
+assert.equal(weightToGrams(0, 'g'), 0);
+assert.equal(weightToGrams('', 'kg'), null);
+assert.equal(normalizeProject({ weights: { skull: 1.25 }, weightUnits: { skull: 'kg' } }).weightUnits.skull, 'kg');
 assert.equal(validateBackup(createBackup({ weights: { skull: 0 }, notes: { skull: rows[0].Notes } })).notes.skull, rows[0].Notes);
 
 assert.deepEqual(importDentalRows({ 12: 'caries' }, [{ Tooth_FDI: 11, Status: 'Presente' }, { Tooth_FDI: 12, Status: '' }]), { 11: 'present', 12: 'caries' });

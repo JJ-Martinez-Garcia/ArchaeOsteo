@@ -12,6 +12,8 @@ export function inventoryRows(bones, state) {
     status: state.status?.[bone.id] || 'not_recorded',
     fragments: Math.max(0, Number(state.fragments?.[bone.id] || 0)),
     weight: Number.isFinite(Number(state.weights?.[bone.id])) ? Math.max(0, Number(state.weights[bone.id])) : null,
+    weightUnit: state.weightUnits?.[bone.id] === 'kg' ? 'kg' : 'g',
+    weightGrams: Number.isFinite(Number(state.weights?.[bone.id])) ? Math.max(0, Number(state.weights[bone.id])) : null,
     portion: state.portions?.[bone.id] || 'whole',
     individual: state.individuals?.[bone.id] || state.report?.individual || 'IND-LOCAL',
     context: state.ue?.[bone.id] || state.report?.context || 'Sin contexto',
