@@ -422,6 +422,16 @@ try {
   await evaluate(cdp, `document.querySelector('#catalog-toggle').click()`);
   assert.equal(await evaluate(cdp, `getComputedStyle(document.querySelector('.sidebar')).display!=='none'`),true,'Mobile catalogue must open');
   await evaluate(cdp, `document.querySelector('#catalog-toggle').click()`);
+  await evaluate(cdp, `document.querySelector('#inspector-toggle').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#inspector').classList.contains('mobile-open')`),true,'Mobile inspector must open');
+  assert.equal(await evaluate(cdp, `document.querySelector('#inspector-toggle').getAttribute('aria-expanded')`),'true','Mobile inspector exposes expanded state');
+  assert.equal(await evaluate(cdp, `(()=>{const e=document.querySelector('#inspector-toggle');const r=e.getBoundingClientRect();return r.width>=44&&r.height>=44})()`),true,'Mobile inspector toggle must be touch-sized');
+  await evaluate(cdp, `document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#inspector').classList.contains('mobile-open')`),false,'Escape must close mobile inspector');
+  assert.equal(await evaluate(cdp, `document.activeElement?.id`),'inspector-toggle','Escape must return focus to inspector toggle');
+  await evaluate(cdp, `document.querySelector('#inspector-toggle').click()`);
+  await evaluate(cdp, `document.querySelector('#viewer').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerType:'touch'}))`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#inspector').classList.contains('mobile-open')`),false,'Viewer touch must close mobile inspector');
   await cdp.send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
   await evaluate(cdp, `document.querySelector('#analysis-panel-button').click()`);
   await evaluate(cdp, `(()=>{document.querySelector('#review-mne').value='2';document.querySelector('#review-reason-mne').value='E2E: revisión justificada de prueba';document.querySelector('#save-analysis-review').click();})()`);
