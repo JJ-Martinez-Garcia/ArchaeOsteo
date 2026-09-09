@@ -26,12 +26,12 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 7 | ANIMACIÓN DE DESPLIEGUE | Posición y slerp implementados; validar rotación, escala y orientación de todos los assets externos. |
 | 8 | SLIDER DE EXPLOSIÓN | Slider operativo; probar extremos, valores intermedios, teclado y convivencia con aislamiento. |
 | 9 | MESA OSTEOLÓGICA | Completar agrupación/ordenación de mesa y restauración por selección con persistencia. |
-| 10 | EXAMINAR HUESO | Añadir vistas anatómicas locales medial/lateral/proximal/distal por hueso, no solo ejes globales. |
+| 10 | EXAMINAR HUESO | Vistas anatómicas locales medial/lateral/proximal/distal centradas en el elemento seleccionado; queda validación anatómica de orientación en cada familia de huesos. |
 | 11 | PANEL INFORMATIVO | Curar las 12 categorías de la ficha por hueso con referencias; no sustituir huecos por inferencias. |
 | 12 | ÁRBOL OSTEOLOGICO | Verificar árbol por anatomía completa y componentes inmaduros; catálogo actual agrupa cráneo. |
 | 13 | BUSCADOR | Búsqueda normalizada ES/EN/latín/ID con sinónimos osteológicos frecuentes (escápula/omóplato, peroné/fíbula, rótula/patela, etc.); queda curación completa del tesauro. |
 | 14 | COMPARACIÓN | Comparación hueso a hueso, vista/rotación/zoom sincronizados y escala real solo con calibración. |
-| 15 | TRANSPARENCIA | Verificar coherencia 0–100% por hueso/región/conjunto; control actual limita mínimo a 20%. |
+| 15 | TRANSPARENCIA | Control 0–100% por hueso/región/conjunto, persistente y con X-Ray limitado independientemente; queda verificación visual de contraste en todas las escenas. |
 | 16 | MODOS VISUALES | Cerrar pruebas combinadas de todos los modos y de representación de inventario. |
 | 17 | ILUMINACIÓN | Intensidad, presets, ambiente independiente y dirección de luz mediante azimut/elevación persistentes; queda validación visual de la paleta en dispositivos y escenas complejas. |
 | 18 | COLORES POR REGIÓN | Comprobar contraste, leyenda y paleta con simulación de deficiencia cromática. |

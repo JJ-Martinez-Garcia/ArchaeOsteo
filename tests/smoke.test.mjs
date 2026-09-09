@@ -498,6 +498,8 @@ assert.match(main, /lightingAzimuth/);
 assert.match(main, /lightingElevation/);
 assert.match(main, /id="ambient-slider"/);
 assert.match(main, /id="opacity-slider" type="range" min="0" max="100"/);
+assert.match(main, /data-local-view="medial"/);
+assert.match(main, /data-local-view="proximal"/);
 assert.match(main, /Los datos científicos no se infieren a partir de la geometría/);
 assert.match(main, /anatomy-facts/);
 assert.match(main, /Anatomical landmarks/);

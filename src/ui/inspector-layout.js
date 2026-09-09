@@ -29,8 +29,9 @@ export function initInspectorLayout() {
     const width = clampInspectorWidth(preferred, layout.clientWidth);
     const bounds = inspectorWidthBounds(layout.clientWidth);
     layout.style.setProperty('--inspector-width', `${width}px`);
-    layout.style.removeProperty('grid-template-columns');
-    layout.style.removeProperty('justify-content');
+    const sidebar = layout.clientWidth <= 1100 ? 210 : 260;
+    layout.style.gridTemplateColumns = `${sidebar}px minmax(0, 1fr) 10px ${width}px`;
+    layout.style.justifyContent = 'start';
     inspector.style.removeProperty('width');
     divider.setAttribute('aria-valuemin', String(bounds.min));
     divider.setAttribute('aria-valuemax', String(bounds.max));

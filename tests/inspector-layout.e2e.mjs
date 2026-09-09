@@ -33,6 +33,7 @@ export async function testInspectorLayout(cdp,evaluate,waitForValue){
   await evaluate(cdp,`document.querySelector('#inspector-divider').dispatchEvent(new KeyboardEvent('keydown',{key:'End',bubbles:true}))`);
   await check('maximum');
   await evaluate(cdp,`document.querySelector('#inspector-divider').dispatchEvent(new MouseEvent('dblclick',{bubbles:true}))`);
+  await waitForValue(cdp,`Math.round(document.querySelector('#inspector').getBoundingClientRect().width)`,n=>n===380,'Double-click layout reflow');
   assert.equal(Math.round((await rect()).width),380,'Double-click resets panel width');
   await evaluate(cdp,`document.querySelector('#tab-sheet').click();document.querySelector('[data-bone="skull"]').click();document.querySelector('#reset').click();document.querySelector('#inspector').scrollTop=0`);
   assert.equal(await evaluate(cdp,`document.querySelectorAll('.tabs button.active').length`),1,'Only the selected inspector tab is active');

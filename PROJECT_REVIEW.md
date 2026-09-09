@@ -53,6 +53,10 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - Panel derecho adaptable y separador accesible por ratón/teclado con persistencia.
   Pruebas de todas las pestañas y formularios ampliados a 300 px, en PC de 1024/1440 px;
   el visor ajusta su resolución al cambiar la separación.
+- La transparencia visual admite ahora el rango completo 0–100% por hueso, región o
+  esqueleto, y el restablecimiento devuelve también ambiente y dirección de la luz.
+- El visor incorpora vistas locales medial, lateral, proximal y distal centradas en el
+  elemento seleccionado, con lateralidad aplicada a las vistas medial/lateral.
 
 - 179 elementos con geometría procedural propia para los cuatro perfiles (716
   combinaciones). Código fuente reproducible y exportación individual GLB con
