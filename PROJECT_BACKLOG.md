@@ -91,10 +91,10 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 72 | FILTROS | Verificar combinaciones de todos los filtros contra tabla, árbol, 3D y estadísticas. |
 | 73 | ESTADÍSTICAS | Medias basadas solo en datos observados y denominadores explícitos en resumen, mapa regional y mapa de conservación; se verificó en E2E que un porcentaje desconocido no se cuenta como cero. Queda ampliar combinaciones y revisión visual. |
 | 74 | INFORME AUTOMÁTICO | Informe con fuentes/métodos/límites, fotos elegidas y reglas de impresión A4 para evitar cortes; queda mapa esquelético y maquetación PDF profesional. |
-| 75 | EXPORTACIÓN | Ronda completa de datos en CSV/JSON/XLSX/PDF, incluyendo campos nuevos y caracteres especiales. |
-| 76 | CSV/XLSX | Esquema estable y códigos canónicos, comillas/saltos de línea, trazabilidad de fuentes/método/límites en CSV y protección de texto introducido frente a fórmulas al abrir CSV/XLSX. Queda una auditoría completa de rondas con todos los campos y hojas auxiliares. |
+| 75 | EXPORTACIÓN | JSON conserva la copia completa; CSV contiene el inventario tabular; XLSX incluye e importa inventario, contexto, odontogramas, fragmentos, osteometría, landmarks, calibraciones, referencias, revisión, cambios y metadatos de fotos/modelos. Falta verificar round-trip con casos reales y decidir un formato tabular para binarios. |
+| 76 | CSV/XLSX | Esquema estable y códigos canónicos, comillas/saltos de línea, trazabilidad de fuentes/método/límites en CSV y protección de texto introducido frente a fórmulas al abrir CSV/XLSX. La cobertura de hojas auxiliares está implementada; queda auditoría con casos reales. |
 | 77 | JSON | Esquema versionado JSON completo, migraciones y validación de campos desconocidos. |
-| 78 | IMPORTACIÓN | Fusión explícita, filas atómicas, bloqueo revalidado y deshacer implementados; completar esquemas de hojas auxiliares y restauración JSON integral. |
+| 78 | IMPORTACIÓN | Fusión explícita, filas atómicas, bloqueo revalidado y deshacer implementados; XLSX recupera las hojas auxiliares estructuradas y JSON restaura la copia integral. Queda validación con colecciones reales y binarios fuera de XLSX. |
 | 79 | BASE DE DATOS LOCAL | Modelo de entidades explícitas en IndexedDB y migraciones sin pérdida. |
 | 80 | JERARQUÍA DE PROYECTOS | Jerarquía proyecto/yacimiento/campaña/sector/contexto/individuo, no solo campos en una ficha. |
 | 81 | AUTOGUARDADO | Fallo dual y recuperación por proyecto verificados; ampliar pruebas a todos los formularios, navegación pendiente y límites/cuota con fotografías grandes. |
