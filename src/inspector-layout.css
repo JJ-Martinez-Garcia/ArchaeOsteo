@@ -1,7 +1,7 @@
 /* Keep form content inside the panel; only genuinely wide tables scroll locally. */
-.inspector { min-width: 0; overflow-wrap: anywhere; }
+.inspector { min-width: 0; overflow-x: hidden; overflow-wrap: anywhere; }
 .inspector .actions, .inspector .light-control { min-width: 0; width: 100%; max-width: 100%; }
-.inspector :where(label, fieldset, legend, dd, dt, section, .actions, .record-editor, .metric-fields, .landmark-fields) { min-width: 0; }
+.inspector :where(label, fieldset, legend, dd, dt, section, .actions, .record-editor, .metric-fields, .landmark-fields, .report-fields, .filter-fields, .extended-tools, .extended-buttons, .structured-observation) { min-width: 0; max-width: 100%; }
 .inspector :where(input, select, textarea) { min-width: 0; max-width: 100%; }
 .inspector :where(input:not([type=checkbox]):not([type=radio]), select, textarea) { width: 100%; }
 .inspector textarea { resize: vertical; }

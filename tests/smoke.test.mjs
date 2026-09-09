@@ -213,6 +213,7 @@ assert.match(main, /navigator\.storage\.persist/);
 assert.match(main, /storage-status/);
 assert.match(main, /pwa-diagnostics/);
 assert.match(main, /inspector-toggle/);
+assert.match(main, /document\.querySelector\('#tab-report'\)\.onclick=.*populateReportFields\(\)/);
 assert.match(main, /mobile-open/);
 assert.match(main, /runPwaDiagnostics/);
 assert.match(main, /tableTransforms: \{\}/);
