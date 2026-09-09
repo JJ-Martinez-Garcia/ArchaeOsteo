@@ -11,6 +11,7 @@
     "test:e2e": "node scripts/e2e-pwa.mjs",
     "validate-pwa": "node scripts/validate-pwa.mjs",
     "validate-model-assets": "node scripts/validate-model-assets.mjs",
+    "validate-privacy": "node scripts/validate-privacy.mjs",
     "verify-pages": "node scripts/verify-pages.mjs",
     "generate-pwa-icons": "node scripts/generate-pwa-icons.mjs",
     "generate-profile-models": "node scripts/generate-profile-models.mjs"
