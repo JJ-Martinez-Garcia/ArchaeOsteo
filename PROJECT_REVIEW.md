@@ -34,7 +34,7 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - La importación de un modelo personalizado respeta el bloqueo del registro seleccionado
   y no reemplaza su malla mientras el registro esté bloqueado.
 - Copia `.osteo3d` autocontenida con modelos personalizados cacheados, manifiesto,
-  comprobación CRC por ZIP y checksum por modelo en el manifiesto, además de restauración
+  comprobación CRC por ZIP, SHA-256 de `project.json` y de cada modelo en el manifiesto, además de restauración
   probada; JSON se mantiene como formato ligero.
 - Osteometría: calibración por dos landmarks y distancia convertida a milímetros,
   con escala por elemento, fecha y procedencia del dato introducido por el usuario;
