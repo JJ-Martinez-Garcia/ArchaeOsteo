@@ -11,6 +11,8 @@
   para evitar picos innecesarios durante el cambio de perfil.
 - Añadido un editor no destructivo de la jerarquía del proyecto para registrar entidades
   y relaciones padre desde la interfaz.
+- Incrementado el esquema de proyecto a v3 para versionar la migración de jerarquía;
+  los datos de v2 se normalizan automáticamente.
 - El panel derecho oculta desbordamientos horizontales accidentales y limita también
   formularios extendidos, filtros y campos de contexto al ancho disponible.
 - La pestaña de informe hidrata todos sus campos de contexto de forma directa al abrirse,

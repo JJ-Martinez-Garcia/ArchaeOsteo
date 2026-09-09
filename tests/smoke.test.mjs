@@ -98,7 +98,7 @@ const store = await text('src/data/store.js');
 const translations = await text('src/i18n/translations.js');
 const extendedUi = await text('src/ui/extended.js');
 assert.match(store, /indexedDB/);
-assert.match(store, /PROJECT_SCHEMA_VERSION = 2/);
+assert.match(store, /PROJECT_SCHEMA_VERSION = 3/);
 assert.match(store, /normalizeProject/);
 assert.match(store, /localStorage\.getItem/);
 assert.match(store, /readFallbackProjects\(\)\.filter\(project => project\.id === id\)/);
@@ -119,6 +119,8 @@ const normalizedReport = normalizeProject({ report: { sources: 'DOI: test', meth
 assert.equal(normalizedReport.report.sources, 'DOI: test');
 assert.equal(normalizedReport.report.method, 'Comparación');
 assert.equal(normalizedReport.report.limits, 'Revisión pendiente');
+assert.equal(normalizedReport.schemaVersion, 3);
+assert.equal(normalizedReport.hierarchy.sites.length, 0);
 const hierarchy = deriveHierarchy({ report: { site: 'Yacimiento Á', campaign: '2026', sector: 'Norte', context: 'UE-4', individual: 'IND-7' }, individuals: { skull: 'IND-8' }, ue: {} });
 assert.deepEqual(hierarchyCounts(hierarchy), { sites: 1, campaigns: 1, sectors: 1, contexts: 1, individuals: 2 });
 assert.equal(hierarchy.campaigns[0].parentId, 'site:yacimiento-a');

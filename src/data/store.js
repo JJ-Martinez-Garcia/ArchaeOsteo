@@ -1,8 +1,8 @@
 import { deriveHierarchy } from '../domain/hierarchy.js';
 
 const DB_NAME = 'osteo3d';
-export const PROJECT_SCHEMA_VERSION = 2;
-const DB_VERSION = 2;
+export const PROJECT_SCHEMA_VERSION = 3;
+const DB_VERSION = 3;
 const STORE = 'projects';
 const PROFILE_IDS = new Set(['adult_male', 'adult_female', 'infant', 'neonate']);
 const DENTAL_STATUSES = new Set(['present', 'absent_am', 'absent_pm', 'unerupted', 'developing', 'caries', 'wear', 'fragmented', 'pathology', 'not_observable']);

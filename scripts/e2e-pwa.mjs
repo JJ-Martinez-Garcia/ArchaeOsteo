@@ -245,7 +245,7 @@ async function waitForProcessExit(processHandle, timeout = 5_000) {
 
 function projectReadExpression() {
   return `(async () => new Promise(resolve => {
-    const request = indexedDB.open('osteo3d', 2);
+    const request = indexedDB.open('osteo3d', 3);
     request.onerror = () => resolve(null);
     request.onsuccess = () => {
       const db = request.result;
@@ -375,7 +375,7 @@ try {
   const savedProject = await waitForValue(
     cdp,
     projectReadExpression(),
-    value => value?.schemaVersion === 2 && value?.id === 'default',
+    value => value?.schemaVersion === 3 && value?.id === 'default',
     'La persistencia IndexedDB'
   );
   assert.equal(savedProject.profile, 'adult_male');
@@ -521,7 +521,7 @@ try {
     await waitForValue(cdp, `({...document.querySelector('#viewer').dataset})`,value=>value.geometryMode==='schematic'&&value.schematicCount==='179','Offline procedural skeleton');
     const uncachedFetchBlocked = await evaluate(cdp, `fetch('./__offline_probe__?nonce=${Date.now()}', { cache: 'no-store' }).then(() => false).catch(() => true)`);
     assert.equal(uncachedFetchBlocked, true, 'El servidor detenido debe bloquear una petición inédita.');
-    assert.equal((await evaluate(cdp, projectReadExpression())).schemaVersion, 2, 'El proyecto debe seguir disponible offline.');
+    assert.equal((await evaluate(cdp, projectReadExpression())).schemaVersion, 3, 'El proyecto debe seguir disponible offline.');
     await setOfflineState(cdp, false);
     environmentSummary = `IndexedDB y arranque offline verificados (${offlineMode})`;
   }
