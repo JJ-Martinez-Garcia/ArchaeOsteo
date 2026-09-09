@@ -53,6 +53,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   cada fuente seleccionada, con su nombre, para conservar la trazabilidad.
 - La interoperabilidad de componentes inmaduros queda cubierta en CSV, JSON y XLSX;
   la prueba de datos verifica la importación CSV sin aceptar estructuras inválidas.
+- El panel PWA informa ahora de uso/cuota estimados cuando `StorageManager.estimate()`
+  está disponible; si el navegador no expone esa API, mantiene el resto del diagnóstico.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

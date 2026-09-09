@@ -79,6 +79,8 @@
   deshacer, persistencia y hoja XLSX importable; no infiere edades ni osificación.
 - La importación CSV general conserva también el registro JSON de componentes
   inmaduros, completando el round-trip entre CSV, JSON y XLSX.
+- El diagnóstico PWA muestra, cuando el navegador lo permite, el uso y la cuota
+  estimada de almacenamiento para anticipar problemas de IndexedDB/caché.
 
 ## Cambios recientes
 

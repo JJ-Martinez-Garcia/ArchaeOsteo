@@ -357,6 +357,8 @@ try {
   const controlledUrl = new URL(`?e2e-controlled=${Date.now()}`, baseUrl).href;
   await navigate(cdp, 'Page.navigate', { url: controlledUrl });
   await waitForValue(cdp, 'Boolean(navigator.serviceWorker.controller)', Boolean, 'El control del Service Worker');
+  const storageEstimateAvailable = await evaluate(cdp, `(async()=>{if(!navigator.storage?.estimate)return false;try{const estimate=await navigator.storage.estimate();return Number.isFinite(Number(estimate.usage))&&Number.isFinite(Number(estimate.quota))&&Number(estimate.quota)>0;}catch{return false;}})()`);
+  if (storageEstimateAvailable) await waitForValue(cdp, `Boolean(document.querySelector('#storage-quota-diagnostic'))`, value => value === true, 'El diagnóstico de cuota de almacenamiento');
   await waitForValue(
     cdp,
     `document.querySelector('#model-package-status')?.textContent || ''`,
