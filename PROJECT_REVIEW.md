@@ -46,6 +46,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   modelos propios.
 - La E2E recarga la aplicación tras guardar contexto y jerarquía y verifica la recuperación
   desde IndexedDB antes de continuar el flujo.
+- `pnpm validate-backlog` comprueba que el plan conserva exactamente los 119 requisitos,
+  sin duplicados ni huecos, y que el backlog y esta revisión mantienen sus secciones de
+  seguimiento.
 - El registro de cambios permite filtrar por método o texto (elemento, individuo,
   investigador) y descargar el subconjunto visible en CSV; la prueba E2E verifica su
   renderizado y actualización.

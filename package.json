@@ -13,6 +13,7 @@
     "validate-shell": "node scripts/validate-shell-assets.mjs",
     "validate-model-assets": "node scripts/validate-model-assets.mjs",
     "validate-privacy": "node scripts/validate-privacy.mjs",
+    "validate-backlog": "node scripts/validate-backlog.mjs",
     "verify-pages": "node scripts/verify-pages.mjs",
     "generate-pwa-icons": "node scripts/generate-pwa-icons.mjs",
     "generate-profile-models": "node scripts/generate-profile-models.mjs"

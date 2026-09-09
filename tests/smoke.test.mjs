@@ -812,6 +812,8 @@ assert.match(await text('scripts/verify-pages.mjs'), /OSTEO3D_VERIFY_ATTEMPTS/);
 assert.match(await text('scripts/verify-pages.mjs'), /OSTEO3D_VERIFY_DELAY_MS/);
 assert.match(await text('scripts/verify-pages.mjs'), /OSTEO3D_VERIFY_TIMEOUT_MS/);
 assert.match(await text('scripts/verify-pages.mjs'), /AbortSignal\.timeout/);
+assert.match(await text('scripts/validate-backlog.mjs'), /119/);
+assert.match(await text('package.json'), /validate-backlog/);
 assert.match(await text('.github/workflows/pages.yml'), /Verify published Pages entry point/);
 assert.match(await text('index.html'), /Content-Security-Policy/);
 assert.match(await text('index.html'), /connect-src 'self'/);

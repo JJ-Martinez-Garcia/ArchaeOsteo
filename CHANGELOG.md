@@ -171,3 +171,5 @@
   antes de iniciar lecturas, reduciendo el riesgo de agotar la cuota local.
 - La E2E comprueba la recuperación del proyecto después de recargar la aplicación, incluida
   la ficha de contexto y la jerarquía normalizada.
+- Añadido `validate-backlog`, que verifica automáticamente los 119 requisitos numerados y
+  las secciones de seguimiento antes de desplegar GitHub Pages.

@@ -46,6 +46,8 @@ jobs:
         run: pnpm validate-model-assets
       - name: Validate local-only data flows
         run: pnpm validate-privacy
+      - name: Validate complete requirements backlog
+        run: pnpm validate-backlog
       - name: Run browser PWA tests
         run: pnpm test:e2e
       - name: Upload Pages artifact
