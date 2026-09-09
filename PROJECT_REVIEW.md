@@ -49,7 +49,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - La E2E valida también la comparación múltiple con el proyecto activo y una segunda
   fuente almacenada en IndexedDB.
 - La comparación múltiple ofrece exportación CSV de las diferencias, útil para revisión
-  externa sin alterar los proyectos locales.
+  externa sin alterar los proyectos locales; el archivo incluye también el estado de
+  cada fuente seleccionada, con su nombre, para conservar la trazabilidad.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un

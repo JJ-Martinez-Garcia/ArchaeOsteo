@@ -71,6 +71,9 @@
   segunda fuente local para verificar el flujo completo de selección y resumen.
 - El resumen agregado de comparación múltiple se puede descargar ahora como CSV,
   conservando los recuentos canónicos por estado y `Bone_ID`.
+- El CSV de comparación múltiple añade ahora una columna por cada proyecto fuente,
+  con su nombre y el estado individual de cada `Bone_ID`, para que los recuentos
+  agregados puedan auditarse sin perder la procedencia.
 
 ## Cambios recientes
 
