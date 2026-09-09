@@ -735,6 +735,7 @@ assert.match(main, /state\.filters\.preservation='all';state\.filters\.type='all
 assert.match(main, /average completeness recorded/);
 assert.match(main, /const observed=items\.filter\(b=>state\.completeness\[b\.id\]!=null\)/);
 assert.match(main, /const observed=identified\.filter\(bone=>state\.fragments\[bone\.id\]!=null/);
+assert.match(main, /const observed=items\.filter\(bone=>state\.completeness\[bone\.id\]!=null&&Number\.isFinite/);
 assert.match(main, /reportContextFields/);
 assert.match(await text('scripts/verify-pages.mjs'), /Published Pages entry point/);
 assert.match(await text('.github/workflows/pages.yml'), /Verify published Pages entry point/);
