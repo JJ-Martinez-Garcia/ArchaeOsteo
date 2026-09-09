@@ -28,6 +28,8 @@
   hemisférica, sin convertir el valor a 100 % durante la normalización.
 - El verificador de GitHub Pages acepta ahora la forma habitual `pnpm verify-pages -- URL`
   además de la ejecución directa con Node.
+- El árbol osteológico muestra símbolos de estado y etiquetas accesibles, y sincroniza
+  ambos al pintar o editar inventario sin depender del color.
 
 ## Cambios recientes
 

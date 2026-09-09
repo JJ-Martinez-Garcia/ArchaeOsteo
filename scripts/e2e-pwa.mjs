@@ -398,6 +398,8 @@ try {
   assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#confirm-action-accept'))`), true, 'Mass absent action must require confirmation');
   await evaluate(cdp, `document.querySelector('#confirm-action-accept').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>Object.values(value.status||{}).filter(status=>status==='absent').length>0,'Persist mass absent action');
+  assert.equal(await evaluate(cdp, `document.querySelector('#bone-list .bone-row[data-status="absent"] .bone-icon')?.textContent`), '✕', 'Inventory status must have a non-colour marker');
+  assert.match(await evaluate(cdp, `document.querySelector('#bone-list .bone-row[data-status="absent"]')?.getAttribute('aria-label') || ''`), /Absent|Ausente/);
   await evaluate(cdp, `document.querySelector('#undo').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>Object.values(value.status||{}).every(status=>status!=='absent'),'Undo mass absent action');
   await evaluate(cdp, `document.querySelector('#multi-select-toggle').click();document.querySelector('[data-bone="skull"]').click();document.querySelector('[data-bone="mandible"]').click()`);
