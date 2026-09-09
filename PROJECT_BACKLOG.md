@@ -36,8 +36,8 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 17 | ILUMINACIÓN | Añadir dirección de luz y control ambiental independiente; intensidad y presets existentes. |
 | 18 | COLORES POR REGIÓN | Comprobar contraste, leyenda y paleta con simulación de deficiencia cromática. |
 | 19 | ETIQUETAS | Evitar colisión de etiquetas y asociar líneas guía; actualiza dinámicamente en cámara y selección. |
-| 20 | OSTEOMETRÍA | Calibración trazable y selección de puntos de superficie; protocolos de osteometría normalizados. |
-| 21 | LANDMARKS | Captura directa, edición y migración/versionado de coordenadas relativas al sustituir modelos. |
+| 20 | OSTEOMETRÍA | Calibración por dos landmarks y conversión a mm implementada con procedencia del usuario; falta validación/protocolo osteométrico externo y calibración global por modelo. |
+| 21 | LANDMARKS | Captura/visualización relativa y calibración local implementadas; falta selección directa sobre superficie, edición completa y migración/versionado al sustituir modelos. |
 | 22 | MODO APRENDIZAJE | Niveles de aprendizaje y banco de preguntas validado; impedir que la ficha revele la respuesta. |
 | 23 | INVENTARIO ARQUEOLÓGICO | Completar modelo de datos para colecciones con múltiples individuos y contextos. |
 | 24 | CREACIÓN DE FICHA | Verificar persistencia/ronda de todos los campos de contexto en cada formato. |

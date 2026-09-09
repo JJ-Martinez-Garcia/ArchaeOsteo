@@ -22,6 +22,10 @@ y `tests/data-integrity.e2e.mjs`; no equivalen al cierre de todos los requisitos
 - Las altas y bajas de fotografías y de fragmentos indeterminados también generan
   snapshots del historial común. Las fotografías y fragmentos asociados a un registro
   bloqueado no se pueden modificar desde esas rutas.
+- La osteometría permite calibrar cada elemento con la distancia real en milímetros
+  entre los dos primeros landmarks. Guarda distancia local, referencia introducida y
+  fecha, y solo convierte esa distancia local; no declara calibrado todo el modelo ni
+  sustituye un protocolo osteométrico validado.
 - XLSX exporta códigos dentales canónicos en `Status` y etiquetas en `Status_Label`.
   El importador admite también las etiquetas ES/EN de archivos históricos y valida
   los FDI de cada dentición. Las hojas auxiliares de contexto y fragmentos se explican
