@@ -52,6 +52,8 @@
   que Deshacer/Rehacer también cubre rotación, zoom y desplazamiento del encuadre.
 - Restaurar una cámara ausente (por ejemplo, en un proyecto antiguo) vuelve ahora al
   encuadre inicial en lugar de dejar la posición visual anterior.
+- El XLSX incluye una hoja `Configuración visual` con la cámara 3D y la importa durante
+  la restauración, manteniendo los binarios de modelos propios en el archivo OSTEO3D.
 
 ## Cambios recientes
 

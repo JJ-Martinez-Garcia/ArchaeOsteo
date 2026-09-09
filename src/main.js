@@ -614,6 +614,7 @@ function appendAuxiliaryXlsxSheets(XLSX, book) {
     { Sheet: 'Referencias landmarks', Purpose: 'Perfil y revisión de la malla asociada', Importable: true },
     { Sheet: 'Revisión análisis', Purpose: 'Valores manuales provisionales y justificación', Importable: true },
     { Sheet: 'Registro de cambios', Purpose: 'Historial de cambios exportado', Importable: true },
+    { Sheet: 'Configuración visual', Purpose: 'Cámara 3D y encuadre del proyecto', Importable: true },
     { Sheet: 'Fotografías', Purpose: 'Metadatos; no contiene datos binarios', Importable: false },
     { Sheet: 'Modelos propios', Purpose: 'Metadatos; los binarios requieren copia .osteo3d', Importable: false }
   ]);
@@ -624,6 +625,8 @@ function appendAuxiliaryXlsxSheets(XLSX, book) {
   sheet('Referencias landmarks', Object.entries(state.landmarkModelRefs || {}).map(([boneId, reference]) => ({ Bone_ID: boneId, ...reference })));
   sheet('Revisión análisis', Object.entries(state.analysisReview || {}).map(([metric, review]) => ({ Metric: metric.toUpperCase(), ...review })));
   sheet('Registro de cambios', (state.changeLog || []).map(entry => ({ ...entry, Previous: JSON.stringify(entry.previousValue ?? ''), New: JSON.stringify(entry.newValue ?? '') })));
+  const camera = state.cameraView;
+  sheet('Configuración visual', camera ? [{ Theta: camera.theta, Phi: camera.phi, Radius: camera.radius, Target_X: camera.target?.[0] ?? 0, Target_Y: camera.target?.[1] ?? 0, Target_Z: camera.target?.[2] ?? 0 }] : []);
   sheet('Fotografías', Object.entries(state.photos || {}).flatMap(([scope, photos]) => (Array.isArray(photos) ? photos : []).map(photo => ({ Scope: scope, File_Name: photo.name || '', Type: photo.type || '', Width: photo.width || '', Height: photo.height || '', Data_included: false }))));
   sheet('Modelos propios', Object.entries(state.customModels || {}).flatMap(([profile, models]) => Object.entries(models || {}).map(([boneId, metadata]) => ({ Profile: profile, Bone_ID: boneId, ...metadata }))));
 }

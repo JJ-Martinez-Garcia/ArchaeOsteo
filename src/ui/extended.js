@@ -50,7 +50,11 @@ export function mergeAuxiliaryXlsx(value, workbook, XLSX, bones) {
   }) : value.changeLog;
   const hierarchyRows = rows('Jerarquía');
   const hierarchy = hierarchyRows.length ? normalizeHierarchy(Object.fromEntries(HIERARCHY_LEVELS.map(level => [level, hierarchyRows.filter(row => row.Level === level).map(row => ({ id: row.ID, name: row.Name, parentId: row.Parent_ID, updatedAt: row.Updated_at }))]))) : normalizeHierarchy(value.hierarchy);
-  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy };
+  const visualRows = rows('Configuración visual');
+  const visual = visualRows[0];
+  const cameraValues = visual ? [visual.Theta, visual.Phi, visual.Radius, visual.Target_X, visual.Target_Y, visual.Target_Z].map(Number) : [];
+  const cameraView = cameraValues.length === 6 && cameraValues.every(Number.isFinite) ? { theta: cameraValues[0], phi: cameraValues[1], radius: cameraValues[2], target: cameraValues.slice(3) } : value.cameraView;
+  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy, cameraView };
 }
 
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
