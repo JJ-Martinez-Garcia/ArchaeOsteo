@@ -755,6 +755,7 @@ assert.match(extendedUi, /deciduousDental: importDentalRows\(value.deciduousDent
 assert.match(main, /Método MNI/);
 assert.match(await text('public/sw.js'), /'\.\/LICENSE'/);
 assert.match(await text('public/sw.js'), /'\.\/THIRD_PARTY_LICENSES\.md'/);
+assert.match(await text('scripts/validate-shell-assets.mjs'), /Service Worker shell OK/);
 assert.match(main, /reviewed after filters/);
 assert.match(main, /state\.filters\.preservation='all';state\.filters\.type='all'/);
 assert.match(main, /average completeness recorded/);

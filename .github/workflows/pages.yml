@@ -40,6 +40,8 @@ jobs:
         run: pnpm test
       - name: Validate PWA artifact
         run: pnpm validate-pwa
+      - name: Validate Service Worker shell
+        run: pnpm validate-shell
       - name: Validate model assets and licenses
         run: pnpm validate-model-assets
       - name: Validate local-only data flows
