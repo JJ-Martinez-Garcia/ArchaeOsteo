@@ -6,6 +6,7 @@ import { portionOptionsForBone } from '../src/domain/portions.js';
 import { cacheCustomModelFile, customModelUrl, downloadModelPackage, formatPackageSize, getCachedModelBoneIds, glbContainsBoneId, importModelPackageFiles, modelPackageDownloadPlan, modelPackageSummary, validateModelManifest, validateModelSourceRegistry } from '../src/anatomy/package.js';
 import { applyInventoryRows, createBackup, parseCsv, validateBackup } from '../src/domain/backup.js';
 import { normalizeProject } from '../src/data/store.js';
+import { deriveHierarchy, hierarchyCounts } from '../src/domain/hierarchy.js';
 import { mergeAuxiliaryXlsx } from '../src/ui/extended.js';
 
 const text = async path => readFile(path, 'utf8');
@@ -118,6 +119,9 @@ const normalizedReport = normalizeProject({ report: { sources: 'DOI: test', meth
 assert.equal(normalizedReport.report.sources, 'DOI: test');
 assert.equal(normalizedReport.report.method, 'Comparación');
 assert.equal(normalizedReport.report.limits, 'Revisión pendiente');
+const hierarchy = deriveHierarchy({ report: { site: 'Yacimiento Á', campaign: '2026', sector: 'Norte', context: 'UE-4', individual: 'IND-7' }, individuals: { skull: 'IND-8' }, ue: {} });
+assert.deepEqual(hierarchyCounts(hierarchy), { sites: 1, campaigns: 1, sectors: 1, contexts: 1, individuals: 2 });
+assert.equal(hierarchy.campaigns[0].parentId, 'site:yacimiento-a');
 const normalizedViewer = normalizeProject({ skeletonFilter: 'axial', regionFilter: 'Cráneo', explosion: 140, tableMode: 1, orthographic: 1, isolate: 1, explosionAnimating: 1 });
 assert.equal(normalizedViewer.skeletonFilter, 'axial');
 assert.equal(normalizedViewer.regionFilter, 'Cráneo');

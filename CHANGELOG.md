@@ -2,6 +2,9 @@
 
 ## 2026-09-09
 
+- Los proyectos normalizan ahora una jerarquía explícita de yacimiento, campaña, sector,
+  contexto e individuo con IDs estables derivados de los campos existentes; las copias
+  JSON/OSTEO3D la conservan y los proyectos antiguos se migran sin perder datos.
 - El panel derecho oculta desbordamientos horizontales accidentales y limita también
   formularios extendidos, filtros y campos de contexto al ancho disponible.
 - La pestaña de informe hidrata todos sus campos de contexto de forma directa al abrirse,

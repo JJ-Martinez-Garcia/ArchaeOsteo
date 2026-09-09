@@ -1,3 +1,5 @@
+import { deriveHierarchy } from '../domain/hierarchy.js';
+
 const DB_NAME = 'osteo3d';
 export const PROJECT_SCHEMA_VERSION = 2;
 const DB_VERSION = 2;
@@ -99,6 +101,7 @@ function newestProjects(projects) {
 
 export function normalizeProject(project) {
   if (!project || typeof project !== 'object' || Array.isArray(project)) return null;
+  const report = { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', sources: '', method: '', limits: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) };
   return {
     ...project,
     id: project.id || 'default',
@@ -156,7 +159,8 @@ export function normalizeProject(project) {
     photos: normalizePhotos(project.photos),
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
     filters: normalizeFilters(project.filters),
-    report: { individual: 'IND-LOCAL', burial: '', grave: '', tomb: '', ue: '', sector: '', grid: '', site: '', campaign: '', date: '', context: '', chronology: '', investigator: '', observations: '', sources: '', method: '', limits: '', ...(project.report && typeof project.report === 'object' ? project.report : {}) }
+    report,
+    hierarchy: deriveHierarchy({ ...project, report })
   };
 }
 

@@ -67,7 +67,8 @@ export function createBackup(state) {
       photoTargetId: state.photoTargetId || '',
       language: state.language || 'es',
       filters: state.filters || { status: 'all', region: 'all', side: 'all', taphonomy: 'all', pathology: 'all', preservation: 'all', type: 'all' },
-      report: state.report
+      report: state.report,
+      hierarchy: state.hierarchy
     })
   };
 }
