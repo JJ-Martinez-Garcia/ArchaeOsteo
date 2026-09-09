@@ -400,6 +400,15 @@ try {
   await waitForValue(cdp,projectReadExpression(),value=>Object.values(value.status||{}).filter(status=>status==='absent').length>0,'Persist mass absent action');
   await evaluate(cdp, `document.querySelector('#undo').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>Object.values(value.status||{}).every(status=>status!=='absent'),'Undo mass absent action');
+  await evaluate(cdp, `document.querySelector('#multi-select-toggle').click();document.querySelector('[data-bone="skull"]').click();document.querySelector('[data-bone="mandible"]').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#apply-multi-selection').disabled`), false, 'Multi-selection action must enable after selecting bones');
+  assert.match(await evaluate(cdp, `document.querySelector('#apply-multi-selection').textContent`), /2/);
+  await evaluate(cdp, `document.querySelector('#apply-multi-selection').click()`);
+  assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#confirm-action-accept'))`), true, 'Multi-selection action must require confirmation');
+  await evaluate(cdp, `document.querySelector('#confirm-action-accept').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.status?.skull==='present'&&value.status?.mandible==='present','Persist multi-selection action');
+  await evaluate(cdp, `document.querySelector('#undo').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>!value.status?.skull&&!value.status?.mandible,'Undo multi-selection action');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
