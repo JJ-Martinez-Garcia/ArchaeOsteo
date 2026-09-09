@@ -1,4 +1,5 @@
 import { normalizeProject } from '../data/store.js';
+import { normalizeDevelopmentRecords } from './development.js';
 export { parseCsv } from './csv.js';
 
 const BACKUP_VERSION = 1;
@@ -92,7 +93,7 @@ const INVENTORY_FIELDS = {
   individuals: ['Individual_ID', 'Individual'], ue: ['UE', 'Context_UE'],
   taphonomy: ['Taphonomy'], pathology: ['Pathology'],
   taphonomyDetails: ['Taphonomy_Detail'], pathologyDetails: ['Pathology_Detail'],
-  notes: ['Notes', 'Observations']
+  notes: ['Notes', 'Observations'], developmentRecords: ['Development_records', 'Development']
 };
 const nonempty = value => value != null && String(value).trim() !== '';
 const cell = (row, columns) => columns.map(key => row?.[key]).find(nonempty);
@@ -128,6 +129,10 @@ export function applyInventoryRows(project, rows, bones) {
           if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error();
         } catch { errors.push(`${columns[0]} debe contener un objeto JSON válido`); }
       }
+      if (field === 'developmentRecords') {
+        try { value = JSON.parse(value); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); }
+        catch { errors.push(`${columns[0]} debe contener un objeto JSON válido`); }
+      }
       // Retain line breaks and whitespace within free-text notes.
       if (field === 'notes') value = String(raw);
       changes[field] = value;
@@ -139,6 +144,7 @@ export function applyInventoryRows(project, rows, bones) {
   const first = accepted[0] || {};
   const reportFields = { individual: cell(first, ['Individual_ID', 'Individual']), burial: first.Burial, grave: first.Grave, tomb: first.Tomb, ue: first.UE, sector: first.Sector, grid: first.Grid, site: first.Site, campaign: first.Campaign, date: first.Date, context: first.Context, chronology: first.Chronology, observations: first.Observations, sources: first.Sources, method: first.Method, limits: first.Limits };
   const importedReport = Object.fromEntries(Object.entries(reportFields).filter(([, value]) => nonempty(value)).map(([key, value]) => [key, String(value).trim()]));
+  maps.developmentRecords = normalizeDevelopmentRecords(maps.developmentRecords);
   return { ...project, ...maps, report: { ...(project.report || {}), ...importedReport }, importedRows: accepted.length, rejectedRows: validationErrors.length, validationErrors };
 }
 

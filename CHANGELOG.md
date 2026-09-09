@@ -77,6 +77,8 @@
 - Los perfiles infante y neonato incorporan un registro didáctico separado de
   componentes inmaduros: estado, fusión, completitud y observación por pieza, con
   deshacer, persistencia y hoja XLSX importable; no infiere edades ni osificación.
+- La importación CSV general conserva también el registro JSON de componentes
+  inmaduros, completando el round-trip entre CSV, JSON y XLSX.
 
 ## Cambios recientes
 

@@ -1008,6 +1008,8 @@ assert.equal(imported.report.sources, 'DOI: prueba');
 assert.equal(imported.report.method, 'Comparación osteológica');
 assert.equal(imported.report.limits, 'Revisión pendiente');
 assert.equal(imported.portions.left_femur, 'shaft_mid');
+const importedDevelopment = applyInventoryRows({}, [{ Bone_ID: 'left_femur', Development_records: JSON.stringify({ proximal_epiphysis: { status: 'present', fusion: 'partial', completeness: 75, observation: 'CSV' } }) }], testBones);
+assert.equal(importedDevelopment.developmentRecords.left_femur.proximal_epiphysis.observation, 'CSV');
 assert.equal(imported.weights.left_femur, 88.2);
 assert.deepEqual(imported.taphonomy.left_femur, ['raíces', 'erosión']);
 assert.equal(imported.report.burial, 'B-12');
