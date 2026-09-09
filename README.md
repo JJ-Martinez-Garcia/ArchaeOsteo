@@ -128,9 +128,9 @@ El workflow de GitHub Actions ejecuta automáticamente `pnpm build`, los smoke t
 
 ## Fases siguientes
 
-1. Completar los 13 elementos adultos pendientes y localizar modelos independientes para los perfiles femenino, infantil y neonatal.
+1. Localizar y documentar modelos anatómicos independientes para los 13 elementos adultos agregados/indeterminados y validar los GLB procedurales femenino, infantil y neonatal.
 2. Separar completamente inventario, informes y configuración en stores especializados.
-3. Añadir porciones específicas por anatomía y controles de cuantificación por individuo.
-4. Incorporar modelos GLB documentados para los perfiles todavía pendientes.
+3. Completar la auditoría de importación/exportación de todos los campos y hojas auxiliares, incluida la restauración integral.
+4. Realizar validación osteológica especializada, pruebas en dispositivos reales y maquetación profesional del informe PDF.
 
 La especificación completa de producto está documentada en el requisito de proyecto entregado a Codex.
