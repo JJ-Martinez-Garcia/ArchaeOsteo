@@ -265,7 +265,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
         const response = await getCachedCustomModelFile(profileId, boneId, metadata.format);
         if (response) models.push({ name: `models/custom/${encodeURIComponent(profileId)}/${encodeURIComponent(boneId)}.${metadata.format}`, data: new Uint8Array(await response.arrayBuffer()) });
       }
-      const bytes = createOsteoArchive(createBackup(state), models);
+      const bytes = await createOsteoArchive(createBackup(state), models);
       downloadBlob(`osteo3d-backup-${new Date().toISOString().slice(0, 10)}.osteo3d`, bytes, 'application/zip');
       document.querySelector('#toast').textContent = models.length ? `Copia completa descargada · ${models.length} modelos personalizados` : 'Copia de datos descargada · sin modelos personalizados en caché';
     } catch (error) { document.querySelector('#toast').textContent = `No se pudo crear la copia: ${error.message}`; }
@@ -284,7 +284,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       const targetProjectId = state.projectId;
       let previewRows = [];
       if (file.name.toLowerCase().endsWith('.osteo3d')) {
-        const archive = readOsteoArchive(await file.arrayBuffer());
+        const archive = await readOsteoArchive(await file.arrayBuffer());
         imported = validateBackup(archive.project); archiveModels = archive.models; previewRows = Object.entries(imported.status || {}).map(([boneId, status]) => ({ Bone_ID: boneId, Presence: status, Preservation: imported.preservation?.[boneId] || '', Fragments: imported.fragments?.[boneId] ?? '' }));
       } else if (file.name.toLowerCase().endsWith('.csv')) {
         const rows = parseCsv(await file.text());
