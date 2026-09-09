@@ -442,6 +442,10 @@ try {
   await waitForValue(cdp,projectReadExpression(),value=>value.hierarchy?.individuals?.some(entity=>entity.name==='IND-MANUAL'&&entity.parentId==='context:ue-4'),'Persist manually added hierarchy entity');
   await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#undo').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>!value.hierarchy?.individuals?.some(entity=>entity.name==='IND-MANUAL'),'Undo hierarchy entity addition');
+  await evaluate(cdp, `document.querySelector('#changes-panel-button').click()`);
+  await waitForValue(cdp, `Boolean(document.querySelector('#change-method')&&document.querySelector('#change-query')&&document.querySelector('#export-change-log'))`, value=>value === true, 'Render change log filters');
+  await evaluate(cdp, `(()=>{const input=document.querySelector('#change-query');input.value='hierarchy';input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#changes-results').textContent.includes('entradas coinciden')`), true, 'Change log query must refresh results');
   await evaluate(cdp, `document.querySelector('#hierarchy-panel-button').click();document.querySelector('#hierarchy-level').value='contexts';document.querySelector('#hierarchy-name').value='Contexto inválido';document.querySelector('#hierarchy-parent').value='site:no-existe';document.querySelector('#add-hierarchy-entity').click()`);
   assert.match(await evaluate(cdp, `document.querySelector('#hierarchy-message').textContent`), /ID padre no existe/);
   await evaluate(cdp, `(async()=>{const input=document.querySelector('#photo-input'),transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(13*1024*1024)],'too-large.jpg',{type:'image/jpeg'}));input.files=transfer.files;await input.onchange({target:input});})()`);

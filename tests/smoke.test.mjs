@@ -655,6 +655,8 @@ assert.match(await text('src/ui/extended.js'), /Añade entidades sin borrar obse
 assert.match(await text('src/ui/extended.js'), /El ID padre no existe/);
 assert.match(await text('src/domain/inventory-history.js'), /'hierarchy'/);
 assert.match(await text('src/ui/extended.js'), /commitInventoryEdit\('hierarchy_entity_add'/);
+assert.match(await text('src/ui/extended.js'), /export-change-log/);
+assert.match(await text('src/ui/extended.js'), /change-method/);
 assert.match(await text('src/ui/extended.js'), /Jerarquía.*normalizeHierarchy/s);
 assert.match(main, /sheet\('Jerarquía'/);
 assert.match(main, /dracoDecoderPath: '\.\/draco\/'/);

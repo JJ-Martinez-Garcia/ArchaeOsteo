@@ -398,8 +398,24 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
 
   document.querySelector('#changes-panel-button').onclick = () => {
     const entries = [...(state.changeLog || [])].reverse();
-    const rows = entries.slice(0, 100).map(entry => { const change = entry.field ? `${entry.field}: ${formatChangeValue(entry.previousValue)} → ${formatChangeValue(entry.newValue)}` : `${formatChangeValue(entry.previousStatus)} → ${formatChangeValue(entry.newStatus)}`; return `<tr><td>${escapeHtml(new Date(entry.changedAt).toLocaleString('es-ES'))}</td><td>${escapeHtml(entry.boneId)}</td><td>${escapeHtml(change)}</td><td>${escapeHtml(entry.individualId)}</td><td>${escapeHtml(entry.investigator || '—')}</td><td>${escapeHtml(entry.method)}</td></tr>`; }).join('');
-    show(`<p class="small-copy">Se muestran las últimas ${Math.min(entries.length, 100)} acciones. El registro se conserva en IndexedDB y en las copias de seguridad.</p>${rows ? `<table class="analysis-table"><thead><tr><th>Fecha</th><th>Bone_ID</th><th>Cambio</th><th>Individuo</th><th>Investigador</th><th>Método</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">Todavía no hay cambios registrados.</p>'}`);
+    const methods = [...new Set(entries.map(entry => entry.method).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+    const render = () => {
+      const method = document.querySelector('#change-method')?.value || 'all';
+      const query = String(document.querySelector('#change-query')?.value || '').trim().toLocaleLowerCase('es');
+      const filtered = entries.filter(entry => (method === 'all' || entry.method === method) && (!query || [entry.boneId, entry.individualId, entry.investigator, entry.method, entry.field].some(value => String(value || '').toLocaleLowerCase('es').includes(query))));
+      const visible = filtered.slice(0, 100);
+      const rows = visible.map(entry => { const change = entry.field ? `${entry.field}: ${formatChangeValue(entry.previousValue)} → ${formatChangeValue(entry.newValue)}` : `${formatChangeValue(entry.previousStatus)} → ${formatChangeValue(entry.newStatus)}`; return `<tr><td>${escapeHtml(new Date(entry.changedAt).toLocaleString('es-ES'))}</td><td>${escapeHtml(entry.boneId)}</td><td>${escapeHtml(change)}</td><td>${escapeHtml(entry.individualId)}</td><td>${escapeHtml(entry.investigator || '—')}</td><td>${escapeHtml(entry.method)}</td></tr>`; }).join('');
+      const table = rows ? `<table class="analysis-table"><thead><tr><th>Fecha</th><th>Bone_ID</th><th>Cambio</th><th>Individuo</th><th>Investigador</th><th>Método</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="small-copy">No hay cambios que coincidan.</p>';
+      const host = document.querySelector('#changes-results');
+      if (host) host.innerHTML = `<p class="small-copy">${filtered.length} entradas coinciden; se muestran ${visible.length}. El registro completo se conserva en IndexedDB y en las copias de seguridad.</p>${table}`;
+      const exportButton = document.querySelector('#export-change-log');
+      if (exportButton) exportButton.disabled = !filtered.length;
+    };
+    show(`<h3>Registro de cambios</h3><div class="change-log-filters"><label>Método<select id="change-method"><option value="all">Todos</option>${methods.map(method => `<option value="${escapeHtml(method)}">${escapeHtml(method)}</option>`).join('')}</select></label><label>Buscar<input id="change-query" type="search" placeholder="Bone_ID, individuo o investigador"></label><button id="export-change-log" class="secondary-action" type="button">Descargar CSV</button></div><div id="changes-results"></div>`);
+    document.querySelector('#change-method').onchange = render;
+    document.querySelector('#change-query').oninput = render;
+    document.querySelector('#export-change-log').onclick = () => { const method = document.querySelector('#change-method').value, query = String(document.querySelector('#change-query').value || '').trim().toLocaleLowerCase('es'); const filtered = entries.filter(entry => (method === 'all' || entry.method === method) && (!query || [entry.boneId, entry.individualId, entry.investigator, entry.method, entry.field].some(value => String(value || '').toLocaleLowerCase('es').includes(query)))); const fields = ['changedAt', 'boneId', 'field', 'previousValue', 'newValue', 'previousStatus', 'newStatus', 'individualId', 'investigator', 'method']; const csv = [fields.join(','), ...filtered.map(entry => fields.map(field => `"${String(entry[field] ?? '').replaceAll('"', '""')}"`).join(','))].join('\n'); downloadFile('osteo3d-change-log.csv', csv, 'text/csv;charset=utf-8'); };
+    render();
   };
   document.querySelector('#hierarchy-panel-button').onclick = () => {
     const levelLabels = state.language === 'en' ? { sites: 'Sites', campaigns: 'Campaigns', sectors: 'Sectors', contexts: 'Contexts', individuals: 'Individuals' } : { sites: 'Yacimientos', campaigns: 'Campañas', sectors: 'Sectores', contexts: 'Contextos', individuals: 'Individuos' };
