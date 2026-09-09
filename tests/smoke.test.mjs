@@ -503,6 +503,7 @@ assert.match(main, /data-local-view="proximal"/);
 assert.match(main, /sources:'Fuentes consultadas'/);
 assert.match(main, /method:'Método y alcance'/);
 assert.match(main, /limits:'Limitaciones \/ revisión pendiente'/);
+assert.match(main, /Sources:report.sources/);
 assert.match(main, /Los datos científicos no se infieren a partir de la geometría/);
 assert.match(main, /anatomy-facts/);
 assert.match(main, /Anatomical landmarks/);
