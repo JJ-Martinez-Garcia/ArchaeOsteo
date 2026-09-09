@@ -898,6 +898,8 @@ assert.match(main, /12\*1024\*1024/);
 assert.match(main, /updateRegionalStats/);
 assert.match(main, /regional-stats/);
 assert.match(main, /async function exportXlsx/);
+assert.match(main, /exportWeightsCsv/);
+assert.doesNotMatch(main, /setTimeout\(\(\) => \{ const csvButton=document\.querySelector\('#export-csv'\)/);
 assert.match(main, /async function exportXlsx[\s\S]*Sources:report\.sources\|\|''[\s\S]*Method:report\.method\|\|''[\s\S]*Limits:report\.limits\|\|''/);
 assert.match(main, /function appendAuxiliaryXlsxSheets/);
 for (const sheetName of ['Jerarquía', 'Osteometría', 'Landmarks', 'Calibraciones', 'Referencias landmarks', 'Revisión análisis', 'Registro de cambios', 'Fotografías', 'Modelos propios']) assert.match(main, new RegExp(`'${sheetName}'`));
