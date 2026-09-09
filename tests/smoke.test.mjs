@@ -876,6 +876,8 @@ const reviewedState={...testState,analysisReview:{mne:{value:2,reason:'Dos epíf
 assert.equal(calculateOsteoAnalysis(testBones,reviewedState).mne.value,2);
 assert.equal(calculateOsteoAnalysis(testBones,reviewedState).mne.provisional,false);
 assert.equal(calculateOsteoAnalysis(testBones,{...reviewedState,fragments:{left_femur:3}}).mne.value,1);
+assert.equal(calculateOsteoAnalysis(testBones,{status:{left_femur:'present'},report:{individual:'IND-LOCAL'}}).rows[0].fragments,null);
+assert.equal(calculateOsteoAnalysis(testBones,{status:{left_femur:'present'},report:{individual:'IND-LOCAL'}}).rows[0].completeness,null);
 assert.match(mniWithIndividuals.mni.method, /individuos explícitos/);
 assert.equal(analysis.individuals.value, 1);
 assert.equal(analysis.individuals.rows[0].individual, 'IND-A');

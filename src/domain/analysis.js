@@ -10,7 +10,7 @@ export function inventoryRows(bones, state) {
     region: bone.region,
     side: bone.side,
     status: state.status?.[bone.id] || 'not_recorded',
-    fragments: Math.max(0, Number(state.fragments?.[bone.id] || 0)),
+    fragments: state.fragments?.[bone.id] == null || !Number.isFinite(Number(state.fragments[bone.id])) ? null : Math.max(0, Number(state.fragments[bone.id])),
     weight: Number.isFinite(Number(state.weights?.[bone.id])) ? Math.max(0, Number(state.weights[bone.id])) : null,
     weightUnit: state.weightUnits?.[bone.id] === 'kg' ? 'kg' : 'g',
     weightGrams: Number.isFinite(Number(state.weights?.[bone.id])) ? Math.max(0, Number(state.weights[bone.id])) : null,
@@ -19,7 +19,7 @@ export function inventoryRows(bones, state) {
     context: state.ue?.[bone.id] || state.report?.context || 'Sin contexto',
     taphonomy: state.taphonomy?.[bone.id] || [],
     pathology: state.pathology?.[bone.id] || [],
-    completeness: state.completeness?.[bone.id] ?? 100
+    completeness: state.completeness?.[bone.id] == null || !Number.isFinite(Number(state.completeness[bone.id])) ? null : Number(state.completeness[bone.id])
   }));
 }
 
