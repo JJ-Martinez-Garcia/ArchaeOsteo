@@ -7,6 +7,8 @@
   JSON/OSTEO3D la conservan y los proyectos antiguos se migran sin perder datos.
 - El panel de modelos 3D muestra el coste de la escena (mallas, triángulos y origen de
   los recursos) para apoyar la revisión de rendimiento en dispositivos limitados.
+- La carga de modelos reduce su concurrencia en móviles y dispositivos con poca memoria
+  para evitar picos innecesarios durante el cambio de perfil.
 - El panel derecho oculta desbordamientos horizontales accidentales y limita también
   formularios extendidos, filtros y campos de contexto al ancho disponible.
 - La pestaña de informe hidrata todos sus campos de contexto de forma directa al abrirse,

@@ -259,7 +259,9 @@ async function loadAvailableProfileModels() {
   if (loadableBoneIds.size === 0 && !customModels.some(model => model?.cached !== false)) { selectBone(state.selected); return; }
   const orderedBones = [bones.find(bone => bone.id === state.selected), ...bones.filter(bone => bone.id !== state.selected)].filter(Boolean);
   const loadableBones = orderedBones.filter(bone => loadableBoneIds.has(bone.id));
-  await forEachConcurrent(loadableBones, 8, async (bone, index) => {
+  const lowMemory = Boolean(globalThis.matchMedia?.('(max-width: 900px)').matches) || Number(navigator.deviceMemory || 0) > 0 && Number(navigator.deviceMemory) <= 2;
+  const modelLoadConcurrency = lowMemory ? 3 : 8;
+  await forEachConcurrent(loadableBones, modelLoadConcurrency, async (bone, index) => {
     if (generation !== modelLoadGeneration) return;
     if (loadableBoneIds.has(bone.id)) {
       try {
