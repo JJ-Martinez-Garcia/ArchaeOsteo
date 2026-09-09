@@ -434,11 +434,12 @@ try {
   assert.equal(await evaluate(cdp, `document.querySelector('#quick-fragmentary').getAttribute('aria-pressed')`), 'true', 'Quick fragmentation must activate');
   await evaluate(cdp, `document.querySelector('#quick-fragmentary').click()`);
   assert.equal(await evaluate(cdp, `document.querySelector('#quick-fragmentary').getAttribute('aria-pressed')`), 'false', 'Quick fragmentation must be reversible');
-  await evaluate(cdp, `document.querySelector('#tab-stats').click();const side=document.querySelector('#filter-side');side.value='Izquierda';side.dispatchEvent(new Event('change'));const status=document.querySelector('#filter-status');status.value='not_recorded';status.dispatchEvent(new Event('change'));`);
+  await evaluate(cdp, `document.querySelector('#tab-stats').click();const preservation=document.querySelector('#filter-preservation');const type=document.querySelector('#filter-type');if(!preservation||!type)throw new Error('Extended statistics filters are missing');preservation.value='good';preservation.dispatchEvent(new Event('change'));type.value='long_bone';type.dispatchEvent(new Event('change'));const side=document.querySelector('#filter-side');side.value='Izquierda';side.dispatchEvent(new Event('change'));const status=document.querySelector('#filter-status');status.value='not_recorded';status.dispatchEvent(new Event('change'));`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.filters?.preservation==='good'&&value.filters?.type==='long_bone'&&value.filters?.side==='Izquierda'&&value.filters?.status==='not_recorded','Persist preservation and element-type filters');
   await waitForValue(cdp,projectReadExpression(),value=>value.filters?.side==='Izquierda'&&value.filters?.status==='not_recorded','Persist combined inventory filters');
   assert.equal(await evaluate(cdp, `document.querySelector('#stats-summary').textContent.includes('/')`), true, 'Combined filters must refresh statistics');
   await evaluate(cdp, `document.querySelector('#clear-filters').click()`);
-  await waitForValue(cdp,projectReadExpression(),value=>value.filters?.side==='all'&&value.filters?.status==='all','Clear inventory filters');
+  await waitForValue(cdp,projectReadExpression(),value=>value.filters?.side==='all'&&value.filters?.status==='all'&&value.filters?.preservation==='all'&&value.filters?.type==='all','Clear inventory filters');
   await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#show-table').click()`);
   await evaluate(cdp, `(()=>{for(const id of ['skull','mandible']){const select=document.querySelector('[data-row-status="'+id+'"]');select.value='present';select.dispatchEvent(new Event('change'));}})()`);
   await evaluate(cdp, `(()=>{const select=document.querySelector('[data-row-status="mandible"]');select.value='not_observable';select.dispatchEvent(new Event('change'));})()`);
