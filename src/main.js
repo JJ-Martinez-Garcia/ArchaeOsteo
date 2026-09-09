@@ -569,6 +569,21 @@ function downloadFile(name, content, type) { const a=document.createElement('a')
 function exportInventory(format) { const report=state.report||{}; const rows=bones.map(b=>({Individual_ID:state.individuals[b.id]||report.individual||'IND-LOCAL',Burial:report.burial||'',Grave:report.grave||'',Tomb:report.tomb||'',Site:report.site||'',Campaign:report.campaign||'',Date:report.date||'',Sector:report.sector||'',Grid:report.grid||'',Context:report.context||'',Chronology:report.chronology||'',UE:state.ue?.[b.id]||report.ue||'',Sources:report.sources||'',Method:report.method||'',Limits:report.limits||'',Bone_ID:b.id,Bone_Name:b.es,Side:b.side,Presence:state.status[b.id]||'not_recorded',Preservation:state.preservation[b.id]||'not_evaluated',Completeness:state.completeness[b.id]??'',Percentage:state.completeness[b.id]??'',Fragments:state.fragments[b.id]??'',Weight_g:state.weights[b.id]??'',Portion:state.portions[b.id]||'whole',Portion_records:JSON.stringify(state.portionRecords?.[b.id]||{}),Taphonomy:(state.taphonomy[b.id]||[]).join('; '),Pathology:(state.pathology[b.id]||[]).join('; '),Taphonomy_Detail:JSON.stringify(state.taphonomyDetails?.[b.id]||{}),Pathology_Detail:JSON.stringify(state.pathologyDetails?.[b.id]||{}),Notes:state.notes[b.id]||report.observations||'',Locked:!!state.locked[b.id],Region:b.region})); if(format==='json') downloadFile('osteo3d-inventory.json',JSON.stringify({...createBackup(state),records:rows},null,2),'application/json'); else { const safeRows=protectSpreadsheetRows(rows); const fields=Object.keys(safeRows[0]); const csv=[fields.join(','),...safeRows.map(row=>fields.map(f=>`"${String(row[f]).replaceAll('"','""')}"`).join(','))].join('\n'); downloadFile('osteo3d-inventory.csv',csv,'text/csv;charset=utf-8'); } }
 function appendAuxiliaryXlsxSheets(XLSX, book) {
   const sheet = (name, rows) => XLSX.utils.book_append_sheet(book, XLSX.utils.json_to_sheet(protectSpreadsheetRows(rows.length ? rows : [{ Information: 'Sin registros' }])), name);
+  sheet('Esquema', [
+    { Sheet: 'Inventario', Purpose: 'Registros por Bone_ID y campos de inventario', Importable: true },
+    { Sheet: 'Ficha contexto', Purpose: 'Identidad, contexto y trazabilidad del proyecto', Importable: true },
+    { Sheet: 'Fragmentos indeterminados', Purpose: 'Fragmentos sin elemento asignado', Importable: true },
+    { Sheet: 'Odontograma permanente', Purpose: 'Estados dentales FDI permanentes', Importable: true },
+    { Sheet: 'Odontograma deciduo', Purpose: 'Estados dentales FDI deciduos', Importable: true },
+    { Sheet: 'Osteometría', Purpose: 'Mediciones manuales por Bone_ID', Importable: true },
+    { Sheet: 'Landmarks', Purpose: 'Coordenadas locales y procedencia', Importable: true },
+    { Sheet: 'Calibraciones', Purpose: 'Distancia de referencia por elemento', Importable: true },
+    { Sheet: 'Referencias landmarks', Purpose: 'Perfil y revisión de la malla asociada', Importable: true },
+    { Sheet: 'Revisión análisis', Purpose: 'Valores manuales provisionales y justificación', Importable: true },
+    { Sheet: 'Registro de cambios', Purpose: 'Historial de cambios exportado', Importable: true },
+    { Sheet: 'Fotografías', Purpose: 'Metadatos; no contiene datos binarios', Importable: false },
+    { Sheet: 'Modelos propios', Purpose: 'Metadatos; los binarios requieren copia .osteo3d', Importable: false }
+  ]);
   sheet('Osteometría', bones.map(bone => ({ Bone_ID: bone.id, Bone_Name: bone.es, ...(state.measurements?.[bone.id] || {}) })));
   sheet('Landmarks', Object.entries(state.landmarks || {}).flatMap(([boneId, points]) => (Array.isArray(points) ? points : []).map(point => ({ Bone_ID: boneId, ...point }))));
   sheet('Calibraciones', Object.entries(state.calibrations || {}).map(([boneId, calibration]) => ({ Bone_ID: boneId, ...calibration })));
