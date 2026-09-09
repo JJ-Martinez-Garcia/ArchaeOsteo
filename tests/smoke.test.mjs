@@ -744,6 +744,8 @@ assert.match(main, /average == null \? '—' : `\$\{average\}%`/);
 assert.match(main, /reportContextFields/);
 assert.match(await text('scripts/verify-pages.mjs'), /Published Pages entry point/);
 assert.match(await text('.github/workflows/pages.yml'), /Verify published Pages entry point/);
+assert.match(await text('index.html'), /Content-Security-Policy/);
+assert.match(await text('index.html'), /connect-src 'self'/);
 assert.match(main, /ensureLongReportFields/);
 assert.match(main, /printableReportHtml/);
 assert.match(main, /@page\{size:A4;margin:12mm\}/);
