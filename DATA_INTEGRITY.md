@@ -27,6 +27,16 @@ y `tests/data-integrity.e2e.mjs`; no equivalen al cierre de todos los requisitos
   los FDI de cada dentición. Las hojas auxiliares de contexto y fragmentos se explican
   en la vista previa: sustituyen esos apartados si contienen datos.
 
+## Copia completa `.osteo3d`
+
+El botón «Copia completa» descarga un archivo ZIP de extensión `.osteo3d` con
+`project.json`, `MANIFEST.json` y cada modelo personalizado disponible en Cache Storage.
+Al importarlo se valida primero el proyecto y después se reconstruyen esos modelos en la
+caché offline. La vista previa indica cuántos binarios contiene. La copia sigue siendo
+válida aunque algún binario ya no esté en caché, pero en ese caso informa que solo incluye
+los datos disponibles. El formato usa entradas ZIP sin compresión para poder restaurarse
+sin dependencias externas en el navegador.
+
 ## Guardado
 
 - Cada solicitud captura una copia independiente y se escribe en orden; un guardado
@@ -44,8 +54,9 @@ y `tests/data-integrity.e2e.mjs`; no equivalen al cierre de todos los requisitos
 
 ## Límites que siguen abiertos
 
-La copia JSON contiene los datos y fotografías del proyecto, pero no los archivos
-binarios de modelos personalizados. No es todavía una copia integral de todos los assets.
+La copia JSON/Compartir contiene los datos y fotografías del proyecto, pero no los archivos
+binarios. Para incluirlos se debe utilizar la copia `.osteo3d`; los binarios que falten de
+la caché no pueden recuperarse automáticamente.
 No hay esquema validado de todas las entidades/campos auxiliares, migraciones completas,
 historial transaccional de fotografías ni intercambio sin pérdida de todos los campos
 en todos los formatos. CSV tampoco se certifica aún frente a evaluación de fórmulas por

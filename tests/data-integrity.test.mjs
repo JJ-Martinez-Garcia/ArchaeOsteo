@@ -4,8 +4,15 @@ import { importDentalRows } from '../src/domain/dental-import.js';
 import { takeInventorySnapshot, applyInventorySnapshot } from '../src/domain/inventory-history.js';
 import { normalizeProject, fallbackProjectKey, loadProject, listProjects, saveProject } from '../src/data/store.js';
 import { createProjectWriter } from '../src/data/persistence.js';
+import { createOsteoArchive, readOsteoArchive } from '../src/domain/backup-archive.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
+const archiveBytes = createOsteoArchive(createBackup({ projectId: 'archive-1', projectName: 'Copia con GLB' }), [{ name: 'models/custom/infant/left_femur.glb', data: new Uint8Array([0, 1, 2, 255]) }]);
+const archive = readOsteoArchive(archiveBytes);
+assert.equal(archive.project.project.projectName, 'Copia con GLB');
+assert.equal(archive.models[0].name, 'models/custom/infant/left_femur.glb');
+assert.deepEqual([...archive.models[0].data], [0, 1, 2, 255]);
+assert.throws(() => readOsteoArchive(new Uint8Array([1, 2, 3])));
 const csv = '\uFEFFBone_ID,Notes,Weight_g\r\nskull,"línea 1, \"\"comillas\"\"\r\nlínea 2",0\r\n\r\nmandible,"",\r\n';
 const rows = parseCsv(csv);
 assert.equal(rows.length, 2);

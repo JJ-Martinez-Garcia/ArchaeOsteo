@@ -1,5 +1,7 @@
 import { calculateOsteoAnalysis } from '../domain/analysis.js';
-import { applyInventoryRows, createBackup, downloadJson, parseCsv, shareJson, validateBackup } from '../domain/backup.js';
+import { applyInventoryRows, createBackup, downloadBlob, downloadJson, parseCsv, shareJson, validateBackup } from '../domain/backup.js';
+import { createOsteoArchive, readOsteoArchive } from '../domain/backup-archive.js';
+import { getCachedCustomModelFile, cacheCustomModelFile } from '../anatomy/package.js';
 import { importDentalRows } from '../domain/dental-import.js';
 import { translate } from '../i18n/translations.js';
 import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
@@ -31,7 +33,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   state.language ||= 'es';
 
   const topActions = document.querySelector('.top-actions');
-  topActions.insertAdjacentHTML('beforeend', `<label class="language-control">Idioma <select id="language"><option value="es">ES</option><option value="en">EN</option></select></label><button id="backup-project" class="secondary-action">Copia</button><button id="share-project" class="secondary-action">Compartir</button><button id="import-project" class="secondary-action">Importar</button><input id="import-file" type="file" accept=".json,.csv,.xlsx" hidden>`);
+  topActions.insertAdjacentHTML('beforeend', `<label class="language-control">Idioma <select id="language"><option value="es">ES</option><option value="en">EN</option></select></label><button id="backup-project" class="secondary-action">Copia completa</button><button id="share-project" class="secondary-action">Compartir JSON</button><button id="import-project" class="secondary-action">Importar</button><input id="import-file" type="file" accept=".osteo3d,.json,.csv,.xlsx" hidden>`);
 
   const inspector = document.querySelector('.inspector');
   inspector.insertAdjacentHTML('beforeend', `<div class="extended-tools"><div class="paint-title">ANÁLISIS Y APRENDIZAJE</div><div class="extended-buttons"><button id="record-panel-button" class="secondary-action">Registro científico</button><button id="analysis-panel-button" class="secondary-action">NISP · MNE · MNI</button><button id="compare-panel-button" class="secondary-action">Comparar perfiles</button><button id="learning-panel-button" class="secondary-action">Aprendizaje</button><button id="sources-panel-button" class="secondary-action">Fuentes y licencias</button></div><div id="extended-panel" hidden></div></div>`);
@@ -201,7 +203,19 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     nextQuestion();
   };
 
-  document.querySelector('#backup-project').onclick = () => downloadJson(`osteo3d-backup-${new Date().toISOString().slice(0, 10)}.json`, createBackup(state));
+  document.querySelector('#backup-project').onclick = async () => {
+    try {
+      const models = [];
+      for (const [profileId, profileModels] of Object.entries(state.customModels || {})) for (const [boneId, metadata] of Object.entries(profileModels || {})) {
+        if (metadata?.cached === false) continue;
+        const response = await getCachedCustomModelFile(profileId, boneId, metadata.format);
+        if (response) models.push({ name: `models/custom/${encodeURIComponent(profileId)}/${encodeURIComponent(boneId)}.${metadata.format}`, data: new Uint8Array(await response.arrayBuffer()) });
+      }
+      const bytes = createOsteoArchive(createBackup(state), models);
+      downloadBlob(`osteo3d-backup-${new Date().toISOString().slice(0, 10)}.osteo3d`, bytes, 'application/zip');
+      document.querySelector('#toast').textContent = models.length ? `Copia completa descargada · ${models.length} modelos personalizados` : 'Copia de datos descargada · sin modelos personalizados en caché';
+    } catch (error) { document.querySelector('#toast').textContent = `No se pudo crear la copia: ${error.message}`; }
+  };
   document.querySelector('#share-project').onclick = async () => {
     const result = await shareJson(`osteo3d-backup-${new Date().toISOString().slice(0, 10)}.json`, createBackup(state), { title: 'Osteo3D', text: state.language === 'en' ? 'Osteo3D project backup' : 'Copia de proyecto Osteo3D' });
     if (result === 'downloaded') document.querySelector('#toast').textContent = state.language === 'en' ? 'Sharing unavailable · backup downloaded' : 'Compartir no disponible · copia descargada';
@@ -212,10 +226,13 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     if (!file) return;
     try {
       let imported;
-      let mergeRows = null, mergeExtra = value => value;
+      let mergeRows = null, mergeExtra = value => value, archiveModels = [];
       const targetProjectId = state.projectId;
       let previewRows = [];
-      if (file.name.toLowerCase().endsWith('.csv')) {
+      if (file.name.toLowerCase().endsWith('.osteo3d')) {
+        const archive = readOsteoArchive(await file.arrayBuffer());
+        imported = validateBackup(archive.project); archiveModels = archive.models; previewRows = Object.entries(imported.status || {}).map(([boneId, status]) => ({ Bone_ID: boneId, Presence: status, Preservation: imported.preservation?.[boneId] || '', Fragments: imported.fragments?.[boneId] ?? '' }));
+      } else if (file.name.toLowerCase().endsWith('.csv')) {
         const rows = parseCsv(await file.text());
         previewRows = rows; mergeRows = rows;
         imported = applyInventoryRows(state, rows, bones);
@@ -244,7 +261,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       const totalRows = imported.importedRows == null ? previewRows.length : imported.importedRows + (imported.rejectedRows || 0);
       const validationSummary = imported.validationErrors?.length ? `<ul class="small-copy import-validation-errors">${imported.validationErrors.slice(0, 5).map(item => `<li>Fila ${item.row}: ${escapeHtml(item.errors.join('; '))}</li>`).join('')}</ul>` : '';
       const sample = previewRows.slice(0, 5).map(row => `<tr>${['Bone_ID', 'Presence', 'Preservation', 'Fragments'].map(field => `<td>${escapeHtml(row[field] ?? '')}</td>`).join('')}</tr>`).join('');
-      show(`<h3>Vista previa de importación</h3><p class="small-copy"><strong>${escapeHtml(file.name)}</strong> · ${totalRows} registros${imported.rejectedRows ? ` · ${imported.rejectedRows} se ignorarán por errores, duplicados o IDs desconocidos` : ''}.</p>${validationSummary}${sample ? `<table class="analysis-table"><thead><tr><th>Bone_ID</th><th>Presencia</th><th>Conservación</th><th>Fragmentos</th></tr></thead><tbody>${sample}</tbody></table>` : '<p class="small-copy">La copia no contiene registros de inventario visibles en la previsualización.</p>'}<div class="actions"><button id="confirm-import" class="secondary-action">Confirmar importación</button><button id="cancel-import" class="secondary-action">Cancelar</button></div>`);
+      show(`<h3>Vista previa de importación</h3><p class="small-copy"><strong>${escapeHtml(file.name)}</strong> · ${totalRows} registros${archiveModels.length ? ` · ${archiveModels.length} modelos personalizados` : ''}${imported.rejectedRows ? ` · ${imported.rejectedRows} se ignorarán por errores, duplicados o IDs desconocidos` : ''}.</p>${validationSummary}${sample ? `<table class="analysis-table"><thead><tr><th>Bone_ID</th><th>Presencia</th><th>Conservación</th><th>Fragmentos</th></tr></thead><tbody>${sample}</tbody></table>` : '<p class="small-copy">La copia no contiene registros de inventario visibles en la previsualización.</p>'}<div class="actions"><button id="confirm-import" class="secondary-action">Confirmar importación</button><button id="cancel-import" class="secondary-action">Cancelar</button></div>`);
       document.querySelector('#confirm-import').closest('.actions').insertAdjacentHTML('beforebegin', `<p class="info-box">${mergeRows ? 'Fusión: solo se aplican celdas no vacías. Los campos vacíos o las columnas omitidas conservan el valor anterior; los registros bloqueados no cambian. Puedes deshacer la importación desde Inventario. Las hojas auxiliares XLSX de contexto y fragmentos reemplazan esos apartados si contienen datos.' : 'Restauración: se sustituirán los datos de la ficha indicada por la copia, incluidos sus bloqueos. Primero se intentará guardar el proyecto abierto. Los archivos 3D personalizados no están incluidos en esta copia JSON.'}</p>`);
       document.querySelector('#cancel-import').onclick = () => { document.querySelector('#extended-panel').hidden = true; };
       document.querySelector('#confirm-import').onclick = async () => {
@@ -259,6 +276,15 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
           } else {
             if (!(await saveLocal({ notify: false })).ok) { document.querySelector('#confirm-import').disabled = false; return; }
             applyProjectData(imported);
+            for (const model of archiveModels) {
+              const match = model.name.match(/^models\/custom\/([^/]+)\/([^/.]+)\.([a-z0-9]+)$/i);
+              if (!match) continue;
+              const [, profileId, boneId, format] = match;
+              const metadata = state.customModels?.[profileId]?.[boneId];
+              if (!metadata) continue;
+              const fileModel = new File([model.data], metadata.fileName || `${boneId}.${format}`, { type: 'application/octet-stream' });
+              try { await cacheCustomModelFile(profileId, boneId, fileModel); } catch { /* la copia de datos sí se restaura aunque la caché no admita el binario */ }
+            }
           }
           if (imported.id) state.projectId = imported.id;
           if (imported.projectName) state.projectName = imported.projectName;

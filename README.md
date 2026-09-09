@@ -7,6 +7,9 @@ Base inicial de una PWA modular para atlas osteológico 3D e inventario bioarque
 Importación CSV multilínea con fusión explícita, bloqueos y deshacer/rehacer.
 Los campos vacíos no se convierten en cero; el guardado avisa si falla y conserva
 copias de recuperación por proyecto. [Garantías y límites de datos](DATA_INTEGRITY.md).
+La opción «Copia completa» crea un archivo `.osteo3d` con los datos y los modelos
+personalizados presentes en la caché offline; «Compartir JSON» queda disponible para
+intercambios ligeros.
 
 Panel derecho de PC: separador arrastrable entre visor y ficha, anchura recordada,
 flechas de teclado y doble clic para restablecer. Pestañas y formularios se adaptan

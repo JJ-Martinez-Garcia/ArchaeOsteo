@@ -143,6 +143,12 @@ export function downloadJson(filename, value) {
   setTimeout(() => { URL.revokeObjectURL(link.href); link.remove(); }, 1000);
 }
 
+export function downloadBlob(filename, bytes, type = 'application/octet-stream') {
+  const blob = new Blob([bytes], { type });
+  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; link.style.display = 'none'; document.body?.append(link); link.click();
+  setTimeout(() => { URL.revokeObjectURL(link.href); link.remove(); }, 1000);
+}
+
 export async function shareJson(filename, value, { title = 'Osteo3D', text = 'Copia de proyecto Osteo3D' } = {}) {
   const file = new File([JSON.stringify(value, null, 2)], filename, { type: 'application/json' });
   if (navigator.share) {
