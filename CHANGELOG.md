@@ -83,6 +83,8 @@
   estimada de almacenamiento para anticipar problemas de IndexedDB/caché.
 - El registro transaccional incluye ahora también componentes inmaduros, filtros de
   esqueleto/región y todos los ajustes visuales principales en snapshots auditables.
+- El informe imprimible incorpora las entidades y relaciones de la jerarquía normalizada
+  y una tabla de observaciones de componentes inmaduros, conservando sus advertencias.
 - La prueba PWA comprueba esa fila solo cuando el navegador devuelve una cuota
   numérica válida, evitando falsos fallos en perfiles efímeros o restringidos.
 
