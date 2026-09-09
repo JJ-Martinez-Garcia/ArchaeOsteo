@@ -61,7 +61,8 @@ sin dependencias externas en el navegador.
 La copia JSON/Compartir contiene los datos y fotografías del proyecto, pero no los archivos
 binarios. Para incluirlos se debe utilizar la copia `.osteo3d`; los binarios que falten de
 la caché no pueden recuperarse automáticamente.
-No hay esquema validado de todas las entidades/campos auxiliares, migraciones completas,
+El esquema de proyecto v3 y la migración de jerarquía están validados; siguen pendientes
+la validación exhaustiva de todas las entidades/campos auxiliares, migraciones futuras,
 historial transaccional de fotografías ni intercambio sin pérdida de todos los campos
 en todos los formatos. CSV tampoco se certifica aún frente a evaluación de fórmulas por
 programas de hoja de cálculo. El plan completo permanece en `PROJECT_BACKLOG.md`.
