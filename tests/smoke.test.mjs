@@ -363,6 +363,7 @@ assert.match(main, /function safePhotoSource\(value\)/);
 assert.match(main, /source:safePhotoSource\(photo\?\.dataUrl\)/);
 assert.match(main, /data:image/);
 assert.match(main, /recordInventorySnapshotChanges/);
+assert.match(main, /'weights','weightUnits','portionRecords'/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);
 assert.match(main, /'photos','indeterminateFragments','dental'/);
