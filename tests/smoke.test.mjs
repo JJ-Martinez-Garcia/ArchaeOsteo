@@ -900,6 +900,7 @@ assert.match(main, /updateRegionalStats/);
 assert.match(main, /regional-stats/);
 assert.match(main, /async function exportXlsx/);
 assert.match(main, /exportWeightsCsv/);
+assert.match(main, /function exportWeightsCsv\(\)[\s\S]*protectSpreadsheetRows\(rows\)/);
 assert.doesNotMatch(main, /setTimeout\(\(\) => \{ const csvButton=document\.querySelector\('#export-csv'\)/);
 assert.doesNotMatch(main, /setTimeout\(\(\) => \{ const upload=document\.querySelector\('#photo-input'\)/);
 assert.doesNotMatch(main, /setTimeout\(\(\) => \{\n  const fields = document\.querySelector\('\.filter-fields'\)/);

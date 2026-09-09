@@ -2,6 +2,7 @@
 
 ## 2026-09-10
 
+- El CSV específico de pesos aplica ahora la misma protección contra inyección de fórmulas que el resto de exportaciones tabulares.
 - La disposición desplegada organiza las piezas en bandas regionales con separación y conserva una banda de compatibilidad para registros sin región.
 - La comparación 3D respeta también los filtros científicos de estado, pendientes y aislamiento, evitando discrepancias visuales con el esqueleto principal.
 - La creación de los filtros extendidos de estadísticas usa una microtarea segura en lugar de un temporizador de carga arbitrario.
