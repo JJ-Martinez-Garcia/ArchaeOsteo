@@ -54,6 +54,8 @@
   encuadre inicial en lugar de dejar la posición visual anterior.
 - El XLSX incluye una hoja `Configuración visual` con la cámara 3D y la importa durante
   la restauración, manteniendo los binarios de modelos propios en el archivo OSTEO3D.
+- Añadida una prueba directa del importador XLSX que verifica la reconstrucción del
+  encuadre a partir de la hoja visual.
 
 ## Cambios recientes
 

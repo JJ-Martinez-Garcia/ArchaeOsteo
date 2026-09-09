@@ -34,6 +34,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   reinicia explícitamente el encuadre para evitar discrepancias entre datos y visor.
 - XLSX: la configuración visual incorpora ahora el encuadre de cámara en una hoja propia
   e importable; los modelos personalizados siguen requiriendo el archivo OSTEO3D.
+- La importación de esa hoja está cubierta directamente con una prueba de round-trip
+  de los valores de cámara, además de la E2E general.
 - Jerarquía: los campos históricos de contexto se proyectan a entidades normalizadas de
   yacimiento, campaña, sector, contexto e individuo con IDs estables y relaciones padre;
   la estructura se conserva en el modelo local y en las copias, y la ficha muestra un
