@@ -667,6 +667,7 @@ assert.match(await text('src/anatomy/package.js'), /Promise\.all\(\[addedUrls\.m
 assert.match(await text('src/ui/extended.js'), /commitInventoryEdit\('hierarchy_entity_add'/);
 assert.match(await text('src/ui/extended.js'), /export-change-log/);
 assert.match(await text('src/ui/extended.js'), /change-method/);
+assert.match(await text('src/ui/extended.js'), /Change log/);
 assert.match(await text('src/ui/extended.js'), /Jerarquía.*normalizeHierarchy/s);
 assert.match(main, /sheet\('Jerarquía'/);
 assert.match(main, /dracoDecoderPath: '\.\/draco\/'/);

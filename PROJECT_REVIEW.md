@@ -50,8 +50,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   sin duplicados ni huecos, y que el backlog y esta revisión mantienen sus secciones de
   seguimiento.
 - El registro de cambios permite filtrar por método o texto (elemento, individuo,
-  investigador) y descargar el subconjunto visible en CSV; la prueba E2E verifica su
-  renderizado y actualización.
+  investigador) y descargar el subconjunto visible en CSV; título, filtros, mensajes y
+  cabeceras se localizan ES/EN sin traducir valores científicos del investigador. La
+  prueba E2E verifica su renderizado, actualización y cambio de idioma.
 - Huesos largos y costillas admiten varias porciones simultáneas, cada una con estado y
   completitud propios; el registro nuevo convive con el campo `Portion` heredado y se
   incluye en copias y exportaciones.

@@ -22,6 +22,8 @@
 - La pestaña de informe hidrata todos sus campos de contexto de forma directa al abrirse,
   sin depender de temporizadores de inicialización; se mantiene la cobertura E2E del
   separador redimensionable y de los formularios a 300 px.
+- El registro de cambios localiza también su título, filtros, mensajes y cabeceras de
+  tabla al inglés, manteniendo intactos los valores científicos introducidos.
 
 ## Cambios recientes
 
