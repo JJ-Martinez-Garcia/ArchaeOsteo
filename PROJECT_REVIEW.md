@@ -44,6 +44,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   los recursos que añadió esa operación y conserva los que ya estaban en caché; la prueba
   de integridad cubre este rollback y confirma que la eliminación del paquete no toca
   modelos propios.
+- La E2E recarga la aplicación tras guardar contexto y jerarquía y verifica la recuperación
+  desde IndexedDB antes de continuar el flujo.
 - El registro de cambios permite filtrar por método o texto (elemento, individuo,
   investigador) y descargar el subconjunto visible en CSV; la prueba E2E verifica su
   renderizado y actualización.

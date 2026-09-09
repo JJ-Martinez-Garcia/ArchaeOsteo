@@ -169,3 +169,5 @@
   sobrescrituras previas si falla una petición.
 - La selección de fotografías comprueba también un presupuesto acumulado estimado de 64 MB
   antes de iniciar lecturas, reduciendo el riesgo de agotar la cuota local.
+- La E2E comprueba la recuperación del proyecto después de recargar la aplicación, incluida
+  la ficha de contexto y la jerarquía normalizada.

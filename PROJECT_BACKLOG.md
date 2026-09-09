@@ -78,7 +78,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 59 | BLOQUEAR REGISTROS | Formulario científico, importación revalidada, tablas, medidas, landmarks, fotos y modelos personalizados cubiertos; queda auditar nuevas rutas futuras. |
 | 60 | MOSTRAR PENDIENTES | Resaltar pendientes sin ocultar de forma incoherente categorías o etiquetas. |
 | 61 | PROGRESO | Denominador correcto por perfil y categorías; progreso siempre revisados, no presentes. |
-| 62 | INVENTARIO RÁPIDO | Confirmación obligatoria y deshacer completo al marcar restantes como ausentes verificados en E2E; queda prueba de recuperación tras recarga. |
+| 62 | INVENTARIO RÁPIDO | Confirmación obligatoria, deshacer completo y recuperación tras recarga verificados en E2E; queda prueba en dispositivos reales. |
 | 63 | PRESENCIA RÁPIDA | Prueba de presencia rápida y persistencia, sin modos incompatibles activos. |
 | 64 | FRAGMENTACIÓN RÁPIDA | Ciclo de activación/desactivación y no solapamiento con presencia rápida verificados en E2E; queda respeto a bloqueo en dispositivo táctil. |
 | 65 | SELECCIÓN MÚLTIPLE | Aplicar acciones comunes a selección múltiple como una única transacción reversible verificado en E2E; queda cobertura de combinaciones con filtros regionales. |
