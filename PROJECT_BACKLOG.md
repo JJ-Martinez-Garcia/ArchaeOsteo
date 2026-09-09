@@ -108,7 +108,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 89 | RENDIMIENTO | Matriz de PC/Mac/Android/iOS/iPad y métricas reproducibles en dispositivos reales. |
 | 90 | INTERFAZ DE ESCRITORIO | Panel redimensionable y formularios probados en PC; comprobar zoom 125–200% y todos los tamaños. |
 | 91 | INTERFAZ MÓVIL | Cerrar flujo de paneles móviles, tamaño táctil y operación con una mano; no basta emular ancho. |
-| 92 | ACCESIBILIDAD | Auditoría de contraste, lector de pantalla, foco, teclado y tamaños táctiles. |
+| 92 | ACCESIBILIDAD | Foco visible global, navegación semántica/teclado y soporte de movimiento reducido incorporados; queda auditoría de contraste, lector de pantalla, zoom y tamaños táctiles con dispositivos reales. |
 | 93 | ARQUITECTURA DEL PROYECTO | Extraer controlador 3D y módulos de UI de main.js de forma incremental. |
 | 94 | MODULARIDAD | Eliminar temporizadores de inicialización y dependencias cruzadas de UI/persistencia. |
 | 95 | LICENCIAS DE MODELOS 3D | 537 GLB propios y 179 externos documentados; auditar cada licencia y mantener metadatos completos. |
