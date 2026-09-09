@@ -30,6 +30,9 @@ Consulta [la revisión del encargo y pendientes](PROJECT_REVIEW.md) y
 
 [Lista de cierre de los 119 puntos y mejoras propuestas](PROJECT_BACKLOG.md).
 
+Para colaborar, consulta [CONTRIBUTING.md](CONTRIBUTING.md) y la política de
+[seguridad y privacidad](SECURITY.md).
+
 MNE/MNI automáticos son provisionales y ya no convierten fragmentos en huesos o
 individuos. Admiten revisión manual justificada; si cambia el inventario se exige
 actualizar la revisión. Las distancias del visor se indican en unidades arbitrarias.

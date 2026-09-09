@@ -126,7 +126,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 107 | FASE 7 | Cerrar importación/modelos propios, anotaciones y herramientas avanzadas; definir validación científica. |
 | 108 | CONTROL DE ERRORES | Validar fallos de red, modelo corrupto, cuota, migración, importación y recuperación sin falso éxito. |
 | 109 | DATOS Y VISUALIZACIÓN | Probar invariantes de inventario al cambiar modelos, posición, escala, colores y perfil. |
-| 110 | GITHUB | Repositorio con fuentes, pruebas y documentación; mantener changelog y guía de contribución actuales. |
+| 110 | GITHUB | Repositorio con fuentes, pruebas, documentación, guía de contribución y política de seguridad; mantener changelog y ambas guías actuales. |
 | 111 | GITHUB PAGES | Despliegue Pages con pruebas y verificación de la versión publicada tras cada entrega. |
 | 112 | INSTALACIÓN | Verificar instalación/standalone en navegadores y plataformas soportadas, no solo manifest. |
 | 113 | ACTUALIZACIONES | Verificar actualización con formulario sucio y guardado fallido; nunca perder cambios. |
