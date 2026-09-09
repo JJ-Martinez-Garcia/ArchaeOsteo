@@ -29,7 +29,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 10 | EXAMINAR HUESO | Añadir vistas anatómicas locales medial/lateral/proximal/distal por hueso, no solo ejes globales. |
 | 11 | PANEL INFORMATIVO | Curar las 12 categorías de la ficha por hueso con referencias; no sustituir huecos por inferencias. |
 | 12 | ÁRBOL OSTEOLOGICO | Verificar árbol por anatomía completa y componentes inmaduros; catálogo actual agrupa cráneo. |
-| 13 | BUSCADOR | Corregir nomenclatura ES/EN/latín y ampliar sinónimos; probar búsquedas inequívocas. |
+| 13 | BUSCADOR | Búsqueda normalizada ES/EN/latín/ID con sinónimos osteológicos frecuentes (escápula/omóplato, peroné/fíbula, rótula/patela, etc.); queda curación completa del tesauro. |
 | 14 | COMPARACIÓN | Comparación hueso a hueso, vista/rotación/zoom sincronizados y escala real solo con calibración. |
 | 15 | TRANSPARENCIA | Verificar coherencia 0–100% por hueso/región/conjunto; control actual limita mínimo a 20%. |
 | 16 | MODOS VISUALES | Cerrar pruebas combinadas de todos los modos y de representación de inventario. |

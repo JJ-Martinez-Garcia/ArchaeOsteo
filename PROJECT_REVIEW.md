@@ -23,6 +23,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - Huesos largos y costillas admiten varias porciones simultáneas, cada una con estado y
   completitud propios; el registro nuevo convive con el campo `Portion` heredado y se
   incluye en copias y exportaciones.
+- El buscador normaliza acentos y nombres ES/EN/latín/ID y añade sinónimos osteológicos
+  frecuentes; el tesauro completo sigue requiriendo curación especializada.
 - Copia `.osteo3d` autocontenida con modelos personalizados cacheados, manifiesto,
   comprobación CRC y restauración probada; JSON se mantiene como formato ligero.
 - Osteometría: calibración por dos landmarks y distancia convertida a milímetros,
