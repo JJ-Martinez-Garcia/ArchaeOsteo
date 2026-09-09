@@ -426,6 +426,8 @@ try {
   assert.equal(await evaluate(cdp, `['sources','method','limits'].every(key=>document.querySelector('#report-'+key)?.tagName==='TEXTAREA')`), true, 'Long report fields must be multiline controls');
   await evaluate(cdp, `document.querySelector('#report-sources').value='DOI: E2E\\nReferencia de campo';document.querySelector('#report-method').value='Comparación osteológica';document.querySelector('#report-limits').value='Pendiente de revisión especializada';document.querySelector('#save-report').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.report?.sources?.includes('Referencia de campo')&&value.report?.method==='Comparación osteológica'&&value.report?.limits==='Pendiente de revisión especializada','Persist long report fields');
+  await evaluate(cdp, `(async()=>{const input=document.querySelector('#photo-input'),transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(13*1024*1024)],'too-large.jpg',{type:'image/jpeg'}));input.files=transfer.files;await input.onchange({target:input});})()`);
+  assert.match(await evaluate(cdp, `document.querySelector('#toast').textContent`), /Foto rechazada por tamaño/,'Oversized local photo must be rejected');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
