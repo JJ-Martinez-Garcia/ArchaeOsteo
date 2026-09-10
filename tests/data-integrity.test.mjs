@@ -11,6 +11,7 @@ import { protectSpreadsheetValue, protectSpreadsheetRows } from '../src/domain/s
 import { downloadModelPackage, removeModelPackage } from '../src/anatomy/package.js';
 import { mergeAuxiliaryXlsx } from '../src/ui/extended.js';
 import { developmentComponentsForBone, normalizeDevelopmentRecords } from '../src/domain/development.js';
+import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
 const xlsxMock = { utils: { sheet_to_json: sheet => sheet.rows || [] } };
@@ -129,6 +130,9 @@ state.weights.skull = 99; state.pathologyDetails.skull.description = 'después';
 applyInventorySnapshot(state, snapshot);
 assert.equal(state.weights.skull, 12); assert.equal(state.pathologyDetails.skull.description, 'antes'); assert.equal(state.dental[11], 'wear'); assert.equal(state.developmentRecords.left_femur.shaft.fusion, 'unfused'); assert.equal(state.skeletonFilter, 'axial'); assert.equal(state.regionFilter, 'Cráneo');
 assert.equal(state.hierarchyRefs.skull.contextId, 'context:ue-4');
+const hierarchyAnalysis = calculateOsteoAnalysis(bones, { status: { skull: 'present' }, hierarchyRefs: { skull: { contextId: 'context:ue-4', individualId: 'individual:ind-7' } }, hierarchy: { contexts: [{ id: 'context:ue-4', name: 'UE-4' }], individuals: [{ id: 'individual:ind-7', name: 'IND-7' }] } });
+assert.equal(hierarchyAnalysis.rows[0].context, 'UE-4');
+assert.equal(hierarchyAnalysis.rows[0].individual, 'IND-7');
 state.pathologyDetails.skull.description = 'nueva';
 assert.equal(snapshot.pathologyDetails.skull.description, 'antes', 'Undo snapshots cannot be mutated by later edits');
 const modelReferenceState = { landmarkModelRefs: modelReference };

@@ -490,6 +490,7 @@ try {
   await evaluate(cdp, `(()=>{const language=document.querySelector('#language');language.value='es';language.dispatchEvent(new Event('change'));})()`);
   await evaluate(cdp, `document.querySelector('#hierarchy-panel-button').click()`);
   assert.equal(await evaluate(cdp, `document.querySelector('#hierarchy-parent')?.tagName`), 'SELECT', 'Hierarchy parent must use the existing-entity selector');
+  await new Promise(resolve=>setTimeout(resolve,500));
   await evaluate(cdp, `(async()=>{const input=document.querySelector('#photo-input'),transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(13*1024*1024)],'too-large.jpg',{type:'image/jpeg'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));await new Promise(resolve=>setTimeout(resolve,50));})()`);
   await waitForValue(cdp, `document.querySelector('#toast').textContent || ''`, value=>/Foto rechazada por tamaño/.test(value), 'Oversized local photo must be rejected');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
