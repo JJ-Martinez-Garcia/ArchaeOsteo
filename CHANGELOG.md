@@ -265,3 +265,6 @@
 ### Jerarquía relacional
 
 - La ventana de jerarquía muestra ahora la relación yacimiento → campaña → sector → contexto → individuo como árbol anidado, sin ocultar entidades huérfanas importadas.
+### Cobertura jerárquica
+
+- La prueba E2E verifica asociaciones de un registro a campaña, sector y contexto, filtrado del árbol, tabla de cobertura y exportación CSV.
