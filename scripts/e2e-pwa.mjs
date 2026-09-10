@@ -483,6 +483,13 @@ try {
   await waitForValue(cdp, `Boolean(document.querySelector('#change-method')&&document.querySelector('#change-query')&&document.querySelector('#export-change-log'))`, value=>value === true, 'Render change log filters');
   await evaluate(cdp, `(()=>{const input=document.querySelector('#change-query');input.value='hierarchy';input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
   assert.equal(await evaluate(cdp, `document.querySelector('#changes-results').textContent.includes('entradas coinciden')`), true, 'Change log query must refresh results');
+  await evaluate(cdp, `document.querySelector('#analysis-panel-button').click()`);
+  await waitForValue(cdp, `Boolean(document.querySelector('#save-analysis-review'))`, value=>value===true, 'Render analysis review editor');
+  await evaluate(cdp, `(()=>{document.querySelector('#review-nisp').value='99';document.querySelector('#review-reason-nisp').value='revisión anterior';document.querySelector('#save-analysis-review').click();})()`);
+  await waitForValue(cdp, projectReadExpression(), value=>value.analysisReview?.nisp?.value===99, 'Persist manual analysis review');
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#show-table').click();(()=>{const select=document.querySelector('[data-row-status="skull"]');select.value='absent';select.dispatchEvent(new Event('change'));})()`);
+  await evaluate(cdp, `document.querySelector('#analysis-panel-button').click()`);
+  await waitForValue(cdp, `document.querySelector('#extended-panel')?.textContent || ''`, value=>/Revisión manual obsoleta/.test(value), 'Show stale manual analysis review');
   await evaluate(cdp, `(()=>{const language=document.querySelector('#language');language.value='en';language.dispatchEvent(new Event('change'));document.querySelector('#changes-panel-button').click();})()`);
   await waitForValue(cdp, `document.querySelector('#extended-panel h3')?.textContent || ''`, value=>value==='Change log', 'Localize change log');
   await evaluate(cdp, `document.querySelector('#record-panel-button').click()`);
