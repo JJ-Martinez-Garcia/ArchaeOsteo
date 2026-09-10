@@ -209,6 +209,7 @@ assert.match(main, /if\(document\.visibilityState==='visible'\)renderLabels\(\)/
 assert.match(main, /quantification-summary/);
 assert.match(main, /analysis\.nisp\.value/);
 assert.match(main, /Specimen_ID:state\.specimens/);
+assert.ok((main.match(/Specimen_ID:state\.specimens/g) || []).length >= 2, 'CSV and XLSX exports must include Specimen_ID');
 assert.match(await text('src/ui/extended.js'), /record-specimen/);
 assert.match(main, /analysis\.mne\.value/);
 assert.match(main, /analysis\.mni\.value/);
