@@ -1027,7 +1027,7 @@ assert.equal(analysis.nisp.value, 1);
 assert.equal(analysis.mne.value, 1);
 assert.equal(analysis.mni.value, 1);
 const mniWithIndividuals = calculateOsteoAnalysis(testBones, { status: { left_femur: 'present', right_femur: 'present' }, fragments: { left_femur: 4, right_femur: 4 }, individuals: { left_femur: 'IND-A', right_femur: 'IND-B' }, report: { individual: 'IND-LOCAL' } });
-assert.equal(mniWithIndividuals.mni.value, 2);
+assert.equal(mniWithIndividuals.mni.value, 1);
 const manyFragments=calculateOsteoAnalysis(testBones,{status:{left_femur:'fragmentary'},fragments:{left_femur:100},report:{individual:'IND-LOCAL'}});
 assert.equal(manyFragments.mne.value,1);
 assert.equal(manyFragments.mni.value,1);

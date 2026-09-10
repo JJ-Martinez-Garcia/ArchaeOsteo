@@ -84,13 +84,12 @@ export function calculateMni(rows) {
     else entry.fallback = 1;
     groups.set(key, entry);
   }
-  const explicitIds=new Set(identified.map(row=>String(row.individual||'').trim()).filter(id=>id&&id!=='IND-LOCAL'));
-  const value = identified.length ? Math.max(1, explicitIds.size) : 0;
+  const value = identified.length ? Math.max(...[...groups.values()].map(entry => entry.explicit.size || entry.fallback || 1)) : 0;
   return {
     value,
     groups: Object.fromEntries([...groups.entries()].map(([key, entry]) => [key, entry.explicit.size || entry.fallback || 1])),
     provisional: true,
-    method: 'Mínimo provisional según individuos explícitos asignados (IDs distintos). Sin asignación, solo indica al menos uno si hay restos identificados. Los fragmentos no incrementan el MNI. No estima duplicación anatómica, edad ni sexo; revisar las asociaciones de individuos.'
+    method: 'Mínimo provisional: máximo de individuos explícitos por combinación de elemento y lado. Sin asignación, solo indica al menos uno si hay restos identificados. Los fragmentos no incrementan el MNI. No estima duplicación anatómica, edad ni sexo; revisar las asociaciones de individuos.'
   };
 }
 

@@ -33,6 +33,7 @@ const specimenAnalysis = calculateOsteoAnalysis(bones, { status: { skull: 'prese
 assert.deepEqual(specimenAnalysis.specimenCoverage, { identified: 1, withSpecimenId: 1, withoutSpecimenId: 0, uniqueSpecimenIds: 1, conflicts: [] });
 const specimenConflict = calculateOsteoAnalysis(bones, { status: { skull: 'present', mandible: 'present' }, specimens: { skull: 'SP-001', mandible: 'SP-001' }, individuals: { skull: 'IND-1', mandible: 'IND-2' } });
 assert.deepEqual(specimenConflict.specimenCoverage.conflicts, [{ specimenId: 'SP-001', individuals: ['IND-1', 'IND-2'], contexts: [] }]);
+assert.equal(calculateOsteoAnalysis(bones, { status: { skull: 'present', mandible: 'present' }, individuals: { skull: 'IND-1', mandible: 'IND-2' } }).mni.value, 1, 'MNI must use the maximum duplicate element-side group, not global individual count');
 assert.deepEqual(xlsxHierarchyRefs.hierarchyRefs.skull, { siteId: 'site:norte', contextId: 'context:ue-4', individualId: 'individual:ind-7' });
 const previousCaches = globalThis.caches;
 const previousFetch = globalThis.fetch;
