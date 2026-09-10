@@ -372,6 +372,7 @@ try {
     'La carga de un modelo GLB',
     45_000
   );
+  assert.equal(await evaluate(cdp, `[...document.querySelectorAll('#details > dl > dd')][5]?.textContent || ''`), '—', 'Unknown completeness must remain unknown in the bone sheet');
 
   await evaluate(cdp, `document.querySelector('#save')?.click()`);
   const savedProject = await waitForValue(
