@@ -123,6 +123,8 @@ export function calculateIndividualQuantification(rows) {
 export function calculateOsteoAnalysis(bones, state) {
   const rows = inventoryRows(bones, state);
   const result={ nisp: calculateNisp(rows), mne: calculateMne(rows), mni: calculateMni(rows), individuals: calculateIndividualQuantification(rows), rows };
+  const identifiedRows = rows.filter(row => ['present', 'fragmentary'].includes(row.status));
+  result.specimenCoverage = { identified: identifiedRows.length, withSpecimenId: identifiedRows.filter(row => row.specimenId).length, withoutSpecimenId: identifiedRows.filter(row => !row.specimenId).length, uniqueSpecimenIds: new Set(identifiedRows.filter(row => row.specimenId).map(row => `${row.specimenId}|${row.boneId}`)).size };
   const signature=JSON.stringify(rows);
   for(const key of ['nisp','mne','mni']){
     const review=state.analysisReview?.[key];

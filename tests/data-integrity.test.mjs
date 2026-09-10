@@ -27,6 +27,8 @@ const xlsxSpecimen = mergeAuxiliaryXlsx({}, { Sheets: { 'Especímenes': { rows: 
 assert.equal(xlsxSpecimen.specimens.skull, 'SP-001');
 assert.equal(calculateNisp([{ boneId: 'skull', region: 'Cráneo', side: '—', status: 'present', specimenId: 'SP-001' }, { boneId: 'skull', region: 'Cráneo', side: '—', status: 'fragmentary', specimenId: 'SP-001' }]).value, 1);
 assert.deepEqual(validateBackup(createBackup({ specimens: { skull: 'SP-001' } })).specimens, { skull: 'SP-001' });
+const specimenAnalysis = calculateOsteoAnalysis(bones, { status: { skull: 'present' }, specimens: { skull: 'SP-001' } });
+assert.deepEqual(specimenAnalysis.specimenCoverage, { identified: 1, withSpecimenId: 1, withoutSpecimenId: 0, uniqueSpecimenIds: 1 });
 assert.deepEqual(xlsxHierarchyRefs.hierarchyRefs.skull, { siteId: 'site:norte', contextId: 'context:ue-4', individualId: 'individual:ind-7' });
 const previousCaches = globalThis.caches;
 const previousFetch = globalThis.fetch;
