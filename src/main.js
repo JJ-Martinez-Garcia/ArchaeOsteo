@@ -638,6 +638,7 @@ function appendAuxiliaryXlsxSheets(XLSX, book) {
     { Sheet: 'Inventario', Purpose: 'Registros por Bone_ID y campos de inventario', Importable: true },
     { Sheet: 'Ficha contexto', Purpose: 'Identidad, contexto y trazabilidad del proyecto', Importable: true },
     { Sheet: 'Jerarquía', Purpose: 'Entidades y relaciones padre del proyecto', Importable: true },
+    { Sheet: 'Asociaciones jerárquicas', Purpose: 'IDs de jerarquía asociados a cada Bone_ID', Importable: true },
     { Sheet: 'Fragmentos indeterminados', Purpose: 'Fragmentos sin elemento asignado', Importable: true },
     { Sheet: 'Odontograma permanente', Purpose: 'Estados dentales FDI permanentes', Importable: true },
     { Sheet: 'Odontograma deciduo', Purpose: 'Estados dentales FDI deciduos', Importable: true },
