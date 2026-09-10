@@ -74,7 +74,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - comparación de perfiles, quiz de identificación y selector español/inglés para navegación y acciones principales;
 - Three.js cargado de forma diferida para reducir el bundle inicial;
 - instalación y actualización de la PWA controladas por el usuario;
-- persistencia IndexedDB versionada (esquema 2) con normalización y respaldo automático a `localStorage`;
+- persistencia IndexedDB versionada (esquema 3) con normalización y respaldo automático a `localStorage`;
 - gestor local de proyectos con selector, creación de proyectos y persistencia independiente por proyecto;
 - autosalvado silencioso cada 30 segundos y al pasar la aplicación a segundo plano;
 - indicador de conectividad para distinguir trabajo sincronizado de trabajo local offline;

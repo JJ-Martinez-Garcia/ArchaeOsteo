@@ -99,6 +99,7 @@ const translations = await text('src/i18n/translations.js');
 const extendedUi = await text('src/ui/extended.js');
 assert.match(store, /indexedDB/);
 assert.match(store, /PROJECT_SCHEMA_VERSION = 3/);
+assert.match(await text('README.md'), /IndexedDB versionada \(esquema 3\)/);
 assert.match(store, /normalizeProject/);
 assert.match(store, /normalizeHierarchyRefs/);
 assert.match(await text('scripts/verify-pages.mjs'), /DEFAULT_PAGES_URL/);
