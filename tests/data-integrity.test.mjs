@@ -29,6 +29,7 @@ const xlsxSpecimenRecord = mergeAuxiliaryXlsx({}, { Sheets: { 'Fichas de especí
 assert.deepEqual(xlsxSpecimenRecord.specimenRecords['SP-001'], { id: 'SP-001', label: 'Ejemplar', individualId: 'IND-1', context: 'UE-1', notes: 'nota' });
 assert.equal(calculateNisp([{ boneId: 'skull', region: 'Cráneo', side: '—', status: 'present', specimenId: 'SP-001' }, { boneId: 'skull', region: 'Cráneo', side: '—', status: 'fragmentary', specimenId: 'SP-001' }]).value, 1);
 assert.deepEqual(validateBackup(createBackup({ specimens: { skull: 'SP-001' } })).specimens, { skull: 'SP-001' });
+assert.deepEqual(validateBackup(createBackup({ specimenRecords: { 'SP-001': { id: 'SP-001', label: 'Ejemplar', individualId: 'IND-1', context: 'UE-1', notes: 'nota' } } })).specimenRecords['SP-001'], { id: 'SP-001', label: 'Ejemplar', individualId: 'IND-1', context: 'UE-1', notes: 'nota' });
 const specimenAnalysis = calculateOsteoAnalysis(bones, { status: { skull: 'present' }, specimens: { skull: 'SP-001' } });
 assert.deepEqual(specimenAnalysis.specimenCoverage, { identified: 1, withSpecimenId: 1, withoutSpecimenId: 0, uniqueSpecimenIds: 1, conflicts: [] });
 const specimenConflict = calculateOsteoAnalysis(bones, { status: { skull: 'present', mandible: 'present' }, specimens: { skull: 'SP-001', mandible: 'SP-001' }, individuals: { skull: 'IND-1', mandible: 'IND-2' } });
