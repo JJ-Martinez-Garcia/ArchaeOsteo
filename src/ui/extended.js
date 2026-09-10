@@ -67,7 +67,12 @@ export function mergeAuxiliaryXlsx(value, workbook, XLSX, bones) {
     const refs = Object.fromEntries(['siteId', 'campaignId', 'sectorId', 'contextId', 'individualId'].map(field => [field, String(row[field] || '').trim()]).filter(([, item]) => item));
     if (Object.keys(refs).length) hierarchyRefs[row.Bone_ID] = refs;
   }
-  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy, cameraView, hierarchyRefs, developmentRecords: normalizeDevelopmentRecords(developmentRecords) };
+  const specimens = { ...(value.specimens || {}) };
+  for (const row of [...rows('Inventario'), ...rows('Especímenes')]) if (validIds.has(row.Bone_ID)) {
+    const specimenId = String(row.Specimen_ID ?? row.Specimen ?? '').trim();
+    if (specimenId) specimens[row.Bone_ID] = specimenId;
+  }
+  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy, cameraView, hierarchyRefs, specimens, developmentRecords: normalizeDevelopmentRecords(developmentRecords) };
 }
 
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
@@ -151,6 +156,8 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       const unit = document.querySelector('#record-weight-unit'); if (unit) unit.setAttribute('aria-label', 'Weight unit');
     };
     show(`<div class="record-editor"><strong>${escapeHtml(bone.es || id)}</strong><label>Número de fragmentos<input id="record-fragments" type="number" min="0" step="1" value="${state.fragments[id] ?? ''}"></label><label>Peso (g)<input id="record-weight" type="number" min="0" step="0.01" value="${state.weights[id] ?? ''}"></label><label>Porción anatómica<select id="record-portion">${portionOptions.map(([value, label]) => `<option value="${value}">${label}</option>`).join('')}</select></label><label>Individuo<input id="record-individual" value="${escapeHtml(state.individuals[id] || state.report?.individual || 'IND-LOCAL')}" placeholder="IND-01"></label><fieldset class="structured-observation"><legend>${state.language === 'en' ? 'Normalized hierarchy association' : 'Asociación a jerarquía normalizada'}</legend>${hierarchyFields}<p class="small-copy">${state.language === 'en' ? 'Optional IDs preserve the exact project entities linked to this record.' : 'Los IDs opcionales conservan las entidades exactas del proyecto asociadas a este registro.'}</p></fieldset><label>Tafonomía<input id="record-taphonomy" list="taphonomy-options" value="${escapeHtml(taphonomy)}" placeholder="erosión, raíces…"><datalist id="taphonomy-options">${TAPHONOMY_OPTIONS.map(value => `<option value="${value}">`).join('')}</datalist></label><label>Patología / trauma<input id="record-pathology" value="${escapeHtml(pathology)}" placeholder="fractura, caries…"></label><label>Nota científica<textarea id="record-note" rows="3">${escapeHtml(state.notes[id] || '')}</textarea></label><button id="save-record" class="secondary-action">Guardar registro</button></div>`);
+    document.querySelector('#record-individual').insertAdjacentHTML('afterend', '<label>ID de espécimen<input id="record-specimen" value="" placeholder="SP-001" aria-describedby="record-specimen-help"></label><small id="record-specimen-help" class="small-copy">Opcional: identifica este registro cuando una ficha agrupa especímenes.</small>');
+    document.querySelector('#record-specimen').value = state.specimens?.[id] || '';
     for (const [field] of [['siteId'], ['campaignId'], ['sectorId'], ['contextId'], ['individualId']]) { const select = document.querySelector(`[data-hierarchy-ref="${field}"]`); if (select) select.value = state.hierarchyRefs?.[id]?.[field] || ''; }
     document.querySelector('#record-weight').insertAdjacentHTML('afterend', `<select id="record-weight-unit" aria-label="Unidad del peso"><option value="g">g</option><option value="kg">kg</option></select>`);
     document.querySelector('#record-weight-unit').value = state.weightUnits?.[id] === 'kg' ? 'kg' : 'g';
@@ -179,6 +186,8 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       else { delete state.weights[id]; delete state.weightUnits[id]; }
       state.portions[id] = document.querySelector('#record-portion').value;
       state.individuals[id] = document.querySelector('#record-individual').value.trim() || 'IND-LOCAL';
+      const specimenId = document.querySelector('#record-specimen').value.trim();
+      if (specimenId) state.specimens[id] = specimenId; else delete state.specimens[id];
       const refs = Object.fromEntries([...document.querySelectorAll('[data-hierarchy-ref]')].map(select => [select.dataset.hierarchyRef, select.value]).filter(([, value]) => value));
       if (Object.keys(refs).length) state.hierarchyRefs[id] = refs; else delete state.hierarchyRefs[id];
       state.taphonomy[id] = document.querySelector('#record-taphonomy').value.split(',').map(value => value.trim()).filter(Boolean);

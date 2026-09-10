@@ -47,6 +47,7 @@ const state = { projectId: 'default', projectName: 'Proyecto sin título', profi
  function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char])); }
 let modelManifest = null;
 state.ue ||= {};
+state.specimens ||= {};
 state.hierarchyRefs ||= {};
 state.taphonomyDetails ||= {};
 state.pathologyDetails ||= {};
@@ -640,12 +641,13 @@ async function verifyModelPackages() {
   if (group) await loadAvailableProfileModels();
 }
 function downloadFile(name, content, type) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.style.display='none'; document.body?.append(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000); }
-function exportInventory(format) { const report=state.report||{}; const rows=bones.map(b=>({Individual_ID:state.individuals[b.id]||report.individual||'IND-LOCAL',Burial:report.burial||'',Grave:report.grave||'',Tomb:report.tomb||'',Site:report.site||'',Campaign:report.campaign||'',Date:report.date||'',Sector:report.sector||'',Grid:report.grid||'',Context:report.context||'',Chronology:report.chronology||'',UE:state.ue?.[b.id]||report.ue||'',Hierarchy_refs:JSON.stringify(state.hierarchyRefs?.[b.id]||{}),Sources:report.sources||'',Method:report.method||'',Limits:report.limits||'',Bone_ID:b.id,Bone_Name:b.es,Side:b.side,Presence:state.status[b.id]||'not_recorded',Preservation:state.preservation[b.id]||'not_evaluated',Completeness:state.completeness[b.id]??'',Percentage:state.completeness[b.id]??'',Fragments:state.fragments[b.id]??'',Weight_g:state.weights[b.id]??'',Portion:state.portions[b.id]||'whole',Portion_records:JSON.stringify(state.portionRecords?.[b.id]||{}),Development_records:JSON.stringify(state.developmentRecords?.[b.id]||{}),Taphonomy:(state.taphonomy[b.id]||[]).join('; '),Pathology:(state.pathology[b.id]||[]).join('; '),Taphonomy_Detail:JSON.stringify(state.taphonomyDetails?.[b.id]||{}),Pathology_Detail:JSON.stringify(state.pathologyDetails?.[b.id]||{}),Notes:state.notes[b.id]||report.observations||'',Locked:!!state.locked[b.id],Region:b.region})); if(format==='json') downloadFile('osteo3d-inventory.json',JSON.stringify({...createBackup(state),records:rows},null,2),'application/json'); else { const safeRows=protectSpreadsheetRows(rows); const fields=Object.keys(safeRows[0]); const csv=[fields.join(','),...safeRows.map(row=>fields.map(f=>`"${String(row[f]).replaceAll('"','""')}"`).join(','))].join('\n'); downloadFile('osteo3d-inventory.csv',csv,'text/csv;charset=utf-8'); } }
+function exportInventory(format) { const report=state.report||{}; const rows=bones.map(b=>({Individual_ID:state.individuals[b.id]||report.individual||'IND-LOCAL',Specimen_ID:state.specimens?.[b.id]||'',Burial:report.burial||'',Grave:report.grave||'',Tomb:report.tomb||'',Site:report.site||'',Campaign:report.campaign||'',Date:report.date||'',Sector:report.sector||'',Grid:report.grid||'',Context:report.context||'',Chronology:report.chronology||'',UE:state.ue?.[b.id]||report.ue||'',Hierarchy_refs:JSON.stringify(state.hierarchyRefs?.[b.id]||{}),Sources:report.sources||'',Method:report.method||'',Limits:report.limits||'',Bone_ID:b.id,Bone_Name:b.es,Side:b.side,Presence:state.status[b.id]||'not_recorded',Preservation:state.preservation[b.id]||'not_evaluated',Completeness:state.completeness[b.id]??'',Percentage:state.completeness[b.id]??'',Fragments:state.fragments[b.id]??'',Weight_g:state.weights[b.id]??'',Portion:state.portions[b.id]||'whole',Portion_records:JSON.stringify(state.portionRecords?.[b.id]||{}),Development_records:JSON.stringify(state.developmentRecords?.[b.id]||{}),Taphonomy:(state.taphonomy[b.id]||[]).join('; '),Pathology:(state.pathology[b.id]||[]).join('; '),Taphonomy_Detail:JSON.stringify(state.taphonomyDetails?.[b.id]||{}),Pathology_Detail:JSON.stringify(state.pathologyDetails?.[b.id]||{}),Notes:state.notes[b.id]||report.observations||'',Locked:!!state.locked[b.id],Region:b.region})); if(format==='json') downloadFile('osteo3d-inventory.json',JSON.stringify({...createBackup(state),records:rows},null,2),'application/json'); else { const safeRows=protectSpreadsheetRows(rows); const fields=Object.keys(safeRows[0]); const csv=[fields.join(','),...safeRows.map(row=>fields.map(f=>`"${String(row[f]).replaceAll('"','""')}"`).join(','))].join('\n'); downloadFile('osteo3d-inventory.csv',csv,'text/csv;charset=utf-8'); } }
 function exportWeightsCsv() { const rows=bones.map(b=>({Bone_ID:b.id,Bone_Name:b.es,Weight_g:state.weights[b.id]??'',Region:b.region,Individual_ID:state.individuals[b.id]||state.report.individual||'IND-LOCAL'})); const safeRows=protectSpreadsheetRows(rows); const fields=Object.keys(safeRows[0]); const csv=[fields.join(','),...safeRows.map(row=>fields.map(field=>`"${String(row[field]).replaceAll('"','""')}"`).join(','))].join('\n'); downloadFile('osteo3d-weights.csv',csv,'text/csv;charset=utf-8'); }
 function appendAuxiliaryXlsxSheets(XLSX, book) {
   const sheet = (name, rows) => XLSX.utils.book_append_sheet(book, XLSX.utils.json_to_sheet(protectSpreadsheetRows(rows.length ? rows : [{ Information: 'Sin registros' }])), name);
   sheet('Esquema', [
     { Sheet: 'Inventario', Purpose: 'Registros por Bone_ID y campos de inventario', Importable: true },
+    { Sheet: 'Especímenes', Purpose: 'IDs opcionales de espécimen por Bone_ID para trazabilidad NISP', Importable: true },
     { Sheet: 'Ficha contexto', Purpose: 'Identidad, contexto y trazabilidad del proyecto', Importable: true },
     { Sheet: 'Jerarquía', Purpose: 'Entidades y relaciones padre del proyecto', Importable: true },
     { Sheet: 'Asociaciones jerárquicas', Purpose: 'IDs de jerarquía asociados a cada Bone_ID', Importable: true },
@@ -666,6 +668,7 @@ function appendAuxiliaryXlsxSheets(XLSX, book) {
   sheet('Osteometría', bones.map(bone => ({ Bone_ID: bone.id, Bone_Name: bone.es, ...(state.measurements?.[bone.id] || {}) })));
   sheet('Jerarquía', ['sites', 'campaigns', 'sectors', 'contexts', 'individuals'].flatMap(level => (state.hierarchy?.[level] || []).map(entity => ({ Level: level, ID: entity.id, Name: entity.name, Parent_ID: entity.parentId || '', Updated_at: entity.updatedAt || '' }))));
   sheet('Asociaciones jerárquicas', Object.entries(state.hierarchyRefs || {}).map(([boneId, refs]) => ({ Bone_ID: boneId, ...refs })));
+  sheet('Especímenes', Object.entries(state.specimens || {}).map(([boneId, specimenId]) => ({ Bone_ID: boneId, Specimen_ID: specimenId })));
   sheet('Landmarks', Object.entries(state.landmarks || {}).flatMap(([boneId, points]) => (Array.isArray(points) ? points : []).map(point => ({ Bone_ID: boneId, ...point }))));
   sheet('Calibraciones', Object.entries(state.calibrations || {}).map(([boneId, calibration]) => ({ Bone_ID: boneId, ...calibration })));
   sheet('Referencias landmarks', Object.entries(state.landmarkModelRefs || {}).map(([boneId, reference]) => ({ Bone_ID: boneId, ...reference })));
@@ -682,6 +685,7 @@ async function saveLocal({ notify = true } = {}) {
   state.cameraView=cameraViewSnapshot();
   const data={id:state.projectId || 'default',projectName:state.projectName || 'Proyecto sin título',schemaVersion:PROJECT_SCHEMA_VERSION,profile:state.profile,selected:state.selected,status:state.status,preservation:state.preservation,completeness:state.completeness,fragments:state.fragments,weights:state.weights,weightUnits:state.weightUnits,portions:state.portions,portionRecords:state.portionRecords,developmentRecords:state.developmentRecords,hierarchyRefs:state.hierarchyRefs,individuals:state.individuals,ue:state.ue,taphonomy:state.taphonomy,pathology:state.pathology,taphonomyDetails:state.taphonomyDetails,pathologyDetails:state.pathologyDetails,notes:state.notes,indeterminateFragments:state.indeterminateFragments,locked:state.locked,changeLog:state.changeLog,dental:state.dental,deciduousDental:state.deciduousDental,dentitionType:state.dentitionType,measurements:state.measurements,landmarks:state.landmarks,calibrations:state.calibrations,landmarkModelRefs:state.landmarkModelRefs,geometryMode:state.geometryMode,analysisReview:state.analysisReview,tableTransforms:state.tableTransforms,photos:state.photos,photoScope:state.photoScope || 'bone',photoTargetId:state.photoTargetId || '',language:state.language,filters:state.filters,customModels:state.customModels,hierarchy:state.hierarchy,report:state.report,cameraView:state.cameraView,updatedAt:new Date().toISOString()};
   const visualState={ hidden:state.hidden, opacity:state.opacity, opacityScope:state.opacityScope, wireframe:state.wireframe, xray:state.xray, labelMode:state.labelMode, colorByRegion:state.colorByRegion, comparisonProfile:state.comparisonProfile, renderQuality:state.renderQuality, tableTransforms:state.tableTransforms, lightIntensity:state.lightIntensity, ambientLightIntensity:state.ambientLightIntensity, lightingAzimuth:state.lightingAzimuth, lightingElevation:state.lightingElevation, lightingMode:state.lightingMode, changeLog:state.changeLog, skeletonFilter:state.skeletonFilter, regionFilter:state.regionFilter, explosion:state.explosion, tableMode:state.tableMode, orthographic:state.orthographic, isolate:state.isolate };
+  data.specimens = state.specimens;
   const result = await persistProject({ ...data, ...visualState });
   lastPersistenceResult = result;
   renderPersistenceStatus();
@@ -742,6 +746,7 @@ function applyProjectData(saved) {
   state.customModels = saved.customModels || {};
   state.weightUnits = Object.fromEntries(Object.entries(saved.weightUnits || {}).filter(([, unit]) => ['g', 'kg'].includes(String(unit).toLowerCase())).map(([key, unit]) => [key, String(unit).toLowerCase()]));
   state.portionRecords = normalizePortionRecords(saved.portionRecords);
+  state.specimens = saved.specimens || {};
   state.developmentRecords = normalizeDevelopmentRecords(saved.developmentRecords);
   state.calibrations = saved.calibrations || {};
   state.landmarkModelRefs = saved.landmarkModelRefs || {};
@@ -856,6 +861,7 @@ async function initProjectManager() {
   const selector = document.querySelector('#project-selector');
   selector.onchange = async () => { if (!(await saveLocal({ notify: false })).ok) { selector.value = state.projectId; return; } applyProjectData(await loadProject(selector.value)); await refreshProjectSelector(); };
   document.querySelector('#new-project').onclick = async () => {
+    state.specimens = {};
     const name = await requestProjectName();
     if (!name) return;
     if (!(await saveLocal({ notify: false })).ok) return;

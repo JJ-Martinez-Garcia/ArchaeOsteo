@@ -144,6 +144,7 @@ export function normalizeProject(project) {
     developmentRecords: normalizeDevelopmentRecords(project.developmentRecords),
     hierarchyRefs: normalizeHierarchyRefs(project.hierarchyRefs, hierarchy),
     individuals: normalizeStringMap(project.individuals),
+    specimens: normalizeStringMap(project.specimens),
     ue: normalizeStringMap(project.ue),
     taphonomy: Object.fromEntries(objectEntries(project.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
     pathology: Object.fromEntries(objectEntries(project.pathology).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),

@@ -208,6 +208,8 @@ assert.match(main, /if\(document\.visibilityState==='visible'\)syncInventoryVisu
 assert.match(main, /if\(document\.visibilityState==='visible'\)renderLabels\(\)/);
 assert.match(main, /quantification-summary/);
 assert.match(main, /analysis\.nisp\.value/);
+assert.match(main, /Specimen_ID:state\.specimens/);
+assert.match(await text('src/ui/extended.js'), /record-specimen/);
 assert.match(main, /analysis\.mne\.value/);
 assert.match(main, /analysis\.mni\.value/);
 assert.match(main, /function updateWeightSummary/);

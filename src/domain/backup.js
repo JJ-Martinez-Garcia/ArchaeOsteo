@@ -33,6 +33,7 @@ export function createBackup(state) {
       developmentRecords: state.developmentRecords,
       hierarchyRefs: state.hierarchyRefs,
       individuals: state.individuals,
+      specimens: state.specimens,
       ue: state.ue,
       taphonomy: state.taphonomy,
       pathology: state.pathology,
@@ -92,7 +93,7 @@ const INVENTORY_FIELDS = {
   status: ['Presence', 'Status'], preservation: ['Preservation'],
   completeness: ['Percentage', 'Completeness'], fragments: ['Fragments'],
   weights: ['Weight_g', 'Weight'], portions: ['Portion'], portionRecords: ['Portion_records', 'PortionRecords'],
-  individuals: ['Individual_ID', 'Individual'], ue: ['UE', 'Context_UE'],
+  individuals: ['Individual_ID', 'Individual'], specimens: ['Specimen_ID', 'Specimen'], ue: ['UE', 'Context_UE'],
   taphonomy: ['Taphonomy'], pathology: ['Pathology'],
   taphonomyDetails: ['Taphonomy_Detail'], pathologyDetails: ['Pathology_Detail'],
   notes: ['Notes', 'Observations'], developmentRecords: ['Development_records', 'Development'], hierarchyRefs: ['Hierarchy_refs', 'HierarchyRefs']

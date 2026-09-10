@@ -167,6 +167,10 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   accidente conservación ni completitud. La E2E verifica que no crea porcentajes.
 - Se reforzó el contraste de textos secundarios y se añadió una capa `forced-colors`
   para modos de alto contraste de Windows, manteniendo foco y selección visibles.
+- Cada registro óseo puede incluir ahora un `Specimen_ID` opcional. Se conserva en
+  JSON, CSV, historial, migración y hoja XLSX `Especímenes`; el NISP agrupa únicamente
+  cuando existe ese identificador explícito y mantiene el recuento provisional para
+  registros antiguos sin espécimen. No resuelve por sí solo remontaje ni MNE/MNI.
 
 - 179 elementos con geometría procedural propia para los cuatro perfiles (716
   combinaciones). Código fuente reproducible y exportación individual GLB con

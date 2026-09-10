@@ -23,6 +23,7 @@ export function inventoryRows(bones, state) {
     weightGrams: weightToGrams(state.weights?.[bone.id], weightUnit),
     portion: state.portions?.[bone.id] || 'whole',
     individual,
+    specimenId: state.specimens?.[bone.id] || '',
     context,
     taphonomy: state.taphonomy?.[bone.id] || [],
     pathology: state.pathology?.[bone.id] || [],
@@ -33,23 +34,25 @@ export function inventoryRows(bones, state) {
 
 export function calculateNisp(rows) {
   const identified = rows.filter(row => ['present', 'fragmentary'].includes(row.status));
+  const nispKey = row => row.specimenId ? `${row.specimenId}|${row.boneId}` : `record:${row.boneId}`;
+  const count = subset => new Set(subset.map(nispKey)).size;
   const byRegion = Object.fromEntries([...new Set(rows.map(row => row.region))].map(region => [
     region,
-    identified.filter(row => row.region === region).length
+    count(identified.filter(row => row.region === region))
   ]));
   const bySide = Object.fromEntries([...new Set(rows.map(row => row.side))].map(side => [
     side,
-    identified.filter(row => row.side === side).length
+    count(identified.filter(row => row.side === side))
   ]));
-  const byIndividual = Object.fromEntries([...new Set(identified.map(row => row.individual))].map(individual => [individual, identified.filter(row => row.individual === individual).length]));
-  const byContext = Object.fromEntries([...new Set(identified.map(row => row.context))].map(context => [context, identified.filter(row => row.context === context).length]));
+  const byIndividual = Object.fromEntries([...new Set(identified.map(row => row.individual))].map(individual => [individual, count(identified.filter(row => row.individual === individual))]));
+  const byContext = Object.fromEntries([...new Set(identified.map(row => row.context))].map(context => [context, count(identified.filter(row => row.context === context))]));
   return {
-    value: identified.length,
+    value: count(identified),
     byRegion,
     bySide,
     byIndividual,
     byContext,
-    method: 'Cuenta de registros identificados con estado presente o fragmentario; no equivale a huesos completos.'
+    method: 'Cuenta registros identificados con estado presente o fragmentario. Cuando existe Specimen_ID, agrupa el mismo espécimen por elemento; sin ese ID mantiene el recuento provisional de registros. No equivale a huesos completos.'
   };
 }
 

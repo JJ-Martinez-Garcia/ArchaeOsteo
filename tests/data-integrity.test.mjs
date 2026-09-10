@@ -11,7 +11,7 @@ import { protectSpreadsheetValue, protectSpreadsheetRows } from '../src/domain/s
 import { downloadModelPackage, removeModelPackage } from '../src/anatomy/package.js';
 import { mergeAuxiliaryXlsx } from '../src/ui/extended.js';
 import { developmentComponentsForBone, normalizeDevelopmentRecords } from '../src/domain/development.js';
-import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
+import { calculateNisp, calculateOsteoAnalysis } from '../src/domain/analysis.js';
 import { compareHierarchyMetrics, hierarchyInventoryMetrics, hierarchyRecordCounts, hierarchyTree } from '../src/domain/hierarchy.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
@@ -23,6 +23,10 @@ assert.deepEqual(normalizeDevelopmentRecords({ left_femur: { proximal_epiphysis:
 const xlsxDevelopment = mergeAuxiliaryXlsx({}, { Sheets: { 'Desarrollo inmaduro': { rows: [{ Bone_ID: 'left_femur', Component_ID: 'shaft', Status: 'fragmentary', Fusion: 'unfused', Completeness: 60, Observation: 'diáfisis conservada' }] } } }, xlsxMock, bones);
 assert.equal(xlsxDevelopment.developmentRecords.left_femur.shaft.fusion, 'unfused');
 const xlsxHierarchyRefs = mergeAuxiliaryXlsx({}, { Sheets: { 'Asociaciones jerárquicas': { rows: [{ Bone_ID: 'skull', siteId: 'site:norte', contextId: 'context:ue-4', individualId: 'individual:ind-7' }] } } }, xlsxMock, bones);
+const xlsxSpecimen = mergeAuxiliaryXlsx({}, { Sheets: { 'Especímenes': { rows: [{ Bone_ID: 'skull', Specimen_ID: 'SP-001' }] } } }, xlsxMock, bones);
+assert.equal(xlsxSpecimen.specimens.skull, 'SP-001');
+assert.equal(calculateNisp([{ boneId: 'skull', region: 'Cráneo', side: '—', status: 'present', specimenId: 'SP-001' }, { boneId: 'skull', region: 'Cráneo', side: '—', status: 'fragmentary', specimenId: 'SP-001' }]).value, 1);
+assert.deepEqual(validateBackup(createBackup({ specimens: { skull: 'SP-001' } })).specimens, { skull: 'SP-001' });
 assert.deepEqual(xlsxHierarchyRefs.hierarchyRefs.skull, { siteId: 'site:norte', contextId: 'context:ue-4', individualId: 'individual:ind-7' });
 const previousCaches = globalThis.caches;
 const previousFetch = globalThis.fetch;
