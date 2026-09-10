@@ -88,3 +88,20 @@ export function hierarchyRecordCounts(hierarchy, hierarchyRefs) {
   }
   return counts;
 }
+
+export function hierarchyInventoryMetrics(hierarchy, hierarchyRefs, status) {
+  const normalized = normalizeHierarchy(hierarchy);
+  const validIds = new Set(HIERARCHY_LEVELS.flatMap(level => normalized[level].map(entity => entity.id)));
+  const fields = { sites: 'siteId', campaigns: 'campaignId', sectors: 'sectorId', contexts: 'contextId', individuals: 'individualId' };
+  const metrics = Object.fromEntries(HIERARCHY_LEVELS.map(level => [level, Object.fromEntries(normalized[level].map(entity => [entity.id, { records: 0, reviewed: 0, present: 0 }]))]));
+  for (const [boneId, refs] of Object.entries(hierarchyRefs || {})) for (const level of HIERARCHY_LEVELS) {
+    const id = String(refs?.[fields[level]] || '').trim();
+    if (!validIds.has(id)) continue;
+    const metric = metrics[level][id];
+    metric.records += 1;
+    const value = status?.[boneId] || 'not_recorded';
+    if (value !== 'not_recorded') metric.reviewed += 1;
+    if (value === 'present') metric.present += 1;
+  }
+  return metrics;
+}
