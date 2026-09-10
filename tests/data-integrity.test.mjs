@@ -34,6 +34,9 @@ assert.deepEqual(specimenAnalysis.specimenCoverage, { identified: 1, withSpecime
 const specimenConflict = calculateOsteoAnalysis(bones, { status: { skull: 'present', mandible: 'present' }, specimens: { skull: 'SP-001', mandible: 'SP-001' }, individuals: { skull: 'IND-1', mandible: 'IND-2' } });
 assert.deepEqual(specimenConflict.specimenCoverage.conflicts, [{ specimenId: 'SP-001', individuals: ['IND-1', 'IND-2'], contexts: [] }]);
 assert.equal(calculateOsteoAnalysis(bones, { status: { skull: 'present', mandible: 'present' }, individuals: { skull: 'IND-1', mandible: 'IND-2' } }).mni.value, 1, 'MNI must use the maximum duplicate element-side group, not global individual count');
+const specimenFallback = calculateOsteoAnalysis(bones, { status: { skull: 'present' }, specimens: { skull: 'SP-002' }, specimenRecords: { 'SP-002': { id: 'SP-002', individualId: 'IND-2', context: 'UE-2' } } });
+assert.equal(specimenFallback.rows[0].individual, 'IND-2');
+assert.equal(specimenFallback.rows[0].context, 'UE-2');
 assert.deepEqual(xlsxHierarchyRefs.hierarchyRefs.skull, { siteId: 'site:norte', contextId: 'context:ue-4', individualId: 'individual:ind-7' });
 const previousCaches = globalThis.caches;
 const previousFetch = globalThis.fetch;

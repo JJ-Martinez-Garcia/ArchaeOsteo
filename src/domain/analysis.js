@@ -8,9 +8,11 @@ export function inventoryRows(bones, state) {
   return bones.map(bone => {
     const weightUnit = state.weightUnits?.[bone.id] === 'kg' ? 'kg' : 'g';
     const refs = state.hierarchyRefs?.[bone.id] || {};
+    const specimenId = state.specimens?.[bone.id] || '';
+    const specimenRecord = specimenId ? state.specimenRecords?.[specimenId] || {} : {};
     const hierarchyName = (level, id) => state.hierarchy?.[level]?.find(entity => entity.id === id)?.name || id;
-    const individual = refs.individualId ? hierarchyName('individuals', refs.individualId) : state.individuals?.[bone.id] || state.report?.individual || 'IND-LOCAL';
-    const context = refs.contextId ? hierarchyName('contexts', refs.contextId) : state.ue?.[bone.id] || state.report?.context || 'Sin contexto';
+    const individual = refs.individualId ? hierarchyName('individuals', refs.individualId) : state.individuals?.[bone.id] || specimenRecord.individualId || state.report?.individual || 'IND-LOCAL';
+    const context = refs.contextId ? hierarchyName('contexts', refs.contextId) : state.ue?.[bone.id] || specimenRecord.context || state.report?.context || 'Sin contexto';
     return {
     boneId: bone.id,
     name: bone.es,
@@ -23,7 +25,7 @@ export function inventoryRows(bones, state) {
     weightGrams: weightToGrams(state.weights?.[bone.id], weightUnit),
     portion: state.portions?.[bone.id] || 'whole',
     individual,
-    specimenId: state.specimens?.[bone.id] || '',
+    specimenId,
     context,
     taphonomy: state.taphonomy?.[bone.id] || [],
     pathology: state.pathology?.[bone.id] || [],
