@@ -701,6 +701,8 @@ assert.match(main, /statusSymbol\(status\)/);
 assert.match(await text('src/ui/extended.js'), /Jerarquía.*normalizeHierarchy/s);
 assert.match(await text('src/ui/extended.js'), /hierarchy-filter-level.*hierarchy-filter-query/);
 assert.match(await text('src/ui/extended.js'), /hierarchyRecordCounts/);
+assert.match(await text('src/ui/extended.js'), /export-hierarchy-metrics/);
+assert.match(await text('src/ui/extended.js'), /Reviewed_pct/);
 assert.match(main, /sheet\('Jerarquía'/);
 assert.match(main, /dracoDecoderPath: '\.\/draco\/'/);
 assert.match(await text('src/data/store.js'), /normalizeCustomModels/);
