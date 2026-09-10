@@ -277,3 +277,6 @@
 ### Preferencia de calidad
 
 - La calidad de renderizado se localiza en español/inglés y la E2E confirma que la selección baja se conserva tras recargar el proyecto.
+### Localización de preferencias
+
+- Las opciones de calidad del visor se traducen al cambiar entre español e inglés, conservando los valores científicos sin traducir.
