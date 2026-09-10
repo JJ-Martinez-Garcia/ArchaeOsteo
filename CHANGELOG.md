@@ -271,3 +271,6 @@
 ### Diagnóstico de rendimiento 3D
 
 - El visor avisa cuando el coste estimado de la escena supera un presupuesto orientativo de triángulos, adaptado a la memoria expuesta por el navegador.
+### Calidad de renderizado
+
+- Se puede elegir calidad automática, baja o alta; el ajuste cambia la resolución de dibujo del visor, se guarda por proyecto y forma parte de deshacer/restaurar.
