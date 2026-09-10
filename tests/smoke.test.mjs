@@ -823,6 +823,7 @@ assert.match(main, /photo_add/);
 assert.match(main, /photo_remove/);
 assert.match(main, /state\.locked\[state\.selected\].*Registro bloqueado/);
 assert.match(main, /state\.completeness\[b\.id\] == null \? '—' : `\$\{state\.completeness\[b\.id\]\}%`/);
+assert.match(main, /record\.completeness == null \? '—' : `\$\{record\.completeness\}%`/);
 assert.match(main, /importCustomModel = async file =>/);
 assert.match(extendedUi, /indeterminate_fragment_add/);
 assert.match(extendedUi, /indeterminate_fragment_remove/);
