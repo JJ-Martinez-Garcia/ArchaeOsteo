@@ -863,7 +863,7 @@ async function initProjectManager() {
     await saveLocal({ notify: false }); applyProjectData(state); await refreshProjectSelector();
   };
 }
-const extendedUi = initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject, commitInventoryEdit, applyProjectData });
+const extendedUi = initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject, commitInventoryEdit, applyProjectData, getModelManifest: () => modelManifest });
 document.querySelector('#language')?.addEventListener('change', () => { renderDental(); updateDentalCount(); renderList(); selectBone(state.selected); });
 document.querySelector('#profile')?.addEventListener('change', () => saveLocal({ notify: false }));
 document.querySelector('.tree')?.insertAdjacentHTML('afterbegin','<button id="skeleton-complete" class="tree-group">▣ ESQUELETO COMPLETO</button>');

@@ -549,6 +549,8 @@ try {
   }
   await evaluate(cdp, `document.querySelector('#compare-panel-button').click()`);
   await waitForValue(cdp, `Boolean(document.querySelector('#compare-3d-toggle'))`, value => value === true, 'Render 3D profile comparison');
+  assert.equal(await evaluate(cdp, `document.querySelectorAll('#compare-profile-coverage tbody tr').length`), 4, 'Profile comparison must show all four model packages');
+  assert.match(await evaluate(cdp, `document.querySelector('#compare-profile-coverage')?.textContent||''`), /179\s+(?:de|of)\s+192/, 'Profile comparison must expose model coverage');
   await evaluate(cdp, `(()=>{const select=document.querySelector('#compare-profile');select.value='infant';document.querySelector('#compare-3d-toggle').click();})()`);
   await waitForValue(cdp, `document.querySelector('#viewer').dataset.comparisonProfile`, value => value === 'infant', 'Activate scaled 3D comparison profile');
   await evaluate(cdp, `(()=>{const slider=document.querySelector('#explosion');slider.value='100';slider.dispatchEvent(new Event('input'));})()`);

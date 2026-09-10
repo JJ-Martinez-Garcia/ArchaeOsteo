@@ -8,6 +8,8 @@ import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
 import { normalizeWeightUnit } from '../domain/weights.js';
 import { normalizeDevelopmentRecords } from '../domain/development.js';
 import { HIERARCHY_LEVELS, compareHierarchyMetrics, hierarchyId, hierarchyInventoryMetrics, hierarchyRecordCounts, hierarchyTree, normalizeHierarchy } from '../domain/hierarchy.js';
+import { profileCatalog } from '../anatomy/catalog.js';
+import { modelPackageSummary } from '../anatomy/package.js';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -71,7 +73,7 @@ export function mergeAuxiliaryXlsx(value, workbook, XLSX, bones) {
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
 const PATHOLOGY_TYPES = ['Normal', 'Patológico', 'Traumatizado', 'Alterado', 'Indeterminado'];
 
-export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject, commitInventoryEdit, applyProjectData }) {
+export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject, commitInventoryEdit, applyProjectData, getModelManifest = () => null }) {
   let learningMode = 'identify';
   let learningTargetId = '';
   let learningScore = 0;
@@ -219,11 +221,27 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   };
 
   document.querySelector('#compare-panel-button').onclick = () => {
-    show(`<label>Perfil anatómico de referencia<select id="compare-profile"><option value="adult_male">Adulto masculino</option><option value="adult_female">Adulto femenino</option><option value="infant">Infante</option><option value="neonate">Neonato</option></select></label><button id="compare-3d-toggle" class="secondary-action" aria-pressed="false">Mostrar comparación 3D</button><label>Inventario local a comparar<select id="compare-project"><option value="">Cargando proyectos…</option></select></label><label>Filtrar comparación por individuo/contexto/UE/campaña<select id="compare-scope"><option value="">Todos los registros</option></select></label><div class="compare-card"><strong>Perfil actual:</strong> ${escapeHtml(document.querySelector('#profile').selectedOptions[0].textContent)}<br><strong>Perfil comparado:</strong> <span id="compare-label">Adulto masculino</span><p>La referencia 3D es geométrica hasta incorporar GLB anatómicos documentados. La comparación conserva IDs osteológicos y separa los datos científicos de la visualización.</p></div><div id="compare-inventory" class="compare-inventory" aria-live="polite"></div>`);
+    show(`<label>Perfil anatómico de referencia<select id="compare-profile"><option value="adult_male">Adulto masculino</option><option value="adult_female">Adulto femenino</option><option value="infant">Infante</option><option value="neonate">Neonato</option></select></label><button id="compare-3d-toggle" class="secondary-action" aria-pressed="false">Mostrar comparación 3D</button><label>Inventario local a comparar<select id="compare-project"><option value="">Cargando proyectos…</option></select></label><label>Filtrar comparación por individuo/contexto/UE/campaña<select id="compare-scope"><option value="">Todos los registros</option></select></label><div class="compare-card"><strong>Perfil actual:</strong> ${escapeHtml(document.querySelector('#profile').selectedOptions[0].textContent)}<br><strong>Perfil comparado:</strong> <span id="compare-label">Adulto masculino</span><p>La referencia 3D es geométrica hasta incorporar GLB anatómicos documentados. La comparación conserva IDs osteológicos y separa los datos científicos de la visualización.</p><div id="compare-profile-coverage" class="compare-profile-coverage" aria-live="polite"></div></div><div id="compare-inventory" class="compare-inventory" aria-live="polite"></div>`);
     const select = document.querySelector('#compare-profile');
     const compare3d=document.querySelector('#compare-3d-toggle');
+    const coverage = document.querySelector('#compare-profile-coverage');
+    const renderProfileCoverage = () => {
+      const manifest = getModelManifest();
+      if (!manifest) { coverage.textContent = 'Cobertura de modelos: manifiesto aún no disponible.'; return; }
+      const rows = ['adult_male', 'adult_female', 'infant', 'neonate'].map(profileId => {
+        const summary = modelPackageSummary(manifest, profileId, bones);
+        const catalog = profileCatalog(profileId);
+        const didactic = catalog.status === 'schematic' || profileId !== 'adult_male';
+        const label = catalog.label;
+        const status = summary.status === 'ready' ? 'completo' : summary.status === 'partial' ? 'parcial' : 'pendiente';
+        const note = didactic ? 'esquemático · no validado' : 'fuentes externas con créditos';
+        return `<tr${profileId === select.value ? ' class="selected-profile"' : ''}><th scope="row">${escapeHtml(label)}</th><td>${summary.publishedCount ?? 0} de ${summary.expected}</td><td>${status}</td><td>${note}</td></tr>`;
+      }).join('');
+      coverage.innerHTML = `<strong>Disponibilidad 3D por perfil</strong><table class="profile-coverage-table"><thead><tr><th>Perfil</th><th>Mallas</th><th>Estado</th><th>Alcance</th></tr></thead><tbody>${rows}</tbody></table><small>Las mallas propias sirven para orientación visual; no sustituyen modelos medidos ni validación especialista.</small>`;
+    };
+    renderProfileCoverage();
     compare3d.onclick=()=>{const active=compare3d.getAttribute('aria-pressed')!=='true';compare3d.setAttribute('aria-pressed',String(active));compare3d.textContent=active?'Ocultar comparación 3D':'Mostrar comparación 3D';window.dispatchEvent(new CustomEvent('oste3d:compare-profile',{detail:{profileId:active?select.value:''}}));};
-    select.onchange = () => { document.querySelector('#compare-label').textContent = select.selectedOptions[0].textContent; if(compare3d.getAttribute('aria-pressed')==='true')window.dispatchEvent(new CustomEvent('oste3d:compare-profile',{detail:{profileId:select.value}})); };
+    select.onchange = () => { document.querySelector('#compare-label').textContent = select.selectedOptions[0].textContent; renderProfileCoverage(); if(compare3d.getAttribute('aria-pressed')==='true')window.dispatchEvent(new CustomEvent('oste3d:compare-profile',{detail:{profileId:select.value}})); };
     const projectSelect = document.querySelector('#compare-project');
     const scopeSelect = document.querySelector('#compare-scope');
     const comparison = document.querySelector('#compare-inventory');
