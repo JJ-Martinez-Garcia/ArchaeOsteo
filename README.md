@@ -30,6 +30,10 @@ Consulta [la revisión del encargo y pendientes](PROJECT_REVIEW.md) y
 
 [Lista de cierre de los 119 puntos y mejoras propuestas](PROJECT_BACKLOG.md).
 
+La verificación del despliegue se puede ejecutar directamente con `pnpm verify-pages`;
+usa por defecto la página pública de GitHub Pages y admite `OSTEO3D_PAGES_URL` para
+otra publicación.
+
 Para colaborar, consulta [CONTRIBUTING.md](CONTRIBUTING.md) y la política de
 [seguridad y privacidad](SECURITY.md).
 

@@ -101,6 +101,7 @@ assert.match(store, /indexedDB/);
 assert.match(store, /PROJECT_SCHEMA_VERSION = 3/);
 assert.match(store, /normalizeProject/);
 assert.match(store, /normalizeHierarchyRefs/);
+assert.match(await text('scripts/verify-pages.mjs'), /DEFAULT_PAGES_URL/);
 assert.match(store, /localStorage\.getItem/);
 assert.match(store, /readFallbackProjects\(\)\.filter\(project => project\.id === id\)/);
 assert.match(store, /newestProjects\(\[\.\.\.projects, \.\.\.readFallbackProjects\(\)\]\)/);
