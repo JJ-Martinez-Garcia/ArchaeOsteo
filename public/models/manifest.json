@@ -194,7 +194,7 @@
       "label": "Adulto femenino",
       "root": "./adult_female",
       "asset_status": "partial",
-      "approximate_size_mb": 5.13,
+      "approximate_size_mb": 8.82,
       "asset_count": 179,
       "asset_ids": [
         "c1_atlas",
@@ -378,13 +378,13 @@
         "t9"
       ],
       "model_kind": "original-didactic",
-      "generator_version": "1.1.0"
+      "generator_version": "1.2.0"
     },
     "infant": {
       "label": "Infante",
       "root": "./infant",
       "asset_status": "partial",
-      "approximate_size_mb": 5.15,
+      "approximate_size_mb": 13.19,
       "asset_count": 179,
       "asset_ids": [
         "c1_atlas",
@@ -568,13 +568,13 @@
         "t9"
       ],
       "model_kind": "original-didactic",
-      "generator_version": "1.1.0"
+      "generator_version": "1.2.0"
     },
     "neonate": {
       "label": "Neonato",
       "root": "./neonate",
       "asset_status": "partial",
-      "approximate_size_mb": 5.27,
+      "approximate_size_mb": 13.3,
       "asset_count": 179,
       "asset_ids": [
         "c1_atlas",
@@ -758,7 +758,7 @@
         "t9"
       ],
       "model_kind": "original-didactic",
-      "generator_version": "1.1.0"
+      "generator_version": "1.2.0"
     }
   },
   "bone_asset_pattern": "{profile}/{bone_id}.glb",

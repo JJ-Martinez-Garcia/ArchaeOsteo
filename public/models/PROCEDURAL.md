@@ -1,7 +1,7 @@
-# Geometría propia de Osteo3D · 1.1.0
+# Geometría propia de Osteo3D · 1.2.0
 
 Autoría: Osteo3D contributors, 2026. Licencia MIT (véase LICENSE del repositorio).
-Código fuente: `src/anatomy/procedural.js`. Fecha: 2026-09-09.
+Código fuente: `src/anatomy/procedural.js`. Fecha: 2026-09-10.
 
 Los 179 identificadores anatómicos del catálogo tienen una representación
 tridimensional generada en el navegador, disponible también sin conexión.
@@ -22,12 +22,15 @@ volúmenes irregulares deterministas para carpo y tarso. Los extremos articulare
 están simplificados. Cada componente tiene nombre y metadatos estables.
 
 Hay cuatro conjuntos de parámetros: adulto masculino, adulto femenino, infante y
-neonato. Tronco, cabeza, miembros y cinturas tienen factores independientes.
-En inmaduros se separan segmentos y se dibujan envolventes cartilaginosas azules.
-No se asigna una edad concreta ni un calendario de aparición/fusión. Es incorrecto
-interpretar cada envolvente como una epífisis ya osificada. Las formas infantiles
-no son simples reducciones uniformes del adulto, pero tampoco reconstrucciones
-anatómicas validadas. Las diferencias adultas no son criterios diagnósticos de sexo.
+neonato. Tronco, cabeza, miembros y cinturas tienen factores independientes. La
+versión 1.2.0 aumenta la resolución de las superficies, afina el perfil de las
+diáfisis y separa mejor las placas epifisarias. En inmaduros añade fontanelas y
+suturas esquemáticas en el cráneo, placas de crecimiento y marcadores ocres de
+centros de osificación ilustrativos. No se asigna una edad concreta ni un calendario
+de aparición/fusión: esos marcadores no representan centros verificados. Las formas
+infantiles no son simples reducciones uniformes del adulto; el perfil femenino
+incorpora además proporciones pélvicas y escapulares diferenciadas. Ninguna de estas
+diferencias es un criterio diagnóstico de sexo o edad.
 
 El modo GLB conserva los recursos licenciados previamente incorporados, ajustados
 a envolventes esquemáticas de visualización. No se garantiza que sus orientaciones,
@@ -53,7 +56,9 @@ No utilizar estos modelos para medición clínica, estimación de edad/sexo ni
 diagnóstico. Las coordenadas son unidades arbitrarias, no milímetros.
 Las medidas manuales del inventario son independientes de la geometría del visor.
 Faltan dientes 3D, centros de osificación individualizados y segmentación completa
-del cráneo. Las fichas sin fuentes verificadas siguen mostrando información no disponible.
+del cráneo. Las placas, suturas y centros ocres son recursos de explicación visual,
+no sustituyen mallas derivadas de TAC, atlas o especímenes medidos. Las fichas sin
+fuentes verificadas siguen mostrando información no disponible.
 
 ## Exportación y redistribución
 

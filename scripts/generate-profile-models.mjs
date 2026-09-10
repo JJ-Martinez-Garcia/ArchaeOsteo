@@ -24,7 +24,7 @@ for(const profile of ['adult_female','infant','neonate']){
     const model=createProceduralBone(THREE,bone,profile);
     model.position.set(0,0,0);model.rotation.set(0,0,0);
     delete model.userData.baseScale;
-    model.userData={...model.userData,author:'Osteo3D contributors',generated:true,licenseText:license,referenceScale:'arbitrary',notice:'Original didactic model. No measured specimen, clinical validation, exact age or sex diagnosis. Blue parts are schematic cartilage envelopes, not verified ossification centers.'};
+    model.userData={...model.userData,author:'Osteo3D contributors',generated:true,licenseText:license,referenceScale:'arbitrary',notice:'Original didactic model. No measured specimen, clinical validation, exact age or sex diagnosis. Blue parts are schematic cartilage envelopes; ochre parts are illustrative ossification-center markers, not verified centers.'};
     const binary=await new GLTFExporter().parseAsync(model,{binary:true});
     const file=path.join(directory,`${id}.glb`);
     // Protect any user-supplied asset that may have been added since the last generation.
@@ -34,7 +34,7 @@ for(const profile of ['adult_female','infant','neonate']){
     model.traverse(node=>{node.geometry?.dispose();node.material?.dispose();});
   }
   manifest.profiles[profile]={...manifest.profiles[profile],asset_status:'partial',asset_count:ids.length,asset_ids:ids,approximate_size_mb:Number((bytes/1048576).toFixed(2)),model_kind:'original-didactic',generator_version:PROCEDURAL_VERSION};
-  registry.profiles[profile]={source_status:'published',author:'Osteo3D contributors',institution:'ArchaeOsteo project',url:'https://github.com/JJ-Martinez-Garcia/ArchaeOsteo',license:'MIT',version:`procedural-${PROCEDURAL_VERSION}`,consulted_at:'2026-09-09',modifications:'Original mathematical modeling with independent regional proportions and separated components. Not derived from the imported adult-male meshes; uncalibrated didactic reconstruction.',asset_count:ids.length,asset_ids:ids,model_kind:'original-didactic'};
+  registry.profiles[profile]={source_status:'published',author:'Osteo3D contributors',institution:'ArchaeOsteo project',url:'https://github.com/JJ-Martinez-Garcia/ArchaeOsteo',license:'MIT',license_url:'https://opensource.org/license/mit/',version:`procedural-${PROCEDURAL_VERSION}`,consulted_at:'2026-09-10',modifications:'Original mathematical modeling with independent regional proportions, higher-resolution surfaces, separated epiphyseal plates and illustrative ossification-center envelopes. Not derived from the imported adult-male meshes; uncalibrated didactic reconstruction.',asset_count:ids.length,asset_ids:ids,model_kind:'original-didactic'};
   console.log(`${profile}: ${ids.length} original GLB files · ${(bytes/1048576).toFixed(2)} MB`);
 }
 await writeFile(path.join(root,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');

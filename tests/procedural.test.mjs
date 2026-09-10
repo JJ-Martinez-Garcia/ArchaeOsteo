@@ -59,6 +59,11 @@ for(const profile of Object.keys(PROFILE_SHAPES)){
 const neonatal=createProceduralBone(THREE,femur,'neonate');
 assert.ok(neonatal.getObjectByName('left_femur:proximal-envelope'));
 assert.equal(neonatal.getObjectByName('left_femur:proximal-envelope').userData.tissue,'cartilage-envelope');
+assert.equal(neonatal.getObjectByName('left_femur:proximal-epiphyseal-plate').userData.tissue,'cartilage-envelope');
+assert.equal(neonatal.getObjectByName('left_femur:proximal-ossification-center').userData.tissue,'ossification-center');
+const neonatalSkull=createProceduralBone(THREE,skull,'neonate');
+assert.equal(neonatalSkull.getObjectByName('skull:anterior-fontanelle').userData.tissue,'cartilage-envelope');
+assert.equal(neonatalSkull.getObjectByName('skull:posterior-fontanelle').userData.tissue,'cartilage-envelope');
 
 // GLTFExporter expects the browser FileReader; a Blob-only test adapter is sufficient.
 globalThis.FileReader=class {

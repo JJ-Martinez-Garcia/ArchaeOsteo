@@ -1,11 +1,11 @@
 // Original, deterministic schematic geometry. MIT, Osteo3D contributors (2026).
 // Display units are arbitrary: neither morphometry nor age/sex estimation is valid.
-export const PROCEDURAL_VERSION = '1.1.0';
+export const PROCEDURAL_VERSION = '1.2.0';
 export const PROFILE_SHAPES = Object.freeze({
   adult_male: { trunk: 1, arm: 1, leg: 1, head: 1, shoulder: 1, pelvis: 1, immature: false },
-  adult_female: { trunk: .96, arm: .94, leg: .96, head: .97, shoulder: .93, pelvis: 1.08, immature: false },
-  infant: { trunk: .65, arm: .48, leg: .43, head: .8, shoulder: .65, pelvis: .63, immature: true },
-  neonate: { trunk: .43, arm: .29, leg: .24, head: .65, shoulder: .43, pelvis: .42, immature: true }
+  adult_female: { trunk: .96, arm: .94, leg: .96, head: .98, shoulder: .9, pelvis: 1.14, immature: false },
+  infant: { trunk: .67, arm: .49, leg: .44, head: .84, shoulder: .67, pelvis: .67, immature: true },
+  neonate: { trunk: .45, arm: .3, leg: .25, head: .69, shoulder: .45, pelvis: .45, immature: true }
 });
 
 export function isAnatomicalBone(bone) {
@@ -99,16 +99,17 @@ export function createProceduralBone(THREE,bone,profileId='adult_male',color=0xc
   if(!isAnatomicalBone(bone)) return root;
   const material=new THREE.MeshStandardMaterial({color,roughness:.7,side:THREE.DoubleSide});
   const cartilage=material.clone(); cartilage.color.setHex(0x64aabb);
+  const ossification=material.clone(); ossification.color.setHex(0xd1a06b);
   const add=(geometry,name,position=[0,0,0],scale=[1,1,1],mat=material)=>{
     const m=new THREE.Mesh(geometry,mat); m.name=`${id}:${name}`;
-    m.userData={boneId:id,componentId:m.name,tissue:mat===cartilage?'cartilage-envelope':'schematic-bone'};
+    m.userData={boneId:id,componentId:m.name,tissue:mat===cartilage?'cartilage-envelope':mat===ossification?'ossification-center':'schematic-bone'};
     m.position.set(...position);m.scale.set(...scale);root.add(m);return m;
   };
-  const ellipsoid=(name,p,s,mat)=>add(new THREE.SphereGeometry(1,16,10),name,p,s,mat);
-  const tube=(name,points,r=.06)=>add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p))),24,r,8,false),name);
+  const ellipsoid=(name,p,s,mat)=>add(new THREE.SphereGeometry(1,24,16),name,p,s,mat);
+  const tube=(name,points,r=.06)=>add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p))),32,r,10,false),name);
   const plate=(name,points,depth=.08)=>{
     const shape=new THREE.Shape();points.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();
-    return add(new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:true,bevelSegments:1,steps:1,bevelSize:.025,bevelThickness:.025}),name,[0,0,-depth/2]);
+    return add(new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.025,bevelThickness:.025}),name,[0,0,-depth/2]);
   };
   if(id==='skull') {
     const gap=q.immature?(newborn?.12:.065):.012;
@@ -129,6 +130,12 @@ export function createProceduralBone(THREE,bone,profileId='adult_male',color=0xc
       ellipsoid(`maxilla-${s}`,[s*.1,-.34,.32],[.11,q.immature?.07:.12,.12]);
       tube(`nasal-${s}`,[[s*.03,-.04,.41],[s*.06,-.2,.47]],newborn?.012:.018);
       tube(`zygomatic-${s}`,[[s*.35,-.12,.3],[s*.43,-.23,.08],[s*.4,-.24,-.08]],.038);
+    }
+    if(q.immature){
+      ellipsoid('anterior-fontanelle',[0,.58,.18],[.16,.1,.035],cartilage);
+      ellipsoid('posterior-fontanelle',[0,.43,-.27],[.1,.07,.03],cartilage);
+      tube('frontal-suture',[[-.02,.62,.37],[0,.59,.43],[.02,.62,.37]],.012);
+      tube('sagittal-suture',[[0,.63,.37],[0,.52,.12],[0,.44,-.2]],.012);
     }
   } else if(id==='mandible') {
     for(const s of [-1,1]) {
@@ -177,7 +184,7 @@ export function createProceduralBone(THREE,bone,profileId='adult_male',color=0xc
     if(id.endsWith('hamate')) tube('hook',[[.1,0,.3],[.18,.08,.55],[.05,.13,.58]],.07);
   } else {
     const small=/metacarpal|metatarsal|digit_|toe_/.test(id), femur=id.endsWith('femur'), slender=/_fibula$|_radius$|_ulna$/.test(id);
-    const points=[[-.4,.13],[-.32,.105],[-.18,.065],[0,.058],[.18,.07],[.31,.11],[.4,.15]];
+    const points=[[-.5,.17],[-.43,.145],[-.34,.105],[-.22,.073],[-.08,.058],[.08,.058],[.22,.073],[.34,.105],[.43,.145],[.5,.17]];
     const shaft=add(new THREE.LatheGeometry(points.map(([y,r])=>new THREE.Vector2(slender?r*.7:r,y)),24),'diaphysis');
     const positions=shaft.geometry.attributes.position;
     for(let i=0;i<positions.count;i++){
@@ -188,6 +195,12 @@ export function createProceduralBone(THREE,bone,profileId='adult_male',color=0xc
     }
     shaft.geometry.computeVertexNormals();
     const endMaterial=q.immature?cartilage:material, offset=q.immature?.465:.4;
+    if(q.immature){
+      add(new THREE.CylinderGeometry(.18,.18,.035,24),'proximal-epiphyseal-plate',[0,offset-.02,0],[1,1,1],cartilage);
+      add(new THREE.CylinderGeometry(.16,.16,.035,24),'distal-epiphyseal-plate',[0,-offset+.02,0],[1,1,1],cartilage);
+      ellipsoid('proximal-ossification-center',[femur?-sign*.08:0,offset+.035,.01],[femur?.1:.08,.055,.08],ossification);
+      ellipsoid('distal-ossification-center',[0,-offset-.035,.01],[small?.07:.1,.05,small?.07:.08],ossification);
+    }
     ellipsoid('proximal-envelope',[femur?-sign*.18:0,offset,0],[femur?.17:.14,.105,.14],endMaterial);
     if(femur) tube('neck',[[-sign*.05,.28,0],[-sign*.18,.4,0]],.085);
     if(femur)ellipsoid('greater-trochanter',[sign*.09,.34,0],[.08,.1,.09]);

@@ -24,10 +24,10 @@ Los cuatro perfiles tienen cobertura `partial`: 179 GLB por perfil y 13 categor�
 - Autoría: Osteo3D contributors, 2026; proyecto ArchaeOsteo.
 - Licencia: MIT, aviso completo incluido en cada GLB y en LICENSE del repositorio.
 - Fuente y generador: https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/blob/main/src/anatomy/procedural.js
-- Versión: procedural-1.1.0; fecha: 2026-09-09.
+- Versión: procedural-1.2.0; fecha: 2026-09-10.
 - 179 archivos por perfil (537 nuevos). Generación: `pnpm generate-profile-models`.
 - Geometría matemática original, proporciones regionales independientes, formas craneales y pélvicas diferenciadas, diáfisis curvadas, extremos y relieves de huesos largos, componentes separados en inmaduros.
-- No se copiaron mallas del adulto masculino. Las superficies azules son envolventes cartilaginosas didácticas, no centros de osificación certificados. No se asigna una edad exacta.
+- No se copiaron mallas del adulto masculino. Las superficies azules son envolventes cartilaginosas didácticas y las piezas ocres son marcadores ilustrativos de centros de osificación; ninguno está certificado. No se asigna una edad exacta.
 - Metadatos: ID, nombres ES/EN/latín del catálogo, lado, región, perfil, versión, autoría, licencia y advertencia de escala arbitraria. La nomenclatura del catálogo sigue pendiente de curación especializada.
 - Límites y referencias: [PROCEDURAL.md](PROCEDURAL.md). Se requiere validación especializada antes de uso científico.
 

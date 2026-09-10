@@ -192,8 +192,12 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   por sí solo remontaje ni MNE/MNI.
 
 - 179 elementos con geometría procedural propia para los cuatro perfiles (716
-  combinaciones). Código fuente reproducible y exportación individual GLB con
-  autoría, MIT, versión y límites. Se conservan los 179 GLB externos del adulto.
+  combinaciones), actualizada a procedural-1.2.0. Las mejoras incluyen superficies
+  de mayor resolución, perfiles de diáfisis más finos, placas epifisarias separadas,
+  fontanelas/suturas esquemáticas y marcadores ilustrativos de centros de osificación
+  en inmaduros, además de proporciones diferenciadas para el perfil femenino. Código
+  fuente reproducible y exportación individual GLB con autoría, MIT, versión y límites.
+  Se conservan los 179 GLB externos del adulto.
 - Se corrigen alineación esquemática de columna/pelvis, muñecas/manos y tobillos/pies,
   lateralidad de la vista anterior y separación de falanges medias/distales.
 - El validador de assets comprueba que los 13 IDs sin GLB individual sean únicamente
