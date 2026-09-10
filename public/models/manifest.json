@@ -769,6 +769,7 @@
     "name_la",
     "region",
     "side",
-    "license"
+    "license",
+    "license_url"
   ]
 }

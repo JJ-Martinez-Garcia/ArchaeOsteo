@@ -1,6 +1,6 @@
 # Plan de cierre del encargo completo
 
-Actualizado: 2026-09-09. Fuente: los 119 apartados del encargo original.
+Actualizado: 2026-09-10. Fuente: los 119 apartados del encargo original.
 
 El objetivo sigue abierto. Esta lista no sustituye ni reduce el encargo. Una función existente
 no se considera cerrada hasta verificar todo su alcance. Ningún checkbox global está marcado
@@ -111,7 +111,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 92 | ACCESIBILIDAD | Foco visible global, navegación semántica/teclado y soporte de movimiento reducido incorporados; queda auditoría de contraste, lector de pantalla, zoom y tamaños táctiles con dispositivos reales. |
 | 93 | ARQUITECTURA DEL PROYECTO | Extraer controlador 3D y módulos de UI de main.js de forma incremental. |
 | 94 | MODULARIDAD | Los exportadores XLSX/pesos, los controles de fotografías, los filtros extendidos y el reset de nuevo proyecto ya no dependen de temporizadores de carga arbitrarios; el diagnóstico de capacidades tampoco se inicializa dos veces y el gestor de proyectos usa una microtarea segura. Quedan los temporizadores de UI restantes y la separación completa de dependencias cruzadas. |
-| 95 | LICENCIAS DE MODELOS 3D | 537 GLB propios y 179 externos documentados; las fuentes, autoría, licencia y advertencia didáctica están incorporadas. Sigue pendiente la auditoría especializada de cada licencia/fuente externa y validar anatómicamente los GLB procedurales antes de cualquier uso científico. |
+| 95 | LICENCIAS DE MODELOS 3D | 537 GLB propios y 179 externos documentados; las fuentes, autoría, licencia, URL de términos, fecha de consulta y advertencia didáctica están incorporadas y validadas. Sigue pendiente la auditoría especializada de cada licencia/fuente externa y validar anatómicamente los GLB procedurales antes de cualquier uso científico. |
 | 96 | PRECISIÓN CIENTÍFICA | Revisión anatómica por especialista y referencias trazables antes de uso científico. |
 | 97 | TRANSPARENCIA DE LOS CÁLCULOS | Métodos y revisiones visibles; rastrear cada inferencia hasta observaciones reales. |
 | 98 | PRIVACIDAD | Auditar peticiones y garantizar que datos/fotos locales no se transmiten por ningún flujo implícito. |

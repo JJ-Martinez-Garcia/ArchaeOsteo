@@ -171,7 +171,14 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   y el número de entradas a 2048; rechaza duplicados y rutas inseguras antes de validar
   CRC/SHA-256.
 - La importación de paquetes GLB locales también es transaccional: si falla una entrada,
-  restaura las respuestas reemplazadas y elimina únicamente las entradas nuevas.
+  restaura las respuestas reemplazadas y elimina únicamente las entradas nuevas. Los
+  modelos locales se rechazan por encima de 64 MB antes de leerlos; la sustitución de
+  un GLB/GLTF/OBJ/STL propio restaura todas las variantes anteriores si falla la caché.
+- Tras restaurar una copia `.osteo3d`, la escena 3D recarga los modelos personalizados
+  sin exigir cambiar de perfil; si un binario no puede entrar en la caché, su metadato
+  queda marcado como no disponible offline en vez de declarar una disponibilidad falsa.
+- Las copias completas conservan también la preferencia de calidad de renderizado
+  (`auto`, `low` o `high`) y normalizan cualquier valor externo no válido a `auto`.
 - Cada registro óseo puede incluir ahora un `Specimen_ID` opcional. Se conserva en
   JSON, CSV, historial, migración y hoja XLSX `Especímenes`; el NISP agrupa únicamente
   cuando existe ese identificador explícito y mantiene el recuento provisional para
@@ -192,6 +199,13 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - El validador de assets comprueba que los 13 IDs sin GLB individual sean únicamente
   categorías agregadas o indeterminadas; cualquier hueso individual nuevo sin malla
   hace fallar la validación.
+- El registro de fuentes exige ahora URLs `http`/`https` válidas, además de autoría,
+  licencia, URL de términos, versión e institución, y fecha `AAAA-MM-DD`, para evitar
+  créditos, enlaces o fechas de consulta inseguros.
+- El manifiesto GLB declara `license_url` como metadato obligatorio, alineado con el
+  registro de fuentes.
+- El workflow de GitHub Pages verifica también `CITATION.cff` antes de construir y
+  desplegar, para que una publicación no pierda la referencia bibliográfica.
 - Los 13 registros agregados/indeterminados dejan de duplicar piezas en el visor,
   sin borrar inventarios. Cráneo, esternón y algunos conjuntos siguen agrupados.
 - Los perfiles inmaduros usan proporciones independientes por región y componentes

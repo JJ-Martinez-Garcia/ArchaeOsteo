@@ -394,11 +394,13 @@ try {
   })()`);
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
-  await evaluate(cdp, `(()=>{const canvas=document.querySelector('#viewer canvas');canvas?.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));})()`);
+  await waitForValue(cdp, `Boolean(document.querySelector('#viewer canvas'))`, Boolean, 'Render viewer canvas after reload');
+  await evaluate(cdp, `(()=>{const canvas=document.querySelector('#viewer canvas');if(!canvas)throw new Error('Viewer canvas missing');canvas.focus();canvas.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));})()`);
   await waitForValue(cdp,projectReadExpression(),value=>Number.isFinite(value?.cameraView?.theta)&&value.cameraView.theta!==0,'Persist 3D camera view');
   await navigate(cdp, 'Page.reload', { ignoreCache: false });
   await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'Reload after camera change');
   await waitForValue(cdp,projectReadExpression(),value=>Number.isFinite(value?.cameraView?.theta)&&value.cameraView.theta!==0,'Recover 3D camera view after reload');
+  await waitForValue(cdp, `Boolean(document.querySelector('#multi-compare-panel-button'))`, Boolean, 'Recover extended UI after reload');
 
   const comparisonSeed = projectReadExpression();
   await evaluate(cdp, `(async()=>{const project=await ${comparisonSeed};project.id='comparison-e2e';project.projectName='Proyecto comparación E2E';project.status={...(project.status||{}),skull:'absent'};return await new Promise((resolve,reject)=>{const request=indexedDB.open('osteo3d',3);request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result,tx=db.transaction('projects','readwrite');tx.oncomplete=()=>{db.close();resolve(true);};tx.onerror=()=>{db.close();reject(tx.error);};tx.objectStore('projects').put(project);};});})()`);
@@ -421,7 +423,12 @@ try {
     assert.equal(await evaluate(cdp, `document.querySelector('#bone-list [data-bone]')?.getAttribute('aria-label')?.toLowerCase().includes(${JSON.stringify(expected)})`), true, `Search synonym must identify expected bone: ${query}`);
   }
   await evaluate(cdp, `(()=>{const input=document.querySelector('#search');input.value='';input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
-  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#mark-remaining-absent').click()`);
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click()`);
+  await sleep(2500);
+  const cameraBeforeInventoryDrag = await evaluate(cdp, `document.querySelector('#viewer')?.dataset.cameraSignature || ''`);
+  await evaluate(cdp, `(()=>{const canvas=document.querySelector('#viewer canvas');if(!canvas)throw new Error('Viewer canvas missing');canvas.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:71,pointerType:'touch',button:0,clientX:220,clientY:220}));canvas.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:71,pointerType:'touch',button:0,clientX:340,clientY:280}));canvas.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:71,pointerType:'touch',button:0,clientX:340,clientY:280}));})()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#viewer')?.dataset.cameraSignature || ''`), cameraBeforeInventoryDrag, 'Keep camera fixed while painting inventory');
+  await evaluate(cdp, `document.querySelector('#mark-remaining-absent').click()`);
   assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#confirm-action-accept'))`), true, 'Mass absent action must require confirmation');
   await evaluate(cdp, `document.querySelector('#confirm-action-accept').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>Object.values(value.status||{}).filter(status=>status==='absent').length>0,'Persist mass absent action');

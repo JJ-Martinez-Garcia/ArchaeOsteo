@@ -20,12 +20,13 @@ por perfil) con nombres, componentes y licencia MIT, además del generador repro
 `pnpm generate-profile-models`. Son modelos didácticos, no reconstrucciones validadas
 de especímenes. Consultar [fuentes y límites](public/models/SOURCES.md).
 
-Actualización 2026-09-09: los cuatro perfiles cuentan con **179 representaciones 3D
+Actualización 2026-09-10: los cuatro perfiles cuentan con **179 representaciones 3D
 esquemáticas propias por perfil**, disponibles offline y exportables como GLB.
 Se conservan los modelos externos y sus créditos. Los esquemas no son escaneos,
 no tienen escala métrica y no sirven para estimar edad o sexo. Los otros 13
 registros del catálogo son categorías agregadas/indeterminadas, no huesos ausentes.
 Consulta [la revisión del encargo y pendientes](PROJECT_REVIEW.md) y
+[la guía de citación](CITATION.cff) antes de reutilizar o publicar resultados.
 [el método del generador](public/models/PROCEDURAL.md).
 
 [Lista de cierre de los 119 puntos y mejoras propuestas](PROJECT_BACKLOG.md).
@@ -98,7 +99,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - interfaz responsive para escritorio y móvil.
 - recuperación de errores de interfaz con aviso no destructivo y diagnóstico en consola;
 
-El perfil adulto masculino publica 179 de 192 elementos GLB documentados: un cráneo CC0 y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. Los 13 elementos agregados o indeterminados restantes no tienen malla independiente; los perfiles adulto femenino, infante y neonato incluyen GLB procedurales propios, distribuidos bajo MIT, que son esquemáticos y no están validados para medición o diagnóstico. El investigador también puede importar paquetes GLB por `Bone_ID` o asociar un modelo propio GLB, GLTF, OBJ o STL al hueso seleccionado. Los modelos propios y sus metadatos se guardan en la caché local del navegador para reutilizarlos offline; no se publican en el repositorio ni se incluyen dentro de las copias JSON, por lo que una restauración en otro navegador debe volver a importar los archivos.
+El perfil adulto masculino publica 179 de 192 elementos GLB documentados: un cráneo CC0 y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. Los 13 elementos agregados o indeterminados restantes no tienen malla independiente; los perfiles adulto femenino, infante y neonato incluyen GLB procedurales propios, distribuidos bajo MIT, que son esquemáticos y no están validados para medición o diagnóstico. El investigador también puede importar paquetes GLB por `Bone_ID` o asociar un modelo propio GLB, GLTF, OBJ o STL al hueso seleccionado. Cada modelo local está limitado a 64 MB y se valida antes de leerlo; la sustitución de un modelo se restaura si falla la escritura en caché. Los modelos propios y sus metadatos se guardan en la caché local del navegador para reutilizarlos offline; no se publican en el repositorio ni se incluyen dentro de las copias JSON, por lo que una restauración en otro navegador debe volver a importar los archivos.
 
 ## Arquitectura prevista
 

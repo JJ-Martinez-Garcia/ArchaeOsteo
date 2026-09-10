@@ -10,6 +10,8 @@ conservarse al añadir o sustituir assets.
 - No incluyas inventarios, fotografías de excavación ni datos personales reales.
 - Para modelos 3D, añade procedencia, licencia, autoría, perfil de edad, escala si
   existe y límites de uso en `public/models/sources.json` y la documentación asociada.
+- Mantén `CITATION.cff` si cambia la autoría del software, su versión o su URL de
+  repositorio; no sustituyas los créditos de terceros por la licencia del código.
 - Las afirmaciones anatómicas deben distinguirse de la geometría esquemática y contar
   con revisión especializada antes de presentarse como referencia científica.
 
@@ -20,6 +22,7 @@ Ejecuta, como mínimo:
 ```text
 pnpm test
 pnpm validate-model-assets
+pnpm validate-citation
 pnpm validate-pwa
 pnpm build
 ```

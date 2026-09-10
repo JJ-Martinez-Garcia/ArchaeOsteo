@@ -44,6 +44,8 @@ jobs:
         run: pnpm validate-shell
       - name: Validate model assets and licenses
         run: pnpm validate-model-assets
+      - name: Validate software citation metadata
+        run: pnpm validate-citation
       - name: Validate local-only data flows
         run: pnpm validate-privacy
       - name: Validate complete requirements backlog

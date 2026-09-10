@@ -2,6 +2,10 @@ export const MODEL_MANIFEST_SCHEMA = 1;
 export const MODEL_SOURCE_REGISTRY_SCHEMA = 1;
 export const MODEL_PACKAGE_CACHE = 'osteo3d-models-v1';
 export const CUSTOM_MODEL_CACHE = 'osteo3d-custom-models-v1';
+// Keep local model imports bounded before reading their ArrayBuffer. This is
+// deliberately below the archive limit so a single malformed model cannot
+// consume the whole local storage budget.
+export const MAX_LOCAL_MODEL_BYTES = 64 * 1024 * 1024;
 
 const ASSET_STATUSES = new Set(['placeholder', 'ready', 'partial']);
 
@@ -38,7 +42,7 @@ export function validateModelManifest(manifest, boneIds = []) {
     if (!manifest.bone_asset_pattern.includes('{profile}')) errors.push('bone_asset_pattern debe incluir {profile}');
     if (!manifest.bone_asset_pattern.includes('{bone_id}')) errors.push('bone_asset_pattern debe incluir {bone_id}');
   }
-  if (!Array.isArray(manifest?.required_metadata) || !manifest.required_metadata.includes('license')) errors.push('required_metadata debe exigir license');
+  if (!Array.isArray(manifest?.required_metadata) || !manifest.required_metadata.includes('license') || !manifest.required_metadata.includes('license_url')) errors.push('required_metadata debe exigir license y license_url');
   for (const [profileId, profile] of Object.entries(manifest?.profiles || {})) {
     if (!profile.root) errors.push(`${profileId}: falta root`);
     if (!ASSET_STATUSES.has(profile.asset_status)) errors.push(`${profileId}: asset_status no válido`);
@@ -67,9 +71,18 @@ export function validateModelSourceRegistry(manifest, registry = {}) {
     }
     if (!['pending', 'published'].includes(source.source_status)) errors.push(`${profileId}: source_status no válido`);
     if (profile.asset_status === 'placeholder' && source.source_status === 'pending') continue;
-    for (const field of ['author', 'institution', 'url', 'license', 'version', 'consulted_at']) {
+    for (const field of ['author', 'institution', 'url', 'license', 'license_url', 'version', 'consulted_at']) {
       if (!source[field]) errors.push(`${profileId}: falta ${field}`);
     }
+    for (const [field, label] of [['url', 'url'], ['license_url', 'license_url']]) if (source[field]) {
+      try { const parsed = new URL(source[field]); if (!['http:', 'https:'].includes(parsed.protocol)) errors.push(`${profileId}: ${label} debe usar http o https`); }
+      catch { errors.push(`${profileId}: ${label} no es válida`); }
+    }
+    if (source.license_urls != null) {
+      if (!Array.isArray(source.license_urls) || source.license_urls.length === 0) errors.push(`${profileId}: license_urls debe ser una lista no vacía`);
+      else source.license_urls.forEach((url, index) => { try { const parsed = new URL(url); if (!['http:', 'https:'].includes(parsed.protocol)) errors.push(`${profileId}: license_urls[${index}] debe usar http o https`); } catch { errors.push(`${profileId}: license_urls[${index}] no es válida`); } });
+    }
+    if (source.consulted_at) { const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(source.consulted_at) ? new Date(`${source.consulted_at}T00:00:00Z`) : null; const normalizedDate = parsedDate && !Number.isNaN(parsedDate.valueOf()) ? parsedDate.toISOString().slice(0, 10) : ''; if (normalizedDate !== source.consulted_at) errors.push(`${profileId}: consulted_at debe ser una fecha ISO válida (AAAA-MM-DD)`); }
     if (profile.asset_status === 'ready' && (!Number.isInteger(source.asset_count) || source.asset_count < 1)) {
       errors.push(`${profileId}: asset_count debe ser mayor que cero`);
     }
@@ -155,7 +168,15 @@ export async function importModelPackageFiles(profileId, files = [], boneIds = [
         rejected.push(file?.name || 'archivo sin nombre');
         continue;
       }
+      if (Number.isFinite(Number(file?.size)) && Number(file.size) > MAX_LOCAL_MODEL_BYTES) {
+        rejected.push(file?.name || 'archivo sin nombre');
+        continue;
+      }
       const body = await file.arrayBuffer();
+      if (body.byteLength > MAX_LOCAL_MODEL_BYTES) {
+        rejected.push(file?.name || 'archivo sin nombre');
+        continue;
+      }
       const magic = new TextDecoder().decode(new Uint8Array(body).slice(0, 4));
       if (magic !== 'glTF' || !glbContainsBoneId(body, baseName)) {
         rejected.push(file?.name || 'archivo sin nombre');
@@ -220,17 +241,33 @@ export function customModelUrl(profileId, boneId, format = 'glb') {
 export async function cacheCustomModelFile(profileId, boneId, file, options = {}) {
   if (!globalThis.caches?.open) throw new Error('Cache Storage no disponible en este navegador.');
   const format = String(file?.name || '').split('.').pop().toLowerCase() || 'glb';
+  if (Number.isFinite(Number(file?.size)) && Number(file.size) > MAX_LOCAL_MODEL_BYTES) throw new Error('El modelo supera el límite local de 64 MB.');
   const url = customModelUrl(profileId, boneId, format);
   const body = await file.arrayBuffer();
+  if (body.byteLength > MAX_LOCAL_MODEL_BYTES) throw new Error('El modelo supera el límite local de 64 MB.');
   const cacheName = options.cacheName || CUSTOM_MODEL_CACHE;
   const cache = await caches.open(cacheName);
-  await Promise.all(['glb', 'gltf', 'obj', 'stl'].filter(item => item !== format).map(item => cache.delete(customModelUrl(profileId, boneId, item))));
-  await cache.put(url, new Response(body, {
-    headers: {
-      'content-type': file.type || 'application/octet-stream',
-      'content-length': String(file.size || body.byteLength)
-    }
-  }));
+  const candidateUrls = ['glb', 'gltf', 'obj', 'stl'].map(item => customModelUrl(profileId, boneId, item));
+  const previous = new Map();
+  for (const candidate of candidateUrls) {
+    const response = await cache.match(candidate);
+    if (response) previous.set(candidate, response.clone ? response.clone() : response);
+  }
+  try {
+    await cache.put(url, new Response(body, {
+      headers: {
+        'content-type': file.type || 'application/octet-stream',
+        'content-length': String(file.size || body.byteLength)
+      }
+    }));
+    await Promise.all(candidateUrls.filter(candidate => candidate !== url).map(candidate => cache.delete(candidate)));
+  } catch (error) {
+    await Promise.all(candidateUrls.map(async candidate => {
+      if (previous.has(candidate)) return cache.put(candidate, previous.get(candidate));
+      return cache.delete(candidate);
+    }));
+    throw error;
+  }
   return { url, format, cacheName, bytes: body.byteLength };
 }
 

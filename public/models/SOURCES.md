@@ -1,5 +1,9 @@
 # Registro de fuentes y licencias de modelos
 
+Cada perfil publicado incluye en `sources.json` la URL de origen y una `license_url`
+directa a los términos de la licencia; ambas se validan como enlaces HTTPS. Cuando un
+paquete combina licencias, `license_urls` enumera todas las URL legales aplicables.
+
 Este registro es obligatorio antes de publicar cualquier GLB en `public/models/`.
 
 Por cada perfil y paquete se deben documentar:

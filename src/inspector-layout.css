@@ -45,3 +45,4 @@
 @media (min-width: 901px) and (max-width: 1100px) { .layout { grid-template-columns: 210px minmax(0, 1fr) 10px minmax(300px, min(720px, var(--inspector-width, 380px))); } }
 :root #storage-status[data-save-state="failed"] { color: #991b1b; background: #fee2e2; border: 1px solid #b91c1c; font-weight: 700; }
 :root #storage-status[data-save-state="localStorage"] { color: #713f12; background: #fef3c7; }
+html, body { overflow-x: hidden; }

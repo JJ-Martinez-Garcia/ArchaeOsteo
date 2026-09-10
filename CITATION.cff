@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Si utilizas Osteo3D, cita este repositorio y las fuentes de modelos indicadas en SOURCES.md."
+type: software
+title: "Osteo3D"
+version: 1.0.0
+date-released: 2026-09-10
+authors:
+  - family-names: "Martínez García"
+    given-names: "JJ"
+    affiliation: "Osteo3D contributors"
+repository-code: "https://github.com/JJ-Martinez-Garcia/ArchaeOsteo"
+license: MIT
+keywords:
+  - osteoarchaeology
+  - archaeology
+  - osteometry
+  - three-dimensional-models
+  - progressive-web-app

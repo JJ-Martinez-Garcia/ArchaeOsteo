@@ -26,11 +26,24 @@ export function createStoredZip(entries) {
 
 export async function createOsteoArchive(projectBackup, models = []) {
   const projectData = encoder.encode(JSON.stringify(projectBackup, null, 2));
-  const checksums = Object.fromEntries(models.map(model => [model.name, crc32(model.data).toString(16).padStart(8, '0')]));
-  const hashEntries = [['project.json', projectData], ...models.map(model => [model.name, model.data])];
+  if (projectData.length > ARCHIVE_LIMITS.maxEntryBytes) throw new Error('El proyecto supera el límite de 64 MB por entrada.');
+  if (!Array.isArray(models) || models.length > ARCHIVE_LIMITS.maxEntries - 2) throw new Error('La copia contiene demasiados modelos personalizados.');
+  const names = new Set(['project.json', 'MANIFEST.json']);
+  const normalizedModels = models.map(model => {
+    const name = String(model?.name || '');
+    const data = model?.data instanceof Uint8Array ? model.data : new Uint8Array(model?.data || []);
+    if (!name.startsWith('models/custom/') || name.startsWith('/') || name.includes('..') || names.has(name)) throw new Error('Nombre de modelo no válido para la copia.');
+    if (data.length > ARCHIVE_LIMITS.maxEntryBytes) throw new Error(`El modelo ${name} supera el límite de 64 MB.`);
+    names.add(name);
+    return { name, data };
+  });
+  if (projectData.length + normalizedModels.reduce((sum, model) => sum + model.data.length, 0) > ARCHIVE_LIMITS.maxBytes) throw new Error('La copia supera el límite total de 256 MB.');
+  const checksums = Object.fromEntries(normalizedModels.map(model => [model.name, crc32(model.data).toString(16).padStart(8, '0')]));
+  const hashEntries = [['project.json', projectData], ...normalizedModels.map(model => [model.name, model.data])];
   const sha256 = Object.fromEntries(await Promise.all(hashEntries.map(async ([name, data]) => [name, await sha256Hex(data)])));
-  const entries = [{ name: 'project.json', data: projectData }, { name: 'MANIFEST.json', data: encoder.encode(JSON.stringify({ format: 'osteo3d-archive', version: 2, createdAt: new Date().toISOString(), models: models.map(model => model.name), checksums, sha256 }, null, 2)) }];
-  for (const model of models) entries.push({ name: model.name, data: model.data });
+  const entries = [{ name: 'project.json', data: projectData }, { name: 'MANIFEST.json', data: encoder.encode(JSON.stringify({ format: 'osteo3d-archive', version: 2, createdAt: new Date().toISOString(), models: normalizedModels.map(model => model.name), checksums, sha256 }, null, 2)) }];
+  for (const model of normalizedModels) entries.push(model);
+  if (entries[1].data.length > ARCHIVE_LIMITS.maxEntryBytes || entries.reduce((sum, entry) => sum + entry.data.length, 0) > ARCHIVE_LIMITS.maxBytes) throw new Error('La copia supera los límites de tamaño permitidos.');
   return createStoredZip(entries);
 }
 
@@ -43,8 +56,11 @@ export async function readOsteoArchive(buffer) {
   }
   if (!entries.has('project.json')) throw new Error('La copia Osteo3D no contiene project.json.');
   let project, manifest = { format: 'osteo3d-archive', version: 1, models: [] }; try { project = JSON.parse(decoder.decode(entries.get('project.json'))); if (entries.has('MANIFEST.json')) manifest = JSON.parse(decoder.decode(entries.get('MANIFEST.json'))); } catch { throw new Error('project.json o MANIFEST.json no es JSON válido.'); }
+  if (!manifest || manifest.format !== 'osteo3d-archive' || ![1, 2].includes(manifest.version) || !Array.isArray(manifest.models)) throw new Error('MANIFEST.json no es compatible.');
   const models = [...entries.entries()].filter(([name]) => name.startsWith('models/custom/')).map(([name, data]) => ({ name, data }));
+  const declaredModels = new Set(manifest.models);
+  if (declaredModels.size !== manifest.models.length || declaredModels.size !== models.length || models.some(model => !declaredModels.has(model.name))) throw new Error('MANIFEST.json no coincide con los modelos de la copia.');
   for (const model of models) { const expected = manifest.checksums?.[model.name]; if (expected && expected !== crc32(model.data).toString(16).padStart(8, '0')) throw new Error(`Archivo Osteo3D dañado: ${model.name}.`); }
-  if (manifest.version >= 2 && manifest.sha256) { const expectedProject = manifest.sha256['project.json']; if (expectedProject && expectedProject !== await sha256Hex(entries.get('project.json'))) throw new Error('Archivo Osteo3D dañado: project.json.'); for (const model of models) { const expected = manifest.sha256[model.name]; if (expected && expected !== await sha256Hex(model.data)) throw new Error(`Archivo Osteo3D dañado: ${model.name}.`); } }
+  if (manifest.version >= 2) { if (!manifest.checksums || !manifest.sha256 || !manifest.sha256['project.json'] || models.some(model => !manifest.sha256[model.name])) throw new Error('MANIFEST.json no contiene hashes completos.'); const expectedProject = manifest.sha256['project.json']; if (expectedProject !== await sha256Hex(entries.get('project.json'))) throw new Error('Archivo Osteo3D dañado: project.json.'); for (const model of models) { const expected = manifest.sha256[model.name]; if (expected !== await sha256Hex(model.data)) throw new Error(`Archivo Osteo3D dañado: ${model.name}.`); } }
   return { project, manifest, models };
 }

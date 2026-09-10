@@ -51,6 +51,7 @@ export function createBackup(state) {
       labelMode: state.labelMode,
       colorByRegion: state.colorByRegion,
       comparisonProfile: state.comparisonProfile || '',
+      renderQuality: ['auto', 'low', 'high'].includes(state.renderQuality) ? state.renderQuality : 'auto',
       customModels: state.customModels,
       geometryMode: state.geometryMode || 'auto',
       analysisReview: state.analysisReview || {},
