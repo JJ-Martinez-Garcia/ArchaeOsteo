@@ -844,6 +844,7 @@ assert.match(extendedUi, /Ficha contexto.*Fragmentos indeterminados.*Odontograma
 assert.match(extendedUi, /dental: importDentalRows\(value.dental/);
 assert.match(extendedUi, /deciduousDental: importDentalRows\(value.deciduousDental/);
 assert.match(main, /Método MNI/);
+assert.match(main, /Trazabilidad de especímenes/);
 assert.match(await text('public/sw.js'), /'\.\/LICENSE'/);
 assert.match(await text('public/sw.js'), /'\.\/THIRD_PARTY_LICENSES\.md'/);
 assert.match(await text('scripts/validate-shell-assets.mjs'), /Service Worker shell OK/);

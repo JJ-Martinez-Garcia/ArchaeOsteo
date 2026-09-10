@@ -175,7 +175,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   no se resuelven automáticamente. La ficha explícita reutilizable de cada espécimen
   añade etiqueta, individuo, contexto y notas, con persistencia, snapshots e importación
   y exportación XLSX; sus asociaciones sirven como respaldo del análisis cuando el hueso
-  no tiene una asociación específica. No resuelve por sí solo remontaje ni MNE/MNI.
+  no tiene una asociación específica. La cobertura y los conflictos también se incluyen
+  en el informe imprimible. No resuelve por sí solo remontaje ni MNE/MNI.
 
 - 179 elementos con geometría procedural propia para los cuatro perfiles (716
   combinaciones). Código fuente reproducible y exportación individual GLB con
