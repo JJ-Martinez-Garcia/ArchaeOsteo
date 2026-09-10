@@ -585,7 +585,7 @@ function localizePrintableReport(html) {
     ['<th>Lado</th>', '<th>Side</th>'], ['<th>Estado</th>', '<th>Status</th>'], ['<th>Conservación</th>', '<th>Preservation</th>'],
     ['<th>Porcentaje</th>', '<th>Percentage</th>'], ['<th>Región</th>', '<th>Region</th>'], ['<th>Revisados</th>', '<th>Reviewed</th>'],
     ['<th>Conservación media</th>', '<th>Average preservation</th>'], ['Sin observaciones registradas</td>', 'No observations recorded</td>'],
-    ['Sin fotografías locales seleccionadas.</p>', 'No local photographs selected.</p>']
+    ['Sin fotografías locales seleccionadas.</p>', 'No local photographs selected.</p>'], ['Trazabilidad de especímenes:', 'Specimen traceability:'], ['registros identificados con Specimen_ID', 'identified records with Specimen_ID'], ['IDs únicos', 'unique IDs'], ['sin ID siguen siendo provisionales.', 'without IDs remain provisional.'], ['Conflictos por revisar:', 'Conflicts to review:']
   ]);
   return [...labels.entries()].reduce((result, [from, to]) => result.replaceAll(from, to), html);
 }
