@@ -76,3 +76,15 @@ export function hierarchyTree(value) {
   });
   return roots;
 }
+
+export function hierarchyRecordCounts(hierarchy, hierarchyRefs) {
+  const normalized = normalizeHierarchy(hierarchy);
+  const validIds = new Set(HIERARCHY_LEVELS.flatMap(level => normalized[level].map(entity => entity.id)));
+  const fields = { sites: 'siteId', campaigns: 'campaignId', sectors: 'sectorId', contexts: 'contextId', individuals: 'individualId' };
+  const counts = Object.fromEntries(HIERARCHY_LEVELS.map(level => [level, Object.fromEntries(normalized[level].map(entity => [entity.id, 0]))]));
+  for (const refs of Object.values(hierarchyRefs || {})) for (const level of HIERARCHY_LEVELS) {
+    const id = String(refs?.[fields[level]] || '').trim();
+    if (validIds.has(id)) counts[level][id] += 1;
+  }
+  return counts;
+}

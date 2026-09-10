@@ -7,7 +7,7 @@ import { translate } from '../i18n/translations.js';
 import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
 import { normalizeWeightUnit } from '../domain/weights.js';
 import { normalizeDevelopmentRecords } from '../domain/development.js';
-import { HIERARCHY_LEVELS, hierarchyId, hierarchyTree, normalizeHierarchy } from '../domain/hierarchy.js';
+import { HIERARCHY_LEVELS, hierarchyId, hierarchyRecordCounts, hierarchyTree, normalizeHierarchy } from '../domain/hierarchy.js';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -508,7 +508,8 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const levelLabels = state.language === 'en' ? { sites: 'Sites', campaigns: 'Campaigns', sectors: 'Sectors', contexts: 'Contexts', individuals: 'Individuals' } : { sites: 'Yacimientos', campaigns: 'Campañas', sectors: 'Sectores', contexts: 'Contextos', individuals: 'Individuos' };
     const hierarchy = normalizeHierarchy(state.hierarchy);
     const options = HIERARCHY_LEVELS.map(level => `<option value="${level}">${levelLabels[level]}</option>`).join('');
-    const renderNode = node => `<li class="hierarchy-node"><details open><summary><strong>${escapeHtml(node.name)}</strong> <span class="muted">${levelLabels[node.level]}</span></summary><small>${escapeHtml(node.id)}${node.parentId ? ` · ${escapeHtml(node.parentId)}` : ''}</small>${node.children.length ? `<ul>${node.children.map(renderNode).join('')}</ul>` : ''}</details></li>`;
+    const recordCounts = hierarchyRecordCounts(hierarchy, state.hierarchyRefs);
+    const renderNode = node => `<li class="hierarchy-node"><details open><summary><strong>${escapeHtml(node.name)}</strong> <span class="muted">${levelLabels[node.level]} · ${recordCounts[node.level]?.[node.id] || 0} ${state.language === 'en' ? 'bone records' : 'registros óseos'}</span></summary><small>${escapeHtml(node.id)}${node.parentId ? ` · ${escapeHtml(node.parentId)}` : ''}</small>${node.children.length ? `<ul>${node.children.map(renderNode).join('')}</ul>` : ''}</details></li>`;
     const tree = hierarchyTree(hierarchy);
     const rows = tree.length ? `<ul class="hierarchy-tree">${tree.map(renderNode).join('')}</ul>` : `<p class="small-copy">${state.language === 'en' ? 'No entities registered.' : 'Sin entidades registradas.'}</p>`;
     const counts = HIERARCHY_LEVELS.map(level => `${levelLabels[level]}: ${hierarchy[level].length}`).join(' · ');
