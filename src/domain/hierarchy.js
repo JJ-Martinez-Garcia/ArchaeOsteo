@@ -105,3 +105,9 @@ export function hierarchyInventoryMetrics(hierarchy, hierarchyRefs, status) {
   }
   return metrics;
 }
+
+export function compareHierarchyMetrics(metrics, level, baselineId) {
+  const entries = Object.entries(metrics?.[level] || {});
+  const base = entries.find(([id]) => id === baselineId)?.[1] || { records: 0, reviewed: 0, present: 0 };
+  return entries.map(([id, metric]) => ({ id, recordsDelta: metric.records - base.records, reviewedDelta: metric.reviewed - base.reviewed, presentDelta: metric.present - base.present }));
+}

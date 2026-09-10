@@ -12,7 +12,7 @@ import { downloadModelPackage, removeModelPackage } from '../src/anatomy/package
 import { mergeAuxiliaryXlsx } from '../src/ui/extended.js';
 import { developmentComponentsForBone, normalizeDevelopmentRecords } from '../src/domain/development.js';
 import { calculateOsteoAnalysis } from '../src/domain/analysis.js';
-import { hierarchyInventoryMetrics, hierarchyRecordCounts, hierarchyTree } from '../src/domain/hierarchy.js';
+import { compareHierarchyMetrics, hierarchyInventoryMetrics, hierarchyRecordCounts, hierarchyTree } from '../src/domain/hierarchy.js';
 
 const bones = [{ id: 'skull' }, { id: 'mandible' }, { id: 'left_femur' }];
 const xlsxMock = { utils: { sheet_to_json: sheet => sheet.rows || [] } };
@@ -139,6 +139,7 @@ assert.equal(relationalTree[0].children[0].name, '2026');
 assert.equal(relationalTree[0].children[0].children.length, 0, 'Relational hierarchy keeps empty intermediate levels visible');
 assert.deepEqual(hierarchyRecordCounts(hierarchyForRefs, { skull: { siteId: 'site:norte', campaignId: 'campaign:2026', contextId: 'context:ue-4' } }), { sites: { 'site:norte': 1 }, campaigns: { 'campaign:2026': 1 }, sectors: {}, contexts: { 'context:ue-4': 1 }, individuals: {} });
 assert.deepEqual(hierarchyInventoryMetrics(hierarchyForRefs, { skull: { siteId: 'site:norte', campaignId: 'campaign:2026', contextId: 'context:ue-4' } }, { skull: 'present' }).campaigns['campaign:2026'], { records: 1, reviewed: 1, present: 1 });
+assert.deepEqual(compareHierarchyMetrics({ campaigns: { 'campaign:2026': { records: 1, reviewed: 1, present: 1 }, 'campaign:2027': { records: 3, reviewed: 2, present: 1 } } }, 'campaigns', 'campaign:2026'), [{ id: 'campaign:2026', recordsDelta: 0, reviewedDelta: 0, presentDelta: 0 }, { id: 'campaign:2027', recordsDelta: 2, reviewedDelta: 1, presentDelta: 0 }]);
 const staleAnalysis = calculateOsteoAnalysis(bones, { status: { skull: 'present' }, analysisReview: { nisp: { value: 99, reason: 'revisión anterior', signature: 'old' } } });
 assert.equal(staleAnalysis.nisp.reviewStatus, 'stale');
 state.pathologyDetails.skull.description = 'nueva';

@@ -7,7 +7,7 @@ import { translate } from '../i18n/translations.js';
 import { portionOptionsForBone, portionLabel } from '../domain/portions.js';
 import { normalizeWeightUnit } from '../domain/weights.js';
 import { normalizeDevelopmentRecords } from '../domain/development.js';
-import { HIERARCHY_LEVELS, hierarchyId, hierarchyInventoryMetrics, hierarchyRecordCounts, hierarchyTree, normalizeHierarchy } from '../domain/hierarchy.js';
+import { HIERARCHY_LEVELS, compareHierarchyMetrics, hierarchyId, hierarchyInventoryMetrics, hierarchyRecordCounts, hierarchyTree, normalizeHierarchy } from '../domain/hierarchy.js';
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -527,7 +527,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const rerenderTree = () => { const level = document.querySelector('#hierarchy-filter-level')?.value || 'all'; const query = String(document.querySelector('#hierarchy-filter-query')?.value || '').trim().toLocaleLowerCase('es'); const host = document.querySelector('#hierarchy-tree-view'); if (host) host.innerHTML = treeMarkup(filteredTree(level, query)); };
     document.querySelector('#hierarchy-filter-level').onchange = rerenderTree;
     document.querySelector('#hierarchy-filter-query').oninput = rerenderTree;
-    const renderCampaignComparison = () => { const baselineId = document.querySelector('#hierarchy-baseline-campaign')?.value || campaignEntities[0]?.entity.id; const baseline = campaignEntities.find(item => item.entity.id === baselineId)?.metric || { records: 0, reviewed: 0, present: 0 }; const host = document.querySelector('#hierarchy-campaign-comparison'); if (host) host.innerHTML = campaignEntities.map(({ entity, metric }) => `<tr><td>${escapeHtml(entity.name)}</td><td>${metric.records - baseline.records}</td><td>${metric.reviewed - baseline.reviewed}</td><td>${metric.present - baseline.present}</td></tr>`).join(''); };
+    const renderCampaignComparison = () => { const baselineId = document.querySelector('#hierarchy-baseline-campaign')?.value || campaignEntities[0]?.entity.id; const deltas = compareHierarchyMetrics(inventoryMetrics, 'campaigns', baselineId); const host = document.querySelector('#hierarchy-campaign-comparison'); if (host) host.innerHTML = campaignEntities.map(({ entity }) => { const delta = deltas.find(item => item.id === entity.id) || { recordsDelta: 0, reviewedDelta: 0, presentDelta: 0 }; return `<tr><td>${escapeHtml(entity.name)}</td><td>${delta.recordsDelta}</td><td>${delta.reviewedDelta}</td><td>${delta.presentDelta}</td></tr>`; }).join(''); };
     document.querySelector('#hierarchy-baseline-campaign')?.addEventListener('change', renderCampaignComparison);
     renderCampaignComparison();
     document.querySelector('#export-hierarchy-metrics')?.addEventListener('click', () => {
