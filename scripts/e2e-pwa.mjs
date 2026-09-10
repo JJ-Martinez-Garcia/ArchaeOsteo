@@ -382,6 +382,11 @@ try {
   );
   assert.equal(savedProject.profile, 'adult_male');
 
+  await evaluate(cdp, `(()=>{const quality=document.querySelector('#render-quality');quality.value='low';quality.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await waitForValue(cdp, projectReadExpression(), value => value?.renderQuality === 'low', 'Persist render quality preference');
+  await navigate(cdp, 'Page.reload', { ignoreCache: false });
+  await waitForValue(cdp, `document.querySelector('#render-quality')?.value || ''`, value => value === 'low', 'Recover render quality preference after reload');
+
   const shellCache = await evaluate(cdp, `(async () => {
     const names = await caches.keys();
     return names.find(name => name.startsWith('osteo3d-shell-v')) || '';

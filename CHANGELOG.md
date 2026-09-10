@@ -274,3 +274,6 @@
 ### Calidad de renderizado
 
 - Se puede elegir calidad automática, baja o alta; el ajuste cambia la resolución de dibujo del visor, se guarda por proyecto y forma parte de deshacer/restaurar.
+### Preferencia de calidad
+
+- La calidad de renderizado se localiza en español/inglés y la E2E confirma que la selección baja se conserva tras recargar el proyecto.

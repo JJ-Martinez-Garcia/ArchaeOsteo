@@ -246,6 +246,7 @@ assert.match(main, /Performance warning for this device/);
 assert.match(main, /triangleBudget/);
 assert.match(main, /id="render-quality"/);
 assert.match(main, /applyRenderQuality/);
+assert.match(main, /function localizeRenderQuality/);
 assert.match(await text('src/domain/inventory-history.js'), /'renderQuality'/);
 assert.match(main, /const modelLoadConcurrency = lowMemory \? 3 : 8/);
 assert.match(main, /mobile-open/);
