@@ -703,6 +703,8 @@ assert.match(await text('src/ui/extended.js'), /hierarchy-filter-level.*hierarch
 assert.match(await text('src/ui/extended.js'), /hierarchyRecordCounts/);
 assert.match(await text('src/ui/extended.js'), /export-hierarchy-metrics/);
 assert.match(await text('src/ui/extended.js'), /Reviewed_pct/);
+assert.match(await text('src/ui/extended.js'), /hierarchy-baseline-campaign/);
+assert.match(await text('src/ui/extended.js'), /no son estimaciones de MNE\/MNI/i);
 assert.match(main, /sheet\('Jerarquía'/);
 assert.match(main, /dracoDecoderPath: '\.\/draco\/'/);
 assert.match(await text('src/data/store.js'), /normalizeCustomModels/);
