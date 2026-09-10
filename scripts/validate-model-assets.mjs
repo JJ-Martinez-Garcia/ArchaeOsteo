@@ -7,6 +7,7 @@ const root = resolve('public/models');
 const baseBoneIds = ['skull', 'mandible', 'c1_atlas', 'vertebrae', 'sternum', 'left_clavicle', 'right_clavicle', 'left_humerus', 'right_humerus', 'left_femur', 'right_femur', 'left_tibia', 'right_tibia', 'left_coxal', 'right_coxal'];
 const catalogIds = [...baseBoneIds, ...extendedBones.map(bone => bone.id)];
 const knownIds = new Set(catalogIds);
+const aggregateOrIndeterminateIds = new Set(['vertebrae', 'cervical_indeterminate', 'thoracic_indeterminate', 'lumbar_indeterminate', 'left_rib_indeterminate', 'right_rib_indeterminate', 'rib_indeterminate', 'carpal_indeterminate', 'metacarpal_indeterminate', 'hand_phalanx_indeterminate', 'tarsal_indeterminate', 'metatarsal_indeterminate', 'foot_phalanx_indeterminate']);
 const readJson = async name => JSON.parse(await readFile(resolve(root, name), 'utf8'));
 const exists = async path => { try { await access(path); return true; } catch { return false; } };
 
@@ -32,6 +33,7 @@ for (const [profileId, profile] of Object.entries(manifest.profiles || {})) {
   for (const boneId of declaredIds) if (!knownIds.has(boneId)) errors.push(`${profileId}: Bone_ID desconocido en asset_ids: ${boneId}`);
   profileCounts[profileId] = files.length;
   const source = registry.profiles?.[profileId];
+  for (const boneId of catalogIds.filter(id => !declaredIds.includes(id))) if (!aggregateOrIndeterminateIds.has(boneId)) errors.push(`${profileId}: falta una malla individual no agregada: ${boneId}`);
 
   if (profile.asset_status === 'placeholder' && files.length > 0) {
     errors.push(`${profileId}: hay GLB publicados pero asset_status sigue en placeholder`);

@@ -839,6 +839,7 @@ assert.match(extendedUi, /readOsteoArchive/);
 assert.match(extendedUi, /MAX_IMPORT_FILE_BYTES/);
 assert.match(await text('src/domain/backup-archive.js'), /sha256Hex/);
 assert.match(await text('src/domain/backup-archive.js'), /version: 2/);
+assert.match(await text('scripts/validate-model-assets.mjs'), /aggregateOrIndeterminateIds/);
 assert.match(extendedUi, /accept="\.osteo3d,\.json,\.csv,\.xlsx"/);
 assert.match(extendedUi, /if \(hasTaphonomyDetail\) state\.taphonomyDetails\[id\] = taphonomyDetail; else delete state\.taphonomyDetails\[id\]/);
 assert.match(extendedUi, /if \(hasPathologyDetail\) state\.pathologyDetails\[id\] = pathologyDetail; else delete state\.pathologyDetails\[id\]/);

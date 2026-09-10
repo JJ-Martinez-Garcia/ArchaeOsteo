@@ -187,6 +187,9 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
   autoría, MIT, versión y límites. Se conservan los 179 GLB externos del adulto.
 - Se corrigen alineación esquemática de columna/pelvis, muñecas/manos y tobillos/pies,
   lateralidad de la vista anterior y separación de falanges medias/distales.
+- El validador de assets comprueba que los 13 IDs sin GLB individual sean únicamente
+  categorías agregadas o indeterminadas; cualquier hueso individual nuevo sin malla
+  hace fallar la validación.
 - Los 13 registros agregados/indeterminados dejan de duplicar piezas en el visor,
   sin borrar inventarios. Cráneo, esternón y algunos conjuntos siguen agrupados.
 - Los perfiles inmaduros usan proporciones independientes por región y componentes
