@@ -836,6 +836,7 @@ assert.match(extendedUi, /indeterminate_fragment_add/);
 assert.match(extendedUi, /indeterminate_fragment_remove/);
 assert.match(extendedUi, /createOsteoArchive/);
 assert.match(extendedUi, /readOsteoArchive/);
+assert.match(extendedUi, /MAX_IMPORT_FILE_BYTES/);
 assert.match(await text('src/domain/backup-archive.js'), /sha256Hex/);
 assert.match(await text('src/domain/backup-archive.js'), /version: 2/);
 assert.match(extendedUi, /accept="\.osteo3d,\.json,\.csv,\.xlsx"/);

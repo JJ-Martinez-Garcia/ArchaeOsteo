@@ -82,6 +82,7 @@ export function mergeAuxiliaryXlsx(value, workbook, XLSX, bones) {
 
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
 const PATHOLOGY_TYPES = ['Normal', 'Patológico', 'Traumatizado', 'Alterado', 'Indeterminado'];
+const MAX_IMPORT_FILE_BYTES = 256 * 1024 * 1024;
 
 export function initExtendedFeatures({ state, bones, saveLocal, selectBone, renderList, renderStats, downloadFile, listProjects, loadProject, commitInventoryEdit, applyProjectData, getModelManifest = () => null }) {
   let learningMode = 'identify';
@@ -456,6 +457,7 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
   document.querySelector('#import-file').onchange = async event => {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (file.size > MAX_IMPORT_FILE_BYTES) { document.querySelector('#toast').textContent = state.language === 'en' ? 'Import rejected: file exceeds the 256 MB limit.' : 'Importación rechazada: el archivo supera el límite de 256 MB.'; event.target.value = ''; return; }
     try {
       let imported;
       let mergeRows = null, mergeExtra = value => value, archiveModels = [];
