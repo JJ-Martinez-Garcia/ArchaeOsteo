@@ -681,6 +681,7 @@ assert.match(main, /forEachConcurrent\(loadableBones, modelLoadConcurrency/);
 assert.match(await text('src/ui/extended.js'), /hierarchy-panel-button/);
 assert.match(await text('src/ui/extended.js'), /Asociaciones jerárquicas/);
 assert.match(await text('src/ui/extended.js'), /localizeScientificRecordUi/);
+assert.match(await text('src/ui/extended.js'), /Revisión manual obsoleta/);
 assert.match(await text('src/ui/extended.js'), /Correct location/);
 assert.match(await text('src/ui/extended.js'), /learningScore/);
 assert.match(await text('src/ui/extended.js'), /Añade entidades sin borrar observaciones existentes/);

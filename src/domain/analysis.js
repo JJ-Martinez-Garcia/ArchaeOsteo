@@ -126,10 +126,12 @@ export function calculateOsteoAnalysis(bones, state) {
     result[key].automaticValue=result[key].value;
     result[key].provisional=true;
     if(review&&Number.isInteger(review.value)&&review.value>=0&&String(review.reason||'').trim()&&review.signature===signature){
+      result[key].reviewStatus='current';
       result[key].value=review.value;result[key].provisional=false;
       result[key].method=`Revisión manual: ${review.reason}. Valor automático previo: ${result[key].automaticValue}. ${result[key].method}`;
       result[key].review={reason:review.reason,updatedAt:review.updatedAt};
-    }else if(review){result[key].method+=' Revisión manual pendiente de actualizar: el inventario o la justificación ha cambiado.';}
+    }else if(review){result[key].reviewStatus='stale';result[key].method+=' Revisión manual pendiente de actualizar: el inventario o la justificación ha cambiado.';}
+    else result[key].reviewStatus='none';
   }
   return result;
 }

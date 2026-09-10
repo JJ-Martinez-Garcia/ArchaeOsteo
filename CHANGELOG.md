@@ -9,6 +9,7 @@
 - Las asociaciones jerárquicas importadas se sanean contra la jerarquía existente: se conservan solo IDs conocidos y del nivel correcto, evitando referencias huérfanas.
 - El editor de registro científico localiza al inglés sus etiquetas, detalles tafonómicos/patológicos y asociaciones jerárquicas; la E2E comprueba el flujo traducido.
 - NISP, MNE y MNI resuelven ahora el individuo y contexto desde las asociaciones jerárquicas explícitas, con fallback compatible a los campos antiguos.
+- Las revisiones manuales de NISP/MNE/MNI muestran su estado (vigente u obsoleta) mediante firma del inventario y avisan cuando deben actualizarse.
 - El reset de pesos, fragmentos indeterminados y destino fotográfico al crear un proyecto se enlaza directamente, sin temporizador de inicialización.
 - El CSV específico de pesos aplica ahora la misma protección contra inyección de fórmulas que el resto de exportaciones tabulares.
 - La disposición desplegada organiza las piezas en bandas regionales con separación y conserva una banda de compatibilidad para registros sin región.

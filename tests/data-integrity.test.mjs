@@ -133,6 +133,8 @@ assert.equal(state.hierarchyRefs.skull.contextId, 'context:ue-4');
 const hierarchyAnalysis = calculateOsteoAnalysis(bones, { status: { skull: 'present' }, hierarchyRefs: { skull: { contextId: 'context:ue-4', individualId: 'individual:ind-7' } }, hierarchy: { contexts: [{ id: 'context:ue-4', name: 'UE-4' }], individuals: [{ id: 'individual:ind-7', name: 'IND-7' }] } });
 assert.equal(hierarchyAnalysis.rows[0].context, 'UE-4');
 assert.equal(hierarchyAnalysis.rows[0].individual, 'IND-7');
+const staleAnalysis = calculateOsteoAnalysis(bones, { status: { skull: 'present' }, analysisReview: { nisp: { value: 99, reason: 'revisión anterior', signature: 'old' } } });
+assert.equal(staleAnalysis.nisp.reviewStatus, 'stale');
 state.pathologyDetails.skull.description = 'nueva';
 assert.equal(snapshot.pathologyDetails.skull.description, 'antes', 'Undo snapshots cannot be mutated by later edits');
 const modelReferenceState = { landmarkModelRefs: modelReference };
