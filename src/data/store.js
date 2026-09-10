@@ -25,6 +25,13 @@ function normalizeHierarchyRefs(value, hierarchy = null) {
 function normalizeEnumMap(value, allowed) { return Object.fromEntries(objectEntries(value).filter(([, item]) => allowed.has(item))); }
 function normalizeNumberMap(value, { min = 0, max = Number.POSITIVE_INFINITY, integer = false, rejectBelowMin = false } = {}) { return Object.fromEntries(objectEntries(value).filter(([, item]) => (typeof item === 'number' || typeof item === 'string') && String(item).trim() !== '').map(([key, item]) => [key, Number(item)]).filter(([, item]) => Number.isFinite(item) && (!rejectBelowMin || item >= min)).map(([key, item]) => [key, Math.max(min, Math.min(max, integer ? Math.floor(item) : item))])); }
 function normalizeStringMap(value) { return Object.fromEntries(objectEntries(value).map(([key, item]) => [key, String(item ?? '').trim()]).filter(([, item]) => item)); }
+function normalizeSpecimenRecords(value) {
+  return Object.fromEntries(objectEntries(value).map(([id, item]) => {
+    const source = item && typeof item === 'object' && !Array.isArray(item) ? item : {};
+    const specimenId = String(source.id || id).trim();
+    return [specimenId, { id: specimenId, label: String(source.label || '').trim(), individualId: String(source.individualId || '').trim(), context: String(source.context || '').trim(), notes: String(source.notes || '').trim() }];
+  }).filter(([id]) => id));
+}
 function normalizeReport(value) {
   const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   return Object.fromEntries(REPORT_FIELDS.map(key => [key, String(source[key] ?? (key === 'individual' ? 'IND-LOCAL' : '')).trim()]));
@@ -145,6 +152,7 @@ export function normalizeProject(project) {
     hierarchyRefs: normalizeHierarchyRefs(project.hierarchyRefs, hierarchy),
     individuals: normalizeStringMap(project.individuals),
     specimens: normalizeStringMap(project.specimens),
+    specimenRecords: normalizeSpecimenRecords(project.specimenRecords),
     ue: normalizeStringMap(project.ue),
     taphonomy: Object.fromEntries(objectEntries(project.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
     pathology: Object.fromEntries(objectEntries(project.pathology).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),

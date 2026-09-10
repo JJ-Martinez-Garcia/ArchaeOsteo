@@ -34,6 +34,7 @@ export function createBackup(state) {
       hierarchyRefs: state.hierarchyRefs,
       individuals: state.individuals,
       specimens: state.specimens,
+      specimenRecords: state.specimenRecords,
       ue: state.ue,
       taphonomy: state.taphonomy,
       pathology: state.pathology,

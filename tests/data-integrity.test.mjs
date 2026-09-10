@@ -25,6 +25,8 @@ assert.equal(xlsxDevelopment.developmentRecords.left_femur.shaft.fusion, 'unfuse
 const xlsxHierarchyRefs = mergeAuxiliaryXlsx({}, { Sheets: { 'Asociaciones jerárquicas': { rows: [{ Bone_ID: 'skull', siteId: 'site:norte', contextId: 'context:ue-4', individualId: 'individual:ind-7' }] } } }, xlsxMock, bones);
 const xlsxSpecimen = mergeAuxiliaryXlsx({}, { Sheets: { 'Especímenes': { rows: [{ Bone_ID: 'skull', Specimen_ID: 'SP-001' }] } } }, xlsxMock, bones);
 assert.equal(xlsxSpecimen.specimens.skull, 'SP-001');
+const xlsxSpecimenRecord = mergeAuxiliaryXlsx({}, { Sheets: { 'Fichas de especímenes': { rows: [{ Specimen_ID: 'SP-001', Label: 'Ejemplar', Individual_ID: 'IND-1', Context: 'UE-1', Notes: 'nota' }] } } }, xlsxMock, bones);
+assert.deepEqual(xlsxSpecimenRecord.specimenRecords['SP-001'], { id: 'SP-001', label: 'Ejemplar', individualId: 'IND-1', context: 'UE-1', notes: 'nota' });
 assert.equal(calculateNisp([{ boneId: 'skull', region: 'Cráneo', side: '—', status: 'present', specimenId: 'SP-001' }, { boneId: 'skull', region: 'Cráneo', side: '—', status: 'fragmentary', specimenId: 'SP-001' }]).value, 1);
 assert.deepEqual(validateBackup(createBackup({ specimens: { skull: 'SP-001' } })).specimens, { skull: 'SP-001' });
 const specimenAnalysis = calculateOsteoAnalysis(bones, { status: { skull: 'present' }, specimens: { skull: 'SP-001' } });

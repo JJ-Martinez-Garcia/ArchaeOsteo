@@ -72,7 +72,12 @@ export function mergeAuxiliaryXlsx(value, workbook, XLSX, bones) {
     const specimenId = String(row.Specimen_ID ?? row.Specimen ?? '').trim();
     if (specimenId) specimens[row.Bone_ID] = specimenId;
   }
-  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy, cameraView, hierarchyRefs, specimens, developmentRecords: normalizeDevelopmentRecords(developmentRecords) };
+  const specimenRecords = { ...(value.specimenRecords || {}) };
+  for (const row of rows('Fichas de especímenes')) {
+    const specimenId = String(row.Specimen_ID ?? row.id ?? '').trim();
+    if (specimenId) specimenRecords[specimenId] = { id: specimenId, label: String(row.Label ?? row.label ?? ''), individualId: String(row.Individual_ID ?? row.individualId ?? ''), context: String(row.Context ?? row.context ?? ''), notes: String(row.Notes ?? row.notes ?? '') };
+  }
+  return { ...value, measurements, landmarks, calibrations, landmarkModelRefs, analysisReview, changeLog, hierarchy, cameraView, hierarchyRefs, specimens, specimenRecords, developmentRecords: normalizeDevelopmentRecords(developmentRecords) };
 }
 
 const TAPHONOMY_OPTIONS = ['Erosión', 'Meteorización', 'Concreciones', 'Raíces', 'Actividad animal', 'Roedores', 'Carnívoros', 'Insectos', 'Alteración térmica', 'Fractura postmortem', 'Fractura perimortem', 'Marcas de corte', 'Coloración', 'Otros'];
@@ -223,6 +228,19 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
       conflictNote.textContent = `Revisar asociaciones: ${coverage.conflicts.map(conflict => conflict.specimenId).join(', ')} aparece con más de un individuo o contexto. El NISP no resuelve este conflicto automáticamente.`;
       document.querySelector('#extended-panel')?.prepend(conflictNote);
     }
+    const specimenRows = Object.values(state.specimenRecords || {}).map(record => `<li><strong>${escapeHtml(record.id)}</strong>${record.label ? ` · ${escapeHtml(record.label)}` : ''}${record.individualId ? ` · ${escapeHtml(record.individualId)}` : ''}${record.context ? ` · ${escapeHtml(record.context)}` : ''}<button type="button" class="secondary-action specimen-delete" data-specimen-id="${escapeHtml(record.id)}">Eliminar ficha</button></li>`).join('') || '<li class="small-copy">No hay fichas explícitas todavía.</li>';
+    document.querySelector('#extended-panel')?.insertAdjacentHTML('afterbegin', `<details class="specimen-registry"><summary>Fichas explícitas de especímenes</summary><p class="small-copy">Catálogo reutilizable para documentar un espécimen y relacionarlo con varios elementos. No sustituye la revisión arqueológica.</p><div class="record-editor"><label>Specimen_ID<input id="specimen-record-id" placeholder="SP-001" required></label><label>Etiqueta<input id="specimen-record-label" placeholder="Ejemplar 001"></label><label>Individuo<input id="specimen-record-individual" placeholder="IND-001"></label><label>Contexto<input id="specimen-record-context" placeholder="UE-01"></label><label>Notas<textarea id="specimen-record-notes" rows="2"></textarea></label><button id="save-specimen-record" class="secondary-action" type="button">Guardar ficha</button></div><ul class="specimen-record-list">${specimenRows}</ul></details>`);
+    document.querySelector('#save-specimen-record')?.addEventListener('click', async () => {
+      const id = document.querySelector('#specimen-record-id').value.trim();
+      if (!id) return;
+      commitInventoryEdit('specimen_record', () => { state.specimenRecords[id] = { id, label: document.querySelector('#specimen-record-label').value.trim(), individualId: document.querySelector('#specimen-record-individual').value.trim(), context: document.querySelector('#specimen-record-context').value.trim(), notes: document.querySelector('#specimen-record-notes').value.trim() }; });
+      await saveLocal(); document.querySelector('#analysis-panel-button').click();
+    });
+    document.querySelectorAll('.specimen-delete').forEach(button => button.addEventListener('click', async () => {
+      const id = button.dataset.specimenId;
+      commitInventoryEdit('specimen_record_delete', () => { delete state.specimenRecords[id]; });
+      await saveLocal(); document.querySelector('#analysis-panel-button').click();
+    }));
     document.querySelector('#export-analysis').onclick = () => downloadJson('osteo3d-analysis.json', analysis);
     const contextRows = Object.entries(analysis.nisp.byContext).map(([context, count]) => `<tr><td>${escapeHtml(context)}</td><td>${count}</td></tr>`).join('') || '<tr><td colspan="2">Sin registros identificados</td></tr>';
     document.querySelector('#export-analysis').insertAdjacentHTML('beforebegin', `<p class="info-box">Cálculos automáticos provisionales: NISP cuenta registros, no todos los especímenes de una ficha agrupada. MNE/MNI no se obtienen del número de fragmentos. Requieren revisión especializada.</p><details><summary>Revisar valores con justificación</summary>${['nisp','mne','mni'].map(key=>`<label>${key.toUpperCase()}<input id="review-${key}" type="number" min="0" step="1" value="${escapeHtml(state.analysisReview?.[key]?.value??'')}"/><textarea id="review-reason-${key}" placeholder="Método, solapamiento/remontaje, evidencia y responsable">${escapeHtml(state.analysisReview?.[key]?.reason||'')}</textarea></label>`).join('')}<button id="save-analysis-review" type="button">Guardar revisión</button><p id="review-message" role="status"></p></details><h4>NISP por contexto</h4><table class="analysis-table"><thead><tr><th>Contexto / UE</th><th>NISP</th></tr></thead><tbody>${contextRows}</tbody></table>`);
