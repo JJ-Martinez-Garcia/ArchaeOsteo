@@ -14,9 +14,11 @@ const REPORT_FIELDS = ['individual', 'burial', 'grave', 'tomb', 'ue', 'sector', 
 
 function objectEntries(value) { return value && typeof value === 'object' && !Array.isArray(value) ? Object.entries(value) : []; }
 const HIERARCHY_REF_FIELDS = ['siteId', 'campaignId', 'sectorId', 'contextId', 'individualId'];
-function normalizeHierarchyRefs(value) {
+function normalizeHierarchyRefs(value, hierarchy = null) {
+  const expectedLevels = { siteId: 'sites', campaignId: 'campaigns', sectorId: 'sectors', contextId: 'contexts', individualId: 'individuals' };
+  const known = hierarchy ? new Set(Object.values(hierarchy).flatMap(entities => (entities || []).map(entity => entity.id))) : null;
   return Object.fromEntries(objectEntries(value).map(([boneId, refs]) => {
-    const normalized = Object.fromEntries(HIERARCHY_REF_FIELDS.map(field => [field, String(refs?.[field] || '').trim()]).filter(([, item]) => item));
+    const normalized = Object.fromEntries(HIERARCHY_REF_FIELDS.map(field => [field, String(refs?.[field] || '').trim()]).filter(([field, item]) => item && (!known || (known.has(item) && item.startsWith(`${expectedLevels[field].replace(/s$/, '')}:`)))));
     return [String(boneId), normalized];
   }).filter(([, refs]) => Object.keys(refs).length));
 }
@@ -123,6 +125,7 @@ function normalizeCameraView(value) {
 export function normalizeProject(project) {
   if (!project || typeof project !== 'object' || Array.isArray(project)) return null;
   const report = normalizeReport(project.report);
+  const hierarchy = deriveHierarchy({ ...project, report });
   return {
     ...project,
     id: project.id || 'default',
@@ -139,7 +142,7 @@ export function normalizeProject(project) {
     portions: project.portions || {},
     portionRecords: project.portionRecords || {},
     developmentRecords: normalizeDevelopmentRecords(project.developmentRecords),
-    hierarchyRefs: normalizeHierarchyRefs(project.hierarchyRefs),
+    hierarchyRefs: normalizeHierarchyRefs(project.hierarchyRefs, hierarchy),
     individuals: normalizeStringMap(project.individuals),
     ue: normalizeStringMap(project.ue),
     taphonomy: Object.fromEntries(objectEntries(project.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
@@ -184,7 +187,7 @@ export function normalizeProject(project) {
     language: ['es', 'en'].includes(project.language) ? project.language : 'es',
     filters: normalizeFilters(project.filters),
     report,
-    hierarchy: deriveHierarchy({ ...project, report })
+    hierarchy
   };
 }
 

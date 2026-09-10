@@ -99,7 +99,9 @@ assert.deepEqual(normalizeProject({ cameraView: { theta: 2, phi: 99, radius: 999
 const calibrationBackup = validateBackup(createBackup({ calibrations: { skull: { referenceMm: 50, localDistance: 2 } } }));
 assert.deepEqual(calibrationBackup.calibrations.skull, { referenceMm: 50, localDistance: 2 });
 const hierarchyRefs = { skull: { siteId: 'site:norte', campaignId: 'campaign:2026', contextId: 'context:ue-4', invalid: 'ignored-by-normalizer' } };
-assert.deepEqual(validateBackup(createBackup({ hierarchyRefs })).hierarchyRefs, { skull: { siteId: 'site:norte', campaignId: 'campaign:2026', contextId: 'context:ue-4' } });
+const hierarchyForRefs = { sites: [{ id: 'site:norte', name: 'Norte' }], campaigns: [{ id: 'campaign:2026', name: '2026', parentId: 'site:norte' }], sectors: [], contexts: [{ id: 'context:ue-4', name: 'UE-4' }], individuals: [] };
+assert.deepEqual(validateBackup(createBackup({ hierarchyRefs, hierarchy: hierarchyForRefs })).hierarchyRefs, { skull: { siteId: 'site:norte', campaignId: 'campaign:2026', contextId: 'context:ue-4' } });
+assert.deepEqual(normalizeProject({ hierarchy: hierarchyForRefs, hierarchyRefs: { skull: { siteId: 'site:missing', contextId: 'campaign:2026', contextId2: 'bad' } } }).hierarchyRefs, {});
 const modelReference = { skull: { profile: 'adult_male', source: 'custom', geometryVersion: 'external', customUpdatedAt: '2026-09-09T12:00:00Z', needsReview: true } };
 const modelReferenceBackup = validateBackup(createBackup({ landmarkModelRefs: modelReference }));
 assert.deepEqual(modelReferenceBackup.landmarkModelRefs, modelReference);
