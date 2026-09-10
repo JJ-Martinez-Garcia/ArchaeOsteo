@@ -557,6 +557,8 @@ assert.match(main, /comparisonProfile/);
 assert.match(main, /saveLocal\?\./);
 assert.match(main, /explosion-play/);
 assert.match(main, /explosionAnimating/);
+assert.match(main, /explosion-controls/);
+assert.match(main, /inspectorTabsForExplosion\.before\(explosionControls\)/);
 assert.match(main, /reportRuntimeError/);
 assert.match(main, /unhandledrejection/);
 assert.match(main, /function hasExternalStack\(error\)/);

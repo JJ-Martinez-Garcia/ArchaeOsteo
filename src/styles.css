@@ -14,3 +14,5 @@
 .muted,.bone-row small,.bone-subgroup-title,.viewer-fallback-groups small{color:#52606d}
 .inspector dt{color:#52606d}
 @media (forced-colors: active){button,input,select,textarea{forced-color-adjust:auto}.bone-row.selected,.bone-row.multi-selected{outline:2px solid Highlight;outline-offset:-2px}.bone-label{background:CanvasText;color:Canvas;border-color:CanvasText}.viewer-toolbar,.viewer-lighting-controls{background:Canvas;color:CanvasText;border-color:ButtonText}}
+.explosion-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.35rem .65rem;padding:.65rem .8rem;border-bottom:1px solid var(--border,#d9e2ec);background:color-mix(in srgb,var(--panel,#fff) 92%,#d9e2ec)}
+.explosion-controls .control-heading,.explosion-controls .small-copy{grid-column:1/-1}.explosion-controls .small-copy{margin:0}.explosion-controls .range-label{margin:0;min-width:0}.explosion-controls #explosion-play{align-self:end;white-space:nowrap}
