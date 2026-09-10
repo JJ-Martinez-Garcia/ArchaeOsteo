@@ -466,6 +466,7 @@ assert.match(await text('src/ui/extended.js'), /SOURCES\.md/);
 assert.match(await text('src/ui/extended.js'), /changedAt/);
 assert.match(main, /model-package-panel/);
 assert.match(main, /downloadSelectedModelPackage/);
+assert.match(await text('src/anatomy/package.js'), /replacedEntries = \[\]/);
 assert.match(main, /Se eliminarán los modelos GLB offline/);
 assert.match(main, /Pendiente de incorporar assets licenciados/);
 assert.match(main, /Descargar paquete offline/);

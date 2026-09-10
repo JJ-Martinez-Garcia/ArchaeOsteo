@@ -170,6 +170,8 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - El lector de copias `.osteo3d` limita el tamaño total a 256 MB, cada entrada a 64 MB
   y el número de entradas a 2048; rechaza duplicados y rutas inseguras antes de validar
   CRC/SHA-256.
+- La importación de paquetes GLB locales también es transaccional: si falla una entrada,
+  restaura las respuestas reemplazadas y elimina únicamente las entradas nuevas.
 - Cada registro óseo puede incluir ahora un `Specimen_ID` opcional. Se conserva en
   JSON, CSV, historial, migración y hoja XLSX `Especímenes`; el NISP agrupa únicamente
   cuando existe ese identificador explícito y mantiene el recuento provisional para

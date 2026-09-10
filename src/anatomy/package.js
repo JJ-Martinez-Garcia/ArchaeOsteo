@@ -147,21 +147,29 @@ export async function importModelPackageFiles(profileId, files = [], boneIds = [
   const knownIds = new Set(boneIds);
   const imported = [];
   const rejected = [];
-  for (const file of files) {
-    const baseName = String(file?.name || '').replace(/\.glb$/i, '');
-    if (!/\.glb$/i.test(String(file?.name || '')) || !knownIds.has(baseName)) {
-      rejected.push(file?.name || 'archivo sin nombre');
-      continue;
+  const addedUrls = [], replacedEntries = [];
+  try {
+    for (const file of files) {
+      const baseName = String(file?.name || '').replace(/\.glb$/i, '');
+      if (!/\.glb$/i.test(String(file?.name || '')) || !knownIds.has(baseName)) {
+        rejected.push(file?.name || 'archivo sin nombre');
+        continue;
+      }
+      const body = await file.arrayBuffer();
+      const magic = new TextDecoder().decode(new Uint8Array(body).slice(0, 4));
+      if (magic !== 'glTF' || !glbContainsBoneId(body, baseName)) {
+        rejected.push(file?.name || 'archivo sin nombre');
+        continue;
+      }
+      const url = `./models/${profileId}/${baseName}.glb`;
+      const existed = await cache.match(url);
+      if (existed) replacedEntries.push({ url, response: existed.clone() }); else addedUrls.push(url);
+      await cache.put(url, new Response(body, { headers: { 'content-type': 'model/gltf-binary', 'content-length': String(file.size || body.byteLength) } }));
+      imported.push(baseName);
     }
-    const body = await file.arrayBuffer();
-    const magic = new TextDecoder().decode(new Uint8Array(body).slice(0, 4));
-    if (magic !== 'glTF' || !glbContainsBoneId(body, baseName)) {
-      rejected.push(file?.name || 'archivo sin nombre');
-      continue;
-    }
-    const url = `./models/${profileId}/${baseName}.glb`;
-    await cache.put(url, new Response(body, { headers: { 'content-type': 'model/gltf-binary', 'content-length': String(file.size || body.byteLength) } }));
-    imported.push(baseName);
+  } catch (error) {
+    await Promise.all([addedUrls.map(url => cache.delete(url)), replacedEntries.map(entry => cache.put(entry.url, entry.response))].flat());
+    throw error;
   }
   return { imported, rejected, importedCount: imported.length, rejectedCount: rejected.length, cacheName };
 }
