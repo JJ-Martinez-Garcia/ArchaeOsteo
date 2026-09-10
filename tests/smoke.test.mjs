@@ -769,6 +769,7 @@ assert.match(extendedUi, /pathologyDetails/);
 assert.match(await text('src/domain/analysis.js'), /byContext/);
 assert.match(await text('src/domain/analysis.js'), /byIndividual/);
 assert.match(extendedUi, /NISP por contexto/);
+assert.match(extendedUi, /Fichas explícitas de especímenes/);
 assert.match(extendedUi, /indeterminate-quantity/);
 assert.match(extendedUi, /indeterminate-thickness/);
 assert.match(extendedUi, /quantity:/);
