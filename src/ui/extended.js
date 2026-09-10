@@ -215,8 +215,14 @@ export function initExtendedFeatures({ state, bones, saveLocal, selectBone, rend
     const coverage = analysis.specimenCoverage;
     const specimenNote = document.createElement('p');
     specimenNote.className = 'info-box';
-    specimenNote.textContent = `Trazabilidad de especímenes: ${coverage.withSpecimenId} de ${coverage.identified} registros identificados tienen Specimen_ID; ${coverage.withoutSpecimenId} siguen siendo provisionales.`;
+    specimenNote.textContent = `Trazabilidad de especímenes: ${coverage.withSpecimenId} de ${coverage.identified} registros identificados tienen Specimen_ID (${coverage.uniqueSpecimenIds} IDs únicos); ${coverage.withoutSpecimenId} siguen siendo provisionales.`;
     document.querySelector('#extended-panel')?.prepend(specimenNote);
+    if (coverage.conflicts.length) {
+      const conflictNote = document.createElement('p');
+      conflictNote.className = 'warning-box';
+      conflictNote.textContent = `Revisar asociaciones: ${coverage.conflicts.map(conflict => conflict.specimenId).join(', ')} aparece con más de un individuo o contexto. El NISP no resuelve este conflicto automáticamente.`;
+      document.querySelector('#extended-panel')?.prepend(conflictNote);
+    }
     document.querySelector('#export-analysis').onclick = () => downloadJson('osteo3d-analysis.json', analysis);
     const contextRows = Object.entries(analysis.nisp.byContext).map(([context, count]) => `<tr><td>${escapeHtml(context)}</td><td>${count}</td></tr>`).join('') || '<tr><td colspan="2">Sin registros identificados</td></tr>';
     document.querySelector('#export-analysis').insertAdjacentHTML('beforebegin', `<p class="info-box">Cálculos automáticos provisionales: NISP cuenta registros, no todos los especímenes de una ficha agrupada. MNE/MNI no se obtienen del número de fragmentos. Requieren revisión especializada.</p><details><summary>Revisar valores con justificación</summary>${['nisp','mne','mni'].map(key=>`<label>${key.toUpperCase()}<input id="review-${key}" type="number" min="0" step="1" value="${escapeHtml(state.analysisReview?.[key]?.value??'')}"/><textarea id="review-reason-${key}" placeholder="Método, solapamiento/remontaje, evidencia y responsable">${escapeHtml(state.analysisReview?.[key]?.reason||'')}</textarea></label>`).join('')}<button id="save-analysis-review" type="button">Guardar revisión</button><p id="review-message" role="status"></p></details><h4>NISP por contexto</h4><table class="analysis-table"><thead><tr><th>Contexto / UE</th><th>NISP</th></tr></thead><tbody>${contextRows}</tbody></table>`);
