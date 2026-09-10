@@ -55,3 +55,24 @@ export function hierarchyCounts(hierarchy) {
   const normalized = normalizeHierarchy(hierarchy);
   return Object.fromEntries(HIERARCHY_LEVELS.map(level => [level, normalized[level].length]));
 }
+
+// Build a read-only relational view without changing the canonical flat data.
+// Entities whose parent is missing are retained as roots so the view never
+// hides imported records merely because a collection was incomplete.
+export function hierarchyTree(value) {
+  const normalized = normalizeHierarchy(value);
+  const byLevel = Object.fromEntries(HIERARCHY_LEVELS.map(level => [level, normalized[level]]));
+  const allIds = new Set(HIERARCHY_LEVELS.flatMap(level => byLevel[level].map(entity => entity.id)));
+  const childrenOf = (levelIndex, parentId) => {
+    const level = HIERARCHY_LEVELS[levelIndex];
+    return (byLevel[level] || [])
+      .filter(entity => entity.parentId === parentId)
+      .map(entity => ({ ...entity, level, children: childrenOf(levelIndex + 1, entity.id) }));
+  };
+  const roots = [];
+  HIERARCHY_LEVELS.forEach((level, levelIndex) => {
+    const levelRoots = (byLevel[level] || []).filter(entity => !entity.parentId || !allIds.has(entity.parentId));
+    levelRoots.forEach(entity => roots.push({ ...entity, level, children: childrenOf(levelIndex + 1, entity.id) }));
+  });
+  return roots;
+}

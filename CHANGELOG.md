@@ -262,3 +262,6 @@
   la ficha de contexto y la jerarquía normalizada.
 - Añadido `validate-backlog`, que verifica automáticamente los 119 requisitos numerados y
   las secciones de seguimiento antes de desplegar GitHub Pages.
+### Jerarquía relacional
+
+- La ventana de jerarquía muestra ahora la relación yacimiento → campaña → sector → contexto → individuo como árbol anidado, sin ocultar entidades huérfanas importadas.
