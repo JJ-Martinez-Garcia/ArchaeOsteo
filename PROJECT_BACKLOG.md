@@ -104,7 +104,7 @@ por una prueba parcial; los avances con evidencia se registran en PROJECT_REVIEW
 | 85 | INTERNACIONALIZACIÓN | ES/EN y textos principales disponibles; el informe imprimible, la auditoría y el editor científico localizan títulos y etiquetas fijas sin tocar el texto científico del investigador. Quedan RTL, algunos mensajes auxiliares incrustados y nuevos idiomas. |
 | 86 | PWA Y OFFLINE | PWA/offline probados en Chromium; confirmar navegación y operaciones completas tras instalación. |
 | 87 | DESCARGA DE MODELOS | Paquetes de los cuatro perfiles disponibles; descarga transaccional que revierte solo los recursos añadidos si falla, y eliminación separada de modelos personales; queda prueba en dispositivos reales. |
-| 88 | OPTIMIZACIÓN 3D | Liberación de geometrías/materiales, carga concurrente limitada en móviles/poca memoria y diagnóstico visible de mallas/triángulos/origen. Quedan LOD, presupuestos formales y medición en móviles reales. |
+| 88 | OPTIMIZACIÓN 3D | Liberación de geometrías/materiales, carga concurrente limitada en móviles/poca memoria y diagnóstico visible de mallas/triángulos/origen, con advertencia orientativa según memoria expuesta por el navegador y presupuesto de triángulos. Quedan LOD, presupuestos formales y medición en móviles reales. |
 | 89 | RENDIMIENTO | Matriz de PC/Mac/Android/iOS/iPad y métricas reproducibles en dispositivos reales. |
 | 90 | INTERFAZ DE ESCRITORIO | Panel redimensionable y formularios probados en PC; diálogos accesibles y refrescos en segundo plano optimizados. Queda comprobar zoom 125–200% y todos los tamaños. |
 | 91 | INTERFAZ MÓVIL | Flujo de paneles móviles disponible y controles principales con objetivos táctiles mínimos de 44 px; queda prueba en dispositivos reales y operación con una mano. |

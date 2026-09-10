@@ -242,6 +242,8 @@ assert.match(main, /state\.hierarchy=deriveHierarchy\(state\)/);
 assert.match(main, /Jerarquía normalizada/);
 assert.match(main, /id="geometry-stats"/);
 assert.match(main, /triangles\+=index\?index\.count\/3/);
+assert.match(main, /Performance warning for this device/);
+assert.match(main, /triangleBudget/);
 assert.match(main, /const modelLoadConcurrency = lowMemory \? 3 : 8/);
 assert.match(main, /mobile-open/);
 assert.match(main, /runPwaDiagnostics/);

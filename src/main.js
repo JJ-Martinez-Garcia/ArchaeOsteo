@@ -163,7 +163,7 @@ function updateSceneDiagnostics(){
   let meshes=0, triangles=0;
   group.traverse(object=>{if(!object.isMesh||!object.geometry)return;meshes+=1;const index=object.geometry.index;const positions=object.geometry.attributes?.position;triangles+=index?index.count/3:positions?positions.count/3:0;});
   const stats=document.querySelector('#geometry-stats');
-  if(stats){const en=state.language==='en';stats.textContent=en?`Scene cost: ${meshes} meshes · ${Math.round(triangles).toLocaleString('en-US')} triangles · ${viewer.dataset.generatedCount} own GLB · ${viewer.dataset.schematicCount} schematic.`:`Coste de escena: ${meshes} mallas · ${Math.round(triangles).toLocaleString('es-ES')} triángulos · ${viewer.dataset.generatedCount} GLB propios · ${viewer.dataset.schematicCount} esquemas.`;}
+  if(stats){const en=state.language==='en', memory=Number(navigator.deviceMemory), triangleBudget=memory&&memory<=2?100000:250000, warning=triangles>triangleBudget?(en?' · Performance warning for this device':' · Advertencia de rendimiento para este dispositivo'):'';stats.textContent=en?`Scene cost: ${meshes} meshes · ${Math.round(triangles).toLocaleString('en-US')} triangles · ${viewer.dataset.generatedCount} own GLB · ${viewer.dataset.schematicCount} schematic${warning}.`:`Coste de escena: ${meshes} mallas · ${Math.round(triangles).toLocaleString('es-ES')} triángulos · ${viewer.dataset.generatedCount} GLB propios · ${viewer.dataset.schematicCount} esquemas${warning}.`;stats.dataset.triangleBudget=String(triangleBudget);stats.dataset.deviceMemory=Number.isFinite(memory)?String(memory):'unknown';}
 }
 function fitSkeletonView(){
   if(!group?.isGroup||!camera||!THREE)return;

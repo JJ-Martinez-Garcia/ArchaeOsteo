@@ -268,3 +268,6 @@
 ### Cobertura jerárquica
 
 - La prueba E2E verifica asociaciones de un registro a campaña, sector y contexto, filtrado del árbol, tabla de cobertura y exportación CSV.
+### Diagnóstico de rendimiento 3D
+
+- El visor avisa cuando el coste estimado de la escena supera un presupuesto orientativo de triángulos, adaptado a la memoria expuesta por el navegador.
