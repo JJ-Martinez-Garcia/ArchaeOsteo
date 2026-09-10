@@ -1,6 +1,6 @@
 # Revisión desde el encargo original
 
-Fecha: 2026-09-09. Referencia: texto inicial de 119 apartados aportado por el autor.
+Fecha: 2026-09-10. Referencia: texto inicial de 119 apartados aportado por el autor.
 Este documento distingue implementación de validación científica. No declara
 terminado el atlas profesional completo solicitado en el encargo.
 
@@ -156,6 +156,17 @@ La lista completa de cierre, con los 119 apartados y mejoras adicionales, está 
 - NISP/MNE/MNI muestran el método y el carácter provisional; una revisión manual exige
   valor entero, justificación y firma del inventario actual, y queda incluida en el
   historial reversible para evitar que un cambio posterior conserve un valor obsoleto.
+
+- El comparador de perfiles muestra la cobertura de los cuatro paquetes (`179 de 192`)
+  y separa visualmente las fuentes externas de los GLB propios esquemáticos; la tabla
+  mantiene la advertencia de que las mallas didácticas no están validadas.
+- La ficha del hueso, los componentes inmaduros y el informe imprimible conservan `—`
+  cuando la completitud no está observada, sin añadir `100%` ni una unidad a un valor
+  ausente. La E2E comprueba la ficha inicial y los smoke tests protegen el informe.
+- La acción masiva de marcar elementos ausentes solo cambia el estado: no altera por
+  accidente conservación ni completitud. La E2E verifica que no crea porcentajes.
+- Se reforzó el contraste de textos secundarios y se añadió una capa `forced-colors`
+  para modos de alto contraste de Windows, manteniendo foco y selección visibles.
 
 - 179 elementos con geometría procedural propia para los cuatro perfiles (716
   combinaciones). Código fuente reproducible y exportación individual GLB con
