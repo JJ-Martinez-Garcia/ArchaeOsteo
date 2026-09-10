@@ -47,8 +47,8 @@ assert.ok([...regionBands.values()].every(values => values.every(Number.isFinite
 const completeLayout = structuredClone([...baseBones, ...extendedBones]);
 applyProfileLayout(completeLayout, 'adult_male');
 const regionMins = new Map();
-for (const bone of completeLayout.filter(isAnatomicalBone)) regionMins.set(bone.region, Math.min(regionMins.get(bone.region) ?? Infinity, bone.e[1]));
-const regionalOrder = ['Cráneo','Columna','Tórax','Cintura escapular','Pelvis','Extremidad superior','Manos','Extremidad inferior','Pies'].filter(region => regionMins.has(region));
+for (const bone of completeLayout.filter(isAnatomicalBone)) regionMins.set(bone.expandedRegion || bone.region, Math.min(regionMins.get(bone.expandedRegion || bone.region) ?? Infinity, bone.e[1]));
+const regionalOrder = ['Cráneo','Columna','Tórax','Cintura escapular','Extremidad superior','Manos','Pelvis','Extremidad inferior','Pies'].filter(region => regionMins.has(region));
 for (let index = 1; index < regionalOrder.length; index++) assert.ok(regionMins.get(regionalOrder[index]) < regionMins.get(regionalOrder[index - 1]), 'Expanded regional bands must progress in anatomical order');
 const skull=bones.find(b=>b.id==='skull'), femur=bones.find(b=>b.id==='left_femur');
 assert.notEqual(boneLayout(skull,'neonate').size[1]/boneLayout(skull,'adult_male').size[1],boneLayout(femur,'neonate').size[1]/boneLayout(femur,'adult_male').size[1]);

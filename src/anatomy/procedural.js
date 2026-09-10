@@ -68,26 +68,73 @@ export function boneLayout(bone, profileId = 'adult_male') {
 
 export function applyProfileLayout(bones, profileId) {
   const order=['Cráneo','Columna','Tórax','Cintura escapular','Pelvis','Extremidad superior','Manos','Extremidad inferior','Pies'];
-  const regions=[...new Set([...order,...bones.map(bone=>bone.region).filter(Boolean)])];
+  const displayRegion=bone=>['sacrum','coccyx'].includes(bone.id)?'Pelvis':(bone.region||'__ungrouped');
+  const regions=[...new Set([...order,...bones.map(displayRegion)])];
   if (bones.some(bone => !bone.region)) regions.push('__ungrouped');
-  let y=0;
-  for(const region of regions) {
-    let x=0, rowHeight=0, placed=false;
-    for(const bone of bones.filter(item=>(item.region || '__ungrouped')===region)) {
-      const layout=boneLayout(bone,profileId);
-      Object.assign(bone,layout,{recordOnly:!isAnatomicalBone(bone)});
-      if(bone.recordOnly) continue;
-      const horizontal=bone.size[1]>bone.size[0]*2;
-      const width=horizontal?bone.size[1]:bone.size[0], height=horizontal?bone.size[0]:bone.size[1];
-      if(x+width>11 && x>0){x=0;y+=rowHeight+.3;rowHeight=0;}
-      bone.e=[x+width/2-5.5,-y-height/2,0];
-      bone.expandedRotation=[0,0,horizontal?Math.PI/2:0];
-      x+=width+.25;rowHeight=Math.max(rowHeight,height);placed=true;
-    }
-    if(placed) y+=rowHeight+.75;
+  const anatomical=bones.filter(isAnatomicalBone);
+  for(const bone of bones) {
+    const layout=boneLayout(bone,profileId);
+    Object.assign(bone,layout,{recordOnly:!isAnatomicalBone(bone),expandedRegion:displayRegion(bone)});
   }
-  const middle=Math.max(0,(y-.75)/2);
-  bones.filter(isAnatomicalBone).forEach(bone=>{bone.e[1]+=middle;});
+  // Anthropological plate layout: central axial skeleton, lateral vertebral
+  // column and symmetric limbs. Coordinates are only display coordinates.
+  const placed=new Set();
+  const place=(bone,x,y,rotation=0)=>{if(!bone||bone.recordOnly)return;bone.e=[x,y,0];bone.expandedRotation=[0,0,rotation];placed.add(bone.id);};
+  const one=id=>bones.find(bone=>bone.id===id);
+  const sideOf=bone=>bone?.id.startsWith('left_')?1:-1;
+  const sortNatural=(a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true});
+  const placeColumn=(items,x,top,gap=.14)=>{let y=top;for(const bone of items.sort(sortNatural)){const h=Math.max(.08,bone.size[1]);place(bone,x,y-h/2);y-=h+gap;}};
+  const placeRow=(items,y,x,gap=.14,rotation=0)=>{const sorted=items.sort(sortNatural),width=sorted.reduce((sum,bone)=>sum+Math.max(.08,bone.size[0]),0)+Math.max(0,sorted.length-1)*gap;let cursor=x-width/2;for(const bone of sorted){const w=Math.max(.08,bone.size[0]);place(bone,cursor+w/2,y,rotation);cursor+=w+gap;}};
+  place(one('skull'),0,8.15);
+  place(one('mandible'),0,6.85);
+  placeColumn(bones.filter(bone=>bone.region==='Columna'),-4.55,8.5,.12);
+  const ribs=bones.filter(bone=>bone.type==='rib').sort(sortNatural);
+  for(let row=0;row<6;row++)placeRow(ribs.slice(row*4,row*4+4),5.75-row*.47,0,.12,0);
+  place(one('sternum'),0,3.15);
+  for(const side of [-1,1]){
+    place(bones.find(bone=>bone.id===`${side===1?'left':'right'}_clavicle`),side*2.05,1.35,side===1?.08:-.08);
+    place(bones.find(bone=>bone.id===`${side===1?'left':'right'}_scapula`),side*2.95,2.05,0);
+  }
+  const limbName=side=>side===1?'left':'right';
+  for(const side of [-1,1]){
+    const prefix=limbName(side);
+    placeColumn(bones.filter(bone=>bone.id===`${prefix}_humerus`),side*3.85,2.8,.18);
+    placeColumn(bones.filter(bone=>[`${prefix}_radius`,`${prefix}_ulna`].includes(bone.id)),side*4.35,1.15,.18);
+    placeRow(bones.filter(bone=>bone.region==='Manos'&&bone.id.startsWith(`${prefix}_`)), -1.9, side*4.0,.08,0);
+  }
+  place(one('sacrum'),0,-2.35);
+  place(one('coccyx'),0,-3.35);
+  for(const side of [-1,1]){
+    const prefix=limbName(side);
+    place(bones.find(bone=>bone.id===`${prefix}_coxal`),side*1.65,-2.4,0);
+    placeColumn(bones.filter(bone=>bone.id===`${prefix}_femur`),side*2.6,-4.0,.18);
+    placeColumn(bones.filter(bone=>[`${prefix}_patella`,`${prefix}_tibia`,`${prefix}_fibula`].includes(bone.id)),side*2.75,-6.75,.18);
+    placeRow(bones.filter(bone=>bone.region==='Pies'&&bone.id.startsWith(`${prefix}_`)), -12.5, side*2.75,.08,0);
+  }
+  // Keep any future catalogue entries visible, while preserving the regional
+  // order used by the viewer and tests.
+  let fallbackY=-11;
+  for(const region of regions)for(const bone of bones.filter(item=>(item.region||'__ungrouped')===region&&!placed.has(item.id)&&!item.recordOnly)){
+    const width=Math.max(.08,bone.size[0]);place(bone,-5.1+width/2,fallbackY);fallbackY-=Math.max(.18,bone.size[1])+.12;
+  }
+  // Resolve the residual 2D footprint intersections caused by the different
+  // widths of ribs, girdles and long bones. Later elements move down, so the
+  // plate remains top-to-bottom anatomical and all regions stay selectable.
+  const collisionOrder=regions.flatMap(region=>bones.filter(item=>displayRegion(item)===region&&!item.recordOnly));
+  for(let pass=0;pass<8;pass++){
+    let changed=false;
+    for(let i=0;i<collisionOrder.length;i++)for(let j=i+1;j<collisionOrder.length;j++){
+      const a=collisionOrder[i],b=collisionOrder[j];
+      const ax=a.e[0]-a.size[0]/2, ar=a.e[0]+a.size[0]/2, ay=a.e[1]-a.size[1]/2, at=a.e[1]+a.size[1]/2;
+      const bx=b.e[0]-b.size[0]/2, br=b.e[0]+b.size[0]/2, by=b.e[1]-b.size[1]/2, bt=b.e[1]+b.size[1]/2;
+      if(ar<=bx||br<=ax||at<=by||bt<=ay)continue;
+      b.e[1]-=Math.min(1.5,at-by+.22);changed=true;
+    }
+    if(!changed)break;
+  }
+  const minY=Math.min(...anatomical.map(bone=>bone.e[1])),maxY=Math.max(...anatomical.map(bone=>bone.e[1]));
+  const middle=(minY+maxY)/2;
+  anatomical.forEach(bone=>{bone.e[1]-=middle;});
 }
 
 export function createProceduralBone(THREE,bone,profileId='adult_male',color=0xc4ad8b) {
