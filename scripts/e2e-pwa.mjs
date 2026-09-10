@@ -485,11 +485,13 @@ try {
   assert.equal(await evaluate(cdp, `document.querySelector('#changes-results').textContent.includes('entradas coinciden')`), true, 'Change log query must refresh results');
   await evaluate(cdp, `(()=>{const language=document.querySelector('#language');language.value='en';language.dispatchEvent(new Event('change'));document.querySelector('#changes-panel-button').click();})()`);
   await waitForValue(cdp, `document.querySelector('#extended-panel h3')?.textContent || ''`, value=>value==='Change log', 'Localize change log');
+  await evaluate(cdp, `document.querySelector('#record-panel-button').click()`);
+  assert.match(await evaluate(cdp, `document.querySelector('#record-fragments')?.closest('label')?.textContent || ''`), /Fragments/,'Scientific record labels must localize to English');
   await evaluate(cdp, `(()=>{const language=document.querySelector('#language');language.value='es';language.dispatchEvent(new Event('change'));})()`);
   await evaluate(cdp, `document.querySelector('#hierarchy-panel-button').click()`);
   assert.equal(await evaluate(cdp, `document.querySelector('#hierarchy-parent')?.tagName`), 'SELECT', 'Hierarchy parent must use the existing-entity selector');
-  await evaluate(cdp, `(async()=>{const input=document.querySelector('#photo-input'),transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(13*1024*1024)],'too-large.jpg',{type:'image/jpeg'}));input.files=transfer.files;await input.onchange({target:input});})()`);
-  assert.match(await evaluate(cdp, `document.querySelector('#toast').textContent`), /Foto rechazada por tamaño/,'Oversized local photo must be rejected');
+  await evaluate(cdp, `(async()=>{const input=document.querySelector('#photo-input'),transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(13*1024*1024)],'too-large.jpg',{type:'image/jpeg'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));await new Promise(resolve=>setTimeout(resolve,50));})()`);
+  await waitForValue(cdp, `document.querySelector('#toast').textContent || ''`, value=>/Foto rechazada por tamaño/.test(value), 'Oversized local photo must be rejected');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
