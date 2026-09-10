@@ -4,7 +4,7 @@ import { importDentalRows } from '../src/domain/dental-import.js';
 import { takeInventorySnapshot, applyInventorySnapshot } from '../src/domain/inventory-history.js';
 import { normalizeProject, fallbackProjectKey, loadProject, listProjects, saveProject } from '../src/data/store.js';
 import { createProjectWriter } from '../src/data/persistence.js';
-import { createOsteoArchive, readOsteoArchive } from '../src/domain/backup-archive.js';
+import { ARCHIVE_LIMITS, createOsteoArchive, readOsteoArchive } from '../src/domain/backup-archive.js';
 import { normalizePortionRecords, portionRecordCount } from '../src/domain/portion-records.js';
 import { normalizeWeightUnit, weightToGrams } from '../src/domain/weights.js';
 import { protectSpreadsheetValue, protectSpreadsheetRows } from '../src/domain/spreadsheet.js';
@@ -65,6 +65,7 @@ assert.match(archive.manifest.checksums[archive.models[0].name], /^[0-9a-f]{8}$/
 assert.match(archive.manifest.sha256['project.json'], /^[0-9a-f]{64}$/);
 assert.match(archive.manifest.sha256[archive.models[0].name], /^[0-9a-f]{64}$/);
 await assert.rejects(() => readOsteoArchive(new Uint8Array([1, 2, 3])));
+const oversizedHeader = new Uint8Array(34); oversizedHeader.set([0x50, 0x4b, 0x03, 0x04]); new DataView(oversizedHeader.buffer).setUint32(18, ARCHIVE_LIMITS.maxEntryBytes + 1, true); new DataView(oversizedHeader.buffer).setUint32(22, ARCHIVE_LIMITS.maxEntryBytes + 1, true); await assert.rejects(() => readOsteoArchive(oversizedHeader), /demasiado grande|inseguro/i);
 const corruptedArchive = new Uint8Array(archiveBytes); corruptedArchive[corruptedArchive.indexOf(255)] = 254;
 await assert.rejects(() => readOsteoArchive(corruptedArchive), /dañado|damaged/i);
 const csv = '\uFEFFBone_ID,Notes,Weight_g\r\nskull,"línea 1, \"\"comillas\"\"\r\nlínea 2",0\r\n\r\nmandible,"",\r\n';

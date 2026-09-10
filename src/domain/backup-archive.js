@@ -1,5 +1,6 @@
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
+export const ARCHIVE_LIMITS = Object.freeze({ maxBytes: 256 * 1024 * 1024, maxEntries: 2048, maxEntryBytes: 64 * 1024 * 1024 });
 
 function u16(value) { return new Uint8Array([value & 255, (value >>> 8) & 255]); }
 function u32(value) { return new Uint8Array([value & 255, (value >>> 8) & 255, (value >>> 16) & 255, (value >>> 24) & 255]); }
@@ -34,9 +35,11 @@ export async function createOsteoArchive(projectBackup, models = []) {
 }
 
 export async function readOsteoArchive(buffer) {
-  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer); const entries = new Map(); let offset = 0;
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer); if (bytes.length > ARCHIVE_LIMITS.maxBytes) throw new Error('La copia Osteo3D supera el límite de 256 MB.'); const entries = new Map(); let offset = 0; let totalUncompressed = 0;
   while (offset + 4 <= bytes.length && bytes[offset] === 0x50 && bytes[offset + 1] === 0x4b && bytes[offset + 2] === 0x03 && bytes[offset + 3] === 0x04) {
-    const method = bytes[offset + 8] | (bytes[offset + 9] << 8); const expectedCrc = readU32(bytes, offset + 14); const compressedSize = readU32(bytes, offset + 18); const uncompressedSize = readU32(bytes, offset + 22); const nameSize = bytes[offset + 26] | (bytes[offset + 27] << 8); const extraSize = bytes[offset + 28] | (bytes[offset + 29] << 8); const name = decoder.decode(bytes.slice(offset + 30, offset + 30 + nameSize)); const start = offset + 30 + nameSize + extraSize; if (method !== 0 || compressedSize !== uncompressedSize || start + compressedSize > bytes.length) throw new Error('Archivo Osteo3D no compatible o dañado.'); const data = bytes.slice(start, start + compressedSize); if (crc32(data) !== expectedCrc) throw new Error(`Archivo Osteo3D dañado: ${name}.`); entries.set(name, data); offset = start + compressedSize;
+    if (entries.size >= ARCHIVE_LIMITS.maxEntries) throw new Error('La copia Osteo3D contiene demasiadas entradas.');
+    if (offset + 30 > bytes.length) throw new Error('Archivo Osteo3D no compatible o dañado.');
+    const method = bytes[offset + 8] | (bytes[offset + 9] << 8); const expectedCrc = readU32(bytes, offset + 14); const compressedSize = readU32(bytes, offset + 18); const uncompressedSize = readU32(bytes, offset + 22); const nameSize = bytes[offset + 26] | (bytes[offset + 27] << 8); const extraSize = bytes[offset + 28] | (bytes[offset + 29] << 8); const name = decoder.decode(bytes.slice(offset + 30, offset + 30 + nameSize)); const start = offset + 30 + nameSize + extraSize; totalUncompressed += uncompressedSize; if (compressedSize > ARCHIVE_LIMITS.maxEntryBytes || uncompressedSize > ARCHIVE_LIMITS.maxEntryBytes || totalUncompressed > ARCHIVE_LIMITS.maxBytes || method !== 0 || compressedSize !== uncompressedSize || start < offset + 30 || start + compressedSize > bytes.length || !name || name.startsWith('/') || name.includes('..') || entries.has(name)) throw new Error('Archivo Osteo3D no compatible, inseguro o demasiado grande.'); const data = bytes.slice(start, start + compressedSize); if (crc32(data) !== expectedCrc) throw new Error(`Archivo Osteo3D dañado: ${name}.`); entries.set(name, data); offset = start + compressedSize;
   }
   if (!entries.has('project.json')) throw new Error('La copia Osteo3D no contiene project.json.');
   let project, manifest = { format: 'osteo3d-archive', version: 1, models: [] }; try { project = JSON.parse(decoder.decode(entries.get('project.json'))); if (entries.has('MANIFEST.json')) manifest = JSON.parse(decoder.decode(entries.get('MANIFEST.json'))); } catch { throw new Error('project.json o MANIFEST.json no es JSON válido.'); }
