@@ -417,6 +417,7 @@ assert.match(main, /recordInventorySnapshotChanges/);
 assert.match(main, /'weights','weightUnits','portionRecords'/);
 assert.match(main, /mass_absent/);
 assert.match(main, /mass_region/);
+assert.match(main, /else if\(tool==='erase'\)\{state\.status\[bone\.id\]='not_recorded';state\.preservation\[bone\.id\]='not_evaluated';delete state\.completeness\[bone\.id\]/);
 assert.match(main, /'photos','indeterminateFragments','dental'/);
 assert.match(main, /replaceChildren\(`0\/\$\{bones\.length\}`\)/);
 assert.match(main, /replaceChildren\(`0\/\$\{bones\.length\} elementos revisados`\)/);
