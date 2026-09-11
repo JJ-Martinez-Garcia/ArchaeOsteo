@@ -298,7 +298,7 @@ async function loadAvailableProfileModels() {
   const loadableBones = orderedBones.filter(bone => loadableBoneIds.has(bone.id));
   const lowMemory = Boolean(globalThis.matchMedia?.('(max-width: 900px)').matches) || Number(navigator.deviceMemory || 0) > 0 && Number(navigator.deviceMemory) <= 2;
   const modelLoadConcurrency = lowMemory ? 3 : 8;
-  await forEachConcurrent(loadableBones, modelLoadConcurrency, async (bone, index) => {
+  const loadOneProfileModel = async (bone) => {
     if (generation !== modelLoadGeneration) return;
     if (loadableBoneIds.has(bone.id)) {
       try {
@@ -314,6 +314,11 @@ async function loadAvailableProfileModels() {
         // Assets partial or temporarily unavailable keep their independent fallback marker.
       }
     }
+  };
+  const priorityBone = loadableBones[0];
+  if (priorityBone) await loadOneProfileModel(priorityBone);
+  await forEachConcurrent(loadableBones.slice(1), modelLoadConcurrency, async (bone, index) => {
+    await loadOneProfileModel(bone);
     if ((index + 1) % 16 === 0) await yieldToBrowser();
   });
   await loadCachedCustomModels(generation);

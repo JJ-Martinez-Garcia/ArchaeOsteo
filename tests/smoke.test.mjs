@@ -704,7 +704,7 @@ assert.match(main, /function yieldToBrowser\(\)/);
 assert.match(main, /function forEachConcurrent\(items, concurrency, callback\)/);
 assert.match(main, /const orderedBones = \[bones\.find\(bone => bone\.id === state\.selected\)/);
 assert.match(main, /const modelLoadConcurrency = lowMemory \? 3 : 8/);
-assert.match(main, /forEachConcurrent\(loadableBones, modelLoadConcurrency/);
+assert.match(main, /forEachConcurrent\(loadableBones\.slice\(1\), modelLoadConcurrency/);
 assert.match(await text('src/ui/extended.js'), /hierarchy-panel-button/);
 assert.match(await text('src/ui/extended.js'), /Asociaciones jerárquicas/);
 assert.match(await text('src/ui/extended.js'), /localizeScientificRecordUi/);
