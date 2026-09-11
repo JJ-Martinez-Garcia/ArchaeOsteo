@@ -935,6 +935,8 @@ document.querySelector('#region-colors-toggle').onclick=()=>{state.colorByRegion
 document.querySelector('.viewer-wrap')?.insertAdjacentHTML('beforeend','<div id="labels-layer" aria-live="polite"></div>');
 setInterval(()=>{if(document.visibilityState==='visible')renderLabels();},250);
 document.querySelector('.viewer-wrap')?.insertAdjacentHTML('beforeend','<div class="viewer-lighting-controls" aria-label="Controles de iluminación"><button id="lighting-toggle" type="button" aria-expanded="false" aria-controls="lighting-control-fields">Iluminación</button><div id="lighting-control-fields" class="lighting-control-fields" hidden><label class="light-control">Iluminación <output id="light-value">100%</output><input id="light-slider" type="range" min="20" max="200" value="100" /></label><label class="light-control">Ambiente <output id="ambient-light-value">100%</output><input id="ambient-slider" type="range" min="0" max="200" value="100" /></label><label class="light-control">Azimut <output id="light-azimuth-value">30°</output><input id="light-azimuth" type="range" min="0" max="360" value="30" /></label><label class="light-control">Elevación <output id="light-elevation-value">55°</output><input id="light-elevation" type="range" min="10" max="90" value="55" /></label></div></div>');
+const lightingControls = document.querySelector('.viewer-lighting-controls');
+document.querySelector('.top-actions')?.appendChild(lightingControls);
 const lightingToggle = document.querySelector('#lighting-toggle');
 const lightingFields = document.querySelector('#lighting-control-fields');
 const syncLightingControls = open => {
