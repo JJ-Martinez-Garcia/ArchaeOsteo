@@ -200,14 +200,14 @@
     },
     "adult_female": {
       "source_status": "published",
-      "author": "Osteo3D contributors",
+      "author": "Osteo3D contributors; derived from Open3Dmodel contributors / Open Anatomy lineage",
       "institution": "ArchaeOsteo project",
       "url": "https://github.com/JJ-Martinez-Garcia/ArchaeOsteo",
-      "license": "MIT",
-      "license_url": "https://opensource.org/license/mit/",
-      "version": "procedural-1.2.0",
-      "consulted_at": "2026-09-10",
-      "modifications": "Original mathematical modeling with independent regional proportions, higher-resolution surfaces, separated epiphyseal plates and illustrative ossification-center envelopes. Not derived from the imported adult-male meshes; uncalibrated didactic reconstruction.",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "version": "adult-male-adaptation-1.0.0",
+      "consulted_at": "2026-09-11",
+      "modifications": "Adult-male GLBs copied without geometry edits and adapted with controlled per-bone proportional transforms for a female-profile visualisation. Not a female specimen, scan, sex estimator or validated morphometric model.",
       "asset_count": 179,
       "asset_ids": [
         "c1_atlas",
@@ -390,7 +390,7 @@
         "t8",
         "t9"
       ],
-      "model_kind": "original-didactic"
+      "model_kind": "adapted-from-adult-male"
     },
     "infant": {
       "source_status": "published",

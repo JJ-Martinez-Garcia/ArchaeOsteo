@@ -5,9 +5,10 @@ Código fuente: `src/anatomy/procedural.js`. Fecha: 2026-09-10.
 
 Los 179 identificadores anatómicos del catálogo tienen una representación
 tridimensional generada en el navegador, disponible también sin conexión.
-Además, femenino, infante y neonato se distribuyen como 537 archivos GLB
-independientes en sus carpetas de perfil, con metadatos y licencia incluidos.
-No se trata de tres escaneos: son modelos propios de reconstrucción didáctica.
+Además, infante y neonato se distribuyen como 358 archivos GLB independientes
+en sus carpetas de perfil, con metadatos y licencia incluidos. El adulto femenino
+usa una adaptación visual separada de los GLB masculinos, documentada en
+`SOURCES.md`; no es un escaneo femenino ni una reconstrucción validada.
 Los otros 13 registros son categorías agregadas o indeterminadas, no huesos
 adicionales. Se conservan sus datos, pero no se dibujan como piezas duplicadas.
 El número 179 NO equivale a un inventario de los 206 huesos del adulto:
@@ -21,8 +22,8 @@ e ilion; arcos pélvicos con abertura; bóveda craneal segmentada y rebordes orb
 volúmenes irregulares deterministas para carpo y tarso. Los extremos articulares
 están simplificados. Cada componente tiene nombre y metadatos estables.
 
-Hay cuatro conjuntos de parámetros: adulto masculino, adulto femenino, infante y
-neonato. Tronco, cabeza, miembros y cinturas tienen factores independientes. La
+Hay cuatro conjuntos de parámetros para el modo esquemático: adulto masculino,
+adulto femenino, infante y neonato. Tronco, cabeza, miembros y cinturas tienen factores independientes. La
 versión 1.2.0 aumenta la resolución de las superficies, afina el perfil de las
 diáfisis y separa mejor las placas epifisarias. En inmaduros añade fontanelas y
 suturas esquemáticas en el cráneo, placas de crecimiento y marcadores ocres de

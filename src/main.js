@@ -288,10 +288,6 @@ async function loadAvailableProfileModels() {
   // alongside the integrated skull (custom mandible models remain opt-in).
   const integratedMandible = state.profile === 'adult_male' && profile.asset_ids?.includes('skull');
   const customMandible = Boolean(state.customModels?.[state.profile]?.mandible && state.customModels[state.profile].mandible.cached !== false);
-  if (integratedMandible && !customMandible) {
-    const duplicateMandible = group.getObjectByName('mandible');
-    if (duplicateMandible) { group.remove(duplicateMandible); disposeObject(duplicateMandible); }
-  }
   const cachedBoneIds = await getCachedModelBoneIds(state.profile, bones.map(bone => bone.id)).catch(() => []);
   if (generation !== modelLoadGeneration) return;
   const loadableBoneIds = new Set(profile.asset_status === 'ready' ? bones.map(bone => bone.id) : [...(profile.asset_ids || []), ...cachedBoneIds]);
@@ -309,6 +305,10 @@ async function loadAvailableProfileModels() {
         const gltf = await loadBoneModel(THREE, profileId, bone.id, { dracoDecoderPath: './draco/' });
         if (generation !== modelLoadGeneration) { disposeObject(gltf.scene); return; }
         addLoadedModelRoot(gltf.scene, bone, gltf.scene.getObjectByName(bone.id)?.userData?.generated ? 'generated' : 'glb');
+        if (bone.id === 'skull' && integratedMandible && !customMandible) {
+          const duplicateMandible = group.getObjectByName('mandible');
+          if (duplicateMandible) { group.remove(duplicateMandible); disposeObject(duplicateMandible); }
+        }
         updateSceneDiagnostics();
       } catch {
         // Assets partial or temporarily unavailable keep their independent fallback marker.

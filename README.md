@@ -15,10 +15,11 @@ Panel derecho de PC: separador arrastrable entre visor y ficha, anchura recordad
 flechas de teclado y doble clic para restablecer. Pestañas y formularios se adaptan
 sin desplazamiento horizontal del panel; las tablas extensas mantienen su propio scroll.
 
-Los perfiles femenino, infante y neonato incluyen ahora **537 GLB propios** (179
-por perfil) con nombres, componentes y licencia MIT, además del generador reproducible
-`pnpm generate-profile-models`. Son modelos didácticos, no reconstrucciones validadas
-de especímenes. Consultar [fuentes y límites](public/models/SOURCES.md).
+El perfil femenino incluye ahora **179 GLB adaptados** desde el paquete masculino,
+con transformaciones proporcionales controladas por hueso y licencia CC BY-SA 4.0.
+Infante y neonato incluyen **358 GLB propios** (179 por perfil) con nombres,
+componentes y licencia MIT. Son modelos didácticos o adaptaciones visuales, no
+reconstrucciones validadas de especímenes. Consultar [fuentes y límites](public/models/SOURCES.md).
 
 Actualización 2026-09-10: los cuatro perfiles cuentan con **179 representaciones 3D
 esquemáticas propias por perfil**, disponibles offline y exportables como GLB.
@@ -99,7 +100,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - interfaz responsive para escritorio y móvil.
 - recuperación de errores de interfaz con aviso no destructivo y diagnóstico en consola;
 
-El perfil adulto masculino publica 179 de 192 elementos GLB documentados: un cráneo CC0 y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. Los 13 elementos agregados o indeterminados restantes no tienen malla independiente; los perfiles adulto femenino, infante y neonato incluyen GLB procedurales propios, distribuidos bajo MIT, que son esquemáticos y no están validados para medición o diagnóstico. El investigador también puede importar paquetes GLB por `Bone_ID` o asociar un modelo propio GLB, GLTF, OBJ o STL al hueso seleccionado. Cada modelo local está limitado a 64 MB y se valida antes de leerlo; la sustitución de un modelo se restaura si falla la escritura en caché. Los modelos propios y sus metadatos se guardan en la caché local del navegador para reutilizarlos offline; no se publican en el repositorio ni se incluyen dentro de las copias JSON, por lo que una restauración en otro navegador debe volver a importar los archivos.
+El perfil adulto masculino publica 179 de 192 elementos GLB documentados: un cráneo CC0 y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. El adulto femenino publica 179 adaptaciones visuales derivadas del paquete masculino bajo CC BY-SA 4.0; infante y neonato incluyen GLB procedurales propios bajo MIT. Ninguno está validado para medición, diagnóstico o estimación de sexo/edad. El investigador también puede importar paquetes GLB por `Bone_ID` o asociar un modelo propio GLB, GLTF, OBJ o STL al hueso seleccionado. Cada modelo local está limitado a 64 MB y se valida antes de leerlo; la sustitución de un modelo se restaura si falla la escritura en caché. Los modelos propios y sus metadatos se guardan en la caché local del navegador para reutilizarlos offline; no se publican en el repositorio ni se incluyen dentro de las copias JSON, por lo que una restauración en otro navegador debe volver a importar los archivos.
 
 ## Arquitectura prevista
 
@@ -138,7 +139,7 @@ El workflow de GitHub Actions ejecuta automáticamente `pnpm build`, los smoke t
 
 ## Fases siguientes
 
-1. Localizar y documentar modelos anatómicos independientes para los 13 elementos adultos agregados/indeterminados y validar los GLB procedurales femenino, infantil y neonatal.
+1. Localizar y documentar modelos anatómicos femeninos independientes y validar la adaptación visual actual; completar los 13 elementos adultos agregados/indeterminados.
 2. Separar completamente inventario, informes y configuración en stores especializados.
 3. Completar la auditoría de importación/exportación de todos los campos y hojas auxiliares, incluida la restauración integral.
 4. Realizar validación osteológica especializada, pruebas en dispositivos reales y maquetación profesional del informe PDF.

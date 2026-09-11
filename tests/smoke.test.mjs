@@ -17,7 +17,7 @@ const packageJson = JSON.parse(await text('package.json'));
 const indexHtml = await text('index.html');
 assert.equal(await exists('PWA_STATUS.md'), true);
 assert.match(await text('PWA_STATUS.md'), /Estado operativo verificado/);
-assert.match(await text('PWA_STATUS.md'), /placeholder/);
+assert.match(await text('PWA_STATUS.md'), /adaptaciones visuales derivadas/);
 assert.match(indexHtml, /apple-mobile-web-app-capable/);
 assert.match(indexHtml, /apple-touch-icon.*osteo3d-192\.png/);
 assert.equal(manifest.display, 'standalone');

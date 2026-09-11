@@ -194,7 +194,7 @@
       "label": "Adulto femenino",
       "root": "./adult_female",
       "asset_status": "partial",
-      "approximate_size_mb": 8.82,
+      "approximate_size_mb": 13.18,
       "asset_count": 179,
       "asset_ids": [
         "c1_atlas",
@@ -377,8 +377,8 @@
         "t8",
         "t9"
       ],
-      "model_kind": "original-didactic",
-      "generator_version": "1.2.0"
+      "model_kind": "adapted-from-adult-male",
+      "generator_version": "adult-male-adaptation-1.0.0"
     },
     "infant": {
       "label": "Infante",
