@@ -283,15 +283,9 @@ async function loadAvailableProfileModels() {
   if (state.geometryMode === 'schematic') { selectBone(state.selected); return; }
   const profile = modelManifest.profiles?.[state.profile];
   if (!profile) { selectBone(state.selected); return; }
-  // The adult skull GLB already includes the dentate mandible. The separate
-  // mandible asset is a duplicate lower jaw without teeth, so do not render it
-  // alongside the integrated skull (custom mandible models remain opt-in).
-  const integratedMandible = state.profile === 'adult_male' && profile.asset_ids?.includes('skull');
-  const customMandible = Boolean(state.customModels?.[state.profile]?.mandible && state.customModels[state.profile].mandible.cached !== false);
   const cachedBoneIds = await getCachedModelBoneIds(state.profile, bones.map(bone => bone.id)).catch(() => []);
   if (generation !== modelLoadGeneration) return;
   const loadableBoneIds = new Set(profile.asset_status === 'ready' ? bones.map(bone => bone.id) : [...(profile.asset_ids || []), ...cachedBoneIds]);
-  if (integratedMandible && !customMandible) loadableBoneIds.delete('mandible');
   const customModels = Object.values(state.customModels?.[state.profile] || {});
   if (loadableBoneIds.size === 0 && !customModels.some(model => model?.cached !== false)) { selectBone(state.selected); return; }
   const orderedBones = [bones.find(bone => bone.id === state.selected), ...bones.filter(bone => bone.id !== state.selected)].filter(Boolean);
@@ -305,10 +299,6 @@ async function loadAvailableProfileModels() {
         const gltf = await loadBoneModel(THREE, profileId, bone.id, { dracoDecoderPath: './draco/' });
         if (generation !== modelLoadGeneration) { disposeObject(gltf.scene); return; }
         addLoadedModelRoot(gltf.scene, bone, gltf.scene.getObjectByName(bone.id)?.userData?.generated ? 'generated' : 'glb');
-        if (bone.id === 'skull' && integratedMandible && !customMandible) {
-          const duplicateMandible = group.getObjectByName('mandible');
-          if (duplicateMandible) { group.remove(duplicateMandible); disposeObject(duplicateMandible); }
-        }
         updateSceneDiagnostics();
       } catch {
         // Assets partial or temporarily unavailable keep their independent fallback marker.
