@@ -67,6 +67,8 @@
     padding: 9px 10px;
     background: #fffffff2;
   }
+  .viewer-lighting-controls > button { min-height: 44px; }
+  .lighting-control-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 8px; }
   .viewer-lighting-controls .light-control { gap: 3px; }
   .viewer-lighting-controls .light-control input { margin: 0; }
 }

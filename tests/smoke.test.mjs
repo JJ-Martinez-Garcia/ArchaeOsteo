@@ -567,6 +567,8 @@ assert.match(main, /hasExternalStack\(event\.reason\)/);
 assert.match(main, /appinstalled.*runPwaDiagnostics\(\)\.catch\(\(\)=>\{\}\)/s);
 assert.match(main, /material\.wireframe=state\.wireframe/);
 assert.match(main, /light-slider/);
+assert.match(main, /lighting-toggle/);
+assert.match(main, /lighting-control-fields/);
 assert.match(main, /setLightIntensity/);
 assert.match(main, /scene\.userData\.lights/);
 assert.match(store, /hidden: Object\.fromEntries/);
