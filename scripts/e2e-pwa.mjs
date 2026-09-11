@@ -97,11 +97,14 @@ async function startStaticServer() {
   return { server, url: `http://127.0.0.1:${address.port}/` };
 }
 
-async function waitForDevTools(profileDirectory, browserProcess, timeout = 15_000) {
+async function waitForDevTools(profileDirectory, browserProcess, timeout = 45_000) {
   const activePortFile = path.join(profileDirectory, 'DevToolsActivePort');
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
-    if (browserProcess.exitCode !== null) throw new Error(`El navegador terminó antes de iniciar DevTools (${browserProcess.exitCode}).`);
+    if (browserProcess.exitCode !== null) {
+      const details = stderr.trim() ? `\n${stderr.trim()}` : '';
+      throw new Error(`El navegador terminó antes de iniciar DevTools (${browserProcess.exitCode}).${details}`);
+    }
     if (await fileExists(activePortFile)) {
       const [port] = (await readFile(activePortFile, 'utf8')).trim().split(/\r?\n/);
       if (port) return Number(port);
