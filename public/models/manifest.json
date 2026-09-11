@@ -567,8 +567,8 @@
         "t8",
         "t9"
       ],
-      "model_kind": "original-didactic",
-      "generator_version": "1.2.0"
+      "model_kind": "adapted-from-adult-male",
+      "generator_version": "blender-adaptation-1.0.0"
     },
     "neonate": {
       "label": "Neonato",
@@ -757,8 +757,8 @@
         "t8",
         "t9"
       ],
-      "model_kind": "original-didactic",
-      "generator_version": "1.2.0"
+      "model_kind": "adapted-from-adult-male",
+      "generator_version": "blender-adaptation-1.0.0"
     }
   },
   "bone_asset_pattern": "{profile}/{bone_id}.glb",

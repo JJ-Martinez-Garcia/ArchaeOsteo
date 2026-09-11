@@ -205,7 +205,7 @@
       "url": "https://github.com/JJ-Martinez-Garcia/ArchaeOsteo",
       "license": "CC BY-SA 4.0",
       "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "version": "adult-male-adaptation-1.0.0",
+      "version": "blender-adaptation-1.0.0",
       "consulted_at": "2026-09-11",
       "modifications": "Adult-male GLBs copied without geometry edits and adapted with controlled per-bone proportional transforms for a female-profile visualisation. Not a female specimen, scan, sex estimator or validated morphometric model.",
       "asset_count": 179,
@@ -397,11 +397,11 @@
       "author": "Osteo3D contributors",
       "institution": "ArchaeOsteo project",
       "url": "https://github.com/JJ-Martinez-Garcia/ArchaeOsteo",
-      "license": "MIT",
-      "license_url": "https://opensource.org/license/mit/",
-      "version": "procedural-1.2.0",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "version": "blender-adaptation-1.0.0",
       "consulted_at": "2026-09-10",
-      "modifications": "Original mathematical modeling with independent regional proportions, higher-resolution surfaces, separated epiphyseal plates and illustrative ossification-center envelopes. Not derived from the imported adult-male meshes; uncalibrated didactic reconstruction.",
+      "modifications": "Adult-male GLBs adapted with Blender scaling: infant profile uses 0.78 overall scale with relatively larger skull and mandible. Visual didactic adaptation, not a paediatric specimen, scan or validated age-estimation model.",
       "asset_count": 179,
       "asset_ids": [
         "c1_atlas",
@@ -584,18 +584,18 @@
         "t8",
         "t9"
       ],
-      "model_kind": "original-didactic"
+      "model_kind": "adapted-from-adult-male"
     },
     "neonate": {
       "source_status": "published",
       "author": "Osteo3D contributors",
       "institution": "ArchaeOsteo project",
       "url": "https://github.com/JJ-Martinez-Garcia/ArchaeOsteo",
-      "license": "MIT",
-      "license_url": "https://opensource.org/license/mit/",
-      "version": "procedural-1.2.0",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "version": "blender-adaptation-1.0.0",
       "consulted_at": "2026-09-10",
-      "modifications": "Original mathematical modeling with independent regional proportions, higher-resolution surfaces, separated epiphyseal plates and illustrative ossification-center envelopes. Not derived from the imported adult-male meshes; uncalibrated didactic reconstruction.",
+      "modifications": "Adult-male GLBs adapted with Blender scaling: neonate profile uses 0.62 overall scale with relatively larger skull and mandible. Visual didactic adaptation, not a neonatal specimen, scan or validated age-estimation model.",
       "asset_count": 179,
       "asset_ids": [
         "c1_atlas",
@@ -778,7 +778,7 @@
         "t8",
         "t9"
       ],
-      "model_kind": "original-didactic"
+      "model_kind": "adapted-from-adult-male"
     }
   }
 }

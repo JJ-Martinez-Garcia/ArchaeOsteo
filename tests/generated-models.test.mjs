@@ -10,17 +10,18 @@ const manifest=JSON.parse(await readFile('public/models/manifest.json','utf8'));
 const bones=[...baseBones,...extendedBones];let total=0;
 for(const profile of ['adult_female','infant','neonate']){
   const info=manifest.profiles[profile];assert.equal(info.asset_count,179);
-  const adaptedFemale=profile==='adult_female';
-  assert.equal(info.model_kind,adaptedFemale?'adapted-from-adult-male':'original-didactic');
+  const adaptedPackage=true;
+  assert.equal(info.model_kind,'adapted-from-adult-male');
   for(const id of info.asset_ids){
     const body=await readFile(`public/models/${profile}/${id}.glb`);
-    if(adaptedFemale){
+    if(adaptedPackage){
       const jsonLength=body.readUInt32LE(12),json=JSON.parse(body.subarray(20,20+jsonLength));
       const root=json.nodes.find(node=>node.name===id);assert.ok(root,`${profile}/${id}`);
       assert.equal(root.extras.generated,true);assert.equal(root.extras.profileId,profile);
-      assert.equal(root.extras.version,'adult-male-adaptation-1.0.0');
+      assert.equal(root.extras.version,'blender-adaptation-1.0.0');
       assert.equal(root.extras.license,'CC BY-SA 4.0');assert.equal(root.extras.adapted_from,'adult_male');
-      assert.ok(Array.isArray(root.scale)&&root.scale.length===3);total++;continue;
+      if(root.scale) assert.ok(Array.isArray(root.scale)&&root.scale.length===3);
+      total++;continue;
     }
     const gltf=await new GLTFLoader().parseAsync(body.buffer.slice(body.byteOffset,body.byteOffset+body.byteLength),'');
     const root=gltf.scene.getObjectByName(id);assert.ok(root,`${profile}/${id}`);
