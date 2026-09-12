@@ -1,6 +1,6 @@
 # Estado de Osteo3D PWA
 
-Fecha de revisión: 2026-09-11
+Fecha de revisión: 2026-09-12
 
 ## Estado operativo verificado
 
@@ -38,7 +38,7 @@ El workflow `.github/workflows/pages.yml` ejecuta además la instalación reprod
 
 ## Models 3D: estado y criterio de publicación
 
-`public/models/manifest.json` contiene los cuatro perfiles requeridos (`adult_male`, `adult_female`, `infant` y `neonate`). El perfil `adult_male` está en estado `partial` y publica 179 de 192 elementos: el cráneo CC0 `skull.glb` y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. El perfil `adult_female` publica 179 adaptaciones visuales derivadas de esos GLB, con transformaciones proporcionales controladas por hueso y licencia CC BY-SA 4.0. Infante y neonato incluyen 358 GLB propios didácticos (MIT). Los 13 registros sin malla de cada perfil son categorías agregadas/indeterminadas. Ninguno de los perfiles está calibrado ni científicamente validado como estimador de sexo.
+`public/models/manifest.json` contiene los cuatro perfiles requeridos (`adult_male`, `adult_female`, `infant` y `neonate`). El perfil `adult_male` está en estado `partial` y publica 179 de 192 elementos: el cráneo CC0 `skull.glb` y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. Los perfiles `adult_female`, `infant` y `neonate` publican 179 adaptaciones visuales derivadas de esos GLB por perfil, exportadas con Blender y bajo CC BY-SA 4.0. Los 13 registros sin malla de cada perfil son categorías agregadas/indeterminadas. Ninguno de los perfiles está calibrado ni científicamente validado como estimador de sexo.
 
 Para publicar un perfil se deben aportar archivos GLB independientes por `Bone_ID` y completar `public/models/SOURCES.md` y `public/models/sources.json` con autoría, institución, URL permanente, licencia, versión, fecha de consulta, modificaciones y recuento de assets. El validador comprueba la cabecera GLB, la correspondencia exacta del nodo `Bone_ID`, el manifiesto y el registro de fuentes.
 

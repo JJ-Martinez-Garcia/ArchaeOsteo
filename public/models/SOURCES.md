@@ -78,7 +78,7 @@ La aplicación se distribuye gratuitamente. La licencia CC0 permite la redistrib
 
 Las adaptaciones Open3Dmodel se redistribuyen bajo CC BY-SA 4.0. Quien redistribuya o modifique esos GLB debe conservar la atribución, indicar los cambios y mantener la misma licencia para las adaptaciones. El código de la aplicación continúa bajo MIT como obra separada.
 
-No se generaron modelos para las 13 entradas agregadas o indeterminadas del catálogo, porque asociarles una anatomía concreta falsearía su significado. Tampoco se reutiliza esta anatomía adulta para los perfiles femenino, infantil o neonatal.
+No se generaron modelos para las 13 entradas agregadas o indeterminadas del catálogo, porque asociarles una anatomía concreta falsearía su significado. Los perfiles femenino, infantil y neonatal reutilizan visualmente las mallas adultas mediante adaptaciones de escala documentadas; esto no los convierte en especímenes femeninos o pediátricos ni en modelos anatómicos validados.
 
 El archivo fuente es un esqueleto humano adulto de referencia y no aporta por sí solo una validación métrica de sexo, edad o población. Su ubicación en `adult_male` mantiene el contrato actual del visor, pero no debe emplearse para estimar dimorfismo sexual, edad, diagnóstico ni medidas osteométricas sin una validación científica independiente.
 
