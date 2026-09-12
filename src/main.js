@@ -460,9 +460,9 @@ function animate() {
     });
     const pendingHidden=state.pendingOnly&&(state.status[b.id]||'not_recorded')!=='not_recorded';
     // The skull GLB already contains the attached jaw. Keep the standalone
-    // mandible hidden in the complete skeleton to avoid showing it twice;
-    // reveal it when the user isolates or selects the mandible itself.
-    const duplicateMandible=b.id==='mandible'&&!state.isolate&&state.selected!=='mandible';
+    // mandible hidden in the normal skeleton view to avoid showing it twice;
+    // reveal it only when the user explicitly isolates it.
+    const duplicateMandible=b.id==='mandible'&&!state.isolate;
     m.visible=isAnatomicalBone(b)&&!duplicateMandible&&!state.hidden[b.id]&&matchesSkeletonFilter(b)&&matchesRegionFilter(b)&&(!state.isolate||b.id===state.selected)&&!pendingHidden&&matchesFilters(b);
     const line=guideLines.get(b.id);
     if(line){const positions=line.geometry.attributes.position.array;positions.set(b.p,0);positions.set(m.position.toArray(),3);line.geometry.attributes.position.needsUpdate=true;line.visible=state.explosion>0&&!state.tableMode&&m.visible;}
@@ -1081,7 +1081,8 @@ const syncLightingControls = open => {
 };
 lightingToggle?.addEventListener('click', () => syncLightingControls(lightingFields.hidden));
 const mobileLightingQuery=globalThis.matchMedia?.('(max-width: 650px)');
-syncLightingControls(!mobileLightingQuery?.matches);
+// Keep the lighting menu compact on every device until the user opens it.
+syncLightingControls(false);
 mobileLightingQuery?.addEventListener?.('change', event=>{if(event.matches)syncLightingControls(false);});
 document.querySelector('#light-slider').oninput=event=>{setLightIntensity(Number(event.target.value)/100);document.querySelector('#light-value').textContent=event.target.value+'%';saveLocal({notify:false});};
 document.querySelector('#ambient-slider').oninput=event=>{setAmbientIntensity(Number(event.target.value)/100);document.querySelector('#ambient-light-value').textContent=event.target.value+'%';saveLocal({notify:false});};
@@ -1089,7 +1090,6 @@ document.querySelector('#light-azimuth').oninput=event=>{setLightingDirection(Nu
 document.querySelector('#light-elevation').oninput=event=>{setLightingDirection(state.lightingAzimuth,Number(event.target.value));document.querySelector('#light-elevation-value').textContent=event.target.value+'°';saveLocal({notify:false});};
 document.querySelector('.actions')?.insertAdjacentHTML('beforeend','<div class="lighting-modes" role="group" aria-label="Modo de iluminación"><strong>Modo</strong><button type="button" data-lighting-mode="neutral" aria-pressed="true">Neutra</button><button type="button" data-lighting-mode="laboratory" aria-pressed="false">Laboratorio</button><button type="button" data-lighting-mode="high_contrast" aria-pressed="false">Alto contraste</button></div>');
 document.querySelectorAll('[data-lighting-mode]').forEach(button=>button.onclick=()=>{setLightingMode(button.dataset.lightingMode);saveLocal({notify:false});});
-const syncLightingState=()=>syncLightingControls(!mobileLightingQuery?.matches); document.querySelector('#light-slider')?.addEventListener('change',syncLightingState); document.querySelector('#ambient-slider')?.addEventListener('change',syncLightingState); document.querySelector('#light-azimuth')?.addEventListener('change',syncLightingState); document.querySelector('#light-elevation')?.addEventListener('change',syncLightingState); document.querySelector('#profile')?.addEventListener('change',syncLightingState); document.querySelector('#language')?.addEventListener('change',syncLightingState); document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncLightingState();});
 document.querySelector('.viewer-toolbar')?.insertAdjacentHTML('beforeend','<button data-view-extra="superior">Superior</button><button data-view-extra="inferior">Inferior</button>');
 document.querySelectorAll('[data-view-extra]').forEach(button=>button.onclick=()=>{orbit.theta=0;orbit.phi=button.dataset.viewExtra==='superior'?0.12:Math.PI-0.12;orbit.target.set(0,0,0);updateCamera();});
 document.querySelector('.viewer-toolbar')?.insertAdjacentHTML('beforeend','<span class="local-view-group" role="group" aria-label="Vistas locales del elemento"><button data-local-view="medial">Medial</button><button data-local-view="lateral">Lateral</button><button data-local-view="proximal">Proximal</button><button data-local-view="distal">Distal</button></span>');
