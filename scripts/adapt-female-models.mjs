@@ -11,6 +11,9 @@ const manifestPath = path.join(root, 'manifest.json');
 const registryPath = path.join(root, 'sources.json');
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const registry = JSON.parse(await readFile(registryPath, 'utf8'));
+if (manifest.profiles.adult_female?.model_kind === 'adapted-from-adult-male') {
+  throw new Error('Este adaptador Node es legado y no puede sobrescribir el paquete Blender publicado. Usa Blender/scripts/blender-adapt-female-models.py.');
+}
 const ids = manifest.profiles.adult_male.asset_ids;
 const licenseText = await readFile(path.resolve('public/licenses/CC-BY-SA-4.0.txt'), 'utf8');
 

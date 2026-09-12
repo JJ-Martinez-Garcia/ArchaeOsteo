@@ -4,11 +4,11 @@ Autoría: Osteo3D contributors, 2026. Licencia MIT (véase LICENSE del repositor
 Código fuente: `src/anatomy/procedural.js`. Fecha: 2026-09-10.
 
 Los 179 identificadores anatómicos del catálogo tienen una representación
-tridimensional generada en el navegador, disponible también sin conexión.
-Además, infante y neonato se distribuyen como 358 archivos GLB independientes
-en sus carpetas de perfil, con metadatos y licencia incluidos. El adulto femenino
-usa una adaptación visual separada de los GLB masculinos, documentada en
-`SOURCES.md`; no es un escaneo femenino ni una reconstrucción validada.
+tridimensional procedural generada en el navegador, disponible también sin conexión.
+Los perfiles femenino, infante y neonato también se distribuyen como 537 archivos
+GLB independientes exportados con Blender a partir de los GLB masculinos; esos
+paquetes están documentados en `SOURCES.md` y son adaptaciones visuales didácticas.
+No son escaneos ni reconstrucciones validadas por edad o sexo.
 Los otros 13 registros son categorías agregadas o indeterminadas, no huesos
 adicionales. Se conservan sus datos, pero no se dibujan como piezas duplicadas.
 El número 179 NO equivale a un inventario de los 206 huesos del adulto:

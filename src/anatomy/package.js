@@ -137,6 +137,19 @@ export async function downloadModelPackage(manifest, profileId, boneIds = [], op
   const cache = await caches.open(options.cacheName || MODEL_PACKAGE_CACHE);
   const addedUrls = [];
   const replacedEntries = [];
+  const downloadedUrls = [];
+  const notifyProgress = (status, url = null) => {
+    if (typeof options.onProgress !== 'function') return;
+    options.onProgress({
+      profileId,
+      status,
+      completed: downloadedUrls.length,
+      total: plan.urls.length,
+      url,
+      downloadedUrls: [...downloadedUrls]
+    });
+  };
+  notifyProgress('started');
   try {
     for (const url of plan.urls) {
       const response = await fetch(url, { cache: 'no-cache' });
@@ -145,12 +158,16 @@ export async function downloadModelPackage(manifest, profileId, boneIds = [], op
       if (!existed) addedUrls.push(url);
       else replacedEntries.push({ url, response: existed.clone() });
       await cache.put(url, response.clone());
+      downloadedUrls.push(url);
+      notifyProgress('resource-complete', url);
     }
   } catch (error) {
     await Promise.all([addedUrls.map(url => cache.delete(url)), replacedEntries.map(entry => cache.put(entry.url, entry.response))].flat());
+    notifyProgress('failed', error instanceof Error ? error.message : String(error));
     throw error;
   }
-  return { ...plan, downloaded: plan.urls.length, cacheName: options.cacheName || MODEL_PACKAGE_CACHE };
+  notifyProgress('complete');
+  return { ...plan, downloaded: downloadedUrls.length, downloadedUrls, cacheName: options.cacheName || MODEL_PACKAGE_CACHE };
 }
 
 export async function importModelPackageFiles(profileId, files = [], boneIds = [], options = {}) {

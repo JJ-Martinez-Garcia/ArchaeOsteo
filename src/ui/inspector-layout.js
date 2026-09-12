@@ -60,7 +60,10 @@ export function initInspectorLayout() {
   });
   divider.addEventListener('pointerup', () => finish());
   divider.addEventListener('pointercancel', () => finish(true));
-  divider.addEventListener('lostpointercapture', () => finish(true));
+  // Chromium can emit lostpointercapture immediately after a synthetic mouse
+  // release, before pointerup. Keep the last valid width in that case; an
+  // explicit pointercancel or Escape still restores the previous width.
+  divider.addEventListener('lostpointercapture', () => finish(false));
   const resetPreferredWidth = () => { if (drag) finish(true); preferred = INSPECTOR_DEFAULT_WIDTH; apply(); persist(); };
   divider.addEventListener('dblclick', resetPreferredWidth);
   divider.ondblclick = resetPreferredWidth;

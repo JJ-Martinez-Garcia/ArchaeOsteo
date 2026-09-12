@@ -15,13 +15,13 @@ Panel derecho de PC: separador arrastrable entre visor y ficha, anchura recordad
 flechas de teclado y doble clic para restablecer. Pestañas y formularios se adaptan
 sin desplazamiento horizontal del panel; las tablas extensas mantienen su propio scroll.
 
-El perfil femenino incluye ahora **179 GLB adaptados** desde el paquete masculino,
-con transformaciones proporcionales controladas por hueso y licencia CC BY-SA 4.0.
-Infante y neonato incluyen **358 GLB propios** (179 por perfil) con nombres,
-componentes y licencia MIT. Son modelos didácticos o adaptaciones visuales, no
-reconstrucciones validadas de especímenes. Consultar [fuentes y límites](public/models/SOURCES.md).
+El perfil femenino incluye **179 GLB adaptados con Blender** desde el paquete
+masculino, con transformaciones proporcionales controladas por hueso y licencia
+CC BY-SA 4.0. Infante y neonato incluyen 358 GLB propios didácticos. Son
+representaciones visuales, no reconstrucciones validadas de especímenes. Consultar
+[fuentes y límites](public/models/SOURCES.md).
 
-Actualización 2026-09-10: los cuatro perfiles cuentan con **179 representaciones 3D
+Actualización 2026-09-11: los cuatro perfiles cuentan con **179 representaciones 3D
 esquemáticas propias por perfil**, disponibles offline y exportables como GLB.
 Se conservan los modelos externos y sus créditos. Los esquemas no son escaneos,
 no tienen escala métrica y no sirven para estimar edad o sexo. Los otros 13
@@ -31,6 +31,8 @@ Consulta [la revisión del encargo y pendientes](PROJECT_REVIEW.md) y
 [el método del generador](public/models/PROCEDURAL.md).
 
 [Lista de cierre de los 119 puntos y mejoras propuestas](PROJECT_BACKLOG.md).
+
+[Historial de cambios](CHANGELOG.md).
 
 La verificación del despliegue se puede ejecutar directamente con `pnpm verify-pages`;
 usa por defecto la página pública de GitHub Pages y admite `OSTEO3D_PAGES_URL` para
@@ -100,7 +102,7 @@ Esta primera fase implementa un MVP ejecutable con:
 - interfaz responsive para escritorio y móvil.
 - recuperación de errores de interfaz con aviso no destructivo y diagnóstico en consola;
 
-El perfil adulto masculino publica 179 de 192 elementos GLB documentados: un cráneo CC0 y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. El adulto femenino publica 179 adaptaciones visuales derivadas del paquete masculino bajo CC BY-SA 4.0; infante y neonato incluyen GLB procedurales propios bajo MIT. Ninguno está validado para medición, diagnóstico o estimación de sexo/edad. El investigador también puede importar paquetes GLB por `Bone_ID` o asociar un modelo propio GLB, GLTF, OBJ o STL al hueso seleccionado. Cada modelo local está limitado a 64 MB y se valida antes de leerlo; la sustitución de un modelo se restaura si falla la escritura en caché. Los modelos propios y sus metadatos se guardan en la caché local del navegador para reutilizarlos offline; no se publican en el repositorio ni se incluyen dentro de las copias JSON, por lo que una restauración en otro navegador debe volver a importar los archivos.
+El perfil adulto masculino publica 179 de 192 elementos GLB documentados: un cráneo CC0 y 178 adaptaciones Open3Dmodel bajo CC BY-SA 4.0. El perfil adulto femenino publica 179 adaptaciones visuales realizadas con Blender a partir del paquete masculino bajo CC BY-SA 4.0. Los perfiles infante y neonato publican 179 modelos didácticos propios por perfil bajo MIT. Ninguno está validado para medición, diagnóstico o estimación de sexo/edad. El investigador también puede importar paquetes GLB por `Bone_ID` o asociar un modelo propio GLB, GLTF, OBJ o STL al hueso seleccionado. Cada modelo local está limitado a 64 MB y se valida antes de leerlo; la sustitución de un modelo se restaura si falla la escritura en caché. Los modelos propios y sus metadatos se guardan en la caché local del navegador para reutilizarlos offline; no se publican en el repositorio ni se incluyen dentro de las copias JSON, por lo que una restauración en otro navegador debe volver a importar los archivos.
 
 ## Arquitectura prevista
 

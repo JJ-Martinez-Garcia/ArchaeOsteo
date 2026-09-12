@@ -17,27 +17,38 @@ Por cada perfil y paquete se deben documentar:
 - modificaciones realizadas y herramientas utilizadas;
 - número de assets incluidos y sus identificadores anatómicos.
 
-Los cuatro perfiles tienen cobertura `partial`: 179 GLB por perfil y 13 categorías de inventario sin malla. El adulto masculino conserva los recursos externos descritos abajo. El femenino es una adaptación visual de esos GLB; infante y neonato son modelos propios didácticos. `partial` no implica cobertura anatómica completa ni aptitud para medición.
+Los cuatro perfiles tienen cobertura `partial`: 179 GLB por perfil y 13 categorías de inventario sin malla. El adulto masculino conserva los recursos externos descritos abajo. Femenino, infante y neonato son adaptaciones visuales exportadas con Blender desde esos GLB. `partial` no implica cobertura anatómica completa ni aptitud para medición.
 
 ### Publicado: adaptación visual del adulto femenino
 
 - Fuente base: los 179 GLB del perfil adulto masculino, documentados en este registro.
 - Licencia: CC BY-SA 4.0; la adaptación conserva las obligaciones de atribución y compartir-igual.
-- Generador: `scripts/adapt-female-models.mjs`; versión `adult-male-adaptation-1.0.0`; fecha: 2026-09-11.
+- Generador: `scripts/blender-adapt-female-models.py`, ejecutado con Blender 5.2; versión `blender-adaptation-1.0.0`; fecha: 2026-09-11.
 - Modificación: mallas masculinas conservadas y transformadas con escalas proporcionales controladas por hueso para una presentación visual de perfil femenino. No es un espécimen femenino, escaneo, estimador de sexo ni modelo morfométrico validado.
 - 179 archivos GLB derivados, con metadatos `adapted_from: adult_male` y advertencia de uso didáctico.
 
-### Publicados: modelos propios de infante y neonato
+### Publicados: adaptaciones Blender de infante y neonato
 
 - Autoría: Osteo3D contributors, 2026; proyecto ArchaeOsteo.
-- Licencia: MIT, aviso completo incluido en cada GLB y en LICENSE del repositorio.
-- Fuente y generador: https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/blob/main/src/anatomy/procedural.js
-- Versión: procedural-1.2.0; fecha: 2026-09-10.
-- 179 archivos por perfil (358 nuevos). Generación: `pnpm generate-profile-models`.
-- Geometría matemática original, proporciones regionales independientes, formas craneales y pélvicas diferenciadas, diáfisis curvadas, extremos y relieves de huesos largos, componentes separados en inmaduros.
-- No se copiaron mallas del adulto masculino para estos dos perfiles. Las superficies azules son envolventes cartilaginosas didácticas y las piezas ocres son marcadores ilustrativos de centros de osificación; ninguno está certificado. No se asigna una edad exacta.
+- Licencia: CC BY-SA 4.0, heredada de los GLB adultos de origen.
+- Fuente y generador: https://github.com/JJ-Martinez-Garcia/ArchaeOsteo/blob/main/scripts/blender-adapt-female-models.py
+- Versión: blender-adaptation-1.0.0; fecha: 2026-09-11.
+- 179 archivos por perfil (358 nuevos). Generación: script de Blender en modo background.
+- Se reutilizan las mallas adultas masculinas y se aplican escalas visuales controladas: 0,78 global para infante y 0,62 para neonato, con proporción craneal/mandibular relativa ampliada. No son especímenes pediátricos ni modelos de crecimiento validados.
+- No se asigna una edad exacta; los registros de componentes y rangos de osificación son observacionales/orientativos.
 - Metadatos: ID, nombres ES/EN/latín del catálogo, lado, región, perfil, versión, autoría, licencia y advertencia de escala arbitraria. La nomenclatura del catálogo sigue pendiente de curación especializada.
 - Límites y referencias: [PROCEDURAL.md](PROCEDURAL.md). Se requiere validación especializada antes de uso científico.
+
+### Referencias orientativas de osificación
+
+Los rangos que aparecen en la ficha de infante/neonato proceden de estudios
+radiográficos y se muestran únicamente como contexto didáctico. No son una tabla
+universal ni un estimador automático de edad:
+
+- Codo pediátrico (capitulum, cabeza radial, epicóndilos, tróclea y olécranon):
+  [PMC5782864](https://pmc.ncbi.nlm.nih.gov/articles/PMC5782864/).
+- Mano y muñeca pediátricas (grande, ganchoso y pisiforme):
+  [PMC4266871](https://pmc.ncbi.nlm.nih.gov/articles/PMC4266871/).
 
 ### Publicado: ScatteringSkull (perfil adulto masculino)
 

@@ -1,7 +1,8 @@
-import { validateModelManifest, validateModelSourceRegistry } from './package.js';
+import { MODEL_MANIFEST_SCHEMA, MODEL_SOURCE_REGISTRY_SCHEMA, validateModelManifest, validateModelSourceRegistry } from './package.js';
 
 export async function loadModelManifest(url = './models/manifest.json') {
-  const response = await fetch(url, { cache: 'no-cache' });
+  const versionedUrl = `${url}${url.includes('?') ? '&' : '?'}schema=${MODEL_MANIFEST_SCHEMA}`;
+  const response = await fetch(versionedUrl, { cache: 'no-cache' });
   if (!response.ok) throw new Error(`No se pudo cargar el manifiesto de modelos (${response.status}).`);
   const manifest = await response.json();
   const validation = validateModelManifest(manifest);
@@ -10,7 +11,8 @@ export async function loadModelManifest(url = './models/manifest.json') {
 }
 
 export async function loadModelSourceRegistry(manifest, url = './models/sources.json') {
-  const response = await fetch(url, { cache: 'no-cache' });
+  const versionedUrl = `${url}${url.includes('?') ? '&' : '?'}schema=${MODEL_SOURCE_REGISTRY_SCHEMA}`;
+  const response = await fetch(versionedUrl, { cache: 'no-cache' });
   if (!response.ok) throw new Error(`No se pudo cargar el registro de fuentes (${response.status}).`);
   const registry = await response.json();
   const validation = validateModelSourceRegistry(manifest, registry);

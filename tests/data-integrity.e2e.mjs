@@ -20,6 +20,7 @@ export async function testDataIntegrity(cdp, evaluate, waitForValue, projectRead
   assert.match(await run(`document.querySelector('#landmark-distance').textContent`), /Distancia calibrada|Calibrated distance/);
   await run(`(()=>{const row=document.querySelector('[data-landmark-row="0"]');row.querySelector('[data-landmark-field="name"]').value='A-editado';row.querySelector('[data-landmark-field="category"]').value='craniometric';row.querySelector('[data-save-landmark]').click();})()`);
   await waitForValue(cdp, projectReadExpression(), p => p.landmarks?.skull?.[0]?.name === 'A-editado' && p.landmarks.skull[0].category === 'craniometric', 'Edit persisted landmark');
+  await waitForValue(cdp, projectReadExpression(), p => p.calibrations?.skull?.needsReview === true, 'Landmark edit invalidates calibration');
   await run(`document.querySelector('#capture-surface-landmark').click()`);
   assert.equal(await run(`document.querySelector('#capture-surface-landmark').getAttribute('aria-pressed')`), 'true');
   await run(`document.querySelector('#capture-surface-landmark').click()`);
@@ -63,10 +64,19 @@ export async function testDataIntegrity(cdp, evaluate, waitForValue, projectRead
   assert.match((await read()).notes.skull, /segunda línea/);
   await click('#tab-inventory'); await click('#lock-selected');
   await waitForValue(cdp, projectReadExpression(), p => !p.locked?.skull, 'Unlock test record');
+  await click('#lock-selected');
+  await waitForValue(cdp, projectReadExpression(), p => p.locked?.skull === true, 'Relock test record');
+  await click('#undo');
+  await waitForValue(cdp, projectReadExpression(), p => !p.locked?.skull, 'Undo record lock');
+  await click('#redo');
+  await waitForValue(cdp, projectReadExpression(), p => p.locked?.skull === true, 'Redo record lock');
+  await click('#undo');
+  await waitForValue(cdp, projectReadExpression(), p => !p.locked?.skull, 'Restore unlocked test record');
   // Force both durable backends to fail without clearing any data.
   await run(`window.__osteoOpen = IDBFactory.prototype.open; window.__osteoSetItem = Storage.prototype.setItem; IDBFactory.prototype.open = function(){throw new DOMException('test','UnknownError')}; Storage.prototype.setItem = function(){throw new DOMException('test','QuotaExceededError')}; document.querySelector('#save').click()`);
   await waitForValue(cdp, `document.querySelector('#storage-status').dataset.saveState`, v => v === 'failed', 'Visible save failure');
   assert.match(await run(`document.querySelector('#toast').textContent`), /NO GUARDADO|NOT SAVED/);
+  assert.equal(await run(`(()=>{const event=new Event('beforeunload',{cancelable:true});window.dispatchEvent(event);return event.defaultPrevented;})()`), true, 'Failed persistence must warn before closing');
   await run(`Storage.prototype.setItem = window.__osteoSetItem; document.querySelector('#save').click()`);
   await waitForValue(cdp, `document.querySelector('#storage-status').dataset.saveState`, v => v === 'localStorage', 'Successful recovery fallback');
   const recovered = await run(`JSON.parse(localStorage.getItem('osteo3d-project-fallback:default'))`);

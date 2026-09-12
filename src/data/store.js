@@ -1,5 +1,6 @@
 import { deriveHierarchy } from '../domain/hierarchy.js';
 import { normalizeDevelopmentRecords } from '../domain/development.js';
+import { PROJECT_FIELDS } from './project-schema.js';
 
 const DB_NAME = 'osteo3d';
 export const PROJECT_SCHEMA_VERSION = 3;
@@ -52,7 +53,7 @@ function normalizeFilters(value) {
   return {
     status: STATUS_VALUES.has(source.status) ? source.status : 'all',
     region: REGION_VALUES.has(source.region) ? source.region : 'all',
-    side: ['all', 'left', 'right', 'Izquierda', 'Derecha', '—'].includes(source.side) ? source.side : 'all',
+    side: ['all', 'left', 'right', 'indeterminate', 'not_applicable', 'Izquierda', 'Derecha', 'Indeterminada', 'No aplicable', '—'].includes(source.side) ? source.side : 'all',
     taphonomy: ['all', 'with', 'without'].includes(source.taphonomy) ? source.taphonomy : 'all',
     pathology: ['all', 'with', 'without'].includes(source.pathology) ? source.pathology : 'all',
     preservation: PRESERVATION_VALUES.has(source.preservation) ? source.preservation : 'all',
@@ -75,6 +76,25 @@ function normalizePhotos(value) {
     width: Number.isFinite(Number(photo.width)) ? Number(photo.width) : undefined,
     height: Number.isFinite(Number(photo.height)) ? Number(photo.height) : undefined
   })) : []]));
+}
+
+export function normalizeIndeterminateFragments(value) {
+  if (!Array.isArray(value)) return [];
+  const nonNegative = raw => { const number = Number(raw); return Number.isFinite(number) && number >= 0 ? number : null; };
+  return value.filter(item => item && typeof item === 'object' && !Array.isArray(item)).map(item => ({
+    type: String(item.type || '').trim(),
+    size: String(item.size || '').trim(),
+    quantity: Number.isFinite(Number(item.quantity)) && Number(item.quantity) >= 1 ? Math.floor(Number(item.quantity)) : 1,
+    weight: nonNegative(item.weight),
+    weightUnit: String(item.weightUnit).toLowerCase() === 'kg' ? 'kg' : 'g',
+    length: nonNegative(item.length),
+    width: nonNegative(item.width),
+    thickness: nonNegative(item.thickness),
+    individual: String(item.individual || '').trim(),
+    context: String(item.context || '').trim(),
+    observations: String(item.observations || '').trim(),
+    createdAt: String(item.createdAt || '').trim()
+  }));
 }
 
 function openDatabase() {
@@ -131,70 +151,76 @@ function normalizeCameraView(value) {
 
 export function normalizeProject(project) {
   if (!project || typeof project !== 'object' || Array.isArray(project)) return null;
-  const report = normalizeReport(project.report);
-  const hierarchy = deriveHierarchy({ ...project, report });
+  const cleanProject = Object.fromEntries(Object.entries(project).filter(([key]) => PROJECT_FIELDS.has(key)));
+  const report = normalizeReport(cleanProject.report);
+  const hierarchy = deriveHierarchy({ ...cleanProject, report });
+  const preservation = normalizeEnumMap(cleanProject.preservation, PRESERVATION_VALUES);
+  const completeness = normalizeNumberMap(cleanProject.completeness, { min: 0, max: 100 });
+  // “No evaluable” means that no conservation percentage can be observed.
+  // Remove legacy/inconsistent percentages so “—” remains distinct from 0%.
+  Object.keys(preservation).filter(key => preservation[key] === 'not_evaluable').forEach(key => delete completeness[key]);
   return {
-    ...project,
-    id: project.id || 'default',
-    projectName: project.projectName || 'Proyecto sin título',
+    ...cleanProject,
+    id: cleanProject.id || 'default',
+    projectName: cleanProject.projectName || 'Proyecto sin título',
     schemaVersion: PROJECT_SCHEMA_VERSION,
-    profile: PROFILE_IDS.has(project.profile) ? project.profile : 'adult_male',
-    selected: project.selected || 'skull',
-    status: normalizeEnumMap(project.status, STATUS_VALUES),
-    preservation: normalizeEnumMap(project.preservation, PRESERVATION_VALUES),
-    completeness: normalizeNumberMap(project.completeness, { min: 0, max: 100 }),
-    fragments: normalizeNumberMap(project.fragments, { min: 0, integer: true }),
-    weights: normalizeNumberMap(project.weights, { rejectBelowMin: true }),
-    weightUnits: Object.fromEntries(objectEntries(project.weightUnits).filter(([, unit]) => ['g', 'kg'].includes(String(unit).toLowerCase())).map(([key, unit]) => [key, String(unit).toLowerCase()])),
-    portions: project.portions || {},
-    portionRecords: project.portionRecords || {},
-    developmentRecords: normalizeDevelopmentRecords(project.developmentRecords),
-    hierarchyRefs: normalizeHierarchyRefs(project.hierarchyRefs, hierarchy),
-    individuals: normalizeStringMap(project.individuals),
-    specimens: normalizeStringMap(project.specimens),
-    specimenRecords: normalizeSpecimenRecords(project.specimenRecords),
-    ue: normalizeStringMap(project.ue),
-    taphonomy: Object.fromEntries(objectEntries(project.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
-    pathology: Object.fromEntries(objectEntries(project.pathology).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
-    taphonomyDetails: project.taphonomyDetails || {},
-    pathologyDetails: project.pathologyDetails || {},
-    notes: normalizeStringMap(project.notes),
-    indeterminateFragments: Array.isArray(project.indeterminateFragments) ? project.indeterminateFragments : [],
-    locked: Object.fromEntries(objectEntries(project.locked).filter(([, item]) => Boolean(item)).map(([key]) => [key, true])),
-    hidden: Object.fromEntries(objectEntries(project.hidden).filter(([, item]) => Boolean(item)).map(([key]) => [key, true])),
-    opacity: project.opacity || {},
-    opacityScope: ['bone', 'region', 'skeleton'].includes(project.opacityScope) ? project.opacityScope : 'bone',
-    skeletonFilter: ['all', 'axial', 'appendicular'].includes(project.skeletonFilter) ? project.skeletonFilter : 'all',
-    regionFilter: typeof project.regionFilter === 'string' ? project.regionFilter : 'all',
-    explosion: Math.max(0, Math.min(100, Number(project.explosion) || 0)),
-    tableMode: Boolean(project.tableMode),
-    orthographic: Boolean(project.orthographic),
-    isolate: Boolean(project.isolate),
+    profile: PROFILE_IDS.has(cleanProject.profile) ? cleanProject.profile : 'adult_male',
+    selected: cleanProject.selected || 'skull',
+    status: normalizeEnumMap(cleanProject.status, STATUS_VALUES),
+    preservation,
+    completeness,
+    fragments: normalizeNumberMap(cleanProject.fragments, { min: 0, integer: true }),
+    weights: normalizeNumberMap(cleanProject.weights, { rejectBelowMin: true }),
+    weightUnits: Object.fromEntries(objectEntries(cleanProject.weightUnits).filter(([, unit]) => ['g', 'kg'].includes(String(unit).toLowerCase())).map(([key, unit]) => [key, String(unit).toLowerCase()])),
+    portions: cleanProject.portions || {},
+    portionRecords: cleanProject.portionRecords || {},
+    developmentRecords: normalizeDevelopmentRecords(cleanProject.developmentRecords),
+    hierarchyRefs: normalizeHierarchyRefs(cleanProject.hierarchyRefs, hierarchy),
+    individuals: normalizeStringMap(cleanProject.individuals),
+    specimens: normalizeStringMap(cleanProject.specimens),
+    specimenRecords: normalizeSpecimenRecords(cleanProject.specimenRecords),
+    ue: normalizeStringMap(cleanProject.ue),
+    taphonomy: Object.fromEntries(objectEntries(cleanProject.taphonomy).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
+    pathology: Object.fromEntries(objectEntries(cleanProject.pathology).map(([key, item]) => [key, Array.isArray(item) ? item.map(value => String(value ?? '').trim()).filter(Boolean) : []]).filter(([, item]) => item.length)),
+    taphonomyDetails: cleanProject.taphonomyDetails || {},
+    pathologyDetails: cleanProject.pathologyDetails || {},
+    notes: normalizeStringMap(cleanProject.notes),
+    indeterminateFragments: normalizeIndeterminateFragments(cleanProject.indeterminateFragments),
+    locked: Object.fromEntries(objectEntries(cleanProject.locked).filter(([, item]) => Boolean(item)).map(([key]) => [key, true])),
+    hidden: Object.fromEntries(objectEntries(cleanProject.hidden).filter(([, item]) => Boolean(item)).map(([key]) => [key, true])),
+    opacity: cleanProject.opacity || {},
+    opacityScope: ['bone', 'region', 'skeleton'].includes(cleanProject.opacityScope) ? cleanProject.opacityScope : 'bone',
+    skeletonFilter: ['all', 'axial', 'appendicular'].includes(cleanProject.skeletonFilter) ? cleanProject.skeletonFilter : 'all',
+    regionFilter: typeof cleanProject.regionFilter === 'string' ? cleanProject.regionFilter : 'all',
+    explosion: Math.max(0, Math.min(100, Number(cleanProject.explosion) || 0)),
+    tableMode: Boolean(cleanProject.tableMode),
+    orthographic: Boolean(cleanProject.orthographic),
+    isolate: Boolean(cleanProject.isolate),
     explosionAnimating: false,
-    wireframe: Boolean(project.wireframe),
-    xray: Boolean(project.xray),
-    labelMode: ['selected', 'region', 'all', 'none'].includes(project.labelMode) ? project.labelMode : 'selected',
-    colorByRegion: project.colorByRegion !== false,
-    comparisonProfile: project.comparisonProfile || '',
-    customModels: normalizeCustomModels(project.customModels),
-    tableTransforms: project.tableTransforms || {},
-    lightIntensity: Number.isFinite(project.lightIntensity) ? project.lightIntensity : 1,
-    ambientLightIntensity: Number.isFinite(project.ambientLightIntensity) ? project.ambientLightIntensity : 1,
-    lightingAzimuth: Number.isFinite(project.lightingAzimuth) ? project.lightingAzimuth : 30,
-    lightingElevation: Number.isFinite(project.lightingElevation) ? project.lightingElevation : 55,
-    lightingMode: ['neutral', 'laboratory', 'high_contrast'].includes(project.lightingMode) ? project.lightingMode : 'neutral',
-    cameraView: normalizeCameraView(project.cameraView),
-    changeLog: Array.isArray(project.changeLog) ? project.changeLog : [],
-    dental: normalizeDental(project.dental),
-    deciduousDental: normalizeDental(project.deciduousDental),
-    dentitionType: ['permanent', 'deciduous'].includes(project.dentitionType) ? project.dentitionType : 'permanent',
-    measurements: project.measurements || {},
-    landmarks: project.landmarks || {},
-    calibrations: project.calibrations || {},
-    landmarkModelRefs: project.landmarkModelRefs || {},
-    photos: normalizePhotos(project.photos),
-    language: ['es', 'en'].includes(project.language) ? project.language : 'es',
-    filters: normalizeFilters(project.filters),
+    wireframe: Boolean(cleanProject.wireframe),
+    xray: Boolean(cleanProject.xray),
+    labelMode: ['selected', 'region', 'all', 'none'].includes(cleanProject.labelMode) ? cleanProject.labelMode : 'selected',
+    colorByRegion: cleanProject.colorByRegion !== false,
+    comparisonProfile: cleanProject.comparisonProfile || '',
+    customModels: normalizeCustomModels(cleanProject.customModels),
+    tableTransforms: cleanProject.tableTransforms || {},
+    lightIntensity: Number.isFinite(cleanProject.lightIntensity) ? cleanProject.lightIntensity : 1,
+    ambientLightIntensity: Number.isFinite(cleanProject.ambientLightIntensity) ? cleanProject.ambientLightIntensity : 1,
+    lightingAzimuth: Number.isFinite(cleanProject.lightingAzimuth) ? cleanProject.lightingAzimuth : 30,
+    lightingElevation: Number.isFinite(cleanProject.lightingElevation) ? cleanProject.lightingElevation : 55,
+    lightingMode: ['neutral', 'laboratory', 'high_contrast'].includes(cleanProject.lightingMode) ? cleanProject.lightingMode : 'neutral',
+    cameraView: normalizeCameraView(cleanProject.cameraView),
+    changeLog: Array.isArray(cleanProject.changeLog) ? cleanProject.changeLog : [],
+    dental: normalizeDental(cleanProject.dental),
+    deciduousDental: normalizeDental(cleanProject.deciduousDental),
+    dentitionType: ['permanent', 'deciduous'].includes(cleanProject.dentitionType) ? cleanProject.dentitionType : 'permanent',
+    measurements: cleanProject.measurements || {},
+    landmarks: cleanProject.landmarks || {},
+    calibrations: cleanProject.calibrations || {},
+    landmarkModelRefs: cleanProject.landmarkModelRefs || {},
+    photos: normalizePhotos(cleanProject.photos),
+    language: ['es', 'en'].includes(cleanProject.language) ? cleanProject.language : 'es',
+    filters: normalizeFilters(cleanProject.filters),
     report,
     hierarchy
   };

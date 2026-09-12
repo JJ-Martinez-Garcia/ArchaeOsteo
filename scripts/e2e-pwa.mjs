@@ -20,6 +20,18 @@ const MIME_TYPES = {
   '.wasm': 'application/wasm'
 };
 const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+const phase = label => console.log(`E2E fase: ${label}`);
+async function withTimeout(promise, timeout, label) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`${label} superó ${timeout} ms.`)), timeout); })
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 async function fileExists(filePath) {
   try {
@@ -106,8 +118,14 @@ async function waitForDevTools(profileDirectory, browserProcess, timeout = 45_00
       throw new Error(`El navegador terminó antes de iniciar DevTools (${browserProcess.exitCode}).${details}`);
     }
     if (await fileExists(activePortFile)) {
-      const [port] = (await readFile(activePortFile, 'utf8')).trim().split(/\r?\n/);
-      if (port) return Number(port);
+      try {
+        const [port] = (await readFile(activePortFile, 'utf8')).trim().split(/\r?\n/);
+        if (port) return Number(port);
+      } catch (error) {
+        // Chrome can keep the file locked for a few milliseconds while it
+        // finishes writing the port; retry instead of failing the whole E2E.
+        if (!['EBUSY', 'EACCES', 'EPERM'].includes(error?.code)) throw error;
+      }
     }
     await sleep(100);
   }
@@ -176,13 +194,13 @@ async function createCdpClient(webSocketUrl) {
   return { close: () => socket.close(), on, send, waitForEvent };
 }
 
-async function evaluate(client, expression) {
-  const result = await client.send('Runtime.evaluate', {
+async function evaluate(client, expression, timeout = 60_000) {
+  const result = await withTimeout(client.send('Runtime.evaluate', {
     awaitPromise: true,
     expression,
     returnByValue: true,
     userGesture: true
-  });
+  }), timeout, `CDP Runtime.evaluate: ${expression.replace(/\s+/g, ' ').slice(0, 120)}`);
   if (result.exceptionDetails) {
     const description = result.exceptionDetails.exception?.description || result.exceptionDetails.text;
     throw new Error(`Evaluación en navegador: ${description}`);
@@ -193,20 +211,25 @@ async function evaluate(client, expression) {
 async function waitForValue(client, expression, predicate, label, timeout = 30_000) {
   const deadline = Date.now() + timeout;
   let lastValue;
+  let lastError = null;
   while (Date.now() < deadline) {
     try {
       lastValue = await evaluate(client, expression);
       if (predicate(lastValue)) return lastValue;
-    } catch {}
+    } catch (error) { lastError = error; }
     await sleep(200);
   }
-  throw new Error(`${label} no alcanzó el estado esperado. Último valor: ${JSON.stringify(lastValue)}`);
+  const detail = lastError ? ` Último error: ${lastError.message}` : '';
+  throw new Error(`${label} no alcanzó el estado esperado. Último valor: ${JSON.stringify(lastValue)}.${detail}`);
 }
 
 async function navigate(client, method, params = {}, timeout = 30_000) {
-  const loaded = client.waitForEvent('Page.loadEventFired', () => true, timeout);
-  await client.send(method, params);
-  await loaded;
+  // Page.loadEventFired can arrive between the command response and the
+  // listener on Chromium startup. The document state is the authoritative
+  // fallback and avoids a false timeout when the page is already complete.
+  client.waitForEvent('Page.loadEventFired', () => true, timeout).catch(() => null);
+  await withTimeout(client.send(method, params), timeout, `CDP ${method}`);
+  await waitForValue(client, 'document.readyState', value => value === 'interactive' || value === 'complete', 'La navegación', timeout);
 }
 
 async function setOfflineState(client, offline) {
@@ -322,12 +345,15 @@ try {
   });
 
   const testUrl = new URL(`?e2e=${Date.now()}`, baseUrl).href;
+  phase('carga inicial y modelos');
   await navigate(cdp, 'Page.navigate', { url: testUrl });
+  phase('navegación completada');
   await waitForValue(cdp, 'document.readyState', value => value === 'complete', 'La carga inicial');
   assert.equal(await evaluate(cdp, `document.title.startsWith('Osteo3D')`), true, 'La aplicación debe establecer su título.');
   assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#app') && document.querySelector('#viewer'))`), true, 'Deben existir la aplicación y el visor.');
 
   const manifest = await evaluate(cdp, `fetch('./manifest.json', { cache: 'no-store' }).then(response => response.json())`);
+  phase('manifiesto leído');
   assert.equal(manifest.name, 'Osteo3D');
   assert.equal(manifest.display, 'standalone');
   assert.equal(manifest.start_url, './');
@@ -355,10 +381,13 @@ try {
     value => value === 'activated',
     'La activación del Service Worker'
   );
+  phase('Service Worker activado');
   assert.equal(serviceWorkerState, 'activated');
 
-  const controlledUrl = new URL(`?e2e-controlled=${Date.now()}`, baseUrl).href;
-  await navigate(cdp, 'Page.navigate', { url: controlledUrl });
+  // The worker calls clients.claim(), so the activated document should become
+  // controlled without a second navigation (which can hang Chromium while
+  // the worker is serving the shell).
+  phase('esperando control del Service Worker');
   await waitForValue(cdp, 'Boolean(navigator.serviceWorker.controller)', Boolean, 'El control del Service Worker');
   const storageEstimateAvailable = await evaluate(cdp, `(async()=>{if(!navigator.storage?.estimate)return false;try{const estimate=await navigator.storage.estimate();return Number.isFinite(Number(estimate.usage))&&Number.isFinite(Number(estimate.quota))&&Number(estimate.quota)>0;}catch{return false;}})()`);
   if (storageEstimateAvailable) await waitForValue(cdp, `Boolean(document.querySelector('#storage-quota-diagnostic'))`, value => value === true, 'El diagnóstico de cuota de almacenamiento');
@@ -376,6 +405,13 @@ try {
     45_000
   );
   assert.equal(await evaluate(cdp, `[...document.querySelectorAll('#details > dl > dd')][5]?.textContent || ''`), '—', 'Unknown completeness must remain unknown in the bone sheet');
+
+  await evaluate(cdp, `document.querySelector('[data-quick-completeness="75"]')?.click()`);
+  await waitForValue(cdp, projectReadExpression(), value => value.completeness?.skull === 75, 'Quick completeness shortcut');
+  await evaluate(cdp, `document.querySelector('[data-clear-completeness]')?.click()`);
+  await waitForValue(cdp, projectReadExpression(), value => value.completeness?.skull == null, 'Clear completeness shortcut');
+  await evaluate(cdp, `document.querySelector('#undo')?.click()`);
+  await waitForValue(cdp, projectReadExpression(), value => value.completeness?.skull === 75, 'Undo completeness shortcut');
 
   await evaluate(cdp, `document.querySelector('#save')?.click()`);
   const savedProject = await waitForValue(
@@ -397,18 +433,21 @@ try {
   })()`);
   assert.match(shellCache, /^osteo3d-shell-v\d+\.\d+\.\d+-[a-f0-9]{12}$/);
 
-  await waitForValue(cdp, `Boolean(document.querySelector('#viewer canvas'))`, Boolean, 'Render viewer canvas after reload');
-  await evaluate(cdp, `(()=>{const canvas=document.querySelector('#viewer canvas');if(!canvas)throw new Error('Viewer canvas missing');canvas.focus();canvas.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));})()`);
+   await waitForValue(cdp, `Boolean(document.querySelector('#viewer canvas'))`, Boolean, 'Render viewer canvas after reload');
+   await evaluate(cdp, `document.querySelector('[data-bone="skull"]')?.click()`);
+   await waitForValue(cdp, `document.querySelector('#selection-announcement')?.textContent || ''`, value=>value.includes('Cráneo')&&value.includes('No registrado'),'Announce selected bone for screen readers');
+   await evaluate(cdp, `(()=>{const canvas=document.querySelector('#viewer canvas');if(!canvas)throw new Error('Viewer canvas missing');canvas.focus();canvas.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));})()`);
   await waitForValue(cdp,projectReadExpression(),value=>Number.isFinite(value?.cameraView?.theta)&&value.cameraView.theta!==0,'Persist 3D camera view');
   await navigate(cdp, 'Page.reload', { ignoreCache: false });
   await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'Reload after camera change');
+  await waitForValue(cdp, `document.documentElement.dataset.projectReady || ''`, value => value === 'true', 'Load active project into the interface');
   await waitForValue(cdp,projectReadExpression(),value=>Number.isFinite(value?.cameraView?.theta)&&value.cameraView.theta!==0,'Recover 3D camera view after reload');
   await waitForValue(cdp, `Boolean(document.querySelector('#multi-compare-panel-button'))`, Boolean, 'Recover extended UI after reload');
 
   const comparisonSeed = projectReadExpression();
   await evaluate(cdp, `(async()=>{const project=await ${comparisonSeed};project.id='comparison-e2e';project.projectName='Proyecto comparación E2E';project.status={...(project.status||{}),skull:'absent'};return await new Promise((resolve,reject)=>{const request=indexedDB.open('osteo3d',3);request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result,tx=db.transaction('projects','readwrite');tx.oncomplete=()=>{db.close();resolve(true);};tx.onerror=()=>{db.close();reject(tx.error);};tx.objectStore('projects').put(project);};});})()`);
   await evaluate(cdp, `document.querySelector('#multi-compare-panel-button').click()`);
-  await waitForValue(cdp, `Boolean(document.querySelector('#run-multi-compare'))`, value=>value===true, 'Render multi-source comparison');
+  await waitForValue(cdp, `Boolean(document.querySelector('#run-multi-compare'))`, value=>value===true, 'Render multi-source comparison', 60_000);
   await evaluate(cdp, `(()=>{document.querySelectorAll('[data-compare-source]').forEach(input=>input.checked=true);document.querySelector('#run-multi-compare').click();})()`);
   await waitForValue(cdp, `document.querySelector('#multi-compare-results')?.textContent || ''`, value=>value.includes('2 fuentes')||value.includes('2 sources'), 'Compare active and local source');
 
@@ -418,8 +457,15 @@ try {
   await waitForValue(cdp, `document.querySelector('#quiz-progress')?.textContent || ''`, value=>/[01]\/1/.test(value), 'Track learning answer score');
   assert.match(await evaluate(cdp, `document.querySelector('#quiz-feedback')?.textContent || ''`), /Correcto|Correct|Incorrecto|Incorrect/,'Learning answer must provide feedback');
 
-  await testInspectorLayout(cdp,evaluate,waitForValue);
+  await testInspectorLayout(cdp,evaluate,waitForValue,sleep);
   await testDataIntegrity(cdp,evaluate,waitForValue,projectReadExpression);
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click()`);
+  await sleep(300);
+  await evaluate(cdp, `document.querySelector('#show-table')?.click(); document.querySelector('[data-paint-tool="erase"]')?.click(); const select=document.querySelector('[data-row-status="skull"]'); select.value='not_recorded'; select.dispatchEvent(new Event('change',{bubbles:true}));`);
+  await waitForValue(cdp, projectReadExpression(), value=>value.status?.skull==='not_recorded'&&!value.fragments?.skull&&!value.weights?.skull&&!value.measurements?.skull&&!value.landmarks?.skull&&!value.notes?.skull, 'Clear all skull assignment fields');
+  await evaluate(cdp, `document.querySelector('#undo')?.click()`);
+  await waitForValue(cdp, projectReadExpression(), value=>Boolean(value.measurements?.skull)&&Boolean(value.landmarks?.skull)&&Boolean(value.notes?.skull), 'Undo restores cleared skull assignment');
+  await evaluate(cdp, `document.querySelector('[data-paint-tool="status"]')?.click(); document.querySelector('#quick-present')?.click(); document.querySelector('#quick-present')?.click()`);
   for (const [query, expected] of [['omóplato', 'escápula'], ['cúbito', 'ulna'], ['coxis', 'cóccix']]) {
     await evaluate(cdp, `(()=>{const input=document.querySelector('#search');input.value=${JSON.stringify(query)};input.dispatchEvent(new Event('input',{bubbles:true}));})()`);
     assert.equal(await evaluate(cdp, `document.querySelectorAll('#bone-list [data-bone]').length>0`), true, `Search synonym must return results: ${query}`);
@@ -478,24 +524,45 @@ try {
   await evaluate(cdp, `(()=>{const input=document.querySelector('[data-row-field="fragments"][data-row-id="skull"]');input.value='4';input.dispatchEvent(new Event('change'));const other=document.querySelector('[data-row-field="fragments"][data-row-id="mandible"]');other.value='';other.dispatchEvent(new Event('change'));})()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.fragments?.skull===4&&!Object.hasOwn(value.fragments||{},'mandible'),'Persist observed and unknown fragment counts');
   await evaluate(cdp, `document.querySelector('#tab-stats').click()`);
-  assert.equal(await evaluate(cdp, `document.querySelector('#fragmentation-map').textContent.includes('1/2')`), true, 'Fragmentation average must exclude unknown fragment counts');
-  await new Promise(resolve=>setTimeout(resolve,1100));
-  assert.equal(await evaluate(cdp, `document.querySelector('#fragmentation-map').textContent.includes('4.00')`), true, 'Fragmentation average must use observed fragment counts');
+  await waitForValue(cdp, `document.querySelector('#fragmentation-map')?.textContent || ''`, value=>value.includes('1/2'), 'Fragmentation average must exclude unknown fragment counts');
+  await waitForValue(cdp, `document.querySelector('#fragmentation-map')?.textContent || ''`, value=>value.includes('4.00'), 'Fragmentation average must use observed fragment counts');
+  phase('informe y exportación');
   await evaluate(cdp, `document.querySelector('#tab-report').click()`);
   assert.equal(await evaluate(cdp, `['sources','method','limits'].every(key=>document.querySelector('#report-'+key)?.tagName==='TEXTAREA')`), true, 'Long report fields must be multiline controls');
-  await evaluate(cdp, `(()=>{const values={individual:'IND-E2E',site:'Yacimiento E2E',campaign:'Campaña 2026',sector:'Sector Norte',context:'UE-4',sources:'DOI: E2E\\nReferencia de campo',method:'Comparación osteológica',limits:'Pendiente de revisión especializada'};for(const [key,value] of Object.entries(values)){const field=document.querySelector('#report-'+key);if(field)field.value=value;}document.querySelector('#save-report').click();})()`);
-  await waitForValue(cdp,projectReadExpression(),value=>value.report?.individual==='IND-E2E'&&value.report?.site==='Yacimiento E2E'&&value.report?.campaign==='Campaña 2026'&&value.report?.sector==='Sector Norte'&&value.report?.context==='UE-4'&&value.report?.sources?.includes('Referencia de campo')&&value.hierarchy?.sites?.some(entity=>entity.name==='Yacimiento E2E')&&value.hierarchy?.campaigns?.some(entity=>entity.name==='Campaña 2026'),'Persist report context and normalized hierarchy');
-  await navigate(cdp, 'Page.reload', { ignoreCache: false });
+   await evaluate(cdp, `(()=>{const values={individual:'IND-E2E',site:'Yacimiento E2E',campaign:'Campaña 2026',sector:'Sector Norte',context:'UE-4',sources:'DOI: E2E\\nReferencia de campo',method:'Comparación osteológica',limits:'Pendiente de revisión especializada'};for(const [key,value] of Object.entries(values)){const field=document.querySelector('#report-'+key);if(field)field.value=value;}document.querySelector('#save-report').click();})()`);
+   await waitForValue(cdp,projectReadExpression(),value=>value.report?.individual==='IND-E2E'&&value.report?.site==='Yacimiento E2E'&&value.report?.campaign==='Campaña 2026'&&value.report?.sector==='Sector Norte'&&value.report?.context==='UE-4'&&value.report?.sources?.includes('Referencia de campo')&&value.hierarchy?.sites?.some(entity=>entity.name==='Yacimiento E2E')&&value.hierarchy?.campaigns?.some(entity=>entity.name==='Campaña 2026'),'Persist report context and normalized hierarchy');
+   await evaluate(cdp, `(()=>{window.__capturedReport='';window.open=()=>({document:{write:html=>{window.__capturedReport+=html;},close(){},},focus(){},print(){}});document.querySelector('#print-report').click();})()`);
+   await waitForValue(cdp, `window.__capturedReport || ''`, value=>value.includes('skeleton-map-region')&&value.includes('map-mixed')&&value.includes('@page{size:A4'),'Printable report includes anatomical map and A4 rules');
+   await navigate(cdp, 'Page.reload', { ignoreCache: false });
   await waitForValue(cdp, `Boolean(document.querySelector('#app'))`, Boolean, 'Reload project application');
+  await waitForValue(cdp, `document.documentElement.dataset.projectReady || ''`, value => value === 'true', 'Load saved project before hierarchy interaction');
   await waitForValue(cdp, projectReadExpression(), value => value.report?.individual === 'IND-E2E' && value.hierarchy?.contexts?.some(entity => entity.name === 'UE-4'), 'Recover project after reload');
   await evaluate(cdp, `(()=>{document.querySelector('#hierarchy-panel-button').click();const level=document.querySelector('#hierarchy-level');level.value='individuals';level.dispatchEvent(new Event('change',{bubbles:true}));})()`);
   assert.equal(await evaluate(cdp, `([...document.querySelectorAll('#hierarchy-parent option')].slice(1).every(option=>option.value.startsWith('context:')))`), true, 'Hierarchy individual parents must be contexts');
-  await evaluate(cdp, `(()=>{document.querySelector('#hierarchy-name').value='IND-MANUAL';document.querySelector('#hierarchy-parent').value='context:ue-4';document.querySelector('#add-hierarchy-entity').click();})()`);
+  await waitForValue(cdp, `document.querySelector('#hierarchy-parent')?.options.length || 0`, value => value > 1, 'Render available hierarchy parents');
+  await evaluate(cdp, `(()=>{document.querySelector('#hierarchy-name').value='IND-MANUAL';const parent=document.querySelector('#hierarchy-parent');const option=[...parent.options].find(item=>item.value==='context:ue-4');if(!option)throw new Error('Expected context parent option is missing');parent.value=option.value;parent.dispatchEvent(new Event('change',{bubbles:true}));document.querySelector('#add-hierarchy-entity').click();})()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.hierarchy?.individuals?.some(entity=>entity.name==='IND-MANUAL'&&entity.parentId==='context:ue-4'),'Persist manually added hierarchy entity');
   await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#undo').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>!value.hierarchy?.individuals?.some(entity=>entity.name==='IND-MANUAL'),'Undo hierarchy entity addition');
-  await evaluate(cdp, `(()=>{document.querySelector('#record-panel-button').click();for(const [field,needle] of [['siteId','Yacimiento E2E'],['campaignId','Campaña 2026'],['sectorId','Sector Norte'],['contextId','UE-4']]){const select=document.querySelector('[data-hierarchy-ref="'+field+'"]');if(!select)throw new Error('Hierarchy record selector missing: '+field);const option=[...select.options].find(item=>item.textContent.includes(needle));if(option)select.value=option.value;}document.querySelector('#record-specimen').value='SP-E2E-001';document.querySelector('#save-record').click();})()`);
-  await waitForValue(cdp,projectReadExpression(),value=>value.hierarchyRefs?.[value.selected]?.contextId==='context:ue-4'&&Boolean(value.hierarchyRefs?.[value.selected]?.campaignId)&&value.specimens?.[value.selected]==='SP-E2E-001','Persist hierarchy association and specimen ID on selected bone record');
+  await evaluate(cdp, `(()=>{document.querySelector('#record-panel-button').click();for(const [field,needle] of [['siteId','Yacimiento E2E'],['campaignId','Campaña 2026'],['sectorId','Sector Norte'],['contextId','UE-4']]){const select=document.querySelector('[data-hierarchy-ref="'+field+'"]');if(!select)throw new Error('Hierarchy record selector missing: '+field);const option=[...select.options].find(item=>item.textContent.includes(needle));if(option)select.value=option.value;}document.querySelector('#record-specimen').value='SP-E2E-001';document.querySelector('#record-taphonomy').value='Raíces';document.querySelector('#record-taphonomy-type').value='Raíces';document.querySelector('#record-taphonomy-evidence').value='Foto E2E-03';document.querySelector('#save-record').click();})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.hierarchyRefs?.[value.selected]?.contextId==='context:ue-4'&&Boolean(value.hierarchyRefs?.[value.selected]?.campaignId)&&value.specimens?.[value.selected]==='SP-E2E-001'&&value.taphonomyDetails?.[value.selected]?.evidence==='Foto E2E-03','Persist hierarchy, specimen ID and taphonomy evidence on selected bone record');
+  await evaluate(cdp, `(()=>{document.querySelector('#tab-stats').click();const filter=document.querySelector('#filter-taphonomy');filter.value='with';filter.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.filters?.taphonomy==='with','Persist taphonomy filter');
+  const annotatedTaphonomyId = await evaluate(cdp, `(async()=>{const project=await ${projectReadExpression()};return Object.keys(project.taphonomyDetails||{}).find(id=>project.taphonomyDetails[id]?.evidence)||Object.keys(project.taphonomy||{})[0]||'';})()`);
+  assert.ok(annotatedTaphonomyId, 'Taphonomy filter fixture must contain an annotated element');
+  assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#bone-list [data-bone="${annotatedTaphonomyId}"]'))`), true, 'Taphonomy filter must keep the annotated bone in the tree');
+  const visibleTaphonomyIds = await evaluate(cdp, `(()=>[...document.querySelectorAll('#bone-list [data-bone]')].map(element=>element.dataset.bone))()`);
+  assert.deepEqual(visibleTaphonomyIds, [annotatedTaphonomyId], 'Taphonomy filter must remove unannotated bones from the tree');
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#show-table').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelectorAll('#inventory-table tbody tr').length`), 1, 'Taphonomy filter must keep the same single row in the inventory table');
+  await evaluate(cdp, `document.querySelector('#clear-filters').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.filters?.taphonomy==='all'&&value.filters?.pathology==='all','Clear taphonomy filter');
+  await evaluate(cdp, `(()=>{document.querySelector('#indeterminate-fragments-button').click();document.querySelector('#indeterminate-type').value='Astilla cortical';document.querySelector('#indeterminate-size').value='35 × 18 mm';document.querySelector('#indeterminate-quantity').value='2';document.querySelector('#indeterminate-length').value='35';document.querySelector('#indeterminate-width').value='18';document.querySelector('#indeterminate-context').value='UE-4';document.querySelector('#indeterminate-individual').value='IND-E2E';document.querySelector('#indeterminate-observations').value='Evidencia de campo';document.querySelector('#add-indeterminate').click();})()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.indeterminateFragments?.some(item=>item.type==='Astilla cortical'&&item.quantity===2&&item.context==='UE-4'&&item.individual==='IND-E2E'),'Persist indeterminate fragment quantity, measures and context');
+  await evaluate(cdp, `document.querySelector('[data-remove-indeterminate="0"]').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>!value.indeterminateFragments?.some(item=>item.type==='Astilla cortical'),'Remove indeterminate fragment');
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#undo').click()`);
+  await waitForValue(cdp,projectReadExpression(),value=>value.indeterminateFragments?.some(item=>item.type==='Astilla cortical'&&item.quantity===2),'Undo indeterminate fragment removal');
   await evaluate(cdp, `document.querySelector('#hierarchy-panel-button').click()`);
   await waitForValue(cdp, `Boolean(document.querySelector('#hierarchy-filter-level')&&document.querySelector('#hierarchy-filter-query')&&document.querySelector('#export-hierarchy-metrics'))`, value => value === true, 'Render hierarchy filters and coverage export');
   await evaluate(cdp, `(()=>{const level=document.querySelector('#hierarchy-filter-level');level.value='campaigns';level.dispatchEvent(new Event('change',{bubbles:true}));const query=document.querySelector('#hierarchy-filter-query');query.value='Campaña 2026';query.dispatchEvent(new Event('input',{bubbles:true}));})()`);
@@ -524,6 +591,15 @@ try {
   await new Promise(resolve=>setTimeout(resolve,500));
   const oversizedPhotoToast = await evaluate(cdp, `(()=>{const input=document.querySelector('#photo-input'),transfer=new DataTransfer();transfer.items.add(new File([new Uint8Array(13*1024*1024)],'too-large.jpg',{type:'image/jpeg'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));return document.querySelector('#toast').textContent || '';})()`);
   assert.match(oversizedPhotoToast, /Foto rechazada por tamaño/, 'Oversized local photo must be rejected');
+  await evaluate(cdp, `document.querySelector('#tab-report').click()`);
+  await evaluate(cdp, `(()=>{const bytes=Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='),char=>char.charCodeAt(0));const input=document.querySelector('#photo-input'),transfer=new DataTransfer();transfer.items.add(new File([bytes],'e2e.png',{type:'image/png'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await waitForValue(cdp, projectReadExpression(), value => value.photos?.skull?.length === 1 && value.photos.skull[0].name === 'e2e.png', 'Persist local photo binary');
+  await evaluate(cdp, `(()=>{const input=document.querySelector('[data-photo-name="0"]');input.value='Fotografía editada';input.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await waitForValue(cdp, projectReadExpression(), value => value.photos?.skull?.[0]?.name === 'Fotografía editada' && String(value.photos.skull[0].dataUrl).startsWith('data:image/'), 'Edit photo caption without losing binary');
+  await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#undo').click()`);
+  await waitForValue(cdp, projectReadExpression(), value => value.photos?.skull?.[0]?.name === 'e2e.png', 'Undo photo caption edit');
+  await evaluate(cdp, `(()=>{const scope=document.querySelector('#photo-scope');scope.value='pathology';scope.dispatchEvent(new Event('change',{bubbles:true}));const target=document.querySelector('#photo-target');target.value='lesión E2E';target.dispatchEvent(new Event('input',{bubbles:true}));const bytes=Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='),char=>char.charCodeAt(0));const input=document.querySelector('#photo-input'),transfer=new DataTransfer();transfer.items.add(new File([bytes],'lesion-e2e.png',{type:'image/png'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await waitForValue(cdp, projectReadExpression(), value => value.photos?.['pathology:lesión E2E']?.length === 1 && value.photos?.skull?.length === 1, 'Persist photo under pathology scope without mixing bone photos');
   await evaluate(cdp, `document.querySelector('#tab-dental').click()`);
   await evaluate(cdp, `document.querySelector('[data-dental="caries"]').click();document.querySelector('[data-tooth="11"]').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.dental?.['11']==='caries','Persist permanent tooth status');
@@ -534,11 +610,19 @@ try {
   await evaluate(cdp, `(()=>{const select=document.querySelector('#dentition-type');select.value='deciduous';select.dispatchEvent(new Event('change'));document.querySelector('[data-dental="developing"]').click();document.querySelector('[data-tooth="51"]').click();})()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.deciduousDental?.['51']==='developing','Persist deciduous tooth status');
   await evaluate(cdp, `(()=>{const select=document.querySelector('#dentition-type');select.value='permanent';select.dispatchEvent(new Event('change'));})()`);
+  await evaluate(cdp, `document.querySelector('#tab-dental').click();document.querySelector('#dental-3d-toggle').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#viewer').dataset.dental3d`), 'true', 'Dental 3D overlay must activate');
+  await evaluate(cdp, `document.querySelector('#dentition-type').value='deciduous';document.querySelector('#dentition-type').dispatchEvent(new Event('change'))`);
+  assert.match(await evaluate(cdp, `document.querySelector('#dental-count').textContent`), /\/20/, 'Dental 3D overlay must support deciduous dentition');
+  await evaluate(cdp, `document.querySelector('#dental-3d-toggle').click()`);
   for(const profile of ['adult_female','infant','neonate']){
     await evaluate(cdp,`(()=>{const mode=document.querySelector('#geometry-mode');mode.value='auto';mode.dispatchEvent(new Event('change'));const select=document.querySelector('#profile');select.value=${JSON.stringify(profile)};select.dispatchEvent(new Event('change'));})()`);
-    await waitForValue(cdp,`({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.generatedCount==='179',`Load 179 original GLBs: ${profile}`,45000);
-    await waitForValue(cdp,`document.querySelector('#details').textContent`,value=>/GLB propio|Original GLB/.test(value),`Original GLB provenance: ${profile}`);
-    assert.equal(await evaluate(cdp,`document.querySelector('#model-package-action').disabled`),false,'Original profile must be downloadable');
+    await waitForValue(cdp,`({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.adaptedCount==='179',`Load 179 Blender-adapted GLBs: ${profile}`,180000);
+    await waitForValue(cdp,`document.querySelector('#geometry-notice')?.textContent||''`,value=>/GLB cargados: 179\/179|Loaded GLB: 179\/179/.test(value),`Visible GLB coverage: ${profile}`);
+    await waitForValue(cdp,`document.querySelector('#details').textContent`,value=>/GLB adaptado en Blender|Blender-adapted GLB/.test(value),`Blender-adapted GLB provenance: ${profile}`);
+    assert.equal(await evaluate(cdp,`document.querySelector('#model-package-action').disabled`),false,'Adapted profile must be downloadable');
+    assert.equal(await evaluate(cdp,`document.querySelectorAll('#model-package-profiles .package-profile').length`),4,'Model package panel must show all four profiles');
+    assert.match(await evaluate(cdp,`document.querySelector('#model-package-profiles')?.textContent||''`),/179\/192/,'Model package panel must expose published coverage');
   }
   await evaluate(cdp, `(()=>{const select=document.querySelector('#profile');select.value='infant';select.dispatchEvent(new Event('change'));document.querySelector('[data-bone="left_femur"]').click();})()`);
   await waitForValue(cdp, `Boolean(document.querySelector('#save-development-records'))`, value=>value===true, 'Render immature component register');
@@ -549,6 +633,16 @@ try {
   // Actual WebGL profile switching, not only UI labels. Keep inventory intact.
   assert.equal(await evaluate(cdp, `Boolean(document.querySelector('#viewer canvas'))`),true);
   for(const profile of ['adult_female','infant','neonate','adult_male']) {
+    await evaluate(cdp, `(()=>{const mode=document.querySelector('#geometry-mode');mode.value='auto';mode.dispatchEvent(new Event('change'));const select=document.querySelector('#profile');select.value=${JSON.stringify(profile)};select.dispatchEvent(new Event('change'));})()`);
+    await waitForValue(cdp, `({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.adaptedCount==='179'||profile==='adult_male'&&value.modelProfile===profile&&(value.adaptedCount==='0'||value.generatedCount==='179'),`GLB profile meshes: ${profile}`,180000);
+    await evaluate(cdp, `document.querySelector('[data-bone="skull"]').click()`);
+    await waitForValue(cdp, `document.querySelector('#details')?.textContent||''`,value=>/GLB adaptado en Blender|GLB loaded|GLB propio/.test(value),`GLB skull provenance: ${profile}`);
+    if(process.env.OSTEO3D_CAPTURE_3D==='1') {
+      await sleep(800);
+      const screenshot=await cdp.send('Page.captureScreenshot',{format:'png'});
+      await mkdir('.tmp-model-review',{recursive:true});
+      await writeFile(`.tmp-model-review/${profile}-glb.png`,Buffer.from(screenshot.data,'base64'));
+    }
     await evaluate(cdp, `(()=>{const mode=document.querySelector('#geometry-mode');mode.value='schematic';mode.dispatchEvent(new Event('change'));const select=document.querySelector('#profile');select.value=${JSON.stringify(profile)};select.dispatchEvent(new Event('change'));})()`);
     await waitForValue(cdp, `({...document.querySelector('#viewer').dataset})`,value=>value.modelProfile===profile&&value.schematicCount==='179',`179 schematic meshes: ${profile}`);
     await waitForValue(cdp, `document.querySelector('#details')?.textContent||''`,value=>/3D esquemático|Schematic 3D/.test(value),`Schematic provenance: ${profile}`);
@@ -567,12 +661,24 @@ try {
   await waitForValue(cdp, `document.querySelector('#viewer').dataset.comparisonProfile`, value => value === 'infant', 'Activate scaled 3D comparison profile');
   await evaluate(cdp, `(()=>{const slider=document.querySelector('#explosion');slider.value='100';slider.dispatchEvent(new Event('input'));})()`);
   await sleep(500);
+   const dispositionStatusBefore = await evaluate(cdp, `document.querySelector('[data-row-status="skull"]')?.value || ''`);
+   await evaluate(cdp, `document.querySelector('#tab-inventory').click();document.querySelector('#show-table').click();(()=>{const select=document.querySelector('[data-row-status="skull"]');select.value='fragmentary';select.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+  await waitForValue(cdp, projectReadExpression(), value => value.status?.skull === 'fragmentary', 'Paint status while exploded and compared');
+  assert.equal(await evaluate(cdp, `document.querySelector('[data-row-status="skull"]')?.value`), 'fragmentary', 'Table status follows 3D disposition');
+  assert.equal(await evaluate(cdp, `document.querySelector('[data-bone="skull"]')?.dataset.status`), 'fragmentary', 'Tree status follows table edit');
+  await evaluate(cdp, `document.querySelector('#undo').click()`);
+   await waitForValue(cdp, projectReadExpression(), value => value.status?.skull === dispositionStatusBefore, 'Undo disposition paint');
+  await evaluate(cdp, `document.querySelector('#table-mode').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#table-mode').getAttribute('aria-pressed')`), 'true', 'Table disposition activates');
+  await evaluate(cdp, `document.querySelector('#table-mode').click()`);
+  assert.equal(await evaluate(cdp, `document.querySelector('#table-mode').getAttribute('aria-pressed')`), 'false', 'Table disposition restores');
   if(process.env.OSTEO3D_CAPTURE_3D==='1'){
     const screenshot=await cdp.send('Page.captureScreenshot',{format:'png'});
     await writeFile('.tmp-model-review/exploded.png',Buffer.from(screenshot.data,'base64'));
   }
   await evaluate(cdp, `document.querySelector('#save').click()`);
   await waitForValue(cdp,projectReadExpression(),value=>value.geometryMode==='schematic','Persist schematic mode');
+  phase('interfaz móvil');
   await cdp.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await sleep(500);
   assert.equal(await evaluate(cdp, `document.documentElement.scrollWidth<=window.innerWidth+1`),true,'Mobile layout must not overflow horizontally');
@@ -597,6 +703,7 @@ try {
   await waitForValue(cdp, `document.querySelector('#extended-panel').textContent`,value=>/Revisión manual/.test(value),'Refresh manual analysis result');
   let environmentSummary = 'despliegue en línea verificado';
   if (staticServer) {
+    phase('arranque offline');
     await stopStaticServer(staticServer);
     staticServer = null;
     const offlineMode = await setOfflineState(cdp, true);

@@ -28,12 +28,11 @@
   .top-actions > #inspector-toggle,
   .top-actions > #catalog-toggle { min-width: 44px; min-height: 44px; }
   .top-actions > label { display: flex; flex-direction: column; align-items: stretch; gap: 3px; font-size: 10px; }
-  .top-actions > label select { width: 100%; max-width: none; margin: 0; min-height: 42px; }
+  .top-actions > label select { width: 100%; max-width: none; margin: 0; min-height: 44px; }
+  .top-actions > label:not(.project-control) { grid-column: auto; }
   .top-actions > .project-control,
-  .top-actions > label:has(#profile),
-  .top-actions > label:has(#language),
-  .top-actions > #save,
   .top-actions > #update-actions { grid-column: 1 / -1; }
+  .top-actions > #save { grid-column: auto; }
   .top-actions > #update-actions[hidden] { display: none; }
   .top-actions > #update-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .top-actions > #update-actions .pwa-update-label { grid-column: 1 / -1; }
@@ -54,7 +53,8 @@
     overflow: visible;
     white-space: normal;
   }
-  .viewer-toolbar > button { flex: 1 1 calc(25% - 4px); min-width: 0; padding: 8px 4px; }
+  .viewer-toolbar > button { flex: 1 1 44px; min-width: 44px; padding: 8px 4px; }
+  .viewer-toolbar .local-view-group button { flex: 0 0 44px; min-width: 44px; min-height: 44px; }
   .viewer-toolbar .local-view-group { flex: 1 1 100%; justify-content: center; }
 
   .viewer-lighting-controls {
@@ -68,9 +68,13 @@
     border: 0;
     box-shadow: none;
   }
-  .viewer-lighting-controls > button { min-height: 44px; }
+  .viewer-lighting-controls > button { min-height: 44px; height: 44px; }
   .lighting-control-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 8px; }
   .lighting-control-fields[hidden] { display: none; }
   .viewer-lighting-controls .light-control { gap: 3px; }
   .viewer-lighting-controls .light-control input { margin: 0; }
 }
+
+/* Keep secondary text readable after the component-specific styles load. */
+body .tabs button, body .small-copy, body .muted, body .viewer-status, body .legend, body .inspector dt, body .bone-row small { color: #486581; }
+body .tabs button:hover, body .tabs .active { color: #102a43; }

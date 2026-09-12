@@ -15,6 +15,19 @@ const COMPONENTS = Object.freeze({
   parietal: { es: 'Parietal', en: 'Parietal' },
   occipital: { es: 'Occipital', en: 'Occipital' }
 });
+const OSSIFICATION_REFERENCES = Object.freeze({
+  distal_humerus: [
+    { es: 'Capitulum', en: 'Capitulum', appearance: '0–1 años', fusion: '10–15 años', source: 'PMC5782864' },
+    { es: 'Epicóndilo medial', en: 'Medial epicondyle', appearance: '2–8 años', fusion: '13–17 años', source: 'PMC5782864' },
+    { es: 'Tróclea', en: 'Trochlea', appearance: '5–11 años', fusion: '10–18 años', source: 'PMC5782864' },
+    { es: 'Epicóndilo lateral', en: 'Lateral epicondyle', appearance: '8–13 años', fusion: '12–16 años', source: 'PMC5782864' }
+  ],
+  proximal_radius: [{ es: 'Cabeza del radio', en: 'Radial head', appearance: '2–6 años', fusion: '12–16 años', source: 'PMC5782864' }],
+  proximal_ulna: [{ es: 'Olécranon', en: 'Olecranon', appearance: '6–11 años', fusion: '13–16 años', source: 'PMC5782864' }],
+  capitate: [{ es: 'Grande', en: 'Capitate', appearance: '2.º–4.º mes', fusion: '—', source: 'PMC4266871' }],
+  hamate: [{ es: 'Ganchoso', en: 'Hamate', appearance: '2.º–4.º mes', fusion: '—', source: 'PMC4266871' }],
+  pisiform: [{ es: 'Pisiforme', en: 'Pisiform', appearance: '9–12 años', fusion: '—', source: 'PMC4266871' }]
+});
 const STATUSES = new Set(['present', 'absent', 'fragmentary', 'indeterminate', 'not_observable', 'not_recorded']);
 const FUSION = new Set(['not_recorded', 'unfused', 'partial', 'fused', 'not_observable']);
 const text = value => String(value ?? '').trim();
@@ -27,6 +40,14 @@ export function developmentComponentsForBone(bone = {}) {
   if (base === 'coxal') return ['ilium', 'ischium', 'pubis'];
   if (base === 'skull') return ['frontal', 'parietal', 'occipital'];
   return [];
+}
+
+export function ossificationReferencesForBone(bone = {}) {
+  const base = text(bone.id).replace(/^(left|right)_/, '');
+  if (base === 'humerus') return OSSIFICATION_REFERENCES.distal_humerus;
+  if (base === 'radius') return OSSIFICATION_REFERENCES.proximal_radius;
+  if (base === 'ulna') return OSSIFICATION_REFERENCES.proximal_ulna;
+  return OSSIFICATION_REFERENCES[base] || [];
 }
 
 export function normalizeDevelopmentRecords(value) {

@@ -378,7 +378,7 @@
         "t9"
       ],
       "model_kind": "adapted-from-adult-male",
-      "generator_version": "adult-male-adaptation-1.0.0"
+      "generator_version": "blender-adaptation-1.0.0"
     },
     "infant": {
       "label": "Infante",

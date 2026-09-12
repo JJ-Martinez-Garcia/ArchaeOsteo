@@ -1,4 +1,5 @@
 import { normalizeProject } from '../data/store.js';
+import { PROJECT_FIELDS } from '../data/project-schema.js';
 import { normalizeDevelopmentRecords } from './development.js';
 import { normalizePortionRecords } from './portion-records.js';
 export { parseCsv } from './csv.js';
@@ -66,6 +67,7 @@ export function createBackup(state) {
       dental: state.dental,
       deciduousDental: state.deciduousDental,
       dentitionType: state.dentitionType,
+      dental3d: Boolean(state.dental3d),
       measurements: state.measurements,
       landmarks: state.landmarks,
       calibrations: state.calibrations,
@@ -85,6 +87,8 @@ export function validateBackup(value) {
   if (!value || value.format !== 'osteo3d-project-backup') throw new Error('El archivo no es una copia de Osteo3D.');
   if (value.version !== BACKUP_VERSION) throw new Error(`Versión de copia no compatible: ${value.version}.`);
   if (!value.project || typeof value.project !== 'object' || Array.isArray(value.project)) throw new Error('La copia no contiene un proyecto válido.');
+  const unknown = Object.keys(value.project).filter(key => !PROJECT_FIELDS.has(key));
+  if (unknown.length) throw new Error(`La copia contiene campos desconocidos: ${unknown.join(', ')}.`);
   if (value.project.status && (typeof value.project.status !== 'object' || Array.isArray(value.project.status))) throw new Error('El inventario no tiene un formato válido.');
   return normalizeProject(value.project);
 }

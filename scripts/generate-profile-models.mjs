@@ -14,6 +14,10 @@ globalThis.FileReader=class {
 const root=path.resolve('public/models');
 const manifest=JSON.parse(await readFile(path.join(root,'manifest.json'),'utf8'));
 const registry=JSON.parse(await readFile(path.join(root,'sources.json'),'utf8'));
+const publishedAdaptedProfiles=['adult_female','infant','neonate'];
+if(publishedAdaptedProfiles.some(profile=>manifest.profiles[profile]?.model_kind==='adapted-from-adult-male')){
+  throw Error('Los paquetes publicados son adaptaciones de Blender; no se permite sobrescribirlos con el generador procedural. Usa Blender/scripts/blender-adapt-female-models.py para regenerar adaptaciones.');
+}
 const ids=manifest.profiles.adult_male.asset_ids;
 const license=await readFile('LICENSE','utf8');
 for(const profile of ['adult_female','infant','neonate']){

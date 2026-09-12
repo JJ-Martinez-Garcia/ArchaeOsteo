@@ -6,10 +6,13 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { extendedBones } from '../src/anatomy/extended-bones.js';
 import { baseBones } from '../src/anatomy/base-bones.js';
 import { applyProfileLayout, boneLayout, createProceduralBone, isAnatomicalBone, PROFILE_SHAPES } from '../src/anatomy/procedural.js';
+import { ossificationReferencesForBone } from '../src/domain/development.js';
 
 const manifest=JSON.parse(await readFile('public/models/manifest.json','utf8'));
 const ids=manifest.profiles.adult_male.asset_ids;
 assert.equal(ids.length,179);
+assert.ok(ossificationReferencesForBone({ id: 'left_humerus' }).some(reference => reference.source === 'PMC5782864'));
+assert.ok(ossificationReferencesForBone({ id: 'right_pisiform' }).some(reference => reference.source === 'PMC4266871'));
 const bones=ids.map(id=>structuredClone(extendedBones.find(bone=>bone.id===id)||{id,p:[0,0,0],e:[0,0,0],size:[1,1,1]}));
 const countMeshes=root=>{let count=0;root.traverse(node=>{if(node.isMesh)count++;});return count;};
 for(const profile of Object.keys(PROFILE_SHAPES)) {

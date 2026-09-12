@@ -1,6 +1,6 @@
 # Estado de Osteo3D PWA
 
-Fecha de revisión: 2026-09-09
+Fecha de revisión: 2026-09-11
 
 ## Estado operativo verificado
 
@@ -16,6 +16,8 @@ Fecha de revisión: 2026-09-09
   para consulta offline.
 - Informe imprimible con mapa regional esquemático, etiquetas ES/EN, paginación A4 y tablas con
   cabeceras repetibles; XLSX incluye una hoja `Esquema` y hojas auxiliares importables.
+- Comparación múltiple de inventarios con el proyecto activo en memoria, manejo visible de errores
+  de almacenamiento local y diagnósticos E2E por fases para separar carga GLB, PWA, informe y móvil.
 
 ## Comprobaciones reproducibles
 

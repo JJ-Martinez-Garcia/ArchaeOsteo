@@ -1,0 +1,35 @@
+{
+  "id": "field-ue4",
+  "projectName": "Inventario de campo UE-4",
+  "schemaVersion": 3,
+  "profile": "adult_female",
+  "status": { "skull": "present", "mandible": "fragmentary", "left_femur": "present" },
+  "completeness": { "skull": 92, "mandible": 40, "left_femur": 76 },
+  "fragments": { "mandible": 3 },
+  "weights": { "skull": 1240, "left_femur": 810 },
+  "weightUnits": { "skull": "g", "left_femur": "g" },
+  "portionRecords": { "left_femur": { "shaft_mid": { "status": "present", "completeness": 76 }, "epiphysis_distal": { "status": "fragmentary", "completeness": 35 } } },
+  "individuals": { "skull": "IND-04A", "mandible": "IND-04A", "left_femur": "IND-04B" },
+  "specimens": { "skull": "SP-04-001", "mandible": "SP-04-002", "left_femur": "SP-04-003" },
+  "specimenRecords": {
+    "SP-04-001": { "id": "SP-04-001", "label": "Cráneo casi completo", "individualId": "IND-04A", "context": "UE-4", "notes": "Sin mandíbula asociada." },
+    "SP-04-002": { "id": "SP-04-002", "label": "Mandíbula fragmentaria", "individualId": "IND-04A", "context": "UE-4", "notes": "Tres fragmentos." },
+    "SP-04-003": { "id": "SP-04-003", "label": "Fémur izquierdo", "individualId": "IND-04B", "context": "UE-4", "notes": "Lateralidad segura." }
+  },
+  "hierarchy": {
+    "sites": [{ "id": "site:campo-norte", "name": "Yacimiento Norte", "parentId": "" }],
+    "campaigns": [{ "id": "campaign:2026", "name": "Campaña 2026", "parentId": "site:campo-norte" }],
+    "sectors": [{ "id": "sector:b", "name": "Sector B", "parentId": "campaign:2026" }],
+    "contexts": [{ "id": "context:ue-4", "name": "UE-4", "parentId": "sector:b" }],
+    "individuals": [{ "id": "individual:ind-04a", "name": "IND-04A", "parentId": "context:ue-4" }, { "id": "individual:ind-04b", "name": "IND-04B", "parentId": "context:ue-4" }]
+  },
+  "hierarchyRefs": {
+    "skull": { "siteId": "site:campo-norte", "campaignId": "campaign:2026", "sectorId": "sector:b", "contextId": "context:ue-4", "individualId": "individual:ind-04a" },
+    "mandible": { "siteId": "site:campo-norte", "campaignId": "campaign:2026", "sectorId": "sector:b", "contextId": "context:ue-4", "individualId": "individual:ind-04a" },
+    "left_femur": { "siteId": "site:campo-norte", "campaignId": "campaign:2026", "sectorId": "sector:b", "contextId": "context:ue-4", "individualId": "individual:ind-04b" }
+  },
+  "dental": { "11": "present", "12": "caries", "31": "absent_pm" },
+  "indeterminateFragments": [{ "type": "Astilla cortical", "quantity": 2, "weight": 4.5, "weightUnit": "g", "context": "UE-4", "observations": "No asignable con seguridad." }],
+  "notes": { "skull": "Fotografiado antes de la limpieza.\nConserva suturas visibles." },
+  "report": { "individual": "IND-04A / IND-04B", "site": "Yacimiento Norte", "context": "UE-4", "sector": "Sector B", "campaign": "Campaña 2026", "sources": "Ficha de campo 04-2026", "method": "Inventario osteológico directo", "limits": "Revisión especializada pendiente" }
+}
