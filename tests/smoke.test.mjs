@@ -45,7 +45,7 @@ assert.equal(manifest.start_url, './');
 const citation = await text('CITATION.cff');
 assert.match(citation, /cff-version: 1\.2\.0/);
 assert.match(citation, /repository-code: "https:\/\/github\.com\/JJ-Martinez-Garcia\/ArchaeOsteo"/);
-assert.match(await text('README.md'), /Actualización 2026-09-11/);
+assert.match(await text('README.md'), /Actualización 2026-09-12/);
 assert.match(await text('scripts/validate-citation.mjs'), /CITATION\.cff: OK/);
 assert.ok(manifest.icons.length > 0);
 assert.equal(manifest.icons.length, 4);
