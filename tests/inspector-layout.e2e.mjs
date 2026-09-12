@@ -63,6 +63,7 @@ export async function testInspectorLayout(cdp,evaluate,waitForValue,sleep){
   assert.ok(touchTargets.every(target=>target.width>=44&&target.height>=44),'Visible mobile controls must meet 44px touch target: '+JSON.stringify(touchTargets));
   for (const id of ['skull','mandible']) {
     await evaluate(cdp,`document.querySelector('[data-bone="${id}"]').click()`);
+    if (id==='mandible') await evaluate(cdp,`document.querySelector('#isolate').click()`);
     await waitForValue(cdp,`document.querySelector('#details').textContent`,value=>String(value).includes('GLB loaded'),`Load published GLB for ${id}`);
     await waitForValue(cdp,`({...document.querySelector('#viewer').dataset})`,value=>Number(value[`${id}MeshCount`])>0&&value[`${id}Visible`]==='true',`Visible geometry for ${id}`);
   }
